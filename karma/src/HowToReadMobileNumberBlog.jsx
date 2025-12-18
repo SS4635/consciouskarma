@@ -1,69 +1,26 @@
 import { useState } from 'react';
 
+import CKNavbar from "./components/CKNavbar";
+
+import SignupModal from "./SignupModal";
+import LoginModal from "./LoginModal";
+
 function HowToReadMobileNumberBlog() {
   const [menuOpen, setMenuOpen] = useState(false);
+  
+      const [showSignup, setShowSignup] = useState(false);
+    const [showLogin, setShowLogin] = useState(false);
 
   return (
+    <>
+    
+    <CKNavbar
+              menuOpen={menuOpen}
+              setMenuOpen={setMenuOpen}
+              setShowSignup={setShowSignup}
+            />
     <div className="bg-black min-h-screen w-full flex flex-col font-sans text-gray-100">
       
-      {/* Header */}
-      <header className="ck-header-bar pb-3 md:pt-1 md:pb-0 bg-black text-white">
-        <div className="ck-header-inner flex items-center justify-between px-4 py-2">
-          <a href="/" className="ck-header-logo-link" aria-label="conscious KARMA home">
-            <img src="/Logomy-cropped.svg" alt="conscious KARMA" className="ck-header-logo mt-4" draggable={false} />
-          </a>
-          <button
-            className={"ck-hamburger" + (menuOpen ? " ck-hamburger-open" : "")}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle navigation menu"
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-        </div>
-      </header>
-
-      {/* Drawer/Menu */}
-      {menuOpen && (
-        <div
-          className="ck-menu-backdrop"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-      <nav
-        className={
-          "ck-side-menu" + (menuOpen ? " ck-side-menu-open" : "")
-        }
-      >
-        <button 
-          className="ck-menu-close"
-          onClick={() => setMenuOpen(false)}
-          aria-label="Close menu"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18" stroke="white" />
-            <line x1="6" y1="6" x2="18" y2="18" stroke="white" />
-          </svg>
-        </button>
-
-        {[
-          ["Home", "/"],
-          ["Personalised Report", "/personalised-report"],
-          ["Consult", "/consult"],
-          ["Login/Signup", "/login"],
-        ].map(([label, link], i) => (
-          <a
-            key={i}
-            href={link}
-            className="ck-side-menu-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
-
       {/* Main Blog Content */}
       <div className="flex-1 w-full max-w-3xl mx-auto p-6 md:p-12">
         
@@ -186,6 +143,29 @@ function HowToReadMobileNumberBlog() {
         </div>
 
       </div>
+{(showSignup || showLogin) && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          {showSignup && (
+            <SignupModal
+              onClose={() => setShowSignup(false)}
+              onSwitch={() => {
+                setShowSignup(false);
+                setShowLogin(true);
+              }}
+            />
+          )}
+      
+          {showLogin && (
+            <LoginModal
+              onClose={() => setShowLogin(false)}
+              onSwitch={() => {
+                setShowLogin(false);
+                setShowSignup(true);
+              }}
+            />
+          )}
+        </div>
+      )}
 
       {/* Footer */}
       <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
@@ -204,6 +184,7 @@ function HowToReadMobileNumberBlog() {
         </div>
       </footer>
     </div>
+    </>
   );
 }
 
