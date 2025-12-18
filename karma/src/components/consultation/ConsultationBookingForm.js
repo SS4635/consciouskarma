@@ -8,9 +8,10 @@ import ParallelNumbersForm from "./forms/ParallelNumbersForm";
 import PreviousNumbersForm from "./forms/PreviousNumbersForm";
 
 export default function ConsultationBookingForm({
-  maxSteps = 6,
+  maxSteps = 5,
   selectedPlan = null,
   inModal = false,
+  onClose,
 }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedUsageType, setSelectedUsageType] = useState({});
@@ -26,6 +27,8 @@ export default function ConsultationBookingForm({
 
   // Extract usage type from form data to use in dependencies
   const primaryNumberUsageType = formData[2]?.["Usage type"] || "";
+const isExtendedCompatibility = !!selectedPlan?.isExtended;
+
 
   // months & years for dropdowns
   const months = [
@@ -362,10 +365,19 @@ export default function ConsultationBookingForm({
           options: ["Female", "Male", "Other"],
         },
         {
-          label: "Date of Birth and Time",
-          type: "double-input",
-          placeholders: ["Date of Birth", "Time (24hr)"],
-        },
+  label: "Date of Birth",
+  type: "date",
+},
+{
+  label: "Time of Birth",
+  type: "time",
+},
+{
+  label: "Place of Birth",
+  type: "text",
+  placeholder: "City, State, Country",
+},
+
         {
           label: "Email-id",
           type: "email",
@@ -432,58 +444,35 @@ export default function ConsultationBookingForm({
         },
       ],
     },
+   {
+  id: 5,
+  title: "Compatibility Numbers",
+  price: " ₹2500",
+  fields: [
     {
-      id: 5,
-      title: "Compatibility Numbers",
-      price: " ₹2500",
-      fields: [
-        {
-          label: "Mobile Number",
-          type: "isd-mobile",
-          placeholders: ["ISD", "mobile number"],
-        },
-        {
-          label: "Relationship with the user",
-          type: "text",
-          placeholder: "spouse, partner",
-        },
-      ],
+      label: "Mobile Number",
+      type: "isd-mobile",
+      placeholders: ["ISD", "mobile number"],
     },
     {
-      id: 6,
-      title: "Compatibility Numbers",
-      price: " ₹3000",
-      fields: [
-        {
-          label: "Mobile Number",
-          type: "isd-mobile",
-          placeholders: ["ISD", "mobile number"],
-        },
-        {
-          label: "Relationship with the user",
-          type: "text",
-          placeholder: "spouse, partner",
-        },
-        {
-          label: "Add Number",
-          type: "button",
-          placeholder: "Add Number",
-          additionalText: "If any",
-        },
-        {
-          label: "Add Number",
-          type: "button",
-          placeholder: "Add Number",
-          additionalText: "If any",
-        },
-        {
-          label: "Add Number",
-          type: "button",
-          placeholder: "Add Number",
-          additionalText: "If any",
-        },
-      ],
+      label: "Relationship with the user",
+      type: "text",
+      placeholder: "spouse, partner",
     },
+    ...(isExtendedCompatibility
+      ? [
+          {
+            label: "Add Number",
+            type: "button",
+            placeholder: "Add Number",
+            additionalText: "If any",
+          },
+        ]
+      : []),
+  ],
+},
+
+
   ];
 
   const effectiveSteps = formSteps.slice(0, maxSteps);
@@ -505,20 +494,32 @@ export default function ConsultationBookingForm({
 
     switch (step.id) {
       case 1: {
-        let err =
-          requireField("Name", "Name") ||
-          requireField("Gender", "Gender") ||
-          requireField("Email-id", "Email-id");
-        if (err) return err;
-        const dobTime = data["Date of Birth and Time"] || [];
-        if (!dobTime[0] || !dobTime[1]) {
-          return "Please fill both Date of Birth and Time.";
-        }
-        if (!emailRegex.test(String(data["Email-id"] || "").trim())) {
-          return "Please enter a valid Email-id.";
-        }
-        return null;
-      }
+  let err =
+    requireField("Name", "Name") ||
+    requireField("Gender", "Gender") ||
+    requireField("Email-id", "Email-id");
+
+  if (err) return err;
+
+  if (!data["Date of Birth"]) {
+    return "Please fill Date of Birth.";
+  }
+
+  if (!data["Time of Birth"]) {
+    return "Please fill Time of Birth.";
+  }
+
+  if (!String(data["Place of Birth"] || "").trim()) {
+    return "Please fill Place of Birth.";
+  }
+
+  if (!emailRegex.test(String(data["Email-id"] || "").trim())) {
+    return "Please enter a valid Email-id.";
+  }
+
+  return null;
+}
+
 
       case 2: {
         const m = data["Mobile Number"] || {};
@@ -622,38 +623,33 @@ export default function ConsultationBookingForm({
       }
 
       case 5: {
-        const m = data["Mobile Number"] || {};
-        const isd = m.isd || "+91";
-        if (!isd || !m.mobile) {
-          return "Please fill Mobile Number.";
-        }
-        if (!String(data["Relationship with the user"] || "").trim()) {
-          return "Please fill Relationship with the user.";
-        }
-        return null;
-      }
+  const m = data["Mobile Number"] || {};
+  const isd = m.isd || "+91";
 
-      case 6: {
-        const m = data["Mobile Number"] || {};
-        const isd = m.isd || "+91";
-        if (!isd || !m.mobile) {
-          return "Please fill Mobile Number.";
-        }
-        if (!String(data["Relationship with the user"] || "").trim()) {
-          return "Please fill Relationship with the user.";
-        }
-        const dyn = data.dynamicNumbers || [];
-        for (let i = 0; i < dyn.length; i++) {
-          const d = dyn[i];
-          if (!d.isd || !d.mobile) {
-            return `Please fill ISD and Mobile for extra Compatibility Number #${
-              i + 1
-            }.`;
-          }
-        }
-        return null;
-      }
+  if (!isd || !m.mobile) {
+    return "Please fill Compatibility Mobile Number.";
+  }
 
+  if (!String(data["Relationship with the user"] || "").trim()) {
+    return "Please fill Relationship with the user.";
+  }
+
+  // Extra numbers ONLY for extended plan
+  if (isExtendedCompatibility) {
+    const dyn = data.dynamicNumbers || [];
+    for (let i = 0; i < dyn.length; i++) {
+      const d = dyn[i];
+      if (!d.isd || !d.mobile) {
+        return `Please fill ISD and Mobile for extra Compatibility Number #${i + 1}.`;
+      }
+    }
+  }
+
+  return null;
+}
+
+
+      
       default:
         return null;
     }
@@ -1081,6 +1077,70 @@ export default function ConsultationBookingForm({
             text: center;
           }
         }
+      
+.ck-modal-header {
+  display: flex;
+  align-items: center;        /* 🔥 vertical align */
+  justify-content: space-between;
+  padding: 20px;
+  padding-bottom:0px;
+
+}
+
+.ck-modal-title {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1;             /* 🔥 text alignment fix */
+}
+
+.ck-close {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;        /* 🔥 center X */
+  justify-content: center;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.ck-close:hover {
+  background: #222;
+}
+
+.ck-nav {
+  display: flex;
+  flex-direction:row;
+  justify-content: space-between;  /* 🔥 left & right push */
+  align-items: center;
+  margin-top: 24px;
+   width: 100%; 
+   .ck-nav {
+  justify-content: space-between;
+}
+
+}
+
+.ck-nav-btn {
+  background: none;
+  border: none;
+  color: #ff6b35;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 6px;
+  transition: opacity 0.2s ease;
+}
+
+.ck-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ck-nav-btn:not(:disabled):hover {
+  opacity: 0.8;
+}
+
       `}</style>
 
       <div className="container">
@@ -1100,17 +1160,27 @@ export default function ConsultationBookingForm({
             }}
             ref={formContainerRef}
           >
+<div className="ck-modal-header">
+  <span className="ck-modal-title">
+    {currentForm.title}
+  </span>
+
+  {inModal && (
+    <button
+      className="ck-close"
+      onClick={onClose}
+      aria-label="Close"
+    >
+      ✕
+    </button>
+  )}
+</div>
+
             <div
               className="form-cards"
               style={{ padding: inModal ? "1.2rem 1.2rem 1.5rem" : undefined }}
             >
-              <h1
-                className="form-title text-center"
-                style={{ fontSize: inModal ? "28px" : undefined }}
-              >
-                {currentForm.title}
-              </h1>
-
+              
               <div className="form-fields">
                 {/* Use GeneralInformationForm for step 1 */}
                 {currentForm.id === 1 ? (
@@ -1947,24 +2017,26 @@ export default function ConsultationBookingForm({
               </div>
 
               {/* Navigation */}
-              <div className="d-flex justify-content-between align-items-center mt-4 mb-3">
-                <span
-                  className={`navigation-text ${
-                    currentStep === 0 ? "disabled" : ""
-                  }`}
-                  onClick={handlePrev}
-                >
-                  &#60;&#60;&#60; prev
-                </span>
-                <span
-                  className={`navigation-text ${
-                    currentStep === effectiveSteps.length - 1 ? "disabled" : ""
-                  }`}
-                  onClick={handleNext}
-                >
-                  next &#62;&#62;&#62;
-                </span>
-              </div>
+              <div className="ck-nav w-100">
+  <button
+    className="ck-nav-btn"
+    disabled={currentStep === 0}
+    onClick={handlePrev}
+    type="button"
+  >
+    ‹‹‹ prev
+  </button>
+
+  <button
+    className="ck-nav-btn"
+    disabled={currentStep === effectiveSteps.length - 1}
+    onClick={handleNext}
+    type="button"
+  >
+    next ›››
+  </button>
+</div>
+
             </div>
 
             {/* Footer Buttons */}

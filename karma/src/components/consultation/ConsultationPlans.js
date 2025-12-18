@@ -165,6 +165,7 @@ export default function ConsultationPlans() {
       title: "Unmarried Individual",
       price: " ₹1",
       description: "For students, freelancers, or solo nentrepreneurs",
+       isExtended: false,
     },
     {
       id: 2,
@@ -172,6 +173,7 @@ export default function ConsultationPlans() {
       price: " ₹2500",
       description:
         "For those whose number must be considered alongside a spouse or partner",
+    isExtended: false,
     },
     {
       id: 3,
@@ -179,6 +181,7 @@ export default function ConsultationPlans() {
       price: " ₹3000",
       description:
         "For entrepreneurs, co-founders, or professionals requiring compatibility checks with up to 4 other people.",
+    isExtended: true,
     },
   ];
 
@@ -194,15 +197,16 @@ export default function ConsultationPlans() {
     if (selectedPlan.title === "Unmarried Individual") planMaxSteps = 4;
     else if (selectedPlan.title === "Married Individual") planMaxSteps = 5;
     else if (selectedPlan.title === "Individual with Extended Compatibility")
-      planMaxSteps = 6;
+      planMaxSteps = 5;
     return (
       <div className="">
         {/* pass selectedPlan so the form can display dynamic price/data; inModal makes the form compact for modal */}
         <ConsultationBookingForm
-          maxSteps={planMaxSteps}
-          selectedPlan={selectedPlan}
-          inModal={true}
-        />
+  maxSteps={planMaxSteps}
+  selectedPlan={selectedPlan}
+  inModal={true}
+  onClose={closeModal}
+/>
       </div>
     );
   };
@@ -323,6 +327,21 @@ export default function ConsultationPlans() {
               display: none !important;
             }
           }
+
+          .consultation-plan-button {
+  border: 1.5px solid #ff6b35;
+  background-color: #000;
+  color: #ff6b35;
+  padding: 8px 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.consultation-plan-button:hover {
+  background-color: #ff6b35;
+  color: #000;
+}
+
         `}</style>
         {/* Header Section */}
         <div className="text-center mb-5">
@@ -369,23 +388,17 @@ export default function ConsultationPlans() {
                 </p>
                 {/* Book Now button at right corner */}
                 <button
-                  type="button"
-                  className="consultation-plan-button btn btn-sm"
-                  data-price={plan.price}
-                  style={{
-                    border: "1.5px solid #ff6b35",
-                    background: "#ff6b35",
-                    color: "#000",
-                    padding: "8px 16px",
-                    fontWeight: "500",
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelect(plan);
-                  }}
-                >
-                  Book Now
-                </button>
+  type="button"
+  className="consultation-plan-button btn btn-sm"
+  data-price={plan.price}
+  onClick={(e) => {
+    e.stopPropagation();
+    handleSelect(plan);
+  }}
+>
+  <b>Book Now</b>
+</button>
+
               </div>
             </div>
           ))}
@@ -433,25 +446,6 @@ export default function ConsultationPlans() {
               }}
               onClick={(ev) => ev.stopPropagation()}
             >
-              {/* Compact modal: show only the booking form. Provide a small close control. */}
-              <button
-                aria-label="Close booking"
-                onClick={closeModal}
-                style={{
-                  position: "absolute",
-                  right: 10,
-                  top: 10,
-                  background: "#222",
-                  color: "#fff",
-                  border: "1px solid #444",
-                  padding: "6px 8px",
-                  borderRadius: 6,
-                  cursor: "pointer",
-                  zIndex: 10,
-                }}
-              >
-                ✕
-              </button>
 
               {/* Render the booking form inside modal */}
               <div style={{ marginTop: 8 }}>{renderBooking()}</div>

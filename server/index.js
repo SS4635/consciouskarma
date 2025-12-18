@@ -617,38 +617,39 @@ await connectMongo();
 dotenv.config();
 
 // Register the consultation booking endpoint on the main app instance
-app.post("/api/consultation/book", async (req, res) => {
-  try {
-    console.log("--- Consultation formData received ---");
-    console.log(JSON.stringify(req.body, null, 2));
-    if (req.body && typeof req.body === "object") {
-      console.log("Top-level keys:", Object.keys(req.body));
-    }
-    const consultation = new Consultation({
-      formData: req.body.formData,
-      planName: req.body.planName,
-      price: req.body.price,
-    });
-    await consultation.save();
-    // Send emails to user and admin
-    try {
-      await sendConsultationEmails({
-        formData: req.body.formData,
-        docId: consultation._id,
-      });
-    } catch (mailErr) {
-      console.error("Consultation email error:", mailErr);
-    }
-    res.json({
-      ok: true,
-      message: "Consultation booked",
-      id: consultation._id,
-    });
-  } catch (err) {
-    console.error("Consultation booking error:", err);
-    res.status(500).json({ ok: false, message: "Failed to book consultation" });
-  }
-});
+// app.post("/api/consultation/book", async (req, res) => {
+//   try {
+//     console.log("--- Consultation formData received ---");
+//     console.log(JSON.stringify(req.body, null, 2));
+//     if (req.body && typeof req.body === "object") {
+//       console.log("Top-level keys:", Object.keys(req.body));
+//     }
+//     const consultation = new Consultation({
+//       formData: req.body.formData,
+//       planName: req.body.planName,
+//       price: req.body.price,
+//     });
+//     await consultation.save();
+//     // Send emails to user and admin
+//     try {
+//       await sendConsultationEmails({
+//         formData: req.body.formData,
+//         docId: consultation._id,
+//       });
+//     } catch (mailErr) {
+//       console.error("Consultation email error:", mailErr);
+//     }
+//     res.json({
+//       ok: true,
+//       message: "Consultation booked",
+//       id: consultation._id,
+//     });
+//   } catch (err) {
+//     console.error("Consultation booking error:", err);
+//     res.status(500).json({ ok: false, message: "Failed to book consultation" });
+//   }
+// });
+
 async function sendSignupEmails({ email, name }) {
   const userHtml = `
     <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
@@ -895,10 +896,9 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
     } = req.body;
 
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.json({ ok: false, message: "Missing Razorpay parameters" });
+      return res.json({ ok: false, message: "Missing Razorpay params" });
     }
 
-    // Signature Verification
     const body = razorpay_order_id + "|" + razorpay_payment_id;
 
     const expected = crypto
@@ -910,23 +910,32 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
       return res.json({ ok: false, message: "Invalid signature" });
     }
 
-    // SAVE CONSULTATION (no razorpay fields)
+    // 🔥 Extract core info
+    const general = formData?.general || {};
+    const primary = formData?.primary || {};
+    const phone = `${primary.isd || ""}${primary.number || ""}`;
+
+    // ✅ SAVE CONSULTATION ONCE
     const consultation = await Consultation.create({
       formData,
+      name: general.name,
+      email: general.email,
+      phone,
       planName,
-      price,
+      price: Number(price),
+      paymentStatus: "paid",
     });
 
-    // SEND EMAIL
+    // 📧 EMAILS
     await sendConsultationEmails({
       formData,
       docId: consultation._id,
     });
 
-    return res.json({ ok: true });
+    return res.json({ ok: true, id: consultation._id });
   } catch (err) {
     console.error("verify-consultation error:", err);
-    return res.json({ ok: false, message: "Verification failed" });
+    res.json({ ok: false, message: "Verification failed" });
   }
 });
 

@@ -114,6 +114,7 @@
 import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from './ConsultationBookingForm';
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./consultationform.css"
 
 export default function ConsultationPlans() {
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -251,24 +252,16 @@ export default function ConsultationPlans() {
                 </p>
                 {/* Book Now button at right corner */}
                 <button
-                  type="button"
-                  className="btn btn-sm"
-                  style={{
-                    position: 'absolute',
-                    right: '12px',
-                    bottom: '35px',
-                    border: '1.5px solid #ff6b35',
-                    background: '#ff6b35',
-                    color: '#000',
-                    padding: '6px 10px'
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleSelect(plan);
-                  }}
-                >
-                  Book Now
-                </button>
+  type="button"
+  className="ck-primary-btn"
+  onClick={(e) => {
+    e.stopPropagation();
+    handleSelect(plan);
+  }}
+>
+  Book Now
+</button>
+
               </div>
             </div>
           ))}
