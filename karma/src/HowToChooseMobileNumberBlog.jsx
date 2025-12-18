@@ -59,10 +59,9 @@ const HowToChooseMobileNumberBlog = () => {
         {/* Section: Specific Need */}
         <div className="mb-8 text-gray-300 leading-relaxed">
           <h2 className="text-xl md:text-2xl font-bold mb-4 text-white">
-            A Number Should Solve a Specific Need
-          </h2>
+            A Number Should Solve a Specific Need</h2>
           <p className="mb-4">
-            At any point in life, every individual carries a dominant area of focus — career, family, finances, stability, clarity, confidence, learning, or emotional balance.
+            At any point in life,every individual carries a dominant area of focus — career, family, finances, stability, clarity, confidence, learning, or emotional balance.
           </p>
           <p className="mb-2">For example:</p>
           <ul className="list-disc pl-5 mb-4 space-y-1 text-gray-300">
