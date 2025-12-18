@@ -5,9 +5,16 @@ import ConsultationPlans from './components/consultation/ConsultationPlans.js';
 import Home from './components/Home.js';
 import FaqAccordion from './components/FaqAccordion.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import CKNavbar from "./components/CKNavbar";
+import SignupModal from "./SignupModal";
+import LoginModal from "./LoginModal";
+
 
 export default function Consult() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+const [showLogin, setShowLogin] = useState(false);
+
 
   return (
     <div className="bg-black min-vh-100 font-arsenal">
@@ -141,66 +148,13 @@ export default function Consult() {
         }
       `}</style>
 
-      {/* Header */}
-      <header className="ck-header-bar  pb-3 md:pt-1 md:pb-0">
-        <div className="ck-header-inner">
-          <a
-            href="/"
-            className="ck-header-logo-link"
-            aria-label="conscious KARMA home"
-          >
-            <img
-              src="/Logomy-cropped.svg"
-              alt="conscious KARMA"
-              className="ck-header-logo mt-4 "
-              draggable={false}
-            />
-          </a>
+      
+      <CKNavbar
+  menuOpen={menuOpen}
+  setMenuOpen={setMenuOpen}
+  setShowSignup={setShowSignup}
+/>
 
-          <button
-            className={
-              "ck-hamburger" + (menuOpen ? " ck-hamburger-open" : "")
-            }
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle navigation menu"
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-        </div>
-      </header>
-
-      {/* Drawer/Menu */}
-      {menuOpen && (
-        <div
-          className="ck-menu-backdrop"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-
-      <nav
-        className={
-          "ck-side-menu" + (menuOpen ? " ck-side-menu-open" : "")
-        }
-      >
-        <div className="ck-side-menu-title">Menu</div>
-        {[
-          ["Home", "/"],
-          ["Personalised Report", "/personalised-report"],
-          ["Consult", "/consult"],
-          ["Blog", "/blogs"],
-        ].map(([label, link], i) => (
-          <a
-            key={i}
-            href={link}
-            className="ck-side-menu-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            {label}
-          </a>
-        ))}
-      </nav>
 
       {/* Main Content */}
       <Home />
@@ -208,6 +162,29 @@ export default function Consult() {
       <ConsultationPlans />
       {/* <ConsultationBookingForm /> */}
       <FaqAccordion />
+{(showSignup || showLogin) && (
+  <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    {showSignup && (
+      <SignupModal
+        onClose={() => setShowSignup(false)}
+        onSwitch={() => {
+          setShowSignup(false);
+          setShowLogin(true);
+        }}
+      />
+    )}
+
+    {showLogin && (
+      <LoginModal
+        onClose={() => setShowLogin(false)}
+        onSwitch={() => {
+          setShowLogin(false);
+          setShowSignup(true);
+        }}
+      />
+    )}
+  </div>
+)}
 
       {/* Footer */}
       <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">

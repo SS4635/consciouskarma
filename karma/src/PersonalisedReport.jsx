@@ -12,6 +12,8 @@ import PreviousNumbersForm from "./components/consultation/forms/PreviousNumbers
 
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
+import CKNavbar from "./components/CKNavbar";
+
 
 // =======================
 // ENV CONFIG (CRA ONLY)
@@ -28,6 +30,9 @@ const MAX_PARALLEL_NUMBERS = Number.isFinite(MAX_PARALLEL_RAW) ? MAX_PARALLEL_RA
 const ConsciousKarmaPage = () => {
   const [step, setStep] = useState(0);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  
 
   const [general, setGeneral] = useState({
     name: "",
@@ -65,9 +70,6 @@ const ConsciousKarmaPage = () => {
   // ----- FAQ STATE -----
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
-  // ----- AUTH MODALS -----
-  const [showSignup, setShowSignup] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
 
   // ----- OTP STATE -----
   const [otpPrimary, setOtpPrimary] = useState({
@@ -708,76 +710,12 @@ const ConsciousKarmaPage = () => {
   // ========== RENDER ==========
   return (
     <div className="ck-page">
-      {/* FIXED HEADER */}
-      <header className="ck-header-bar pb-3 md:pt-1 md:pb-0">
-        <div className="ck-header-inner">
-          <a href="/" className="ck-header-logo-link" aria-label="conscious KARMA home">
-            <img
-              src="/Logomy-cropped.svg"
-              alt="conscious KARMA"
-              className="ck-header-logo mt-4"
-              draggable={false}
-            />
-          </a>
 
-          <button
-            className={"ck-hamburger" + (menuOpen ? " ck-hamburger-open" : "")}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label="Toggle navigation menu"
-          >
-            <span />
-            <span />
-            <span />
-          </button>
-        </div>
-      </header>
-
-      {/* Drawer/Menu */}
-      {menuOpen && <div className="ck-menu-backdrop" onClick={() => setMenuOpen(false)} />}
-
-      <nav
-        className={`fixed top-0 right-0 h-full w-[min(340px,92vw)] bg-[#0f0f0f] border-l border-[#333] shadow-[0_20px_60px_rgba(0,0,0,0.5)] z-[30] flex flex-col gap-[10px] p-[22px_20px] transition-transform duration-300 ease-in-out ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="font-balgin font-bold text-white mb-3">
-          <FormattedMessage id="menu.title" />
-        </div>
-
-        <a
-          href="/"
-          className="no-underline p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-          onClick={() => setMenuOpen(false)}
-        >
-          Home
-        </a>
-
-        <a
-          href="/personalised-report"
-          className="no-underline p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-          onClick={() => setMenuOpen(false)}
-        >
-          {intl.formatMessage({ id: "menu.personalisedReport" })}
-        </a>
-
-        <a
-          href="/consult"
-          className="no-underline p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-          onClick={() => setMenuOpen(false)}
-        >
-          {intl.formatMessage({ id: "menu.consult" })}
-        </a>
-
-        <button
-          className="text-left p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-          onClick={() => {
-            setMenuOpen(false);
-            setShowSignup(true);
-          }}
-        >
-          Signup / Login
-        </button>
-      </nav>
+<CKNavbar
+  menuOpen={menuOpen}
+  setMenuOpen={setMenuOpen}
+  setShowSignup={setShowSignup}
+/>
 
       <main>
         <section className="ck-form-section">
@@ -1101,6 +1039,29 @@ const ConsciousKarmaPage = () => {
             )}
           </div>
         )}
+{(showSignup || showLogin) && (
+  <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+    {showSignup && (
+      <SignupModal
+        onClose={() => setShowSignup(false)}
+        onSwitch={() => {
+          setShowSignup(false);
+          setShowLogin(true);
+        }}
+      />
+    )}
+
+    {showLogin && (
+      <LoginModal
+        onClose={() => setShowLogin(false)}
+        onSwitch={() => {
+          setShowLogin(false);
+          setShowSignup(true);
+        }}
+      />
+    )}
+  </div>
+)}
 
         {/* FOOTER */}
         <footer className="w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">

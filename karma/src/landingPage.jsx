@@ -14,6 +14,7 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 // import DecryptedText from "./components/DecryptedText.jsx";
 import FadeInOnScroll from "./components/FadeInOnScroll.jsx";
 import useTypeSequence from "./hooks/useTypeSequence.js";
+import CKNavbar from "./components/CKNavbar";
 
 /* === Images (your filenames) === */
 import loveImg from "./Love.jpg";
@@ -368,53 +369,11 @@ const [showLogin, setShowLogin] = useState(false);
             />
           )
         }
-<nav
-  className={`fixed top-0 right-0 h-full w-[min(340px,92vw)] bg-[#0f0f0f] border-l border-[#333] shadow-[0_20px_60px_rgba(0,0,0,0.5)] z-[30] flex flex-col gap-[10px] p-[22px_20px] transition-transform duration-300 ease-in-out ${
-    menuOpen ? "translate-x-0" : "translate-x-full"
-  }`}
->
-  <div className="font-balgin font-bold text-white mb-3">
-    <FormattedMessage id="menu.title" />
-  </div>
-
-  {/* HOME */}
-  <a
-    href="/"
-    className="no-underline p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-    onClick={() => setMenuOpen(false)}
-  >
-    Home
-  </a>
-
-  {/* PERSONALISED REPORT */}
-  <a
-    href="/personalised-report"
-    className="no-underline p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-    onClick={() => setMenuOpen(false)}
-  >
-    {intl.formatMessage({ id: "menu.personalisedReport" })}
-  </a>
-
-  {/* CONSULT */}
-  <a
-    href="/consult"
-    className="no-underline p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-    onClick={() => setMenuOpen(false)}
-  >
-    {intl.formatMessage({ id: "menu.consult" })}
-  </a>
-
-  {/* SIGNUP / LOGIN (OPEN MODAL) */}
-  <button
-    className="text-left p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-balgin font-bold"
-    onClick={() => {
-      setMenuOpen(false);
-      setShowSignup(true);
-    }}
-  >
-    Signup / Login
-  </button>
-</nav>
+<CKNavbar
+  menuOpen={menuOpen}
+  setMenuOpen={setMenuOpen}
+  setShowSignup={setShowSignup}
+/>
 
 
 

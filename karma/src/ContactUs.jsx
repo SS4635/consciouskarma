@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 
+import CKNavbar from "./components/CKNavbar";
+
+import SignupModal from "./SignupModal";
+import LoginModal from "./LoginModal";
+
 export default function ContactUs() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -7,6 +12,9 @@ export default function ContactUs() {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  
+        const [showSignup, setShowSignup] = useState(false);
+      const [showLogin, setShowLogin] = useState(false);
 
   const ADDRESS = "B1/H3, mohan estate, New delhi - 110044";
   const CONTACT_EMAIL = "hello@consciouskarma.co";
@@ -33,67 +41,18 @@ export default function ContactUs() {
 
   return (
     <>
+    <CKNavbar
+              menuOpen={menuOpen}
+              setMenuOpen={setMenuOpen}
+              setShowSignup={setShowSignup}
+            />
       {/* MAIN WRAPPER FOR FULL PAGE */}
       <div className="min-h-screen bg-black text-white flex flex-col">
 
         {/* -------------------- PAGE CONTENT (flex-1) -------------------- */}
         <div className="flex-1 flex flex-col items-center px-4 sm:px-6 md:px-8 py-10 sm:py-12">
 
-          {/* HEADER */}
-          <header className="ck-header-bar pb-3 md:pt-1 md:pb-0 bg-black fixed top-0 left-0 right-0 z-50">
-            <div className="ck-header-inner flex items-center justify-between px-4 py-3">
-              <a href="/" className="ck-header-logo-link" aria-label="conscious KARMA home">
-                <img src="/Logomy-cropped.svg" alt="conscious KARMA" className="ck-header-logo mt-4" draggable={false} />
-              </a>
-              <button
-                className={"ck-hamburger" + (menuOpen ? " ck-hamburger-open" : "")}
-                onClick={() => setMenuOpen((v) => !v)}
-                aria-label="Toggle navigation menu"
-              >
-                <span />
-                <span />
-                <span />
-              </button>
-            </div>
-          </header>
-
-          {/* HAMBURGER MENU */}
-          {menuOpen && (
-            <>
-              <div
-                className="fixed inset-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-[2px] z-40"
-                onClick={() => setMenuOpen(false)}
-              />
-              <nav
-                className="fixed top-0 right-0 h-full w-[min(340px,92vw)] bg-[#0f0f0f] border-l border-[#333] shadow-[0_20px_60px_rgba(0,0,0,0.5)] z-50 flex flex-col gap-[8px] p-[22px_20px]"
-              >
-                <div className="font-bold text-white mb-2">Menu</div>
-                {[
-                  ["Home", "/"],
-                  ["Instant Report", "/"],
-                  ["Personalised Report", "/personalised-report"],
-                  ["Consult", "/consult"],
-                  ["Blog", "/blogs"],
-                  ["Terms & Conditions", "/termsandconditions"],
-                  ["Privacy Policy", "/privacy-policy"],
-                  ["Refund Policy", "/refund-policy"],
-                  ["Shipping & Delivery", "/shipping-policy"],
-                  ["Contact Us", "/contact-us"],
-                ].map(([label, link], i) => (
-                  <a
-                    key={i}
-                    href={link}
-                    className="p-3 border border-[#3a3a3a] rounded-[12px] bg-[#141414] hover:bg-[#191919] hover:border-[#555] transition text-gray-50 font-bold underline-none"
-                    style={{ textDecoration: 'none' }}
-                    onClick={() => setMenuOpen(false)}
-                  >
-                    {label}
-                  </a>
-                ))}
-              </nav>
-            </>
-          )}
-
+         
           <div className="pt-20"></div>
 
           {/* ---------------- CONTACT PAGE CONTENT ---------------- */}
@@ -219,6 +178,29 @@ export default function ContactUs() {
           </div>
         </div>
         {/* ---------------- END PAGE CONTENT ---------------- */}
+{(showSignup || showLogin) && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          {showSignup && (
+            <SignupModal
+              onClose={() => setShowSignup(false)}
+              onSwitch={() => {
+                setShowSignup(false);
+                setShowLogin(true);
+              }}
+            />
+          )}
+      
+          {showLogin && (
+            <LoginModal
+              onClose={() => setShowLogin(false)}
+              onSwitch={() => {
+                setShowLogin(false);
+                setShowSignup(true);
+              }}
+            />
+          )}
+        </div>
+      )}
 
         {/* ---------------------- FOOTER (ALWAYS BOTTOM) ---------------------- */}
         <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
