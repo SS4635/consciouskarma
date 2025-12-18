@@ -1,0 +1,158 @@
+/* PRIVACY POLICY PAGE */
+.pp-page {
+  min-height: 100vh;
+  background: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+/* HEADER */
+.pp-header {
+  padding: 40px 80px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.pp-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pp-logo-conscious {
+  font-size: 28px;
+  font-weight: 300;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.pp-logo-karma {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff8a2b;
+  letter-spacing: 4px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* MAIN CONTENT */
+.pp-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 40px 80px;
+}
+
+.pp-title {
+  font-size: 48px;
+  font-weight: 400;
+  margin-bottom: 30px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.pp-intro {
+  font-size: 20px;
+  line-height: 1.8;
+  margin-bottom: 50px;
+  text-align: center;
+  color: #e0e0e0;
+  font-weight: 300;
+}
+
+.pp-section {
+  margin-bottom: 40px;
+}
+
+.pp-heading {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #ff8a2b;
+}
+
+.pp-subheading {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: #ffaa5b;
+}
+
+.pp-text {
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+  color: #cccccc;
+}
+
+.pp-list {
+  margin: 16px 0;
+  padding-left: 24px;
+}
+
+.pp-list-item {
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 12px;
+  color: #cccccc;
+}
+
+.pp-list-ordered {
+  list-style-type: decimal;
+}
+
+.pp-contact {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ff8a2b;
+}
+
+.pp-divider {
+  height: 1px;
+  background: linear-gradient(90deg, #2a2a2a, #444444, #2a2a2a);
+  margin: 40px 0;
+  opacity: 0.5;
+}
+
+/* FOOTER */
+.pp-footer {
+  background: #0a0a0a;
+  border-top: 1px solid #2a2a2a;
+  padding: 30px 40px;
+  text-align: center;
+  color: #888888;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .pp-header {
+    padding: 30px 20px;
+  }
+
+  .pp-logo-conscious,
+  .pp-logo-karma {
+    font-size: 22px;
+  }
+
+  .pp-content {
+    padding: 40px 20px 60px;
+  }
+
+  .pp-title {
+    font-size: 36px;
+    margin-bottom: 40px;
+  }
+
+  .pp-heading {
+    font-size: 24px;
+  }
+
+  .pp-subheading {
+    font-size: 20px;
+  }
+
+  .pp-text,
+  .pp-list-item {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,138 @@
+/* TERMS AND CONDITIONS PAGE */
+.tc-page {
+  min-height: 100vh;
+  background: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+/* HEADER */
+.tc-header {
+  padding: 40px 80px;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.tc-logo {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.tc-logo-conscious {
+  font-size: 28px;
+  font-weight: 300;
+  color: #ffffff;
+  line-height: 1;
+}
+
+.tc-logo-karma {
+  font-size: 28px;
+  font-weight: 700;
+  color: #ff8a2b;
+  letter-spacing: 4px;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+/* MAIN CONTENT */
+.tc-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 60px 40px 80px;
+}
+
+.tc-title {
+  font-size: 48px;
+  font-weight: 400;
+  margin-bottom: 50px;
+  text-align: center;
+  color: #ffffff;
+}
+
+.tc-section {
+  margin-bottom: 40px;
+}
+
+.tc-heading {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #ff8a2b;
+}
+
+.tc-text {
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 16px;
+  color: #cccccc;
+}
+
+.tc-list {
+  margin: 16px 0;
+  padding-left: 24px;
+}
+
+.tc-list-item {
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 12px;
+  color: #cccccc;
+}
+
+.tc-list-ordered {
+  list-style-type: decimal;
+}
+
+.tc-contact {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ff8a2b;
+  margin-top: 12px;
+}
+
+.tc-divider {
+  height: 1px;
+  background: linear-gradient(90deg, #2a2a2a, #444444, #2a2a2a);
+  margin: 40px 0;
+  opacity: 0.5;
+}
+
+/* FOOTER */
+.tc-footer {
+  background: #0a0a0a;
+  border-top: 1px solid #2a2a2a;
+  padding: 30px 40px;
+  text-align: center;
+  color: #888888;
+  font-size: 14px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .tc-header {
+    padding: 30px 20px;
+  }
+
+  .tc-logo-conscious,
+  .tc-logo-karma {
+    font-size: 22px;
+  }
+
+  .tc-content {
+    padding: 40px 20px 60px;
+  }
+
+  .tc-title {
+    font-size: 36px;
+    margin-bottom: 40px;
+  }
+
+  .tc-heading {
+    font-size: 24px;
+  }
+
+  .tc-text,
+  .tc-list-item {
+    font-size: 16px;
+  }
+}

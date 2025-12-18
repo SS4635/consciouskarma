@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mobile Number Report - Conscious Karma</title>
+    
+    <style>
+      /* ====================================
+         FONTS
+         ==================================== */
+      @font-face {
+        font-family: 'Arsenal';
+        src: url('<%= arsenalRegular %>') format('truetype');
+        font-weight: 400;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'Arsenal';
+        src: url('<%= arsenalBold %>') format('truetype');
+        font-weight: 700;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'Open Sans';
+        src: url('<%= openSansRegular %>') format('truetype');
+        font-weight: 300 800;
+        font-stretch: 75% 100%;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: 'Open Sans';
+        src: url('<%= openSansItalic %>') format('truetype');
+        font-weight: 300 800;
+        font-stretch: 75% 100%;
+        font-style: italic;
+      }
+
+      /* ====================================
+         GLOBAL RESET & BASE STYLES
+         ==================================== */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html {
+        width: 210mm;
+        height: 297mm;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #000000;
+        font-family: "Arsenal", sans-serif;
+        font-weight: 400;
+        font-size: 21px;
+        color: white;
+        overflow: hidden;
+      }
+
+      h1, h2, h3, h4, h5, h6, p {
+        margin: 0;
+        padding: 0;
+        font-family: "Arsenal", sans-serif;
+      }
+
+      a:link, a:visited, a:hover, a:active {
+        color: white;
+        text-decoration: none;
+      }
+
+      /* ====================================
+         PAGE STRUCTURE - COMMON LAYOUT
+         ==================================== */
+      @page {
+        size: A4;
+        margin: 0;
+      }
+
+      .page {
+        width: 209mm;
+        height: 296mm;
+        page-break-after: always;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        background-color: #000000;
+      }
+
+      .page:last-child {
+        page-break-after: auto;
+      }
+
+      .page-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 600px;
+      }
+
+      /* ====================================
+         COMMON HEADER & FOOTER
+         ==================================== */
+      .newHeader {
+        height: 110px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        box-sizing: border-box;
+        padding-top: 15px;
+        gap: 13px;
+      }
+
+      .newMain {
+        flex: 1;
+        max-height: calc(1118.7401575px - 180px);
+        width: 100%;
+        /* border:2px solid yellow; */
+      }
+
+      .newFooter {
+        height: 70px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        /* border:2px solid yellow; */
+      }
+
+      .bar {
+        width: 100%;
+        height: 1.6px;
+        background-color: white;
+      }
+
+      .footer-text {
+        color: white;
+        font-size: 22px;
+        letter-spacing: 0.4px;
+        margin:20px 0;
+
+        /* border:2px solid green; */
+      }
+
+      /* ====================================
+         UTILITY CLASSES
+         ==================================== */
+      .t-white {
+        color: white;
+      }
+
+      .t-orange {
+        color: #FF914D;
+        font-weight: 400;
+      }
+
+      /* ====================================
+         PAGE 1 - COVER PAGE
+         ==================================== */
+      .ck-cover {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        padding: 140px 0px 160px 0px;
+      }
+
+      .ck-title {
+        margin-bottom: 40px;
+      }
+
+      .ck-title p {
+        margin: 0;
+        font-size: 75px;
+        line-height: 1.15;
+        text-align: center;
+        letter-spacing: 0.5px;
+        font-weight: 400;
+      }
+
+      /* ====================================
+         PAGE 2 - ABOUT THIS REPORT
+         ==================================== */
+      .report-section {
+        height: 100%;
+        width: 100%;
+        color: #ffffff;
+        text-align: left;
+        line-height: 1.2;
+        /* border: 2px solid yellow; */
+        
+      }
+
+      .report-title {
+        font-size: 30px !important;
+        font-weight: 400;
+        text-align: center;
+        /* text-decoration: underline; */
+        margin-top: 30px;
+        margin-bottom: 30px !important;
+        letter-spacing: 0px !important;
+        /* border: 2px solid green; */
+      }
+
+      .report-section p {
+        margin-bottom: 15px;
+        font-size: 28px;
+        letter-spacing: 0.2px;
+        /* padding-right: 10px; */
+        /* letter-spacing: 0.01cm; */
+      }
+
+      /* ====================================
+         PAGE 3 - HOW TO USE THIS REPORT
+         ==================================== */
+      .page-how-to-use {
+        width: 100%;
+        height: 100%;
+      }
+
+      .htu-text {
+        font-size: 28px;
+        /* border:2px solid green; */
+        margin-top: 45px;
+
+      }
+
+      .htu-text p {
+        margin-bottom: 28px;
+         font-size: 28px;
+      }
+
+      /* ====================================
+         PAGE 4 - REPORT DIVIDER
+         ==================================== */
+      .section-report {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 68px;
+        color: #FF914D;
+        font-weight: 400;
+      }
+
+      /* ====================================
+         PAGE 5 - MOBILE NUMBER ANALYSIS
+         ==================================== */
+      .analysis-brand {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: -5px;
+        /* margin-top: 10px; */
+      }
+
+      .mobile-analysis-section {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction:column;
+        justify-content: start;
+        align-items: center;
+        gap:35px;
+        /* padding-top:30px; */
+        /* padding-bottom:50px; */
+        /* border: 2px solid green; */
+
+
+        /* gap: 25px; */
+      }
+
+      .mobile-analysis-title {
+        font-size: 32px;
+        font-weight: 400;
+        margin-bottom: 20px;
+        margin-top:30px;
+        
+      }
+
+      .mobile-number-box {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        width: 75%;
+        
+      }
+
+      .mobile-number-text {
+        width: 100%;
+        text-align: center;
+        border: 2px solid #ffffff;
+        padding: 6px 0px;
+        border-radius: 13px;
+        font-size: 35px;
+        font-weight: 400;
+        letter-spacing: 2.5px;
+        font-family: 'Open Sans', sans-serif;
+      }
+
+      .grade-section {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 15px;
+        gap: 10px;
+        width: 75%;
+      
+      }
+
+      .grade-icon img{
+        width: 115px;
+        height: 115px;
+      }
+
+      .grade-text {
+        font-size: 32px;
+        margin-top: -20px;
+        margin-left:0px;
+        font-weight: 400;
+      }
+
+      .grade-legend {
+        margin-bottom: 30px;
+        color: white;
+        font-size: 16px;
+        text-align: left;
+      }
+
+      .analysis-label-text {
+        display: inline-block;
+        border: 2px solid #ffffff;
+        padding: 8px 70px;
+        border-radius: 13px;
+        font-size: 28px;
+      }
+      .analysis-label-text-2 {
+        display: inline-block;
+        border: 2px solid #ffffff;
+        padding: 8px 60px;
+        border-radius: 13px;
+        font-size: 28px;
+      }
+
+      .text-star {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        width: 75%;
+      }
+      .text-star-2 {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 15px;
+        width: 75%;
+        margin-top:20px;
+      }
+
+      .stars-container {
+        width: 100%;
+        max-width: 450px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 22px;
+      }
+
+      .star-icon img {
+        width: 45px;
+        height: 45px;
+      }
+
+      /* ====================================
+         PAGE 6 - MOBILE NUMBER INFLUENCE
+         ==================================== */
+      .page6-section {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        /* border:5px solid green; */
+      }
+
+      .influence-title-box {
+        border: 2px solid #ffffff;
+        border-radius: 10px;
+        width: 90%;
+        height: 7%;
+        max-width:480px;
+        padding: 10px 0px;
+        display: flex;
+        justify-content: center;
+        margin: 30px 0px;
+      }
+
+      .influence-title-text {
+        font-size: 30px;
+        font-weight: 400;
+        color: #ffffff;
+        
+      }
+
+      .influence-content {
+        width: 100%;
+        height: 93%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        /* border:2px solid green; */
+        /* border:2px solid red; */
+        gap:50px;
+
+      }
+
+      .influence-item {
+        width: 100%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        gap: 10px;
+        /* border: 10px solid aqua; */
+      }
+
+      .influence-label {
+        font-size: 30px;
+        font-weight: 400;
+        text-align: center;
+        margin-bottom:15px;
+        color: white;
+      }
+
+      .influence-bar {
+        width: 100%;
+        max-width: 600px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        gap: 0px;
+      }
+
+      .bar-left,
+      .bar-right {
+        display: flex;
+        gap: 3px;
+        z-index: 1;
+        flex: 1;
+        justify-content: flex-end;
+      }
+
+      .bar-right {
+        justify-content: flex-start;
+      }
+
+      .bar-block {
+        width: 54px;
+        height: 28px;
+        display: block;
+        flex-shrink: 0;
+      }
+
+      .bar-gray {
+        background: #b7b0a9;
+      }
+
+      .bar-red {
+        background: #b23a41;
+      }
+
+      .bar-green {
+        background: #0a7c41;
+      }
+
+      /* Border radius only for first and last bar blocks */
+      .bar-left .bar-block:first-child {
+        border-radius: 10px 0 0 10px;
+        overflow: hidden;
+      }
+
+      .bar-right .bar-block:last-child {
+        border-radius: 0 10px 10px 0;
+        overflow: hidden;
+      }
+
+      /* Border radius for colored overlays when they cover first/last position */
+      .bar-negative .bar-block.first-position {
+        border-radius: 10px 0 0 10px;
+        overflow: hidden;
+      }
+
+      .bar-positive .bar-block.last-position {
+        border-radius: 0 10px 10px 0;
+        overflow: hidden;
+      }
+
+      .bar-icon {
+        width: 75px;
+        height: 75px;
+        border-radius: 50%;
+        background: #000;
+        border: 1px solid #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+        margin: 0;
+        flex-shrink: 0;
+        overflow: hidden;
+      }
+
+      .bar-icon img {
+        width: 50px;
+        height: 50px;
+        object-fit: contain;
+      }
+
+      .bar-negative {
+        position: absolute;
+        right: 50%;
+        margin-right: 37.5px;
+        display: flex;
+        gap: 3px;
+        top: 6px;
+        align-items: center;
+        z-index: 2;
+      }
+
+      .bar-positive {
+        position: absolute;
+        left: 50%;
+        margin-left: 37.5px;
+        display: flex;
+        gap: 3px;
+        top: 6px;
+        align-items: center;
+        z-index: 2;
+      }
+
+      /* ====================================
+         PAGE 7 - INFLUENCE ON USER & LIFE
+         ==================================== */
+      .page-influence-user {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        font-size: 24px;
+        padding: 35px 0px 25px 0px;
+      }
+
+      .page8-title {
+        font-size: 30px;
+        font-weight: 400;
+        /* text-decoration: underline; */
+        width: 100%;
+        text-align: center;
+        max-width: 580px;
+      }
+
+      .page8-list {
+        padding-left: 0px;
+        margin: 30px 0px 20px 0px;
+        width: 100%;
+      }
+
+      .page8-list ul {
+        list-style-position: outside;
+        padding-left: 20px;
+      }
+
+      .page8-list li {
+        margin-bottom: 12px;
+        font-size: 28px;
+        line-height: 1.2;
+      }
+      .static-para{
+       font-size: 28px;
+      }
+
+      .instance {
+        text-align: start;
+        font-size: 28px;
+        margin: 20px 0px;
+      }
+
+      .closing-note-7 {
+        text-align: start;
+        font-size: 28px;
+        margin-top: 20px;
+      }
+
+      /* ====================================
+         PAGE 8 - LINKS AND CLOSING
+         ==================================== */
+      .last-section {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        align-items: center;
+        padding: 20px 0px;
+        gap: 350px;
+
+      }
+
+      .backnote-8 {
+        align-items: center;
+        width: 100%;
+        font-size: 28px;
+        /* border: 2px solid green; */
+      }
+      .backnote-8 p{
+        text-align: center;
+        /* border: 2px solid yellow; */
+        /* letter-spacing: 0.03cm; */
+      }
+
+      .links-section {
+        width: 100%;
+        color: #ffffff;
+        text-align: left;
+        font-size: 21px;
+        line-height: 28px;
+      }
+
+      .links-section h3 {
+        font-size: 21px;
+        font-weight: 400;
+        margin-bottom: 35px;
+      }
+
+      .link-item {
+        margin-bottom: 38px;
+      }
+
+      .link-title {
+        font-size: 21px;
+        color: #ffffff;
+        margin-bottom: 4px;
+      }
+
+      .link-url {
+        font-size: 21px;
+        color: white;
+      }
+
+      .contact-section-8 {
+        width: 100%;
+        height: 70px;
+        text-align: center;
+        color: white;
+        font-size: 21px;
+        line-height: 26px;
+      }
+
+      /* ====================================
+         PRINT OPTIMIZATION
+         ==================================== */
+      @media print {
+        html,
+        body {
+          width: 210mm;
+          height: 297mm;
+          -webkit-print-color-adjust: exact;
+          print-color-adjust: exact;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- PAGE 1: COVER PAGE -->
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+
+        </div>
+        <div class="newMain">
+          <section class="ck-cover">
+            <img src="<%= fullkarmalogo%>" alt="logo" height="180px"/>
+            <div class="ck-title">
+              <p class="t-white">Mobile</p>
+              <p class="t-white">Number</p>
+              <p class="t-orange">Report</p>
+            </div>
+          </section>
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+
+        
+      </div>
+
+     
+    </div>
+
+    <!-- PAGE 2: ABOUT THIS REPORT -->
+     <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <img
+              src="<%= karmawithline%>"
+              alt="karma-img"
+              height="70px"
+            />
+          <div class="bar"></div>
+        </div>
+
+        <div class="newMain">
+          <section class="report-section">
+            <p class="report-title">About This Report</p>
+
+            <p>Every mobile number carries its own rhythm.</p>
+
+            <p>
+              Each mobile number holds a vibration — subtle, yet powerful enough
+              to shape daily experiences and influence life patterns.
+            </p>
+
+            <p>
+              This report studies the number’s structure, the energies present
+              within it, and the way they interact to affect key areas of life.
+            </p>
+
+            <p>
+              Every digit contributes to this pattern. Together, they form a
+              sequence that affects how opportunities unfold and how one moves
+              through the world.
+            </p>
+
+            <p>
+              This is not prediction.
+              It is awareness — a way to  understand the frequency you carry
+              every day.
+            </p>
+          </section>
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- PAGE 3: HOW TO USE THIS REPORT -->
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <img
+              src="<%= karmawithline%>"
+              alt="karma-img"
+              height="70px"
+            />
+          <div class="bar"></div>
+        </div>
+        <div class="newMain">
+          <section class="page-how-to-use">
+    
+    <p class="report-title">How to Use This Report</p>
+
+    <div class="htu-text">
+
+        <p>This report shows how a mobile number influences different areas of life.<br>
+        It shows where energy moves freely and where friction or imbalance may exist.</p>
+
+        <p>Slide 1 - Number Structure<br>
+        This section studies the digits within the number — their
+        order, mix, and how they interact.<br>
+        It gives an overall grade and sequence score, showing how balanced or uneven the number’s flow is.</p>
+
+        <p>Slide 2 - Key Life Areas<br>
+        This section shows how the number’s energy influences five
+        key areas —<br>
+        Love, Finance, Fortune, Intelligence, and Intuition.<br>
+        Green indicates ease and support; red points to resistance,
+        delay, or instability.</p>
+
+        <p>Slide 3 - Number Influences</<br>
+        Shows how a number may influence the user — in personality,
+        opportunities, and life challenges.</p>
+
+    </div>
+
+</section>
+
+
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: REPORT DIVIDER -->
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <img
+              src="<%= karmawithline%>"
+              alt="karma-img"
+              height="70px"
+            />
+          <div class="bar"></div>
+        </div>
+        <div class="newMain">
+          <div class="section-report">Report</div>
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: MOBILE NUMBER ANALYSIS -->
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <div class="analysis-brand">
+            <img src="<%= fullkarmalogo %>" alt="Karma"  height="70px"/>
+          </div>
+          <div class="bar"></div>
+        </div>
+        <div class="newMain">
+          <div class="mobile-analysis-section">
+
+  <!-- TITLE -->
+  <div class="mobile-analysis-title">Mobile Number Analysis</div>
+
+  <!-- NUMBER BOX -->
+  <div class="mobile-number-box">
+    <div class="mobile-number-text">
+      <%= mobile_number || '82982-92654' %>
+    </div>
+  </div>
+
+  <!-- GRADE SECTION -->
+  <div class="grade-section">
+
+    <div class="grade-icon">
+        <img src="<%= gradeLogo %>" alt="Grade" />
+    </div>
+
+    <div class="grade-text">
+      Grade - <%= grade || 'A' %>
+    </div>
+  </div>
+
+  <!-- GRADE LEGEND -->
+  <div class="grade-legend">
+    Grade A - Very Good<br />
+    Grade B - Good<br />
+    Grade C - Average<br />
+    Grade D - Poor<br />
+    Grade E - Very Bad
+  </div>
+
+  <!-- BASIC NUMBERS ANALYSIS LABEL -->
+
+
+  <div class="text-star">
+    <div class="analysis-label">
+    <span class="analysis-label-text">Basic Numbers Analysis</span>
+  </div>
+
+  <!-- BASIC STARS -->
+  <div class="stars-container">
+    <% 
+      const basicScore = basic_number || 8;
+      const basicFull = Math.floor(basicScore);
+      const basicHalf = basicScore % 1 >= 0.5;
+      const basicEmpty = 10 - basicFull - (basicHalf ? 1 : 0);
+    %>
+
+    <% for(let i = 0; i < basicFull; i++) { %>
+      <div class="star-icon">
+        <img src="<%= fullStar %>" alt="Full Star" />
+      </div>
+    <% } %>
+
+    <% if(basicHalf) { %>
+      <div class="star-icon">
+        <img src="<%= halfStar %>" alt="Half Star" />
+      </div>
+    <% } %>
+
+    <% for(let i = 0; i < basicEmpty; i++) { %>
+      <div class="star-icon">
+        <img src="<%= blankStar %>" alt="Empty Star" />
+      </div>
+    <% } %>
+  </div>
+    
+  </div>
+  
+  <div class="text-star-2">
+    <!-- NUMBER SEQUENCE LABEL -->
+  <div class="analysis-label">
+    <span class="analysis-label-text-2">Number Sequence Analysis</span>
+  </div>
+
+  <!-- SEQUENCE STARS -->
+  <div class="stars-container">
+    <% 
+      const seqScore = number_sequence || 8;
+      const seqFull = Math.floor(seqScore);
+      const seqHalf = seqScore % 1 >= 0.5;
+      const seqEmpty = 10 - seqFull - (seqHalf ? 1 : 0);
+    %>
+
+    <% for(let i = 0; i < seqFull; i++) { %>
+      <div class="star-icon">
+        <img src="<%= fullStar %>" alt="Full Star" />
+      </div>
+    <% } %>
+
+    <% if(seqHalf) { %>
+      <div class="star-icon">
+        <img src="<%= halfStar %>" alt="Half Star" />
+      </div>
+    <% } %>
+
+    <% for(let i = 0; i < seqEmpty; i++) { %>
+      <div class="star-icon">
+        <img src="<%= blankStar %>" alt="Empty Star" />
+      </div>
+    <% } %>
+
+  </div>
+  </div>
+</div>
+
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 6: MOBILE NUMBER INFLUENCE -->
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <img
+              src="<%= karmawithline%>"
+              alt="karma-img"
+              height="70px"
+            />
+          <div class="bar"></div>
+        </div>
+        <div class="newMain">
+          <div class="page6-section">
+            <div class="influence-title-box">
+          <span class="influence-title-text">Mobile Number Influence</span>
+        </div>
+        <div class="influence-content">
+  <% 
+    function parseBars(barString) {
+      const parts = barString.split(',').map(s => s.trim());
+      let negative = 0;
+      let positive = 0;
+      parts.forEach(part => {
+        if (part.startsWith('-')) negative = parseInt(part.substring(1)) || 0;
+        if (part.startsWith('+')) positive = parseInt(part.substring(1)) || 0;
+      });
+      return { negative, positive };
+    }
+
+    const barMappings = {
+      'Finance': { label: 'Finance & Work', iconVar: 'financeIcon' },
+      'Fortune': { label: 'Fortune', iconVar: 'fortuneIcon' },
+      'Love': { label: 'Charm & Love', iconVar: 'loveIcon' },
+      'Intuition': { label: 'Sense', iconVar: 'intuitionIcon' },
+      'Mind': { label: 'Intelligence', iconVar: 'intelligenceIcon' }
+    };
+
+    const iconMap = {
+      'financeIcon': typeof financeIcon !== 'undefined' ? financeIcon : null,
+      'fortuneIcon': typeof fortuneIcon !== 'undefined' ? fortuneIcon : null,
+      'loveIcon': typeof loveIcon !== 'undefined' ? loveIcon : null,
+      'intuitionIcon': typeof intuitionIcon !== 'undefined' ? intuitionIcon : null,
+      'intelligenceIcon': typeof intelligenceIcon !== 'undefined' ? intelligenceIcon : null
+    };
+
+    const barKeys = Object.keys(barsObj || {});
+    barKeys.forEach(key => {
+      const mapping = barMappings[key];
+      if (!mapping) return;
+      const barString = barsObj[key] || "0";
+      const { negative, positive } = parseBars(barString);
+      const iconSrc = iconMap[mapping.iconVar];
+  %>
+
+  <div class="influence-item">
+    <div class="influence-label"><%= mapping.label %></div>
+
+    <div class="influence-bar">
+
+      <!-- LEFT GRAY BLOCKS -->
+      <div class="bar-left">
+        <% for (let i = 0; i < 5; i++) { %>
+          <div class="bar-block bar-gray"></div>
+        <% } %>
+      </div>
+
+      <!-- ICON CIRCLE -->
+      <div class="bar-icon">
+        <% if (iconSrc) { %>
+          <img src="<%= iconSrc %>" alt="<%= mapping.label %>"
+          >
+        <% } else { %>
+          <img src="/icons/default.svg" alt="icon">
+        <% } %>
+      </div>
+
+      <!-- RIGHT GRAY BLOCKS -->
+      <div class="bar-right">
+        <% for (let i = 0; i < 5; i++) { %>
+          <div class="bar-block bar-gray"></div>
+        <% } %>
+      </div>
+
+      <!-- NEGATIVE (RED) OVERLAY -->
+      <div class="bar-negative">
+        <% for (let i = 0; i < negative; i++) { %>
+          <div class="bar-block bar-red <%= (i === 0 && negative === 5) ? 'first-position' : '' %>"></div>
+        <% } %>
+      </div>
+
+      <!-- POSITIVE (GREEN) OVERLAY -->
+      <div class="bar-positive">
+        <% for (let i = 0; i < positive; i++) { %>
+          <div class="bar-block bar-green <%= (i === positive - 1 && positive === 5) ? 'last-position' : '' %>"></div>
+        <% } %>
+      </div>
+
+    </div>
+  </div>
+
+  <% }) %>
+</div>
+
+          </div>
+          
+
+        
+
+
+
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 7: MOBILE NUMBER INFLUENCE ON USER & LIFE -->
+    <%
+      // Get points from API or use static fallback
+      const influencePoints = (influence_section && influence_section.points && influence_section.points.length > 0) 
+        ? influence_section.points 
+        : highlights || [];
+
+      const healthNote = (influence_section && influence_section.health_note) ? influence_section.health_note : "";
+      
+      // Helper function to clean text: handle escaped newlines and remove formatting artifacts
+      const cleanText = (text) => {
+        if (!text) return "";
+        return text
+          .replace(/\\n/g, '\n')  // Convert escaped \n to actual newlines
+          .replace(/—\\n/g, ' — ') // Fix em-dash with newline
+          .replace(/—\n/g, ' — ')   // Fix em-dash with actual newline
+          .replace(/ -\\n/g, ' — ') // Fix dash-newline pattern
+          .replace(/ -\n/g, ' — ')   // Fix dash with actual newline
+          .replace(/\\n/g, '\n')    // Final pass for any remaining escaped newlines
+          .replace(/\s+/g, ' ')      // Normalize multiple spaces
+          .trim();
+      };
+      
+      const staticParagraph = cleanText(
+        (influence_section && influence_section.static_paragraph) 
+          ? influence_section.static_paragraph 
+          : "A mobile number expresses its influence through many factors — the user's gender, age, environment and background, work, role in life, duration of use, and other active numbers."
+      );
+
+      const instancePoints = (influence_section && influence_section.instance_points && influence_section.instance_points.length > 0) 
+        ? influence_section.instance_points 
+        : [];
+
+      const closingText = cleanText(
+        (influence_section && influence_section.closing) 
+          ? influence_section.closing 
+          : closing_note || "For a deeper look at how numbers influence life paths and choices, explore a Personalised Report.\nwww.consciouskarma.co/personalizedreport"
+      );
+
+      // Professional pagination based on actual rendered measurements
+      // Container: .newMain = 938.74px, .page-influence-user padding = 35px top + 25px bottom
+      const PAGE_CONTENT_HEIGHT = 938.7401575 - 60; // Available: 878.74px
+      
+      // Measured component heights from actual rendering:
+      const TITLE_HEIGHT = 32; // font-size
+      const TITLE_MARGIN_BOTTOM = 30; // space after title before list starts
+      const TITLE_TOTAL = TITLE_HEIGHT + TITLE_MARGIN_BOTTOM; // 62px
+      
+      const LIST_MARGIN_TOP = 0; // Already counted in title margin
+      const LIST_MARGIN_BOTTOM = 20; // .page8-list margin-bottom (optimized)
+      
+      const BULLET_LINE_HEIGHT = 25.2; // 21px * 1.2 (actual CSS)
+      const BULLET_MARGIN_BOTTOM = 2; // li margin-bottom (actual CSS)
+      
+      // Characters per line at 600px width with 21px font
+      const BULLET_CHARS_PER_LINE = 80; // Adjusted for actual wrapping
+      const PARAGRAPH_CHARS_PER_LINE = 82;
+      const INSTANCE_CHARS_PER_LINE = 75;
+      
+      const PARAGRAPH_LINE_HEIGHT = 25.2; // Same as bullets (1.2 line-height)
+      const PARAGRAPH_SPACING = 0; // Minimal spacing between paragraphs
+      const INSTANCE_MARGIN_TOP = 20;
+      const INSTANCE_MARGIN_BOTTOM = 20;
+      const CLOSING_MARGIN_TOP = 20;
+      
+      const FOOTER_SAFETY_BUFFER = 25; // Increased safety margin to prevent footer overlap
+
+      const countLines = (text = "", charsPerLine = PARAGRAPH_CHARS_PER_LINE) => {
+        if (!text || !text.trim()) return 0;
+        const segments = text.toString().split(/\n+/);
+        return segments.reduce((total, segment) => {
+          const clean = segment.trim();
+          if (!clean) return total + 1;
+          return total + Math.max(1, Math.ceil(clean.length / charsPerLine));
+        }, 0);
+      };
+
+      const estimateBulletHeight = (text) => {
+        if (!text || !text.trim()) return 0;
+        const lines = Math.max(1, countLines(text, BULLET_CHARS_PER_LINE));
+        return lines * BULLET_LINE_HEIGHT + BULLET_MARGIN_BOTTOM;
+      };
+
+      const estimateParagraphHeight = (text, charsPerLine = PARAGRAPH_CHARS_PER_LINE) => {
+        if (!text || !text.trim()) return 0;
+        const lines = Math.max(1, countLines(text, charsPerLine));
+        return lines * PARAGRAPH_LINE_HEIGHT + PARAGRAPH_SPACING;
+      };
+
+      const estimateInstanceHeight = (points) => {
+        if (!points || !points.length) return 0;
+        let totalHeight = INSTANCE_MARGIN_TOP;
+        totalHeight += PARAGRAPH_LINE_HEIGHT; // "For instance:" line
+        points.forEach(point => {
+          const lines = Math.max(1, countLines(point, INSTANCE_CHARS_PER_LINE));
+          totalHeight += lines * PARAGRAPH_LINE_HEIGHT + 5; // Add spacing between points
+        });
+        totalHeight += INSTANCE_MARGIN_BOTTOM;
+        return totalHeight;
+      };
+
+      const estimateClosingHeight = (text) => {
+        if (!text || !text.trim()) return 0;
+        const lines = Math.max(1, countLines(text, PARAGRAPH_CHARS_PER_LINE));
+        return CLOSING_MARGIN_TOP + (lines * PARAGRAPH_LINE_HEIGHT) + 10; // Add bottom breathing room
+      };
+
+      const createPage = (hasTitle) => ({
+        points: [],
+        hasTitle,
+        usedHeight: 0,
+        hasHealthNote: false,
+        hasStaticParagraph: false,
+        hasInstancePoints: false,
+        hasClosingNote: false
+      });
+
+      const canFitOnPage = (page, additionalHeight) => {
+        const titleHeight = page.hasTitle ? TITLE_TOTAL : 0;
+        const listMargins = page.points.length > 0 ? LIST_MARGIN_BOTTOM : 0;
+        const totalUsed = titleHeight + listMargins + page.usedHeight + additionalHeight + FOOTER_SAFETY_BUFFER;
+        return totalUsed <= PAGE_CONTENT_HEIGHT;
+      };
+
+      let pages = [];
+      let currentPage = createPage(true);
+
+      // Add bullet points
+      influencePoints.forEach((point) => {
+        const bulletHeight = estimateBulletHeight(point);
+        
+        if (!canFitOnPage(currentPage, bulletHeight) && currentPage.points.length > 0) {
+          pages.push(currentPage);
+          currentPage = createPage(false);
+        }
+        
+        currentPage.points.push(point);
+        currentPage.usedHeight += bulletHeight;
+      });
+
+      // Add health note
+      if (healthNote && healthNote.trim()) {
+        const healthHeight = estimateParagraphHeight(healthNote);
+        
+        if (!canFitOnPage(currentPage, healthHeight)) {
+          pages.push(currentPage);
+          currentPage = createPage(false);
+        }
+        
+        currentPage.hasHealthNote = true;
+        currentPage.usedHeight += healthHeight;
+      }
+
+      // Add static paragraph
+      if (staticParagraph && staticParagraph.trim()) {
+        const staticHeight = estimateParagraphHeight(staticParagraph);
+        
+        if (!canFitOnPage(currentPage, staticHeight)) {
+          pages.push(currentPage);
+          currentPage = createPage(false);
+        }
+        
+        currentPage.hasStaticParagraph = true;
+        currentPage.usedHeight += staticHeight;
+      }
+
+      // Add instance points
+      if (instancePoints && instancePoints.length > 0) {
+        const instanceHeight = estimateInstanceHeight(instancePoints);
+        
+        if (!canFitOnPage(currentPage, instanceHeight)) {
+          pages.push(currentPage);
+          currentPage = createPage(false);
+        }
+        
+        currentPage.hasInstancePoints = true;
+        currentPage.usedHeight += instanceHeight;
+      }
+
+      // Add closing note
+      if (closingText && closingText.trim()) {
+        const closingHeight = estimateClosingHeight(closingText);
+        
+        if (!canFitOnPage(currentPage, closingHeight)) {
+          pages.push(currentPage);
+          currentPage = createPage(false);
+        }
+        
+        currentPage.hasClosingNote = true;
+        currentPage.usedHeight += closingHeight;
+      }
+
+      // Push final page
+      pages.push(currentPage);
+      
+      // Render pages
+      pages.forEach((page, pageIndex) => {
+        const isLastPage = pageIndex === pages.length - 1;
+    %>
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <img
+              src="<%= karmawithline%>"
+              alt="karma-img"
+              height="70px"
+            />
+          <div class="bar"></div>
+        </div>
+        <div class="newMain">
+          <section class="page-influence-user">
+            <% if (page.hasTitle) { %>
+              <p class="page8-title">Mobile Number Influence on User & Life</p>
+            <% } %>
+
+            <!-- BULLET POINTS for this page -->
+            <% if (page.points.length > 0) { %>
+              <div class="page8-list">
+                <ul>
+                  <% page.points.forEach(point => { %>
+                    <li><%= point %></li>
+                  <% }); %>
+                </ul>
+              </div>
+            <% } %>
+
+            <!-- HEALTH NOTE (if assigned to this page) -->
+            <% if (page.hasHealthNote && healthNote && healthNote.trim() !== "") { %>
+              <p class="health-para" style="font-size: 28px!important;"><%- healthNote.replace(/\n/g, '<br>') %></p>
+            <% } %>
+
+            <!-- STATIC PARAGRAPH (if assigned to this page) -->
+            <% if (page.hasStaticParagraph) { %>
+              <p class="static-para"><%= staticParagraph %></p>
+            <% } %>
+
+            <!-- INSTANCE POINTS (if assigned to this page) -->
+            <% if (page.hasInstancePoints && instancePoints.length > 0) { %>
+              <p class="instance">
+                For instance:<br>
+                <% instancePoints.forEach(instance => { %>
+                  <%- instance %><br>
+                <% }); %>
+              </p>
+            <% } %>
+
+            <!-- CLOSING NOTE (if assigned to this page) -->
+            <% if (page.hasClosingNote) { %>
+              <p class="closing-note-7"><%- closingText.replace(/\n/g, '<br>').replace(/Link:/gi, '<br>Link:') %></p>
+            <% } %>
+          </section>
+        </div>
+        
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+      </div>
+    </div>
+    <% }); %>
+
+    <!-- PAGE 8: LINKS AND CLOSING -->
+    <div class="page">
+      <div class="page-content">
+        <div class="newHeader">
+          <img
+              src="<%= karmawithline%>"
+              alt="karma-img"
+              height="70px"
+            />
+          <div class="bar"></div>
+        </div>
+        <div class="newMain">
+          <!-- THANK YOU NOTE -->
+
+<div class="last-section">
+<div class="backnote-8">
+  <p>
+    Thank you for exploring your number with Conscious Karma.
+    May clarity guide your choices, and may your number work in harmony
+    with your path.
+  </p>
+</div>
+
+<!-- BLOG LINKS -->
+<!-- <% if (typeof links !== 'undefined' && links && links.length > 0) { %>
+
+<div class="links-section">
+  <h3>Learn more about how numbers shape life and energy -</h3>
+
+  <% links.forEach(link => { %>
+    <div class="link-item">
+      <div class="link-title"><%= link.title %></div>
+      <div class="link-url">Link - <%= link.href %></div>
+    </div>
+  <% }); %>
+
+</div>
+
+<% } else { %>
+
+<div class="links-section">
+
+  <h3>Learn more about how numbers shape life and energy -</h3>
+
+  <div class="link-item">
+    <div class="link-title">How a Number Shapes Everyday Life</div>
+    <div class="link-url">Link - www.consciouskarma.co/blog/............</div>
+  </div>
+
+  <div class="link-item">
+    <div class="link-title">Blog Link 2 - Why Your Mobile Number Matters</div>
+    <div class="link-url">Link - www.consciouskarma.co/blog/............</div>
+  </div>
+
+  <div class="link-item">
+    <div class="link-title">Blog Link 3 - Understanding Energy Through Numbers</div>
+    <div class="link-url">Link - www.consciouskarma.co/blog/............</div>
+  </div>
+
+  <div class="link-item">
+    <div class="link-title">Blog Link 4 - The Role of Karma in Number Vibrations</div>
+    <div class="link-url">Link - www.consciouskarma.co/blog/............</div>
+  </div>
+
+</div>
+
+<% } %> -->
+
+<!-- CONTACT SECTION -->
+<div class="contact-section-8">
+  <p>For any questions,</p>
+  <p class="contact-email-8">write to hello@consciouskarma.co</p>
+</div>
+</div>
+
+          
+        </div>
+        <div class="newFooter">
+          <div class="bar"></div>
+          <p class="footer-text">www.consciouskarma.co</p>
+        </div>
+
+        
+      </div>
+    </div>
+  </body>
+</html>

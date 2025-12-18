@@ -1,0 +1,104 @@
+import nodemailer from "nodemailer";
+import fs from "fs";
+import { generateInstantReportPDF } from "./generateInstantReportPDF.js";
+
+// Create transporter once and reuse (connection pooling)
+let transporter = null;
+
+function getTransporter() {
+  if (!transporter) {
+    transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+      pool: true,
+      maxConnections: 5,
+      maxMessages: 100,
+      rateDelta: 1000,
+      rateLimit: 5,
+      connectionTimeout: 60000,
+      greetingTimeout: 30000,
+      socketTimeout: 60000,
+    });
+  }
+  return transporter;
+}
+
+export async function sendScoreMail(to, scoreData, mobileNumber) {
+  let pdfPath;
+
+  try {
+    if (!to) throw new Error("Recipient email missing");
+
+    // Always pick latest mobile number
+    const finalMobile =
+      mobileNumber ||
+      scoreData?.mobile_number ||
+      scoreData?.mobile ||
+      scoreData?.primaryMobile ||
+      scoreData?.phone ||
+      "";
+
+    const name =
+      scoreData?.name ||
+      scoreData?.user_name ||
+      scoreData?.full_name ||
+      "User";
+
+    console.log("📱 FINAL MOBILE USED IN SCORE REPORT:", finalMobile);
+
+    // Generate PDF
+    pdfPath = await generateInstantReportPDF(
+      scoreData,
+      to,
+      finalMobile
+    );
+
+    const mailTransporter = getTransporter();
+    await mailTransporter.verify();
+
+    const mailOptions = {
+      from: `"Conscious Karma" <${process.env.EMAIL_USER}>`,
+      to,
+      subject: "Your Instant Mobile Number Report",
+      html: `
+        <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
+          <p>Dear <strong>${name}</strong>,</p>
+
+          <p>Your Instant Report is ready.</p>
+
+          <p>Please find the PDF attached to this email.</p>
+
+          <p>
+            If you have any questions about the report, feel free to write to us at
+            <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
+          </p>
+
+          <p style="margin-top:24px;">
+            Warm regards,<br/>
+            <strong>Conscious Karma</strong>
+          </p>
+        </div>
+      `,
+      attachments: [
+        {
+          filename: "Instant_Mobile_Number_Report.pdf",
+          path: pdfPath,
+        },
+      ],
+    };
+
+    await mailTransporter.sendMail(mailOptions);
+
+    // Cleanup temp PDF
+    if (pdfPath && fs.existsSync(pdfPath)) {
+      fs.unlink(pdfPath, () => {});
+    }
+  } catch (error) {
+    console.error("❌ Error in sendScoreMail:", error);
+    if (pdfPath && fs.existsSync(pdfPath)) fs.unlink(pdfPath, () => {});
+    throw error;
+  }
+}

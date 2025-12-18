@@ -1,0 +1,344 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #000;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+}
+
+/* MAIN WRAPPER */
+.ck-dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.ck-sidebar {
+  width: 240px;
+  background: #0d0d0d;
+  border-right: 1px solid #2a2a2a;
+  padding: 24px;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  transition: transform 0.3s ease;
+  z-index: 1000;
+}
+
+.ck-sidebar.open {
+  transform: translateX(0);
+}
+
+.ck-sidebar.closed {
+  transform: translateX(-100%);
+}
+
+.ck-header-logo {
+  width: 130px;
+}
+
+/* NAVIGATION */
+.ck-nav {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ck-nav-item {
+  background: transparent;
+  color: #b7b7b7;
+  padding: 12px 10px;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+}
+
+.ck-nav-item:hover {
+  color: #fff;
+}
+
+.ck-nav-item--active {
+  color: #fff;
+  font-weight: 600;
+  border-left: 3px solid #ff8a3d;
+  padding-left: 7px;
+}
+
+/* MAIN AREA */
+.ck-main {
+  flex: 1;
+  margin-left: 240px;
+  transition: margin-left 0.3s ease;
+}
+
+.ck-sidebar.closed ~ .ck-main {
+  margin-left: 0;
+}
+
+/* HEADER TOP BAR */
+.ck-navbar {
+  background: #000;
+  border-bottom: 1px solid #333;
+  height: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+.ck-sidebar-toggle {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+/* USER PROFILE */
+.ck-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ck-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #111;
+  border: 2px solid #ff8a3d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.ck-user-email {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.ck-link-button {
+  background: none;
+  border: none;
+  color: #ff8a3d;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.ck-content {
+  padding: 25px;
+}
+
+/* PANEL */
+.ck-panel-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* TABLE STYLING */
+.ck-table-wrapper {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.ck-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #111;
+}
+
+.ck-table th,
+.ck-table td {
+  padding: 12px;
+  border-bottom: 1px solid #333;
+}
+
+.ck-table tr:hover {
+  background: #1a1a1a;
+}
+
+/* STATUS TAGS */
+.ck-status-badge {
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ck-status-badge.paid {
+  background: #0f5325;
+}
+
+.ck-status-badge.pending {
+  background: #6d5310;
+}
+
+.ck-status-badge.booked {
+  background: #0f3f69;
+}
+
+/* FOOTER */
+.ck-footer {
+  background: #000;
+  border-top: 2px solid #ff8a3d;
+  padding: 16px 0;
+  text-align: center;
+  font-size: 13px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.container-footer a {
+  text-decoration: none;
+  color: #fff;
+  margin: 0 6px;
+  font-weight: 600;
+}
+
+.container-footer span {
+  color: #666;
+}
+
+/* PASSWORD SECTION */
+.ck-password-tabs {
+  display: flex;
+  margin: 20px 0 10px 0;
+  border-bottom: 1px solid #222;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ck-password-tabs button {
+  flex: 1;
+  background: none;
+  color: #aaa;
+  border: none;
+  font-size: 14px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.ck-password-tabs button.active {
+  color: #fff;
+  border-bottom: 2px solid #ff8a3d;
+  font-weight: 600;
+}
+
+/* INPUT + INLINE BUTTON LAYOUT */
+.ck-pass-box {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 600px;
+}
+
+.ck-input {
+  width: 100%;
+  padding: 12px;
+  background: #0a0a0a;
+  color: #fff;
+  border: 1px solid #222;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.ck-input:focus {
+  border-color: #ff8a3d;
+  outline: none;
+}
+
+/* ROW ALIGN SIDE-BY-SIDE */
+.ck-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.ck-row .ck-input {
+  flex: 1;
+}
+
+/* SMALL CTA BUTTONS */
+.ck-btn-sm {
+  padding: 10px 16px;
+  background: #ff8a3d;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.ck-btn-sm:hover {
+  background: #ff9b56;
+}
+
+/* ERROR / SUCCESS */
+.ck-error {
+  color: #ff4f4f;
+  font-size: 13px;
+}
+
+.ck-success {
+  color: #3fc368;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .ck-main {
+    margin-left: 0;
+  }
+  .ck-sidebar {
+    transform: translateX(-100%);
+  }
+  .ck-sidebar.open {
+    transform: translateX(0%);
+  }
+}
+
+@media (max-width: 600px) {
+  .ck-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .ck-btn-sm {
+    width: 100%;
+  }
+}
+.ck-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Input should stretch */
+.ck-row .ck-input {
+  flex: 1;
+}
+
+/* Buttons should match input height visually */
+.ck-btn-sm {
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 18px;
+  white-space: nowrap;
+}

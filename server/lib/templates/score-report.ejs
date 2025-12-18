@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Arsenal:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#000; --text:#f2f2f2; --muted:#cfcfcf;
+    --accent:#ff8a3d; --pos:#1daa6c; --neg:#e05252; --gray:#3b3b3b;
+  }
+  html,body{ background:var(--bg); color:var(--text); margin:0; font:14px/1.45 'Arsenal',system-ui,sans-serif; }
+  .page{ padding:18mm 12mm 16mm; }
+
+  h1{ font:700 28px/1.1 'Arsenal',system-ui,sans-serif; margin:0 0 14px; text-align:center; }
+  .meta{ text-align:center; color:var(--muted); margin-bottom:18px; }
+
+  /* site-style divider */
+  .divider{
+    height:6px; margin:16px 0 18px;
+    background:linear-gradient(90deg, transparent, #2a2a2a 14%, #3c3c3c 50%, #2a2a2a 86%, transparent);
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+
+  .centerWrap{ display:flex; justify-content:center; margin:18px 0; position:relative; }
+  .centerSvg{ width:92px; height:92px; }
+  .centerIcon{ position:absolute; width:28px; height:28px; left:50%; top:50%; transform:translate(-50%,-50%); }
+
+  /* bars */
+  .barRow{ display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; margin:12px 0; }
+  .barLabel{ font-weight:700; font-size:14px; letter-spacing:.2px; }
+  .barSvg{ width:100%; height:22px; }
+  .barScore{ min-width:36px; text-align:right; color:#ddd; }
+
+  .legend{ display:flex; gap:12px; justify-content:flex-end; color:#bbb; font-size:12px; margin-top:8px; }
+  .dot{ width:10px; height:10px; border-radius:50%; display:inline-block; vertical-align:middle; margin-right:6px; }
+  .pos{ background:var(--pos) } .neg{ background:var(--neg) } .base{ background:var(--gray) }
+
+  .para{ margin:10px 0; color:#e7e7e7; font-size:13px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1><%= data.title || "Instant Report" %></h1>
+  <div class="meta">
+    <div><b><%= data.user?.name || "" %></b> • <%= data.user?.email || "" %></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- center circle -->
+  <div class="centerWrap">
+    <svg viewBox="0 0 100 100" class="centerSvg" aria-hidden="true">
+      <circle cx="50" cy="50" r="32" fill="transparent" stroke="#fff" stroke-width="2" />
+    </svg>
+    <% if (data.bars[0]?.icon) { %>
+      <img src="<%= data.bars[0].icon %>" alt="" class="centerIcon" />
+    <% } %>
+  </div>
+
+  <p class="para">The bidirectional bars show negative vs positive influence from midpoint (0). Left = negative, right = positive.</p>
+
+  <% const perSide = 10; const segW = 18; const gap = 2; const totalW = perSide*2*segW + (perSide*2-1)*gap; %>
+
+  <% (data.bars || []).forEach(b => {
+       const s = Math.max(-perSide, Math.min(perSide, Number(b.score || 0)));
+  %>
+    <div class="barRow">
+      <div class="barLabel"><%= b.label %></div>
+
+      <svg class="barSvg" viewBox="0 0 <%= totalW %> 14" preserveAspectRatio="none" aria-label="<%= b.label %>">
+        <!-- base segments -->
+        <% for (let i=0;i<perSide*2;i++){ const x=i*(segW+gap); %>
+          <rect x="<%= x %>" y="1" width="<%= segW %>" height="12" fill="var(--gray)" rx="2" ry="2"/>
+        <% } %>
+        <!-- positive -->
+        <% if (s>0){ for (let i=0;i<s;i++){ const idx=perSide+i; const x=idx*(segW+gap); %>
+          <rect x="<%= x %>" y="1" width="<%= segW %>" height="12" fill="var(--pos)" rx="2" ry="2"/>
+        <% }} %>
+        <!-- negative -->
+        <% if (s<0){ for (let i=0;i<Math.abs(s);i++){ const idx=(perSide-1)-i; const x=idx*(segW+gap); %>
+          <rect x="<%= x %>" y="1" width="<%= segW %>" height="12" fill="var(--neg)" rx="2" ry="2"/>
+        <% }} %>
+      </svg>
+
+      <div class="barScore"><%= s %></div>
+    </div>
+  <% }) %>
+
+  <div class="legend">
+    <span><i class="dot neg"></i>Negative</span>
+    <span><i class="dot base"></i>Neutral</span>
+    <span><i class="dot pos"></i>Positive</span>
+  </div>
+
+  <div class="divider"></div>
+
+  <p class="para">Styled entirely with HTML/CSS/SVG, then printed to PDF for crisp, consistent output.</p>
+</div>
+</body>
+</html>

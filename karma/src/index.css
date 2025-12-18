@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+  --bg: #000;
+  --text: #f2f2f2;
+  --muted: #dcdcdc;
+  --accent: #ff8a3d;
+  --accent-700: #f07a2e;
+  --line: #2a2a2a;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --font-body: 'Arsenal', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+  --font-display: 'Balgin', 'Arsenal', system-ui, sans-serif;
+}
+
+/* Balgin Font (self-hosted - place in /public/fonts/Balgin/) */
+@font-face {
+  font-family: 'Balgin';
+  src: url('/public/fonts/Balgin/Fontspring-DEMO-balgin-extralight.otf') format('opentype'),
+       url('/public/fonts/Balgin/Fontspring-DEMO-balgin-extralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Balgin';
+  src: url('/public/fonts/Balgin/Fontspring-DEMO-balgin-extralight.otf') format('opentype');
+  font-weight: 200;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Google Fonts: Arsenal */
+@import url('https://fonts.googleapis.com/css2?family=Arsenal:wght@400;700&display=swap');
+
+/* Custom Classes (for non-Tailwind fallbacks or specifics) */
+body {
+  background: var(--bg);
+  color: var(--text);
+  font: 18px / 1.6 var(--font-body);
+}
+
+.stack-head .line + .line {
+  margin-top: 0.14em;
+}
+
+.icon-circle.--sketch img {
+  transform: scale(1.06);
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--accent);
+  margin-left: 4px;
+  vertical-align: -0.12em;
+  animation: caretBlink 1s steps(1) infinite;
+}
+
+@keyframes caretBlink {
+  50% { opacity: 0; }
+}
+
+/* Ensure full height */
+html, body, #root {
+  height: 100%;
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+
+

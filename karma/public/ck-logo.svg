@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="540" height="220" viewBox="0 0 540 220" role="img" aria-label="conscious KARMA">
+  <defs>
+    <style>
+      .word-1 { fill: #ffffff; font-family: Arial, Helvetica, 'Segoe UI', sans-serif; font-weight: 300; }
+      .word-2 { fill: #ff8a3d; font-family: Balgin, Arial, Helvetica, 'Segoe UI', sans-serif; font-weight: 700; }
+    </style>
+  </defs>
+  <rect width="100%" height="100%" fill="none"/>
+  <!-- 'conscious' -->
+  <text x="20" y="90" font-size="72" class="word-1">conscious</text>
+  <!-- 'KARMA' -->
+  <text x="20" y="170" font-size="96" class="word-2">KARMA</text>
+</svg>

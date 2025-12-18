@@ -1,0 +1,32 @@
+.ck-faq-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ck-faq-list {
+  width: 100%;
+  max-width: 780px;  
+  margin: 0 auto;
+}
+
+.ck-faq-item {
+  width: 100%;
+    
+  padding: 15px 20px;
+  border-radius: 10px;
+
+}
+
+
+.ck-faq-item {
+  width: 100%;
+  max-width: 770px;
+  transition: all 0.3s ease;
+}
+
+/* OPEN state me width badha do */
+.ck-faq-item-active {
+  max-width: 100% !important;  /* FULL WIDTH */
+  width: 100% !important;
+}

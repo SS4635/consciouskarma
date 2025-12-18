@@ -1,0 +1,112 @@
+:root {
+  --bg: #0b0b0b;
+  --text: #f2f2f2;
+  --accent: #ff8a3d;
+  --accent-700: #f07a2e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial;
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* === Section Wrapper + Dividers === */
+.section {
+  position: relative;
+  padding: 64px 0;
+}
+.dividerTop,
+.dividerBottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #bbb, #444, #222);
+  opacity: 0.5;
+}
+.dividerTop {
+  top: 0;
+}
+.dividerBottom {
+  bottom: 0;
+}
+
+/* === HERO (Navbar + Headline) === */
+.heroStage {
+  min-height: 84vh;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  position: relative;
+}
+
+.heroNav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 0;
+}
+
+.brandStack {
+  line-height: 1;
+}
+.brandTop {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  color: #f2f2f2;
+}
+.brandBottom {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent);
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.pillBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--accent);
+  border-radius: 14px;
+  padding: 10px 18px;
+  color: #f2f2f2;
+  font-weight: 700;
+  background: transparent;
+  text-decoration: none;
+  margin-left: 10px;
+  transition: background 0.3s ease;
+}
+.pillBtn:hover {
+  background: rgba(255, 138, 61, 0.1);
+}
+
+.heroContent {
+  align-self: center;
+}
+
+.headline {
+  font-size: clamp(36px, 6vw, 84px);
+  line-height: 1.1;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  max-width: 18ch;
+  text-transform: uppercase;
+}
+
+.accent {
+  color: var(--accent);
+  font-weight: 700;
+}

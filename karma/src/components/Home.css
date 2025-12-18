@@ -1,0 +1,33 @@
+/* Desktop default */
+.tag-inner {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tag-text {
+  margin: 0;
+  opacity: 0.8;
+  padding: 0 52px;
+  font-size: 18px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* -------- MOBILE FIX -------- */
+@media (max-width: 480px) {
+  .tag-inner {
+    height: 28px !important;         /* slightly smaller height */
+  }
+
+  .tag-text {
+    padding: 0 32px !important;      /* width smaller */
+    font-size: 15px !important;      /* smaller text */
+  }
+
+  .tag-border {
+    transform: scale(0.88);          /* shrink full electric border */
+    transform-origin: center;
+  }
+}

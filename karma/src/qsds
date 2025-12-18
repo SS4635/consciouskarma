@@ -1,0 +1,902 @@
+// src/ConsciousKarmaSections.jsx
+import React, { useEffect, useState } from "react";
+import InstantReportForm from "./InstantReportForm.jsx";
+
+/* === Images (your filenames) === */
+import loveImg from "./Love.jpg";
+import financeImg from "./Finance.jpg";
+import fortuneImg from "./Fortune.png";
+import intelligenceImg from "./Intelligence.jpg";
+import intuitionImg from "./Intuition.jpg";
+import earthGif from "./Earth Gif.gif";
+import zeroPng from "./zero.png";
+import karmaTransparent from "./Karma transparent.png";
+import earthConnections from "./Earth connections.png";
+import gradeImg from "./Grade.jpg";
+import blankStarImg from "./blank-star.jpg";
+import mobileEnergyFlow from "./mobile number energy flow.png";
+import Typewriter from "./Typewriter.jsx";
+/* ============ THEME & LAYOUT (Injected CSS) ============ */
+const CSS = `
+/* --------- Fonts --------- */
+/* Balgin (self-host under /public/fonts/Balgin/*) */
+@font-face{
+  font-family:'Balgin';
+  src:url('/fonts/Balgin/Balgin-ExtraLight.woff2') format('woff2'),
+      url('/fonts/Balgin/Balgin-ExtraLight.woff')  format('woff');
+  font-weight:200; font-style:normal; font-display:swap;
+}
+@font-face{
+  font-family:'Balgin';
+  src:url('/fonts/Balgin/Fontspring-DEMO-balgin-extralight.otf') format('opentype');
+  font-weight:200; font-style:normal; font-display:swap;
+}
+
+/* use it on your headline */
+h1.headline, h2.headline, h3.headline, .headline{
+  font-family:'Balgin', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif !important;
+  font-size:clamp(28px,4vw,80px);
+  line-height:1.06; letter-spacing:.02em; margin:0;
+}
+.headline .accent{ color:var(--accent,#ff8a3d); }
+
+/* Arsenal (Google) also loaded via <link> below */
+:root{
+  --bg:#000; --text:#f2f2f2; --muted:#dcdcdc;
+  --accent:#ff8a3d; --accent-700:#f07a2e;
+  --line:#2a2a2a; --shadow:0 10px 30px rgba(0,0,0,.35);
+  --font-body:'Arsenal',system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial,sans-serif;
+  --font-display:'Balgin','Arsenal',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body,#root{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:18px/1.6 var(--font-body)}
+a{color:var(--accent);text-decoration:none}
+img{max-width:100%;height:auto;display:block}
+
+.container{max-width:1280px;margin:0 auto;padding:0 24px}
+.section{padding:72px 0;position:relative;background:#000}
+.section .divider-top,.section .divider-bottom{position:absolute;left:0;right:0;height:4px;background:linear-gradient(90deg,#bbb,#444,#222);opacity:.5}
+.section .divider-top{top:0}.section .divider-bottom{bottom:0}
+
+/* --------- Type --------- */
+.h1,.h2,.h3,.headline{font-family: 'Balgin', system-ui, -apple-system, Segoe UI, Roboto, sans-serif!important;}
+.h1{font-size:clamp(34px,4.5vw,40px);line-height:1.1;margin:0 0 14px}
+.h2{font-size:clamp(30px,4vw,52px);line-height:1.1; margin:0 0 10px}
+.h3{font-size:clamp(16px,3.2vw,24px);line-height:1.15;margin:0 0 10px}
+.lead{color:var(--muted);max-width:72ch}
+.center{text-align:center}
+
+.headline{
+  font-family: 'Balgin', system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size:clamp(18px,3vw,64px);
+  line-height:1.08;
+  font-weight:700;
+  letter-spacing:.02em;
+  text-transform:uppercase;
+}
+.headline .accent{color:var(--accent)}
+
+/* --------- Navbar (text-only brand) --------- */
+.heroNav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+.brandRow{display:flex;align-items:center}
+.brandMark{line-height:1}
+.brandTop{
+  font-family:'Arsenal',system-ui,sans-serif;
+  font-size:clamp(24px,2.2vw,32px);
+  letter-spacing:.2px; color:#fff; display:block;
+}
+.brandBottom{
+  font-family:'Balgin','Arsenal',system-ui,sans-serif;
+  font-size:clamp(28px,2.4vw,36px);
+  letter-spacing:2px; color:var(--accent);
+  display:block; margin-top:2px;
+}
+
+/* Hamburger + Drawer */
+.hamburger{display:grid;place-items:center;gap:6px;width:46px;height:42px;padding:8px;border-radius:12px;background:transparent;cursor:pointer}
+.hamburger span{display:block;width:24px;height:3px;background:var(--accent);border-radius:2px;transition:transform .25s ease, opacity .25s ease}
+.hamburger.is-open span:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.hamburger.is-open span:nth-child(2){opacity:0}
+.hamburger.is-open span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.navBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);z-index:1000}
+.navDrawer{position:fixed;top:0;right:-340px;height:100vh;width:min(340px,92vw);background:#0f0f0f;border-left:1px solid #333;box-shadow:0 20px 60px rgba(0,0,0,.5);z-index:1001;padding:22px 20px;display:flex;flex-direction:column;gap:8px;transition:right .28s ease}
+.navDrawer.open{right:0}
+.navTitle{font-family:var(--font-display);font-weight:800;font-size:18px;margin-bottom:8px;color:#fff}
+.navLink{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;border:1px solid #3a3a3a;border-radius:12px;background:#141414;color:#f2f2f2;text-decoration:none;font-weight:700;font-family:var(--font-display)}
+.navLink:hover{background:#191919;border-color:#555}
+.navHint{font-size:12px;color:#cfcfcf;font-family:var(--font-body)}
+
+/* --------- Hero --------- */
+.heroStage{min-height:74vh;display:grid;grid-template-rows:auto 1fr}
+.heroGrid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
+@media(min-width:980px){.heroGrid{grid-template-columns:1.2fr .8fr}}
+.heroRight{display:grid;row-gap:16px;justify-items:center}
+.heroStage .lead{
+  font-family:'Arsenal',system-ui,sans-serif;
+  font-size:clamp(14px,1vw,18px);
+  line-height:1.35;color:#c8c8c8;margin:0 0 6px;text-align:center;
+}
+
+/* Right column / Icon list */
+.iconCol{display:block;margin:0;padding:0}
+.bigBadge{display:flex;align-items:center;gap:12px;margin:0}
+.bigBadge img{width:clamp(90px,7.2vw,120px);height:clamp(90px,5.2vw,120px);object-fit:contain;border-radius:14px;display:block}
+.bigBadge .label{font-family:'Arsenal',system-ui,sans-serif;font-size:clamp(18px,3.2vw,31px);line-height:1;margin:0}
+
+/* Form + actions */
+.formWrap{padding:14px;background:rgba(255,255,255,.03);}
+.formRow{display:grid;grid-template-columns:120px 1fr;gap:12px}
+select,.input{
+  appearance:none;width:100%;padding:14px;border:1px solid #555;border-radius:10px;background:#121212;color:var(--text);
+  font-size:16px;font-family:var(--font-body)
+}
+.input{max-width:420px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:2px solid var(--accent) ;border-radius:14px;padding:14px 18px;background:black;color:var(--accent);font-weight:800;cursor:pointer;font-family:var(--font-display)}
+.btn:hover{background:var(--accent-700);color:#000}
+.inline{display:flex;gap:12px;flex-wrap:wrap;margin-top:14px}
+.priceTag{font-weight:700;font-family:var(--font-display);font-size:28px;color:var(--accent)}
+.actionsRow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:14px}
+
+/* PDF icon link */
+.pdfLink{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid #6b6b6b;border-radius:10px;background:#141414;color:var(--accent)}
+.pdfLink:hover{color:var(--accent-700);border-color:#8a8a8a;background:#161616}
+.pdfIcon{width:22px;height:22px;display:block}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+/* --------- “What is this” (3 icons) --------- */
+.centerBlock{max-width:960px;margin:0 auto;text-align:center}
+.grid3{display:grid;grid-template-columns:1fr;gap:40px;align-items:start;justify-items:center}
+@media (min-width:1100px){.grid3{grid-template-columns:repeat(3,1fr)}}
+.iconCard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:18px;max-width:360px}
+.iconCard p{margin:0;line-height:1.6;font-size:18px;color:#eaeaea}
+
+/* Uniform, equal-height icon circles (Earth/0/Karma) */
+.iconCircle{
+  width: clamp(180px, 14vw, 220px);
+  height: clamp(180px, 14vw, 220px);
+  border-radius: 50%;
+  display:grid;place-items:center;
+  background:transparent;overflow:hidden;
+}
+.iconCircle img{width:100%;height:100%;object-fit:cover;display:block}
+.iconCircle.--sketch img{transform:scale(1.06)}
+
+/* --------- Blog cards --------- */
+.blogGrid{display:grid;grid-template-columns:1fr;gap:18px}
+@media(min-width:960px){.blogGrid{grid-template-columns:repeat(3,1fr)}}
+.blogCard{padding:16px;background:rgba(255,255,255,.03);border:1px solid #3a3a3a;border-radius:14px;box-shadow:var(--shadow)}
+.blogCard h4{margin:8px 0 6px;font-size:18px;font-family:var(--font-display)}
+.blogCard p{color:#dcdcdc;font-family:var(--font-body)}
+
+/* --------- Footer --------- */
+.footerBar{position:relative;background:linear-gradient(180deg,var(--accent),var(--accent-700));padding:18px 0;margin-top:0}
+.footerBar .row{display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:space-between}
+.footerBar a{color:#1d1209;text-decoration:underline;font-weight:700}
+@media (min-width:900px){.footerBar .row{flex-direction:row}}
+
+/* --------- Modal --------- */
+.modalOverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);display:grid;place-items:center;z-index:1000}
+.modal{width:min(720px,92vw);max-height:86vh;overflow:auto;background:#0f0f0f;border:1px solid #3a3a3a;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);padding:24px;position:relative}
+.modalClose{position:absolute;top:10px;right:14px;width:36px;height:36px;border-radius:999px;border:1px solid #5a5a5a;background:#151515;color:#eee;font-size:20px;cursor:pointer}
+
+/* ==== UNIQUE SEQUENCE split layout + typewriter ==== */
+.split2{
+  display:grid;
+  grid-template-columns: 1.1fr .9fr;   /* left | right */
+  gap:48px;
+  align-items:center;
+}
+@media (max-width: 980px){
+  .split2{ grid-template-columns:1fr; gap:28px; }
+}
+
+/* Left column */
+.split2 .left .lead{ text-align:left; }
+.splitImg{
+  width:100%;
+  border-radius:14px;
+  box-shadow: var(--shadow);
+  margin: 14px 0 16px;
+}
+
+/* Right column */
+.rightBlock{
+  text-align:right;
+  display:grid;
+  row-gap:16px;
+  justify-items:end;
+}
+.rightHeading{
+  font-family:'Balgin','Arsenal',system-ui,sans-serif;
+  font-weight:300;
+  font-size: clamp(32px, 2.6vw, 64px);
+  line-height: 1.18;
+  letter-spacing: .01em;
+}
+.split2 .right .lead{ text-align:right; }
+
+/* Typewriter caret (shared) */
+.caret{
+  display:inline-block;
+  width:2px;
+  height:1em;
+  background: var(--accent);
+  margin-left:4px;
+  vertical-align: -0.12em;
+  animation: caretBlink 1s steps(1) infinite;
+}
+@keyframes caretBlink { 50% { opacity: 0; } }
+
+/* Bullet typewriter list */
+.tpList{ list-style:none; margin:6px 0 0; padding:0; width:100%; max-width:700px }
+.tpItem{ display:flex; gap:10px; align-items:flex-start; margin:8px 0 }
+.tpBullet{ width:8px; height:8px; border-radius:50%; background:var(--accent); margin-top:.65em }
+.tpText{ flex:1; line-height:1.5 }
+.rightBlock{
+  text-align: left;
+  display: grid;
+  row-gap: 16px;
+  justify-items: start;
+}
+.rightHeading{ text-align: left; }
+.split2 .right .lead{ text-align: left; }
+/* Right column line list: small + compact + left-aligned */
+.rightBlock .plainWrap { justify-self: stretch; text-align: left; }
+
+.tpPlain{ 
+  display: grid; 
+  row-gap: 0;           /* no space between lines */
+  margin: 0; 
+  padding: 0; 
+}
+.tpLine{
+  margin: 0; 
+  line-height: 1.18;    /* tight line height */
+  font-size: clamp(13px, 1.1vw, 17px); /* smaller text */
+  letter-spacing: .01em;
+  text-align: left; 
+  direction: ltr;       /* forces left-to-right typing */
+  white-space: normal; 
+}
+
+/* caret reused */
+.caret{
+  display:inline-block;width:2px;height:1em;background:var(--accent);
+  margin-left:4px;vertical-align:-0.12em;animation: caretBlink 1s steps(1) infinite;
+}
+@keyframes caretBlink { 50% { opacity: 0; } }
+/* Right column line list: small + compact + left-aligned */
+.rightBlock .plainWrap { justify-self: stretch; text-align: left; }
+
+.tpPlain{ 
+  display: grid; 
+  row-gap: 0;           /* no space between lines */
+  margin: 0; 
+  padding: 0; 
+}
+.tpLine{
+  margin: 0; 
+  line-height: 1.18;    /* tight line height */
+  font-size: clamp(13px, 1.1vw, 17px); /* smaller text */
+  letter-spacing: .01em;
+  text-align: left; 
+  direction: ltr;       /* forces left-to-right typing */
+  white-space: normal; 
+}
+
+/* caret reused */
+.caret{
+  display:inline-block;width:2px;height:1em;background:var(--accent);
+  margin-left:4px;vertical-align:-0.12em;animation: caretBlink 1s steps(1) infinite;
+}
+@keyframes caretBlink { 50% { opacity: 0; } }
+/* ==== WOVEN (left globe / right content + effects) ==== */
+.wovenGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+@media(max-width:980px){.wovenGrid{grid-template-columns:1fr;gap:28px}}
+
+.globeWrap{position:relative}
+.globeImg{width:100%;max-width:720px;border-radius:14px;box-shadow:var(--shadow);opacity:.95}
+
+.copyWrap{position:relative;z-index:1;text-align:left}
+.weaveHeading{margin:0 0 8px;font-family:'Balgin','Arsenal',system-ui,sans-serif;
+  font-weight:300;font-size:clamp(28px,3.2vw,52px);line-height:1.12;letter-spacing:.02em}
+.weavePara{margin:8px 0 0}
+
+//* Woven layout + typewriter bits */
+.wovenGrid{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}
+@media(max-width:980px){.wovenGrid{grid-template-columns:1fr;gap:28px}}
+.globeImg{width:100%;max-width:720px;border-radius:14px;box-shadow:var(--shadow)}
+.copyWrap{text-align:left}
+.weaveHeading{margin:0 0 8px;font-family:'Balgin','Arsenal',system-ui,sans-serif;
+  font-weight:300;font-size:clamp(28px,3.2vw,52px);line-height:1.12;letter-spacing:.02em}
+.weavePara{margin:8px 0 0}
+.wAccent{color:var(--accent);font-weight:700}
+/* caret */
+@keyframes caretBlink{50%{opacity:0}}
+.weaveCaret{display:inline-block;width:2px;height:1em;background:var(--accent);
+  margin-left:4px;vertical-align:-0.12em;animation:caretBlink 1s steps(1) infinite}
+/* === Yantra section typography & alignment === */
+/* Center-align Yantra section */
+/* Center EVERYTHING in #yantra */
+#yantra .centerBlock{
+  text-align: center !important;
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+/* Heading size */
+#yantra .yantraTitle{
+  font-family: 'Balgin','Arsenal',system-ui,sans-serif;
+  font-weight: 300;
+  font-size: clamp(28px, 3.4vw, 56px);
+  line-height: 1.12;
+  letter-spacing: .02em;
+  margin: 0 0 12px;
+}
+
+/* Paragraph centered + nice measure */
+#yantra .yantraLead{
+  max-width: 760px;          /* adjust if you want narrower/wider */
+  margin: 8px auto 16px;     /* centers the block itself */
+  font-size: clamp(15px, 1.2vw, 18px);
+  line-height: 1.55;
+  color: #e9e9e9;
+  text-align: center !important;
+}
+
+/* Center the CTA neatly */
+#yantra .ctaLink{
+  display: inline-block;
+  font-weight: 700;
+  margin: 0 auto;
+}
+
+/* === Final CTA: center everything === */
+#final-cta .heroGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;      /* two equal columns on desktop */
+  gap:32px;
+  align-items:center;
+  justify-items:center;                /* centers each column's content */
+}
+@media (max-width: 980px){
+  #final-cta .heroGrid{ grid-template-columns:1fr; }
+}
+
+#final-cta .h2{
+  text-align:center;
+  margin: 0 0 12px;
+  font-size: clamp(26px, 3vw, 32px);
+  line-height: 1.15;
+}
+
+#final-cta .iconCol{
+  display:flex;                        /* horizontal row */
+
+  justify-content:center;
+  align-items:center;
+  flex-wrap:wrap;                      /* wrap nicely on small screens */
+  margin-top: 10px;
+}
+
+#final-cta .bigBadge{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+  min-width: 116px;                    /* keeps spacing even */
+}
+
+#final-cta .bigBadge img{
+  width: clamp(70px, 7vw, 100px);
+  height: clamp(70px, 4vw, 100px);
+  object-fit: contain;
+  border-radius: 14px;
+}
+
+#final-cta .bigBadge .label{
+  font-family:'Arsenal',system-ui,sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+#final-cta .ctaWrap{
+  display:grid;
+  justify-items:center;                /* centers form + link */
+  gap:12px;
+}
+
+#final-cta .ctaWrap .actionsRow{ justify-content:center; } /* center the price/btn row */
+#final-cta .ctaWrap .inline{ justify-content:center; }      /* center the "View Sample" link */
+
+
+`;
+
+/* Load Arsenal from Google Fonts */
+function useLoadFonts(){
+  useEffect(()=>{
+    const id = "gf-arsenal";
+    if(!document.getElementById(id)){
+      const l = document.createElement("link");
+      l.id = id; l.rel = "stylesheet";
+      l.href = "https://fonts.googleapis.com/css2?family=Arsenal:wght@400;700&display=swap";
+      document.head.appendChild(l);
+    }
+  },[]);
+}
+
+/* Inject the CSS once */
+function useInjectCSS(){
+  useEffect(()=>{
+    const id = "ck-sections-css";
+    if(!document.getElementById(id)){
+      const s = document.createElement("style");
+      s.id = id; s.textContent = CSS; document.head.appendChild(s);
+    }
+  },[]);
+}
+
+function Divider(){ return (<><div className="divider-top"/><div className="divider-bottom"/></>); }
+
+/* Inline form used in hero + modal */
+function InlineInstantReportForm({
+  ctaLabel="Get Instant Report",
+  onSubmit,
+  initialIsd="+91",
+  initialMobile=""
+}){
+  const [isd, setIsd] = useState(initialIsd);
+  const [mobile, setMobile] = useState(initialMobile);
+  useEffect(()=>{ setIsd(initialIsd); },[initialIsd]);
+  useEffect(()=>{ setMobile(initialMobile); },[initialMobile]);
+
+  function handleSubmit(e){
+    e.preventDefault();
+    const full = `${isd}${mobile}`.replace(/\s+/g,"");
+    if(!/^[+][0-9]{6,15}$/.test(full)){ alert("Please enter a valid mobile number"); return; }
+    onSubmit ? onSubmit({isd, mobile, full}) : alert(`Generating instant report for ${full}`);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="formWrap" aria-label="Instant Report Form">
+      <div className="formRow">
+        <select value={isd} onChange={e=>setIsd(e.target.value)} aria-label="Country code">
+          <option value="+91">🇮🇳 +91</option>
+          <option value="+1">🇺🇸 +1</option>
+          <option value="+44">🇬🇧 +44</option>
+          <option value="+61">🇦🇺 +61</option>
+          <option value="+971">🇦🇪 +971</option>
+        </select>
+        <input
+          className="input"
+          type="tel"
+          inputMode="numeric"
+          pattern="[0-9 ]*"
+          placeholder="Enter your mobile number"
+          value={mobile}
+          onChange={e=>setMobile(e.target.value)}
+          aria-label="Mobile number"
+        />
+      </div>
+
+      <div className="actionsRow">
+        <span className="priceTag">₹269</span>
+        <button className="btn" type="submit">{ctaLabel}</button>
+
+        <a className="pdfLink" href="/sample-report" aria-label="View Sample Report (PDF)">
+          <svg className="pdfIcon" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+              aria-hidden="true">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <path d="M14 2v6h6"/>
+            <path d="M8 13h8M8 17h8"/>
+          </svg>
+        
+        </a>
+      </div>
+    </form>
+  );
+}
+
+/* ---------- Bullet-by-bullet Typewriter (local, no external dep) ---------- */
+function BulletTypewriter({ items, speed = 26, lineDelay = 650 }) {
+  const [current, setCurrent] = useState(0);
+  const [typed, setTyped] = useState(() => items.map(() => ""));
+
+  useEffect(() => {
+    let timer;
+    const line = items[current];
+    if (!line) return;
+
+    if (typed[current].length < line.length) {
+      timer = setTimeout(() => {
+        setTyped((prev) => {
+          const next = [...prev];
+          next[current] = line.slice(0, prev[current].length + 1);
+          return next;
+        });
+      }, speed);
+    } else if (current < items.length - 1) {
+      timer = setTimeout(() => setCurrent((c) => c + 1), lineDelay);
+    }
+    return () => clearTimeout(timer);
+  }, [current, items, typed, speed, lineDelay]);
+
+  return (
+    <ul className="tpList" aria-live="polite">
+      {items.map((full, i) => {
+        const isActive = i === current;
+        const isDone = typed[i].length === full.length;
+        return (
+          <li className="tpItem" key={i}>
+            <span className="tpBullet" aria-hidden="true" />
+            <span className="tpText">
+              {typed[i]}
+              {isActive && !isDone ? <span className="caret" /> : null}
+            </span>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/* ===================== MAIN PAGE ===================== */
+export default function ConsciousKarmaSections(){
+  useLoadFonts();
+  useInjectCSS();
+
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [prefillIsd, setPrefillIsd] = useState("+91");
+  const [prefillMobile, setPrefillMobile] = useState("");
+
+  // ESC & scroll lock when overlay is open
+  useEffect(()=>{
+    const overlayOpen = showForm || menuOpen;
+    if(!overlayOpen) return;
+    const onKey = (e)=>{ if(e.key === 'Escape'){ setShowForm(false); setMenuOpen(false); } };
+    const { body } = document; const prev = body.style.overflow;
+    body.style.overflow = "hidden"; window.addEventListener('keydown', onKey);
+    return ()=>{ window.removeEventListener('keydown', onKey); body.style.overflow = prev; };
+  },[showForm, menuOpen]);
+
+  function openPrefilledModal({isd, mobile}){
+    setPrefillIsd(isd); setPrefillMobile(mobile); setShowForm(true);
+  }
+
+  return (
+    <div>
+      {/* HERO */}
+      <section className="section heroStage" id="hero">
+        <div className="container">
+          <div className="heroNav">
+            {/* TEXT-ONLY BRAND */}
+            <div className="brandRow">
+              <div className="brandMark" aria-label="Conscious Karma">
+                <span className="brandTop">conscious</span>
+                <span className="brandBottom">KARMA</span>
+              </div>
+            </div>
+
+            {/* HAMBURGER */}
+            <button
+              className={`hamburger ${menuOpen ? "is-open" : ""}`}
+              aria-label="Open menu" aria-expanded={menuOpen}
+              onClick={()=>setMenuOpen(v=>!v)}
+            >
+              <span></span><span></span><span></span>
+            </button>
+          </div>
+
+          <div className="heroGrid">
+            {/* LEFT */}
+            <div>
+              <p className="headline">
+                Your mobile number <span className="accent"> <br/>is the key</span><br/> to achieving your <br/>dreams.
+              </p>
+            </div>
+
+            {/* RIGHT */}
+            <div className="heroRight">
+              <p className="lead">Know how a mobile number influences life across:</p>
+
+              <div className="iconCol">
+                {[
+                  [financeImg,"Finance & Luck"],
+                  [fortuneImg,"Fortune & Luck"],
+                  [loveImg,"Charm & Love"],
+                  [intelligenceImg,"Intelligence & Wit"],
+                  [intuitionImg,"Intuition & Sense"]
+                ].map(([src,label],i)=>(
+                  <div className="bigBadge" key={i}>
+                    <img src={src} alt={label}/>
+                    <div className="label">{label}</div>
+                  </div>
+                ))}
+              </div>
+
+              <InlineInstantReportForm ctaLabel="Get Instant Report" onSubmit={openPrefilledModal}/>
+            </div>
+          </div>
+        </div>
+
+        {/* Drawer */}
+        {menuOpen && <div className="navBackdrop" onClick={()=>setMenuOpen(false)} />}
+        <nav className={`navDrawer ${menuOpen ? "open" : ""}`} aria-hidden={!menuOpen}>
+          <div className="navTitle">Menu</div>
+          <a className="navLink" href="/create-account" onClick={()=>setMenuOpen(false)}>
+            Create Account <span className="navHint">/create-account</span>
+          </a>
+          <a className="navLink" href="/get-report" onClick={()=>setMenuOpen(false)}>
+            Personalised Report <span className="navHint">/get-report</span>
+          </a>
+          <a className="navLink" href="/consult" onClick={()=>setMenuOpen(false)}>
+            Consult <span className="navHint">/consult</span>
+          </a>
+          <a className="navLink" href="#blogs" onClick={()=>setMenuOpen(false)}>
+            Blog <span className="navHint">#blogs</span>
+          </a>
+        </nav>
+
+        <Divider/>
+      </section>
+
+      {/* WHAT IS THIS */}
+      <section className="section" id="what-is-this">
+        <div className="container center">
+          <h2 className="h3">What is this</h2>
+
+          <div className="grid3" style={{ marginTop: 24 }}>
+            <div className="iconCard">
+              <span className="iconCircle">
+                <img src={earthGif} alt="Earth rotating" />
+              </span>
+              <p>
+                The <b>UNIVERSE</b> is alive with <b>ENERGY</b>. These cosmic forces
+                move through us, subtly shaping thoughts, guiding actions, and colouring experiences.
+              </p>
+            </div>
+
+            <div className="iconCard">
+              <span className="iconCircle --sketch">
+                <img src={zeroPng} alt="Zero symbol" />
+              </span>
+              <p>
+                Sages used numbers as symbols for celestial influence, capturing
+                the essence of cosmic energies with simplicity and precision.
+              </p>
+            </div>
+
+            <div className="iconCard">
+              <span className="iconCircle --sketch">
+                <img src={karmaTransparent} alt="Karma symbol" />
+              </span>
+              <p>
+                Our choices and the energies we embrace shape destiny, creating the
+                path we walk and the reality we manifest.
+              </p>
+            </div>
+          </div>
+        </div>
+        <Divider />
+      </section>
+
+      {/* UNIQUE SEQUENCE */}
+      <section className="section" id="unique-sequence">
+        <div className="container">
+          <div className="split2">
+            
+            {/* LEFT: paragraph -> image -> paragraph */}
+            <div className="left">
+              <p className="lead">
+                The interaction and position of its digits form a pattern of vibrations,
+                shaping actions, behaviour, and the flow of life.
+              </p>
+
+              <img className="splitImg" src={mobileEnergyFlow} alt="Mobile number energy flow diagram" />
+
+              <p className="lead">
+                Every number carries a distinct energy. Aligning your mobile number with
+                your natural rhythm can reduce friction and open new opportunities.
+              </p>
+            </div>
+
+            {/* RIGHT: static heading + small paragraph + bullet-by-bullet typewriter + link */}
+            <div className="right rightBlock">
+              <h2 className="rightHeading">
+                Every mobile number is a unique<br/>
+                sequence, each carrying distinct energy.
+              </h2>
+
+              <p className="lead">
+                Understand your sequence to align with your natural rhythm.
+              </p>
+
+             <Typewriter
+  lines={[
+    "The interaction and position of its digits form a pattern of vibrations, shaping actions, behaviour, and the flow of life.",
+    "Your date of birth can be shared.",
+    "Your name can be repeated.",
+    "Your mobile number is DISTINCTLY YOURS."
+  ]}
+/>
+
+
+              <div className="actionsRow" style={{ justifyContent: "flex-end" }}>
+                <a className="ctaLink" href="/get-report">Get personalised report »</a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <Divider/>
+      </section>
+
+      {/* YANTRA */}
+    <section className="section" id="yantra">
+  <div className="container">
+    <div className="centerBlock">
+      <h2 className="yantraTitle">
+        A mobile number is a digital-age <em>yantra</em> — a tool threaded with different forms of energy.
+      </h2>
+
+      <p className="lead yantraLead">
+        Consciously chosen, it holds the power to ease a journey, shape a path, and open new opportunities.
+        Your mobile number isn’t just for communication; it is your greatest asset — <b>the code of your journey</b>.
+      </p>
+
+      <a className="ctaLink" href="/consult">Invest in your greatest asset (consultation) »</a>
+    </div>
+  </div>
+  <Divider/>
+</section>
+
+   <section className="section" id="woven">
+  <div className="container">
+    <div className="wovenGrid">
+      {/* LEFT: globe */}
+      <div>
+        <img className="globeImg" src={earthConnections} alt="Networked Earth connections" />
+      </div>
+
+      {/* RIGHT: true typewriter heading + paragraph */}
+      <div className="copyWrap">
+        <TypeWriterOnce text="The Code of Your Journey." speed={28} />
+        <ParagraphTypewriter
+          text="Just as numbers are woven into the fabric of the universe, your mobile number is intricately woven into your life. Its energy does more than connect you to others; it guides your journey,"
+          highlight="influencing your karma with every call, message, and interaction."
+          speed={14}
+          startDelay={250}
+        />
+      </div>
+    </div>
+  </div>
+  <Divider/>
+</section>
+
+
+
+      {/* BLOGS */}
+      <section className="section" id="blogs">
+        <div className="container">
+          <div className="centerBlock">
+            <h2 className="h2">Blogs</h2>
+            <p className="lead">Deep dives on numbers, energy, and the digital-age yantra you carry every day.</p>
+          </div>
+          <div className="blogGrid" style={{marginTop:24}}>
+            {[{img:gradeImg,title:"Grades of Energy"},
+              {img:blankStarImg,title:"Finding Your Lucky Pattern"},
+              {img:blankStarImg,title:"Mobile Number Energy Flow"}].map((b,i)=> (
+              <article className="blogCard" key={i}>
+                <img src={b.img} alt={b.title}/>
+                <h4>{b.title}</h4>
+                <p>Short excerpt of your blog goes here. Replace with real content pulled from your CMS or Markdown files.</p>
+                <a className="ctaLink" href={`/blog/sample-${i+1}`}>Read more »</a>
+              </article>
+            ))}
+          </div>
+        </div>
+        <Divider/>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="section" id="final-cta">
+        <div className="container">
+          <div className="heroGrid">
+            <div>
+              <h2 className="h2">Is your number enhancing your journey — or holding you back?</h2>
+              <div className="iconCol">
+                {[
+                  [fortuneImg,"Fortune"],
+                  [loveImg,"Love"],
+                  [financeImg,"Finance"],
+                  [intelligenceImg,"Intelligence"],
+                  [intuitionImg,"Intuition"]
+                ].map(([src,label],i)=>(
+                  <div className="bigBadge" key={i}>
+                    <img src={src} alt={label}/>
+                    <div className="label">{label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <InlineInstantReportForm
+                ctaLabel="Purchase & Get Report"
+                onSubmit={openPrefilledModal}
+              />
+              <div className="inline" style={{marginTop:12}}>
+            
+              </div>
+            </div>
+          </div>
+
+          <footer className="footerBar" style={{marginTop:32}}>
+            <div className="container row">
+              <div className="row">
+                <a href="/termsandconditions">Terms & Conditions</a>
+                <a href="/privacy-policy">Privacy Policy</a>
+              </div>
+              <div style={{color:'#1d1209',fontWeight:700}}>Contact Us – suma@consciouskarma.co</div>
+            </div>
+          </footer>
+        </div>
+      </section>
+    </div>
+  );
+}
+function TypeWriterOnce({ text, speed = 28 }) {
+  const [out, setOut] = React.useState("");
+  React.useEffect(() => {
+    let i = 0, t;
+    const step = () => {
+      if (i <= text.length) { setOut(text.slice(0, i++)); t = setTimeout(step, speed); }
+    };
+    step(); return () => clearTimeout(t);
+  }, [text, speed]);
+  return (
+    <h2 className="weaveHeading">
+      {out}{out.length < text.length ? <span className="weaveCaret" /> : null}
+    </h2>
+  );
+}
+
+/* Paragraph: true typewriter, with live accent on the final phrase */
+function ParagraphTypewriter({
+  text,
+  highlight = "",         // optional ending phrase that should be accented
+  speed = 14,
+  startDelay = 250,
+}) {
+  const full = highlight ? `${text} ${highlight}` : text;
+  const hiStart = highlight ? text.length + 1 : full.length;
+
+  const [i, setI] = React.useState(0);
+
+  React.useEffect(() => {
+    let t, kick;
+    const type = () => {
+      setI(prev => {
+        if (prev < full.length) {
+          t = setTimeout(type, speed);
+          return prev + 1;
+        }
+        return prev;
+      });
+    };
+    kick = setTimeout(type, startDelay);
+    return () => { clearTimeout(t); clearTimeout(kick); };
+  }, [full, speed, startDelay]);
+
+  const normal = full.slice(0, Math.min(i, hiStart));
+  const hi     = i > hiStart ? full.slice(hiStart, i) : "";
+
+  return (
+    <p className="lead weavePara" dir="ltr" style={{ textAlign: "left" }}>
+      {normal}{highlight && <span className="wAccent">{hi}</span>}
+      {i < full.length && <span className="weaveCaret" />}
+    </p>
+  );
+}
