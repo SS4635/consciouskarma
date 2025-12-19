@@ -357,7 +357,7 @@ export default function ConsultationPlans() {
         </div>
 
         {/* Plans Section - HAMESHA DIKHEGA */}
-        <div className="row justify-content-center g-4">
+        <div className="row justify-content-center g-4 mt-5">
           {plans.map((plan) => (
             <div key={plan.id} className="col-12 col-md-10 col-lg-7">
               <div

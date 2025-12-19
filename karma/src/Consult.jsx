@@ -146,7 +146,99 @@ const [showLogin, setShowLogin] = useState(false);
           color: #cfcfcf;
           font-family: 'Arsenal', system-ui, sans-serif;
         }
-      `}</style>
+    /* -----------------------------
+   MOBILE RESPONSIVE – CK
+------------------------------*/
+
+@media (max-width: 768px) {
+  .ck-mobile-section {
+    padding: 28px 18px;
+    text-align: center;
+  }
+
+  .ck-mobile-section h1,
+  .ck-mobile-section h2 {
+    font-size: 22px;
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+
+  .ck-mobile-section p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 18px;
+    color: #eaeaea;
+  }
+
+  /* Orange glowing pills */
+  .ck-needs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 26px 0;
+  }
+
+  .ck-need-pill {
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Single center pill */
+  .ck-need-pill.center {
+    grid-column: span 2;
+    justify-self: center;
+  }
+
+  /* Consultation steps */
+  .ck-steps {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .ck-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: 320px;
+  }
+
+  .ck-step-icon {
+    flex-shrink: 0;
+  }
+
+  .ck-step-text {
+    font-size: 15px;
+    line-height: 1.4;
+    color: #ff6b35;
+  }
+
+  /* Footer */
+  footer a {
+    font-size: 11px;
+  }
+}
+  .ck-section-divider {
+  width: 100%;
+  height: 2px;
+  margin: 0 auto;
+  background: linear-gradient(
+    to right,
+    transparent,
+    #444,
+    #666,
+    #444,
+    transparent
+  );
+  opacity: 0.8;
+}
+
+  `}</style>
 
       
       <CKNavbar
@@ -158,6 +250,7 @@ const [showLogin, setShowLogin] = useState(false);
 
       {/* Main Content */}
       <Home />
+      <div className="ck-section-divider" />
       <ConsultationSection />
       <ConsultationPlans />
       {/* <ConsultationBookingForm /> */}

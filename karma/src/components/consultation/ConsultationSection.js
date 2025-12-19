@@ -136,6 +136,32 @@ export default function ConsultationSection() {
                     padding-right: 0.5rem;
                   }
                 }
+                  @media (max-width: 768px) {
+  .consultation-row {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* KEY FIX */
+    gap: 12px;
+    width: 100%;
+    max-width: 360px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .consultation-text {
+    font-size: 1.4rem !important;
+    line-height: 1.45;
+    text-align: left;
+    padding: 0 !important;
+  }
+
+  .consultation-icon {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+  }
+}
+
               `}
             </style>
             <div className="d-flex flex-column gap-2 consultation-container">
