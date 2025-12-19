@@ -1,0 +1,313 @@
+import React, { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+export default function CompatibilityNumbersForm({
+  primaryData = {},
+  numbers = [],
+  onPrimaryChange,
+  onChange,
+  onAdd,
+  onRemove,
+  isExtended = false,
+  showTitle = false,
+  className = "",
+}) {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  // जब नया नंबर add हो, तो उसे auto-open करने के लिए Logic (बर्करार रखा गया है)
+  useEffect(() => {
+    if (numbers.length) setOpenIndex(numbers.length - 1);
+  }, [numbers.length]);
+
+  return (
+    <div className={`${className} font-arsenal`}>
+      {/* CSS Styles Copied from ParallelNumbersForm for Consistency */}
+      <style>{`
+        .pn-title {
+          font-size: 28px;
+          font-weight: 300;
+          margin-top: 1rem;
+          margin-bottom: 2rem;
+          text-align: center;
+          color: #fff;
+        }
+
+        .pn-block { padding: 0; background: transparent; }
+
+        .pn-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 1rem;
+        }
+        .pn-header-label {
+          font-size: 17.6px;
+          font-weight: 300;
+          color: #fff;
+        }
+        .pn-actions {
+          display: flex;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .pn-toggle {
+          background: transparent;
+          border: 1.5px solid #666;
+          border-radius: 12px;
+          color: #ff6b35;
+          width: 44px;
+          height: 44px;
+          font-size: 22px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          line-height: 1;
+        }
+        .pn-toggle:hover { border-color: #ff6b35; }
+
+        .pn-remove {
+          background: transparent;
+          border: 1.5px solid #666;
+          border-radius: 12px;
+          color: #ff6b35;
+          padding: 0 14px;
+          height: 44px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.25s ease;
+          white-space: nowrap;
+        }
+        .pn-remove:hover { border-color: #ff6b35; background: rgba(255, 107, 53, 0.08); }
+
+        .pn-label {
+          font-size: 17.6px;
+          font-weight: 300;
+          margin-bottom: 0.45rem;
+          color: #fff;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        .pn-star { color: #fff; }
+
+        .pn-input, .pn-select {
+          width: 100%;
+          background: transparent;
+          border: 1.5px solid #666;
+          border-radius: 12px;
+          padding: 0.65rem 0.85rem;
+          color: #fff;
+          font-size: 0.95rem;
+          height: 44px;
+          transition: all 0.25s ease;
+        }
+        .pn-input:focus, .pn-select:focus {
+          outline: none;
+          border-color: #ff6b35;
+          box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
+        }
+        .pn-input::placeholder { color: #999; }
+
+        .pn-select {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          background-image:
+            linear-gradient(45deg, transparent 50%, #fff 50%),
+            linear-gradient(135deg, #fff 50%, transparent 50%);
+          background-position:
+            calc(100% - 18px) calc(50% - 3px),
+            calc(100% - 12px) calc(50% - 3px);
+          background-size: 6px 6px, 6px 6px;
+          background-repeat: no-repeat;
+          padding-right: 34px;
+        }
+
+        .pn-mobile-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; }
+
+        .pn-add-wrap { display: flex; align-items: center; gap: 12px; margin-top: 1rem; }
+        .pn-add {
+          background: transparent;
+          border: 1.5px solid #666;
+          border-radius: 12px;
+          height: 44px;
+          padding: 0 18px;
+          color: #fff;
+          transition: all 0.25s ease;
+          cursor: pointer;
+        }
+        .pn-add:hover { border-color: #ff6b35; }
+
+        @media (max-width: 420px) {
+          .pn-title { font-size: 24px; }
+          .pn-mobile-row { grid-template-columns: 80px 1fr; gap: 10px; }
+          .pn-remove { padding: 0 10px; }
+        }
+      `}</style>
+
+      {showTitle && <h1 className="pn-title">Compatibility Numbers</h1>}
+
+      {/* =========================================
+          PRIMARY COMPATIBILITY NUMBER (Fixed)
+         ========================================= */}
+      <div className="pn-block mb-4">
+
+        {/* Mobile Number */}
+        <div className="mb-3">
+          <div className="pn-label">
+            <span>Mobile Number</span>
+            <span className="pn-star">*</span>
+          </div>
+
+          <div className="pn-mobile-row">
+            <select
+              className="pn-select"
+              value={primaryData.isd || "+91"}
+              onChange={(e) =>
+                onPrimaryChange?.({ ...primaryData, isd: e.target.value })
+              }
+            >
+              <option value="+91">+91</option>
+              <option value="+1">+1</option>
+              <option value="+44">+44</option>
+              <option value="+61">+61</option>
+            </select>
+
+            <input
+              type="text"
+              className="pn-input"
+              placeholder="Mobile number"
+              value={primaryData.mobile || ""}
+              onChange={(e) =>
+                onPrimaryChange?.({ ...primaryData, mobile: e.target.value })
+              }
+            />
+          </div>
+        </div>
+
+        {/* Relationship */}
+        <div className="mb-3">
+          <div className="pn-label">
+            <span>Relationship with the user</span>
+            <span className="pn-star">*</span>
+          </div>
+          <input
+            type="text"
+            className="pn-input"
+            placeholder="Spouse, Partner, Friend"
+            value={primaryData.relationship || ""}
+            onChange={(e) =>
+              onPrimaryChange?.({ ...primaryData, relationship: e.target.value })
+            }
+          />
+        </div>
+      </div>
+
+      {/* =========================================
+          EXTRA NUMBERS – EXTENDED PLAN (Dynamic)
+         ========================================= */}
+      {isExtended && (
+        <>
+          <div className="d-flex flex-column gap-3">
+            {numbers.map((num, index) => {
+              const isOpen = openIndex === index;
+
+              return (
+                <div key={index} className="pn-block">
+                  <div className="pn-header">
+                    <div className="pn-header-label">
+                      Compatibility Number #{index + 2}
+                    </div>
+
+                    <div className="pn-actions">
+                      <button
+                        type="button"
+                        className="pn-toggle"
+                        onClick={() => setOpenIndex(isOpen ? null : index)}
+                      >
+                        {isOpen ? "−" : "+"}
+                      </button>
+                      <button
+                        type="button"
+                        className="pn-remove"
+                        onClick={() => onRemove?.(index)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+
+                  {isOpen && (
+                    <>
+                      {/* Dynamic Mobile */}
+                      <div className="mb-3">
+                        <div className="pn-label">
+                          <span>Mobile Number</span>
+                          <span className="pn-star">*</span>
+                        </div>
+
+                        <div className="pn-mobile-row">
+                          <select
+                            className="pn-select"
+                            value={num.isd || "+91"}
+                            onChange={(e) =>
+                              onChange?.(index, "isd", e.target.value)
+                            }
+                          >
+                            <option value="+91">+91</option>
+                            <option value="+1">+1</option>
+                            <option value="+44">+44</option>
+                            <option value="+61">+61</option>
+                          </select>
+
+                          <input
+                            type="text"
+                            className="pn-input"
+                            placeholder="Mobile number"
+                            value={num.mobile || ""}
+                            onChange={(e) =>
+                              onChange?.(index, "mobile", e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      {/* Dynamic Relationship */}
+                      <div className="mb-3">
+                        <div className="pn-label">
+                          <span>Relationship with the user</span>
+                          <span className="pn-star">*</span>
+                        </div>
+                        <input
+                          type="text"
+                          className="pn-input"
+                          placeholder="Spouse, Partner, Friend"
+                          value={num.relationship || ""}
+                          onChange={(e) =>
+                            onChange?.(index, "relationship", e.target.value)
+                          }
+                        />
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* ADD BUTTON */}
+          <div className="pn-add-wrap">
+            <button type="button" className="pn-add" onClick={onAdd}>
+              Add Number
+            </button>
+            <span style={{ color: "#fff", opacity: 0.8 }}>If any</span>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

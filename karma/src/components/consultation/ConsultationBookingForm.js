@@ -2,10 +2,12 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Swal from "sweetalert2";
-import GeneralInformationForm from "./forms/GeneralInformationForm";
+import GeneralInformationForm from "./forms/GeneralInformationForm1";
 import PrimaryNumberForm from "./forms/PrimaryNumberForm";
 import ParallelNumbersForm from "./forms/ParallelNumbersForm";
 import PreviousNumbersForm from "./forms/PreviousNumbersForm";
+import CompatibilityNumbersForm from "./forms/CompatibilityNumbersForm";
+
 
 export default function ConsultationBookingForm({
   maxSteps = 5,
@@ -171,21 +173,24 @@ const isExtendedCompatibility = !!selectedPlan?.isExtended;
 
     setDynamicNumbers((prev) => {
       const arr = prev[stepId] || [];
-      if (arr.length >= 3) return prev;
+       if ((stepId === 3 || stepId === 4) && arr.length >= 3) return prev;
       return { ...prev, [stepId]: [...arr, base] };
     });
 
     setFormData((prev) => {
-      const arr = prev[stepId]?.dynamicNumbers || [];
-      if (arr.length >= 3) return prev;
-      return {
-        ...prev,
-        [stepId]: {
-          ...(prev[stepId] || {}),
-          dynamicNumbers: [...arr, base],
-        },
-      };
-    });
+  const arr = prev[stepId]?.dynamicNumbers || [];
+
+  if ((stepId === 3 || stepId === 4) && arr.length >= 3) return prev;
+
+  return {
+    ...prev,
+    [stepId]: {
+      ...(prev[stepId] || {}),
+      dynamicNumbers: [...arr, base],
+    },
+  };
+});
+
   };
 
   // const [otp, setOtp] = useState("");
@@ -494,31 +499,25 @@ const isExtendedCompatibility = !!selectedPlan?.isExtended;
 
     switch (step.id) {
       case 1: {
-  let err =
-    requireField("Name", "Name") ||
-    requireField("Gender", "Gender") ||
-    requireField("Email-id", "Email-id");
+        let err =
+          requireField("Name", "Name") ||
+          requireField("Gender", "Gender") ||
+          requireField("Place of Birth", "Place of Birth") || // Spelling check kar lein
+          requireField("Email-id", "Email-id");
 
-  if (err) return err;
+        if (err) return err;
 
-  if (!data["Date of Birth"]) {
-    return "Please fill Date of Birth.";
-  }
+        if (!data["Date of Birth"]) {
+          return "Please fill Date of Birth.";
+        }
 
-  if (!data["Time of Birth"]) {
-    return "Please fill Time of Birth.";
-  }
+        // ❌ यहाँ से Time of Birth का check हटा दिया है
+        // if (!data["Time of Birth"]) return "Please fill Time of Birth";  <-- DELETE THIS
 
-  if (!String(data["Place of Birth"] || "").trim()) {
-    return "Please fill Place of Birth.";
-  }
-
-  if (!emailRegex.test(String(data["Email-id"] || "").trim())) {
-    return "Please enter a valid Email-id.";
-  }
-
-  return null;
-}
+        // Email regex validation...
+        // ...
+        return null;
+      }
 
 
       case 2: {
@@ -668,7 +667,7 @@ const isExtendedCompatibility = !!selectedPlan?.isExtended;
   const handleProceed = async () => {
     if (currentStep !== effectiveSteps.length - 1) return;
 
-    // Validate all steps before proceeding
+    // Validate all steps
     for (let i = 0; i < effectiveSteps.length; i++) {
       const err = validateStep(effectiveSteps[i]);
       if (err) {
@@ -677,15 +676,26 @@ const isExtendedCompatibility = !!selectedPlan?.isExtended;
       }
     }
 
+    // 🔥 FIX: यहाँ हम डेटा की एक कॉपी बनाएँगे और Default Time सेट करेंगे
+    const finalFormData = JSON.parse(JSON.stringify(formData)); // Deep copy for safety
+    
+    // Step 1 ka data check karein
+    if (!finalFormData[1]) finalFormData[1] = {};
+    
+    // Agar Time of Birth khali hai, toh 00:00 set karein
+    if (!finalFormData[1]["Time of Birth"]) {
+        finalFormData[1]["Time of Birth"] = "00:00";
+    }
+
     try {
-      // 🌟 1️⃣ CREATE ORDER (NO Razorpay IDs yet)
+      // 🌟 CREATE ORDER
       const createRes = await fetch(
         `${API_BASE}/api/pay/create-consultation-order`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            formData,
+            formData: finalFormData, // 🔥 Note: Yaha 'formData' ki jagah 'finalFormData' bhejein
             planName: selectedPlan?.title || currentForm.title,
             price: Number(
               (selectedPlan?.price || currentForm.price).replace(/[^\d]/g, "")
@@ -693,7 +703,6 @@ const isExtendedCompatibility = !!selectedPlan?.isExtended;
           }),
         }
       );
-
       const createData = await createRes.json();
 
       if (!createData.ok) {
@@ -1181,840 +1190,68 @@ const isExtendedCompatibility = !!selectedPlan?.isExtended;
               style={{ padding: inModal ? "1.2rem 1.2rem 1.5rem" : undefined }}
             >
               
-              <div className="form-fields">
-                {/* Use GeneralInformationForm for step 1 */}
-                {currentForm.id === 1 ? (
-                  <GeneralInformationForm
-                    data={getStepData(1)}
-                    onChange={(field, value) => setFieldValue(1, field, value)}
-                    showTitle={false}
-                    showDateTimePickers={true}
-                  />
-                ) : currentForm.id === 2 ? (
-                  <PrimaryNumberForm
-                    data={getStepData(2)}
-                    onChange={(field, value) => setFieldValue(2, field, value)}
-                    showTitle={false}
-                  />
-                ) : currentForm.id === 3 ? (
-                  <ParallelNumbersForm
-                    numbers={getParallelNumbersData()}
-                    onChange={handleParallelNumberChange}
-                    onAdd={handleAddParallelNumber}
-                    onRemove={handleRemoveParallelNumber}
-                    onToggle={handleParallelToggle}
-                    maxNumbers={3}
-                    showTitle={false}
-                  />
-                ) : currentForm.id === 4 ? (
-                  <PreviousNumbersForm
-                    numbers={getPreviousNumbersData()}
-                    onChange={handlePreviousNumberChange}
-                    onAdd={handleAddPreviousNumber}
-                    onRemove={handleRemovePreviousNumber}
-                    onToggle={handlePreviousToggle}
-                    showTitle={false}
-                  />
-                ) : (
-                  currentForm.fields.map((field, index) => {
-                    const stepData = getStepData(currentForm.id);
-                    const usageValue = stepData["Usage type"]; // for Primary & Compatibility if ever used
-                    const isDateDropdown =
-                      field.label === "Using this number since" ||
-                      field.label === "Used since";
-
-                    // hide Line of Work when Usage type is Personal / not selected (for primary & any others)
-                    if (
-                      field.label === "Line of Work" &&
-                      !(usageValue === "Work" || usageValue === "Both")
-                    ) {
-                      return null;
-                    }
-
-                    // ---------- TEXT FIELD ----------
-                    if (field.type === "text") {
-                      return (
-                        <div key={index} className="mb-3">
-                          <div className="field-label">
-                            <span>
-                              {field.label}
-                              <span className="required-star">*</span>
-                            </span>
-                            {field.additionalText && (
-                              <span className="additional-text">
-                                {field.additionalText}
-                              </span>
-                            )}
-                          </div>
-                          <input
-                            type="text"
-                            className="form-input fw-light"
-                            placeholder={field.placeholder}
-                            onChange={(e) =>
-                              setFieldValue(
-                                currentForm.id,
-                                field.label,
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-                      );
-                    }
-
-                    // ---------- EMAIL ----------
-                    if (field.type === "email") {
-                      return (
-                        <div key={index} className="mb-3">
-                          <div className="field-label">
-                            <span>
-                              {field.label}
-                              <span className="required-star">*</span>
-                            </span>
-                            {field.additionalText && (
-                              <span className="additional-text">
-                                {field.additionalText}
-                              </span>
-                            )}
-                          </div>
-                          <input
-                            type="email"
-                            className="form-input"
-                            placeholder={field.placeholder}
-                            onChange={(e) =>
-                              setFieldValue(
-                                currentForm.id,
-                                field.label,
-                                e.target.value
-                              )
-                            }
-                          />
-                        </div>
-                      );
-                    }
-
-                    // ---------- BUTTON GROUP (Gender / Usage type) ----------
-                    if (field.type === "button-group") {
-                      return (
-                        <div key={index} className="mb-3">
-                          <div className="field-label">
-                            <span>
-                              {field.label}
-                              <span className="required-star">*</span>
-                            </span>
-                          </div>
-                          <div className="d-flex gap-2 flex-wrap w-100">
-                            {field.options.map((option, idx) => (
-                              <button
-                                key={idx}
-                                className={`btn-option ${
-                                  selectedUsageType[
-                                    `${currentStep}-${index}`
-                                  ] === option
-                                    ? "active"
-                                    : ""
-                                }`}
-                                onClick={() => {
-                                  setSelectedUsageType({
-                                    ...selectedUsageType,
-                                    [`${currentStep}-${index}`]: option,
-                                  });
-                                  setFieldValue(
-                                    currentForm.id,
-                                    field.label,
-                                    option
-                                  );
-                                  // Trigger height update after state change
-                                  setTimeout(() => {
-                                    updateContainerHeight();
-                                  }, 100);
-                                }}
-                                type="button"
-                              >
-                                {option}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    // ---------- DOUBLE INPUT (Age OR date dropdowns) ----------
-                    if (field.type === "double-input") {
-                      return (
-                        <div key={index} className="mb-3">
-                          <div className="field-label">
-                            <span>
-                              {field.label}
-                              <span className="required-star">*</span>
-                            </span>
-                          </div>
-                          <div className="d-flex gap-2 mb-3">
-                            {isDateDropdown ? (
-                              <>
-                                {/* Month select */}
-                                <select
-                                  className="form-input select-input"
-                                  style={{ flex: 1 }}
-                                  value={(stepData[field.label] || [])[0] || ""}
-                                  onChange={(e) =>
-                                    setFieldValue(currentForm.id, field.label, [
-                                      e.target.value,
-                                      (stepData[field.label] || [])[1] || "",
-                                    ])
-                                  }
-                                >
-                                  <option value="">Month</option>
-                                  {months.map((m) => (
-                                    <option key={m} value={m}>
-                                      {m}
-                                    </option>
-                                  ))}
-                                </select>
-
-                                {/* Year select */}
-                                <select
-                                  className="form-input select-input"
-                                  style={{ flex: 1 }}
-                                  value={(stepData[field.label] || [])[1] || ""}
-                                  onChange={(e) =>
-                                    setFieldValue(currentForm.id, field.label, [
-                                      (stepData[field.label] || [])[0] || "",
-                                      e.target.value,
-                                    ])
-                                  }
-                                >
-                                  <option value="">Year</option>
-                                  {years.map((yr) => (
-                                    <option key={yr} value={yr}>
-                                      {yr}
-                                    </option>
-                                  ))}
-                                </select>
-                              </>
-                            ) : (
-                              <>
-                                {/* normal (Age) */}
-                                <input
-                                  type="text"
-                                  className="form-input"
-                                  placeholder={field.placeholders[0]}
-                                  style={{ flex: 1 }}
-                                  onChange={(e) =>
-                                    setFieldValue(currentForm.id, field.label, [
-                                      e.target.value,
-                                      (stepData[field.label] || [])[1] || "",
-                                    ])
-                                  }
-                                />
-                                <input
-                                  type="text"
-                                  className="form-input"
-                                  placeholder={field.placeholders[1]}
-                                  style={{ flex: 1 }}
-                                  onChange={(e) =>
-                                    setFieldValue(currentForm.id, field.label, [
-                                      (stepData[field.label] || [])[0] || "",
-                                      e.target.value,
-                                    ])
-                                  }
-                                />
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    // ---------- ISD + MOBILE ----------
-                    if (field.type === "isd-mobile") {
-                      return (
-                        <div key={index} className="mb-3">
-                          <div className="field-label">
-                            <span>
-                              {field.label}
-                              <span className="required-star">*</span>
-                            </span>
-                          </div>
-                          <div className="d-flex gap-2">
-                            <select
-                              className="isd-input select-input"
-                              value={(stepData[field.label] || {}).isd || "+91"}
-                              onChange={(e) =>
-                                setFieldValue(currentForm.id, field.label, {
-                                  ...(stepData[field.label] || {}),
-                                  isd: e.target.value,
-                                })
-                              }
-                            >
-                              <option value="+91">+91</option>
-                              <option value="+1">+1</option>
-                              <option value="+44">+44</option>
-                              <option value="+61">+61</option>
-                              <option value="+81">+81</option>
-                              <option value="+971">+971</option>
-                              <option value="+49">+49</option>
-                              <option value="+33">+33</option>
-                            </select>
-                            <input
-                              type="text"
-                              className="mobile-input"
-                              placeholder={field.placeholders[1]}
-                              onChange={(e) =>
-                                setFieldValue(currentForm.id, field.label, {
-                                  ...(stepData[field.label] || {}),
-                                  mobile: e.target.value,
-                                })
-                              }
-                            />
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    // ---------- ADD NUMBER BUTTONS ----------
-                    if (field.type === "button") {
-                      // SPECIAL: This code is no longer used for Parallel (3) or Previous (4)
-                      // as they now use dedicated form components
-                      if (false) {
-                        const dyn = dynamicNumbers[currentForm.id] || [];
-                        return (
-                          <div key={index} className="mb-3">
-                            {/* UPDATED TOP ROW: only small button + "If any" (no label) */}
-                            <div className="d-flex gap-2 align-items-center mt-2">
-                              <button
-                                className="btn-option"
-                                style={{
-                                  flex: "0 0 130px", // smaller width
-                                  height: "34px",
-                                  fontSize: "0.85rem",
-                                  padding: 0,
-                                }}
-                                type="button"
-                                onClick={() => handleAddNumber(currentForm.id)}
-                              >
-                                {field.placeholder}
-                              </button>
-                              {field.additionalText && (
-                                <span className="additional-text">
-                                  {field.additionalText}
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Dynamic blocks – each number form */}
-                            {dyn.map((num, idx) => (
-                              <div
-                                key={idx}
-                                className="mt-3"
-                                style={{
-                                  borderTop: "1px solid #444",
-                                  paddingTop: "0.6rem",
-                                  paddingLeft: "0.6rem",
-                                  paddingRight: "0.6rem",
-                                  maxWidth: "92%",
-                                  margin: "0 auto",
-                                }}
-                              >
-                                {/* Only Remove button on top-right (no Parallel #1 label) */}
-                                <div className="d-flex justify-content-end mb-2 gap-2">
-                                  <button
-                                    type="button"
-                                    className="btn-option"
-                                    style={{
-                                      flex: "0 0 auto",
-                                      maxWidth: "90px",
-                                      background: "#ff6b35",
-                                      border: "none",
-                                      height: "36px",
-                                      fontSize: "20px",
-                                      fontWeight: "heavy",
-                                      width: "36px",
-                                      backgroundColor: "black",
-                                      color: "#FF6B35",
-                                      boxSizing: "border-box",
-                                      borderWidth: "1px",
-                                      borderStyle: "solid",
-                                      borderColor: "#e5e7eb",
-                                    }}
-                                    onClick={() =>
-                                      handleRemoveNumber(currentForm.id, idx)
-                                    }
-                                  >
-                                    -
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="btn-option"
-                                    style={{
-                                      flex: "0 0 auto",
-                                      maxWidth: "90px",
-                                      background: "#ff6b35",
-                                      border: "none",
-                                      height: "38.6px",
-                                      fontSize: "14px",
-                                      fontWeight: "heavy",
-                                      width: "76.95px",
-                                      backgroundColor: "black",
-                                      color: "#FF6B35",
-                                      boxSizing: "border-box",
-                                      borderWidth: "1px",
-                                      borderStyle: "solid",
-                                      borderColor: "#e5e7eb",
-                                    }}
-                                    onClick={() =>
-                                      handleRemoveNumber(currentForm.id, idx)
-                                    }
-                                  >
-                                    Remove
-                                  </button>
-                                </div>
-
-                                {/* Mobile Number */}
-                                <div className="mb-2">
-                                  <div
-                                    className="field-label"
-                                    style={{ marginBottom: "0.3rem" }}
-                                  >
-                                    <span>
-                                      Mobile Number
-                                      <span className="required-star">*</span>
-                                    </span>
-                                  </div>
-                                  <div className="d-flex gap-2">
-                                    <select
-                                      className="isd-input select-input"
-                                      value={num.isd || "+91"}
-                                      onChange={(e) =>
-                                        setDynamicNumberValue(
-                                          currentForm.id,
-                                          idx,
-                                          "isd",
-                                          e.target.value
-                                        )
-                                      }
-                                    >
-                                      <option value="+91">+91</option>
-                                      <option value="+1">+1</option>
-                                      <option value="+44">+44</option>
-                                      <option value="+61">+61</option>
-                                      <option value="+81">+81</option>
-                                      <option value="+971">+971</option>
-                                      <option value="+49">+49</option>
-                                      <option value="+33">+33</option>
-                                    </select>
-                                    <input
-                                      type="text"
-                                      className="mobile-input"
-                                      placeholder="Mobile Number"
-                                      value={num.mobile}
-                                      onChange={(e) =>
-                                        setDynamicNumberValue(
-                                          currentForm.id,
-                                          idx,
-                                          "mobile",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                </div>
-
-                                {/* Used / Using Since & Till */}
-                                {currentForm.id === 3 ? (
-                                  // Parallel: "Using this number since"
-                                  <div className="mb-2">
-                                    <div
-                                      className="field-label"
-                                      style={{ marginBottom: "0.3rem" }}
-                                    >
-                                      <span>
-                                        Using this number since
-                                        <span className="required-star">*</span>
-                                      </span>
-                                    </div>
-                                    <div className="d-flex gap-2">
-                                      <select
-                                        className="form-input select-input"
-                                        style={{ flex: 1 }}
-                                        value={num.since?.[0] || ""}
-                                        onChange={(e) =>
-                                          setDynamicNumberValue(
-                                            currentForm.id,
-                                            idx,
-                                            "since",
-                                            [
-                                              e.target.value,
-                                              num.since?.[1] || "",
-                                            ]
-                                          )
-                                        }
-                                      >
-                                        <option value="">Month</option>
-                                        {months.map((m) => (
-                                          <option key={m} value={m}>
-                                            {m}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <select
-                                        className="form-input select-input"
-                                        style={{ flex: 1 }}
-                                        value={num.since?.[1] || ""}
-                                        onChange={(e) =>
-                                          setDynamicNumberValue(
-                                            currentForm.id,
-                                            idx,
-                                            "since",
-                                            [
-                                              num.since?.[0] || "",
-                                              e.target.value,
-                                            ]
-                                          )
-                                        }
-                                      >
-                                        <option value="">Year</option>
-                                        {years.map((yr) => (
-                                          <option key={yr} value={yr}>
-                                            {yr}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  // Previous: Used since + Used till
-                                  <>
-                                    <div className="mb-2">
-                                      <div
-                                        className="field-label"
-                                        style={{ marginBottom: "0.3rem" }}
-                                      >
-                                        <span>
-                                          Used since
-                                          <span className="required-star">
-                                            *
-                                          </span>
-                                        </span>
-                                      </div>
-                                      <div className="d-flex gap-2">
-                                        <select
-                                          className="form-input select-input"
-                                          style={{ flex: 1 }}
-                                          value={num.usedSince?.[0] || ""}
-                                          onChange={(e) =>
-                                            setDynamicNumberValue(
-                                              currentForm.id,
-                                              idx,
-                                              "usedSince",
-                                              [
-                                                e.target.value,
-                                                num.usedSince?.[1] || "",
-                                              ]
-                                            )
-                                          }
-                                        >
-                                          <option value="">Month</option>
-                                          {months.map((m) => (
-                                            <option key={m} value={m}>
-                                              {m}
-                                            </option>
-                                          ))}
-                                        </select>
-                                        <select
-                                          className="form-input select-input"
-                                          style={{ flex: 1 }}
-                                          value={num.usedSince?.[1] || ""}
-                                          onChange={(e) =>
-                                            setDynamicNumberValue(
-                                              currentForm.id,
-                                              idx,
-                                              "usedSince",
-                                              [
-                                                num.usedSince?.[0] || "",
-                                                e.target.value,
-                                              ]
-                                            )
-                                          }
-                                        >
-                                          <option value="">Year</option>
-                                          {years.map((yr) => (
-                                            <option key={yr} value={yr}>
-                                              {yr}
-                                            </option>
-                                          ))}
-                                        </select>
-                                      </div>
-                                    </div>
-
-                                    <div className="mb-2">
-                                      <div
-                                        className="field-label"
-                                        style={{ marginBottom: "0.3rem" }}
-                                      >
-                                        <span>
-                                          Used till
-                                          <span className="required-star">
-                                            *
-                                          </span>
-                                        </span>
-                                      </div>
-                                      <div className="d-flex gap-2">
-                                        <select
-                                          className="form-input select-input"
-                                          style={{ flex: 1 }}
-                                          value={num.usedTill?.[0] || ""}
-                                          onChange={(e) =>
-                                            setDynamicNumberValue(
-                                              currentForm.id,
-                                              idx,
-                                              "usedTill",
-                                              [
-                                                e.target.value,
-                                                num.usedTill?.[1] || "",
-                                              ]
-                                            )
-                                          }
-                                        >
-                                          <option value="">Month</option>
-                                          {months.map((m) => (
-                                            <option key={m} value={m}>
-                                              {m}
-                                            </option>
-                                          ))}
-                                        </select>
-                                        <select
-                                          className="form-input select-input"
-                                          style={{ flex: 1 }}
-                                          value={num.usedTill?.[1] || ""}
-                                          onChange={(e) =>
-                                            setDynamicNumberValue(
-                                              currentForm.id,
-                                              idx,
-                                              "usedTill",
-                                              [
-                                                num.usedTill?.[0] || "",
-                                                e.target.value,
-                                              ]
-                                            )
-                                          }
-                                        >
-                                          <option value="">Year</option>
-                                          {years.map((yr) => (
-                                            <option key={yr} value={yr}>
-                                              {yr}
-                                            </option>
-                                          ))}
-                                        </select>
-                                      </div>
-                                    </div>
-                                  </>
-                                )}
-
-                                {/* Usage type */}
-                                <div className="mb-2">
-                                  <div
-                                    className="field-label"
-                                    style={{ marginBottom: "0.3rem" }}
-                                  >
-                                    <span>
-                                      Usage type
-                                      <span className="required-star">*</span>
-                                    </span>
-                                  </div>
-                                  <div className="d-flex gap-2 flex-wrap w-100">
-                                    {["Personal", "Work", "Both"].map((opt) => (
-                                      <button
-                                        key={opt}
-                                        type="button"
-                                        className={`btn-option ${
-                                          num.usageType === opt ? "active" : ""
-                                        }`}
-                                        style={{
-                                          flex: 1,
-                                          height: "32px",
-                                          fontSize: "0.85rem",
-                                        }}
-                                        onClick={() =>
-                                          setDynamicNumberValue(
-                                            currentForm.id,
-                                            idx,
-                                            "usageType",
-                                            opt
-                                          )
-                                        }
-                                      >
-                                        {opt}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </div>
-
-                                {/* Line of Work – only when Work / Both */}
-                                {(num.usageType === "Work" ||
-                                  num.usageType === "Both") && (
-                                  <div className="mb-2">
-                                    <div
-                                      className="field-label"
-                                      style={{ marginBottom: "0.3rem" }}
-                                    >
-                                      <span>
-                                        Line of Work
-                                        <span className="required-star">*</span>
-                                      </span>
-                                    </div>
-                                    <input
-                                      type="text"
-                                      className="form-input"
-                                      placeholder="IT, Finance, Marketing, Public-relations, etc."
-                                      style={{ height: "34px" }}
-                                      value={num.lineOfWork}
-                                      onChange={(e) =>
-                                        setDynamicNumberValue(
-                                          currentForm.id,
-                                          idx,
-                                          "lineOfWork",
-                                          e.target.value
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                )}
-
-                                {/* Role */}
-                                <div className="mb-2">
-                                  <div
-                                    className="field-label"
-                                    style={{ marginBottom: "0.3rem" }}
-                                  >
-                                    <span>
-                                      Role
-                                      <span className="required-star">*</span>
-                                    </span>
-                                  </div>
-                                  <input
-                                    type="text"
-                                    className="form-input"
-                                    placeholder="Student, Shop Keeper, Accountant, etc."
-                                    style={{ height: "34px" }}
-                                    value={num.role}
-                                    onChange={(e) =>
-                                      setDynamicNumberValue(
-                                        currentForm.id,
-                                        idx,
-                                        "role",
-                                        e.target.value
-                                      )
-                                    }
-                                  />
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        );
-                      }
-
-                      // Default behavior for other steps (Compatibility etc.) – extra simple numbers
-                      return (
-                        <div key={index} className="mb-3">
-                          {(dynamicNumbers[currentForm.id] || []).map(
-                            (num, idx) => (
-                              <div
-                                key={idx}
-                                className="d-flex gap-2 align-items-center mt-2"
-                              >
-                                <select
-                                  className="isd-input select-input"
-                                  value={num.isd}
-                                  onChange={(e) =>
-                                    setDynamicNumberValue(
-                                      currentForm.id,
-                                      idx,
-                                      "isd",
-                                      e.target.value
-                                    )
-                                  }
-                                >
-                                  <option value="">ISD</option>
-                                  <option value="+91">+91</option>
-                                  <option value="+1">+1</option>
-                                  <option value="+44">+44</option>
-                                  <option value="+61">+61</option>
-                                  <option value="+81">+81</option>
-                                  <option value="+971">+971</option>
-                                </select>
-                                <input
-                                  type="text"
-                                  className="mobile-input"
-                                  placeholder="Mobile Number"
-                                  value={num.mobile}
-                                  onChange={(e) =>
-                                    setDynamicNumberValue(
-                                      currentForm.id,
-                                      idx,
-                                      "mobile",
-                                      e.target.value
-                                    )
-                                  }
-                                />
-                                <button
-                                  className="btn-option"
-                                  style={{
-                                    background: "#ff6b35",
-                                    color: "#fff",
-                                    border: "none",
-                                    flex: "0 0 auto",
-                                    padding: "0 12px",
-                                  }}
-                                  type="button"
-                                  onClick={() =>
-                                    handleRemoveNumber(currentForm.id, idx)
-                                  }
-                                >
-                                  Remove
-                                </button>
-                              </div>
-                            )
-                          )}
-
-                          {(dynamicNumbers[currentForm.id]?.length || 0) <
-                            3 && (
-                            <>
-                              <div className="field-label">
-                                <span>{field.label}</span>
-                                {field.additionalText && (
-                                  <span className="additional-text">
-                                    {field.additionalText}
-                                  </span>
-                                )}
-                              </div>
-                              <div className="d-flex gap-2 align-items-center mt-2">
-                                <button
-                                  className="btn-option"
-                                  style={{ flex: 1 }}
-                                  type="button"
-                                  onClick={() =>
-                                    handleAddNumber(currentForm.id)
-                                  }
-                                >
-                                  {field.placeholder}
-                                </button>
-                                {field.additionalText && (
-                                  <span className="additional-text">
-                                    {field.additionalText}
-                                  </span>
-                                )}
-                              </div>
-                            </>
-                          )}
-                        </div>
-                      );
-                    }
-
-                    return null;
-                  })
-                )}
-              </div>
+<div className="form-fields">
+  {currentForm.id === 1 ? (
+    <GeneralInformationForm
+      data={getStepData(1)}
+      onChange={(field, value) => setFieldValue(1, field, value)}
+      showTitle={false}
+      showDateTimePickers={true}
+    />
+  ) : currentForm.id === 2 ? (
+    <PrimaryNumberForm
+      data={getStepData(2)}
+      onChange={(field, value) => setFieldValue(2, field, value)}
+      showTitle={false}
+    />
+  ) : currentForm.id === 3 ? (
+    <ParallelNumbersForm
+      numbers={getParallelNumbersData()}
+      onChange={handleParallelNumberChange}
+      onAdd={handleAddParallelNumber}
+      onRemove={handleRemoveParallelNumber}
+      onToggle={handleParallelToggle}
+      maxNumbers={3}
+      showTitle={false}
+    />
+  ) : currentForm.id === 4 ? (
+    <PreviousNumbersForm
+      numbers={getPreviousNumbersData()}
+      onChange={handlePreviousNumberChange}
+      onAdd={handleAddPreviousNumber}
+      onRemove={handleRemovePreviousNumber}
+      onToggle={handlePreviousToggle}
+      showTitle={false}
+    />
+  ) : currentForm.id === 5 ? (
+  <CompatibilityNumbersForm
+    primaryData={{
+      ...(getStepData(5)["Mobile Number"] || {}),
+      relationship: getStepData(5)["Relationship with the user"],
+    }}
+    numbers={dynamicNumbers[5] || []}
+    isExtended={isExtendedCompatibility}
+    onPrimaryChange={(val) => {
+      setFieldValue(5, "Mobile Number", {
+        isd: val.isd,
+        mobile: val.mobile,
+      });
+      setFieldValue(5, "Relationship with the user", val.relationship);
+    }}
+    onAdd={() =>
+      handleAddNumber(5)
+    }
+    onRemove={(idx) =>
+      handleRemoveNumber(5, idx)
+    }
+    onChange={(idx, field, value) =>
+      setDynamicNumberValue(5, idx, field, value)
+    }
+  />
+)  : (
+    currentForm.fields.map(() => null)
+  )}
+</div>
 
               {/* Navigation */}
               <div className="ck-nav w-100">

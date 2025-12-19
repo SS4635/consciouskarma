@@ -11,22 +11,25 @@ export default function GeneralInformationForm({
   showDateTimePickers = false,
   className = "",
 }) {
-  const pickKey = (a, b) =>
-    Object.prototype.hasOwnProperty.call(data, a) ? a : b;
+  // Pick the key that your parent actually uses (backward compatible)
+  const pickKey = (a, b) => (Object.prototype.hasOwnProperty.call(data, a) ? a : b);
 
   const KEY_NAME = pickKey("Name", "name");
   const KEY_GENDER = pickKey("Gender", "gender");
   const KEY_EMAIL = pickKey("Email-id", "email");
-  const KEY_PLACE = pickKey("Place of Birth", "placeOfBirth");
-  const KEY_DOB_DATE = "Date of Birth";
-  const KEY_DOB_TIME = "Time of Birth";
+  const KEY_AGE_YEARS = pickKey("AgeYears", "ageYears");
+  const KEY_AGE_MONTHS = pickKey("AgeMonths", "ageMonths");
+  const KEY_DOB = "Date of Birth and Time"; // your existing structure
 
   const nameVal = data[KEY_NAME] ?? "";
   const genderVal = data[KEY_GENDER] ?? "";
   const emailVal = data[KEY_EMAIL] ?? "";
-  const placeVal = data[KEY_PLACE] ?? "";
-  const dateVal = data[KEY_DOB_DATE] ?? "";
-  const timeVal = data[KEY_DOB_TIME] ?? "";
+  const ageYearsVal = data[KEY_AGE_YEARS] ?? "";
+  const ageMonthsVal = data[KEY_AGE_MONTHS] ?? "";
+
+  const dobTime = data[KEY_DOB] || [];
+  const dateVal = dobTime[0] || "";
+  const timeVal = dobTime[1] || "";
 
   const [selectedGender, setSelectedGender] = useState(genderVal);
   const [showSignup, setShowSignup] = useState(false);
@@ -34,13 +37,21 @@ export default function GeneralInformationForm({
 
   useEffect(() => setSelectedGender(genderVal || ""), [genderVal]);
 
+  const yearsOptions = useMemo(() => Array.from({ length: 100 }, (_, i) => i + 1), []);
+  const monthsOptions = useMemo(() => Array.from({ length: 12 }, (_, i) => i), []);
+
   const handleFieldChange = (field, value) => {
     if (!onChange) return;
     onChange(field, value);
   };
 
+  const handleGenderSelect = (gender) => {
+    setSelectedGender(gender);
+    handleFieldChange(KEY_GENDER, gender);
+  };
+
   const modal = (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80">
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
       {showSignup && (
         <SignupModal
           onClose={() => setShowSignup(false)}
@@ -65,175 +76,225 @@ export default function GeneralInformationForm({
   return (
     <div className={`${className} font-arsenal`}>
       {(showSignup || showLogin) &&
-        ReactDOM.createPortal(modal, document.body)}
+        (typeof document !== "undefined"
+          ? ReactDOM.createPortal(modal, document.body)
+          : modal)}
 
       <style>{`
-        .gen-info-field-label {
-          font-size: 17px;
+        .gen-info-title {
+          font-size: 28px;
           font-weight: 300;
-          margin-bottom: 6px;
+          margin-bottom: 2rem;
+          text-align: center;
+          color: #fff;
+        }
+        .gen-info-field-label {
+          font-size: 17.6px;
+          font-weight: 300;
+          margin-bottom: 0.35rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
           color: #fff;
         }
+        .gen-info-required-star { color: #ffffff; margin-left: 4px; }
 
-        .gen-info-input {
+        .gen-info-input, .gen-info-select {
           width: 100%;
-          background: #0f0f0f !important;
+          background: #0f0f0f;
           border: 1.5px solid #666;
           border-radius: 12px;
-          padding: 10px 12px;
+          padding: 0.65rem 0.85rem;
           color: white;
-          height: 44px;
+          font-size: 0.95rem;
+          transition: all 0.25s ease;
+          height: 44px !important;
         }
-
-        .gen-info-input:focus {
+        .gen-info-input:focus, .gen-info-select:focus {
           outline: none;
           border-color: #ff6b35;
+          box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
+        .gen-info-input::placeholder { color: #999; }
 
-        .gen-info-input[type="date"],
-        .gen-info-input[type="time"] {
-          color-scheme: dark;
+        .gen-info-select {
+          appearance: none;
           -webkit-appearance: none;
+          -moz-appearance: none;
+          background-image:
+            linear-gradient(45deg, transparent 50%, #fff 50%),
+            linear-gradient(135deg, #fff 50%, transparent 50%);
+          background-position:
+            calc(100% - 18px) calc(50% - 3px),
+            calc(100% - 12px) calc(50% - 3px);
+          background-size: 6px 6px, 6px 6px;
+          background-repeat: no-repeat;
+          padding-right: 34px;
         }
 
-        .gen-info-btn-option {
-          border: 1.5px solid #666;
-          background: transparent;
-          color: white;
-          border-radius: 12px;
-          height: 44px;
-          flex: 1;
-        }
-
-        .gen-info-btn-option.active {
-          background: #ff6b35;
-          color: black;
-          border-color: #ff6b35;
-        }
-
-        .gen-info-link-btn {
-          background: none;
-          border: none;
-          color: #ff7a33;
-          cursor: pointer;
-          padding: 0;
-        }
-
-        .two-col {
+        .gen-info-two-col {
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 12px;
         }
+
+        .gen-info-btn-option {
+          background: transparent;
+          border: 1.5px solid #666;
+          border-radius: 12px;
+          color: white;
+          font-size: 0.95rem;
+          transition: all 0.25s ease;
+          cursor: pointer;
+          height: 44px !important;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex: 1;
+        }
+        .gen-info-btn-option:hover { border-color: #ff6b35; }
+        .gen-info-btn-option.active {
+          background: #ff6b35;
+          border-color: #ff6b35;
+          color: #0b0b0b;
+          font-weight: 600;
+        }
+
+        .gen-info-link-btn {
+          background: transparent;
+          border: none;
+          padding: 0;
+          color: #ff7a33;
+          font-weight: 400;
+          cursor: pointer;
+        }
       `}</style>
 
-      {showTitle && (
-        <h2 style={{ color: "white", marginBottom: "24px" }}>
-          General Information
-        </h2>
-      )}
+      <div className="gen-info-form">
+        {showTitle && <h1 className="gen-info-title">General Information</h1>}
 
-      {/* Name */}
-      <div className="mb-3">
-        <div className="gen-info-field-label">
-          <span>Name*</span>
+        {/* Name */}
+        <div className="mb-3">
+          <div className="gen-info-field-label">
+            <span>
+              Name<span className="gen-info-required-star">*</span>
+            </span>
+          </div>
+          <input
+            type="text"
+            className="gen-info-input fw-light"
+            placeholder="ABCXYZ"
+            value={nameVal}
+            onChange={(e) => handleFieldChange(KEY_NAME, e.target.value)}
+          />
         </div>
-        <input
-          className="gen-info-input"
-          value={nameVal}
-          onChange={(e) => handleFieldChange(KEY_NAME, e.target.value)}
-        />
-      </div>
 
-      {/* Gender */}
-      <div className="mb-3">
-        <div className="gen-info-field-label">
-          <span>Gender*</span>
+        {/* Gender */}
+        <div className="mb-3">
+          <div className="gen-info-field-label">
+            <span>
+              Gender<span className="gen-info-required-star">*</span>
+            </span>
+          </div>
+          <div className="d-flex gap-2 flex-wrap w-100">
+            {["Female", "Male", "Other"].map((option) => (
+              <button
+                key={option}
+                className={`gen-info-btn-option ${selectedGender === option ? "active" : ""}`}
+                onClick={() => handleGenderSelect(option)}
+                type="button"
+              >
+                {option}
+              </button>
+            ))}
+          </div>
         </div>
-        <div className="d-flex gap-2">
-          {["Female", "Male", "Other"].map((g) => (
-            <button
-              key={g}
-              className={`gen-info-btn-option ${
-                selectedGender === g ? "active" : ""
-              }`}
-              onClick={() => {
-                setSelectedGender(g);
-                handleFieldChange(KEY_GENDER, g);
-              }}
-              type="button"
-            >
-              {g}
+
+        {/* Age (Years + Months) */}
+        {!showDateTimePickers && (
+          <div className="mb-3">
+            <div className="gen-info-field-label">
+              <span>
+                Age<span className="gen-info-required-star">*</span>
+              </span>
+            </div>
+
+            <div className="gen-info-two-col">
+              <select
+                className="gen-info-select fw-light"
+                value={String(ageYearsVal || "")}
+                onChange={(e) => handleFieldChange(KEY_AGE_YEARS, e.target.value)}
+              >
+                <option value="">Years</option>
+                {yearsOptions.map((y) => (
+                  <option key={y} value={String(y)}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className="gen-info-select fw-light"
+                value={String(ageMonthsVal || "")}
+                onChange={(e) => handleFieldChange(KEY_AGE_MONTHS, e.target.value)}
+              >
+                <option value="">Months</option>
+                {monthsOptions.map((m) => (
+                  <option key={m} value={String(m)}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
+
+        {/* DOB */}
+        {showDateTimePickers && (
+          <div className="mb-3">
+            <div className="gen-info-field-label">
+              <span>
+                Date &amp; Time of Birth<span className="gen-info-required-star">*</span>
+              </span>
+            </div>
+
+            <div className="gen-info-two-col">
+              <input
+                type="date"
+                className="gen-info-input fw-light"
+                value={dateVal}
+                onChange={(e) => handleFieldChange(KEY_DOB, [e.target.value, timeVal])}
+              />
+              <input
+                type="time"
+                step="60"
+                className="gen-info-input fw-light"
+                value={timeVal}
+                onChange={(e) => handleFieldChange(KEY_DOB, [dateVal, e.target.value])}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Email */}
+        <div className="mb-3">
+          <div className="gen-info-field-label">
+            <span>
+              Email-id<span className="gen-info-required-star">*</span>
+            </span>
+            <button type="button" className="gen-info-link-btn" onClick={() => setShowSignup(true)}>
+              Create account
             </button>
-          ))}
+          </div>
+
+          <input
+            type="email"
+            className="gen-info-input"
+            placeholder="abc@gmail.com"
+            value={emailVal}
+            onChange={(e) => handleFieldChange(KEY_EMAIL, e.target.value)}
+          />
         </div>
-      </div>
-
-      {/* DOB + Time */}
-      {/* Date & Time of Birth */}
-{showDateTimePickers && (
-  <div className="mb-3">
-    <div className="gen-info-field-label">
-      <span>Date & Time of Birth*</span>
-    </div>
-
-    <div className="two-col">
-      {/* DATE */}
-      <input
-        type="date"
-        className="gen-info-input"
-        value={data["Date of Birth"] || ""}
-        onChange={(e) =>
-          onChange("Date of Birth", e.target.value)
-        }
-      />
-
-      {/* TIME */}
-      <input
-        type="time"
-        className="gen-info-input"
-        value={data["Time of Birth"] || ""}
-        onChange={(e) =>
-          onChange("Time of Birth", e.target.value)
-        }
-      />
-    </div>
-  </div>
-)}
-
-      {/* Place of Birth */}
-      <div className="mb-3">
-        <div className="gen-info-field-label">
-          <span>Place of Birth*</span>
-        </div>
-        <input
-          className="gen-info-input"
-          placeholder="City, State, Country"
-          value={placeVal}
-          onChange={(e) => handleFieldChange(KEY_PLACE, e.target.value)}
-        />
-      </div>
-
-      {/* Email */}
-      <div className="mb-3">
-        <div className="gen-info-field-label">
-          <span>Email-id*</span>
-          <button
-            type="button"
-            className="gen-info-link-btn"
-            onClick={() => setShowSignup(true)}
-          >
-            Create account
-          </button>
-        </div>
-        <input
-          type="email"
-          className="gen-info-input"
-          value={emailVal}
-          onChange={(e) => handleFieldChange(KEY_EMAIL, e.target.value)}
-        />
       </div>
     </div>
   );
