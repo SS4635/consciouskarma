@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+// Ensure this path is correct based on your folder structure
+import { COUNTRY_CODES } from "../../constants/countryCodes"; 
 
 export default function PreviousNumbersForm({
   numbers = [],
@@ -120,6 +122,7 @@ export default function PreviousNumbersForm({
         }
         .pr-star { color: #fff; }
 
+        /* FIXED HEIGHT for Inputs & Selects */
         .pr-input, .pr-select {
           width: 100%;
           background: transparent;
@@ -128,7 +131,7 @@ export default function PreviousNumbersForm({
           padding: 0.65rem 0.85rem;
           color: #fff;
           font-size: 0.95rem;
-          height: 44px;
+          height: 44px !important; /* Force Fixed Height */
           transition: all 0.25s ease;
         }
         .pr-input:focus, .pr-select:focus {
@@ -138,6 +141,7 @@ export default function PreviousNumbersForm({
         }
         .pr-input::placeholder { color: #999; }
 
+        /* ARROW ALIGNMENT CENTER */
         .pr-select {
           appearance: none;
           -webkit-appearance: none;
@@ -146,11 +150,17 @@ export default function PreviousNumbersForm({
             linear-gradient(45deg, transparent 50%, #fff 50%),
             linear-gradient(135deg, #fff 50%, transparent 50%);
           background-position:
-            calc(100% - 18px) calc(50% - 3px),
-            calc(100% - 12px) calc(50% - 3px);
+            calc(100% - 18px) center,
+            calc(100% - 12px) center;
           background-size: 6px 6px, 6px 6px;
           background-repeat: no-repeat;
           padding-right: 34px;
+        }
+
+        /* DRAWER THEME BLACK */
+        .pr-select option {
+            background-color: #000;
+            color: #fff;
         }
 
         .pr-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -166,10 +176,12 @@ export default function PreviousNumbersForm({
           transition: all 0.25s ease;
         }
         .pr-pill:hover { border-color: #ff6b35; }
+        
+        /* ACTIVE STATE: Orange BG, Black Text */
         .pr-pill.active {
           background: #ff6b35;
           border-color: #ff6b35;
-          color: #0b0b0b;
+          color: #000;
           font-weight: 700;
         }
 
@@ -225,18 +237,16 @@ export default function PreviousNumbersForm({
 
                     <div className="pr-mobile-row">
                       <select
-                        className="pr-select"
+                        className="pr-select text-center"
                         value={p.isd || "+91"}
                         onChange={(e) => handleFieldChange(i, "isd", e.target.value)}
                       >
-                        <option value="+91">+91</option>
-                        <option value="+1">+1</option>
-                        <option value="+44">+44</option>
-                        <option value="+61">+61</option>
-                        <option value="+81">+81</option>
-                        <option value="+971">+971</option>
-                        <option value="+49">+49</option>
-                        <option value="+33">+33</option>
+                        {/* Dynamic Country Codes */}
+                        {COUNTRY_CODES.map((c) => (
+                            <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                              {c.dial_code}
+                            </option>
+                        ))}
                       </select>
 
                       <input
@@ -261,8 +271,8 @@ export default function PreviousNumbersForm({
                         value={p.usedSinceMonth || ""}
                         onChange={(e) => handleFieldChange(i, "usedSinceMonth", e.target.value)}
                       >
-                        <option value="">Month</option>
-                        {months.map((m) => <option key={m} value={m}>{m}</option>)}
+                        <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Month</option>
+                        {months.map((m) => <option key={m} value={m} style={{backgroundColor: '#000', color: '#fff'}}>{m}</option>)}
                       </select>
 
                       <select
@@ -270,8 +280,8 @@ export default function PreviousNumbersForm({
                         value={p.usedSinceYear || ""}
                         onChange={(e) => handleFieldChange(i, "usedSinceYear", e.target.value)}
                       >
-                        <option value="">Year</option>
-                        {years.map((y) => <option key={y} value={y}>{y}</option>)}
+                        <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Year</option>
+                        {years.map((y) => <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>)}
                       </select>
                     </div>
                   </div>
@@ -288,8 +298,8 @@ export default function PreviousNumbersForm({
                         value={p.usedTillMonth || ""}
                         onChange={(e) => handleFieldChange(i, "usedTillMonth", e.target.value)}
                       >
-                        <option value="">Month</option>
-                        {months.map((m) => <option key={m} value={m}>{m}</option>)}
+                        <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Month</option>
+                        {months.map((m) => <option key={m} value={m} style={{backgroundColor: '#000', color: '#fff'}}>{m}</option>)}
                       </select>
 
                       <select
@@ -297,8 +307,8 @@ export default function PreviousNumbersForm({
                         value={p.usedTillYear || ""}
                         onChange={(e) => handleFieldChange(i, "usedTillYear", e.target.value)}
                       >
-                        <option value="">Year</option>
-                        {years.map((y) => <option key={y} value={y}>{y}</option>)}
+                        <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Year</option>
+                        {years.map((y) => <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>)}
                       </select>
                     </div>
                   </div>

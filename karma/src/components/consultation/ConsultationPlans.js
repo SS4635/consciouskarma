@@ -1,115 +1,3 @@
-// import React, { useState } from "react";
-// import ConsultationBookingForm from './ConsultationBookingForm';
-// import "bootstrap/dist/css/bootstrap.min.css";
-
-// export default function ConsultationPlans() {
-//   const [selectedPlan, setSelectedPlan] = useState(null);
-//   const plans = [
-//     {
-//       id: 1,
-//       title: "Unmarried Individual",
-//       price: "$ 2000",
-//       description:
-//         "For students, freelancers, or solo entrepreneurs",
-//     },
-//     {
-//       id: 2,
-//       title: "Married Individual",
-//       price: "$ 2500",
-//       description:
-//         "For those whose number must be considered alongside a spouse or partner",
-//     },
-//     {
-//       id: 3,
-//       title: "Individual with Extended Compatibility",
-//       price: "$ 3000",
-//       description:
-//         "For entrepreneurs, co-founders, or professionals requiring compatibility checks with up to 4 other people.",
-//     },
-//   ];
-
-//   const handleSelect = (plan) => {
-//     setSelectedPlan(plan);
-//   };
-
-//   const renderBooking = () => {
-//     if (!selectedPlan) return null;
-//     // Map plan to max steps: Unmarried=4, Married=5, Extended=6
-//     let planMaxSteps = 6;
-//     if (selectedPlan.title === 'Unmarried Individual') planMaxSteps = 4;
-//     else if (selectedPlan.title === 'Married Individual') planMaxSteps = 5;
-//     else if (selectedPlan.title === 'Individual with Extended Compatibility') planMaxSteps = 6;
-//     return (
-//       <div className="mt-5">
-//         <ConsultationBookingForm maxSteps={planMaxSteps} />
-//       </div>
-//     );
-//   };
-
-//   return (
-//     <section className=" bg-black text-white d-flex align-items-center py-5">
-//       <div className="container">
-//         {/* Header Section */}
-//         <div className="text-center mb-5">
-//           <h1 className="fw-light display-5 mb-3">Consultation Plans</h1>
-//           <p className="fs-5 fw-light  mb-1">
-//             Each plan is designed for one mobile number.
-//           </p>
-//           <p className="fs-6 fw-light ">
-//             The depth of analysis varies with your alignment needs.
-//           </p>
-//         </div>
-
-//         {selectedPlan && (
-//           <div className="text-center mb-4">
-//             <div className="mb-2 fw-light">
-//               Selected Plan: <span className="fw-normal">{selectedPlan.title}</span> ({selectedPlan.price})
-//             </div>
-//             <button
-//               className="btn btn-sm"
-//               style={{border:'1.5px solid #ff6b35',background:'transparent',color:'#fff'}}
-//               onClick={() => setSelectedPlan(null)}
-//             >
-//               Change Plan
-//             </button>
-//           </div>
-//         )}
-
-//         {/* Plans Section - hidden once a plan is selected */}
-//         {!selectedPlan && (
-//           <div className="row justify-content-center g-4">
-//             {plans.map((plan) => (
-//               <div key={plan.id} className="col-12 col-md-10 col-lg-7">
-//                 <div
-//                   className="rounded-4 p-4 h-100 text-white bg-transparent"
-//                   style={{
-//                     border: "3px solid #ff6b35",
-//                     transition: "0.3s",
-//                     cursor: 'pointer'
-//                   }}
-//                   onClick={() => handleSelect(plan)}
-//                 >
-//                   <div className="d-flex justify-content-between flex-wrap mb-3">
-//                     <h3 className="fw-normal fs-4 mb-2 text-start">{plan.title}</h3>
-//                     <span className="fw-semibold fs-4">{plan.price}</span>
-//                   </div>
-//                   <p className="fs-6 fw-light mb-0 text-start">
-//                     {plan.description}
-//                   </p>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-
-//         {/* Booking Form appears after plan click */}
-//         {renderBooking()}
-
-//       </div>
-//     </section>
-//   );
-// }
-
 import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -120,29 +8,23 @@ export default function ConsultationPlans() {
   const [modalOpening, setModalOpening] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
-  // lock page scroll while modal is open to prevent double scrollbars
+  // lock page scroll while modal is open
   useEffect(() => {
     if (showModal) {
-      // Calculate scrollbar width
       const scrollbarWidth =
         window.innerWidth - document.documentElement.clientWidth;
-
-      // Hide scroll but add padding to prevent shift
       document.body.style.overflow = "hidden";
       document.body.style.paddingRight = `${scrollbarWidth}px`;
-
-      // trigger enter animation next tick
       const id = setTimeout(() => setModalOpening(true), 20);
       return () => clearTimeout(id);
     } else {
-      // IMPORTANT: explicitly reset overflow and padding
       document.body.style.overflow = "auto";
       document.body.style.paddingRight = "0px";
       setModalOpening(false);
     }
   }, [showModal]);
 
-  // detect mobile viewport for modal sizing/animation tweaks
+  // detect mobile viewport
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth <= 576);
     onResize();
@@ -151,7 +33,6 @@ export default function ConsultationPlans() {
   }, []);
 
   const closeModal = () => {
-    // play exit animation then unmount
     setModalOpening(false);
     setTimeout(() => {
       setShowModal(false);
@@ -159,29 +40,36 @@ export default function ConsultationPlans() {
     }, 220);
   };
 
+  // --- PLANS DATA FROM ENV ---
   const plans = [
     {
       id: 1,
-      title: "Unmarried Individual",
-      price: " ₹1",
-      description: "For students, freelancers, or solo nentrepreneurs",
-       isExtended: false,
+      title: process.env.REACT_APP_PLAN_1_TITLE || "Unmarried Individual",
+      price: process.env.REACT_APP_PLAN_1_PRICE || " ₹1",
+      description:
+        process.env.REACT_APP_PLAN_1_DESC ||
+        "For students, freelancers, or solo entrepreneurs",
+      isExtended: false,
     },
     {
       id: 2,
-      title: "Married Individual",
-      price: " ₹2500",
+      title: process.env.REACT_APP_PLAN_2_TITLE || "Married Individual",
+      price: process.env.REACT_APP_PLAN_2_PRICE || " ₹2500",
       description:
+        process.env.REACT_APP_PLAN_2_DESC ||
         "For those whose number must be considered alongside a spouse or partner",
-    isExtended: false,
+      isExtended: false,
     },
     {
       id: 3,
-      title: "Individual with \nExtended Compatibility",
-      price: " ₹3000",
+      title:
+        process.env.REACT_APP_PLAN_3_TITLE ||
+        "Individual with Extended Compatibility",
+      price: process.env.REACT_APP_PLAN_3_PRICE || " ₹3000",
       description:
+        process.env.REACT_APP_PLAN_3_DESC ||
         "For entrepreneurs, co-founders, or professionals requiring compatibility checks with up to 4 other people.",
-    isExtended: true,
+      isExtended: true,
     },
   ];
 
@@ -192,40 +80,46 @@ export default function ConsultationPlans() {
 
   const renderBooking = () => {
     if (!selectedPlan) return null;
-    // Map plan to max steps: Unmarried=4, Married=5, Extended=6
+
+    // Steps mapping based on Title (matched with env or default)
     let planMaxSteps = 6;
-    if (selectedPlan.title === "Unmarried Individual") planMaxSteps = 4;
-    else if (selectedPlan.title === "Married Individual") planMaxSteps = 5;
-    else if (selectedPlan.title === "Individual with Extended Compatibility")
-      planMaxSteps = 5;
+
+    if (selectedPlan.id === 1) planMaxSteps = 4;
+    else if (selectedPlan.id === 2) planMaxSteps = 5;
+    else if (selectedPlan.id === 3) planMaxSteps = 5;
+
+    // ⚡ FIX: Strip "₹" and spaces so the form gets a raw number (e.g. "2500")
+    // This prevents the "NaN" error on the backend
+    const numericPrice = String(selectedPlan.price).replace(/[^0-9.]/g, "");
+
+    const planForForm = {
+      ...selectedPlan,
+      price: numericPrice, // Pass clean number to form
+    };
+
     return (
       <div className="">
-        {/* pass selectedPlan so the form can display dynamic price/data; inModal makes the form compact for modal */}
         <ConsultationBookingForm
-  maxSteps={planMaxSteps}
-  selectedPlan={selectedPlan}
-  inModal={true}
-  onClose={closeModal}
-/>
+          maxSteps={planMaxSteps}
+          selectedPlan={planForForm} // Use the sanitized plan object
+          inModal={true}
+          onClose={closeModal}
+        />
       </div>
     );
   };
 
   return (
-    <section className=" bg-black text-white d-flex align-items-center py-5 font-arsenal">
+    <section className="bg-black text-white d-flex align-items-center py-5 font-arsenal">
       <div className="container">
-        {/* Hide modal scrollbar visually but keep scrolling functional */}
         <style>{`
           .ck-modal-card { -ms-overflow-style: none; scrollbar-width: none; }
           .ck-modal-card::-webkit-scrollbar { display: none; width: 0; height: 0; }
           .ck-modal-backdrop { -ms-overflow-style: none; scrollbar-width: none; }
           .ck-modal-backdrop::-webkit-scrollbar { display: none; width: 0; height: 0; }
           
-          /* Desktop styles */
           @media (min-width: 769px) {
-            .col-12.col-md-10.col-lg-7 {
-              position: relative;
-            }
+            .col-12.col-md-10.col-lg-7 { position: relative; }
             .consultation-plan-card {
               padding: 2rem !important;
               padding-right: 2rem !important;
@@ -257,20 +151,15 @@ export default function ConsultationPlans() {
               right: 1.5rem !important;
               top: 5rem !important;
             }
-            .consultation-plan-button::before {
-              display: none !important;
-            }
+            .consultation-plan-button::before { display: none !important; }
           }
           
-          /* Tablet styles */
           @media (min-width: 577px) and (max-width: 768px) {
             .consultation-plan-card {
               padding-right: 2rem !important;
               padding-bottom: 5rem !important;
             }
-            .consultation-plan-card .fw-semibold {
-              display: none !important;
-            }
+            .consultation-plan-card .fw-semibold { display: none !important; }
             .consultation-plan-button {
               position: absolute !important;
               right: 1rem !important;
@@ -291,7 +180,6 @@ export default function ConsultationPlans() {
             }
           }
           
-          /* Mobile styles */
           @media (max-width: 576px) {
             .consultation-plan-card {
               padding-right: 1.5rem !important;
@@ -323,32 +211,30 @@ export default function ConsultationPlans() {
               max-width: 150px !important;
               align-self: center;
             }
-            .consultation-plan-button::before {
-              display: none !important;
-            }
+            .consultation-plan-button::before { display: none !important; }
           }
 
           .consultation-plan-button {
-  border: 1.5px solid #ff6b35;
-  background-color: #000;
-  color: #ff6b35;
-  padding: 8px 16px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
+            border: 1.5px solid #ff914d;
+            background-color: #000;
+            color: #ff914d;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+          }
 
-.consultation-plan-button:hover {
-  background-color: #ff6b35;
-  color: #000;
-}
-
+          .consultation-plan-button:hover {
+            background-color: #ff914d;
+            color: #000;
+          }
         `}</style>
+
         {/* Header Section */}
         <div className="text-center mb-5">
           <h1 className="fw-light display-5 mb-3 font-arsenal">
             Consultation Plans
           </h1>
-          <p className="fs-5 fw-light  mb-1 font-arsenal">
+          <p className="fs-5 fw-light mb-1 font-arsenal">
             Each plan is designed for one mobile number.
           </p>
           <p className="fs-6 fw-light font-arsenal">
@@ -356,7 +242,7 @@ export default function ConsultationPlans() {
           </p>
         </div>
 
-        {/* Plans Section - HAMESHA DIKHEGA */}
+        {/* Plans Section */}
         <div className="row justify-content-center g-4 mt-5">
           {plans.map((plan) => (
             <div key={plan.id} className="col-12 col-md-10 col-lg-7">
@@ -386,25 +272,23 @@ export default function ConsultationPlans() {
                 >
                   {plan.description}
                 </p>
-                {/* Book Now button at right corner */}
                 <button
-  type="button"
-  className="consultation-plan-button btn btn-sm"
-  data-price={plan.price}
-  onClick={(e) => {
-    e.stopPropagation();
-    handleSelect(plan);
-  }}
->
-  <b>Book Now</b>
-</button>
-
+                  type="button"
+                  className="consultation-plan-button btn btn-sm"
+                  data-price={plan.price}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelect(plan);
+                  }}
+                >
+                  <b>Book Now</b>
+                </button>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Modal popup for booking (animated) */}
+        {/* Modal popup */}
         {showModal && selectedPlan && (
           <div
             className="ck-modal-backdrop"
@@ -425,13 +309,11 @@ export default function ConsultationPlans() {
             <div
               className="ck-modal-card"
               style={{
-                // make modal a bit smaller so it doesn't force a large scrollbar
                 width: isMobile ? "94vw" : "min(50vw, 440px)",
                 background: "#000",
                 border: "2px solid #ff6b35",
                 borderRadius: 12,
                 boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-                // constrain the modal height but allow internal scrolling if content is tall
                 maxHeight: isMobile ? "90vh" : "80vh",
                 overflowY: "auto",
                 transform: modalOpening
@@ -446,8 +328,6 @@ export default function ConsultationPlans() {
               }}
               onClick={(ev) => ev.stopPropagation()}
             >
-
-              {/* Render the booking form inside modal */}
               <div style={{ marginTop: 8 }}>{renderBooking()}</div>
             </div>
           </div>

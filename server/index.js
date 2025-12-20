@@ -1,608 +1,38 @@
-// // import 'dotenv/config';
-// // import express from 'express';
-// // import cors from 'cors';
-// // import crypto from 'crypto';
-// // import Razorpay from 'razorpay';
-// // import axios from 'axios';
-
-// // import { connectMongo } from './lib/mongo.js';
-// // import Order from './models/Order.js';
-// // import { triggerReportAndEmail } from './lib/aws.js';
-// // // import { sendScoreMail } from './lib/sendMail.js';
-// // import { sendScoreMail } from './lib/sendScoreMail.js';
-
-// // const app = express();
-// // app.use(cors());
-// // app.use(express.json({ limit: '1mb' }));
-
-// // await connectMongo();
-
-// // const rp = new Razorpay({
-// //   key_id:`rzp_live_RZCPVrVASZ1zBw`,
-// //   key_secret:`ru4id2OmNWMU6ZPCB7SOVnjz`,
-// // });
-
-// // // Allowlist (comma/space/newline separated in .env)
-// // const allowlist = new Set(
-// //   (process.env.COUPON_ALLOWLIST || '')
-// //     .split(/\s|,|;/)
-// //     .map(s => s.trim().toUpperCase())
-// //     .filter(Boolean)
-// // );
-// // const isAllowlisted = (c='') => allowlist.has(String(c).toUpperCase());
-
-// // // Partner redeem
-// // async function redeemCoupon(code, mobile){
-// //   const url = process.env.CK_COUPON_API_URL;
-// //   const key = process.env.CK_COUPON_API_KEY;
-// //   if (!url || !key) throw new Error('Coupon API not configured');
-// //   const { data } = await axios.post(url, { coupon: code, mobile_number: mobile }, {
-// //     headers: { 'Content-Type': 'application/json', 'X-API-Key': key }
-// //   });
-// //   return data;
-// // }
-
-// // // Preview validate (no redemption yet)
-// // app.post('/api/coupon/validate', (req,res)=>{
-// //   const { code, price } = req.body || {};
-// //   const base = Number(price || 0);
-// //   if (code && isAllowlisted(code)) {
-// //     return res.json({ valid: true, finalAmount: 0, code: String(code).toUpperCase(), allowlisted: true });
-// //   }
-// //   return res.json({ valid: false, finalAmount: base, message: 'Invalid coupon' });
-// // });
-
-// // // Create order (free or paid)
-// // app.post('/api/pay/create-order', async (req,res)=>{
-// //   try{
-// //     const { name, email, phone, coupon, accountChoice, password, price } = req.body || {};
-// //     const basePrice = Number(price || 0);
-// //     const isFree = coupon && isAllowlisted(coupon);
-// //     const amount = isFree ? 0 : basePrice ; // in paise
-
-// //     if (!name || !email || !phone) {
-// //       return res.status(400).json({ ok:false, message:'Missing name/email/phone' });
-// //     }
-
-// //     const order = await Order.create({
-// //       name, email, phone,
-// //       amount, currency:'INR',
-// //       status: amount === 0 ? 'free' : 'pending',
-// //       couponCode: isFree ? String(coupon).toUpperCase() : null,
-// //       couponRedeemed: false,
-// //       accountChoice: accountChoice || 'guest',
-// //     });
-
-// //     if (amount === 0) {
-// //       return res.json({ ok:true, orderId: order._id, free:true });
-// //     }
-
-// //     const rOrder = await rp.orders.create({ amount, currency:'INR', receipt: String(order._id) });
-// //     order.razorpay = { orderId: rOrder.id };
-// //     await order.save();
-
-// //     return res.json({ ok:true, orderId: order._id, order: rOrder, keyId: process.env.RAZORPAY_KEY_ID });
-// //   }catch(err){
-// //     console.error(err);
-// //     res.status(500).json({ ok:false, message:'Server error' });
-// //   }
-// // });
-
-// // // Verify payment (Razorpay)
-// // app.post('/api/pay/verify', async (req,res)=>{
-// //   try{
-// //     const { razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId } = req.body || {};
-// //     const order = await Order.findById(orderId);
-// //     if (!order) return res.status(404).json({ ok:false, message:'Order not found' });
-
-// //     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
-// //     const expected = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET).update(payload).digest('hex');
-// //     if (expected !== razorpay_signature) return res.status(400).json({ ok:false, message:'Invalid signature' });
-
-// //     order.status = 'paid';
-// //     order.razorpay = { ...(order.razorpay || {}), paymentId: razorpay_payment_id, signature: razorpay_signature };
-// //     await order.save();
-
-// //     res.json({ ok:true });
-// //   }catch(err){
-// //     console.error(err);
-// //     res.status(500).json({ ok:false, message:'Server error' });
-// //   }
-// // });
-
-// // // Start report: redeem coupon → trigger Lambda (Lambda calls Score API) → email
-// // app.post('/api/report/start', async (req,res)=>{
-// //   try{
-// //     const { orderId } = req.body || {};
-// //     const order = await Order.findById(orderId);
-// //     if (!order) return res.status(404).json({ ok:false, message:'Order not found' });
-// //     if (!(order.status === 'paid' || order.status === 'free')) return res.status(400).json({ ok:false, message:'Order not ready' });
-
-// //     // redeem once per order
-// //     if (order.couponCode && !order.couponRedeemed) {
-// //       try{
-// //         const resp = await redeemCoupon(order.couponCode, order.phone);
-// //         order.couponRedeemed = true;
-// //         order.couponRedeemResponse = resp; // optional: store raw
-// //       }catch(e){
-// //         console.error('Coupon redeem failed:', e?.response?.data || e.message);
-// //         // proceed or block; choose policy. Proceeding for now.
-// //       }
-// //     }
-
-// //     order.status = 'processing';
-// //     await order.save();
-
-// //     const { pdfKey, pdfUrl } = await triggerReportAndEmail({
-// //       _id: order._id,
-// //       name: order.name,
-// //       email: order.email,
-// //       phone: order.phone,
-// //     });
-
-// //     order.status = 'emailed';
-// //     order.pdfKey = pdfKey; order.pdfUrl = pdfUrl;
-// //     await order.save();
-
-// //     res.json({ ok:true, pdfUrl });
-// //   }catch(err){
-// //     console.error(err);
-// //     res.status(500).json({ ok:false, message:'Failed to start report' });
-// //   }
-// // });
-
-// // app.post('/api/mail/score', async (req, res) => {
-// //   try {
-// //     const { email, scoreData } = req.body;
-// //     await sendScoreMail(email, scoreData);
-// //     res.json({ ok: true });
-// //   } catch (err) {
-// //     console.error('Mail error:', err);
-// //     res.status(500).json({ ok: false, message: 'Mail send failed' });
-// //   }
-// // });
-
-// // app.get('/api/health', (_req,res)=> res.json({ ok:true }));
-
-// // const port = process.env.PORT || 4000;
-// // app.listen(port, ()=> console.log('Server listening on', port));
-
-// import 'dotenv/config';
-// import express from 'express';
-// import cors from 'cors';
-// import crypto from 'crypto';
-// import Razorpay from 'razorpay';
-// import axios from 'axios';
-// import twilio from 'twilio';
-// import nodemailer from 'nodemailer';
-
-// import { connectMongo } from './lib/mongo.js';
-// import Order from './models/Order.js';
-// import { triggerReportAndEmail } from './lib/aws.js';
-// import { sendScoreMail } from './lib/sendScoreMail.js';
-
-// const app = express();
-// app.use(cors());
-// app.use(express.json({ limit: '1mb' }));
-
-// await connectMongo();
-
-// /* ---------- Razorpay ---------- */
-
-// const rp = new Razorpay({
-//   key_id: process.env.RAZORPAY_KEY_ID,
-//   key_secret: process.env.RAZORPAY_KEY_SECRET,
-// });
-
-// /* ---------- Twilio Verify ---------- */
-
-// const twilioClient = twilio(
-//   process.env.TWILIO_ACCOUNT_SID,
-//   process.env.TWILIO_AUTH_TOKEN
-// );
-// const twilioVerifySid = process.env.TWILIO_VERIFY_SERVICE_SID;
-
-// /* ---------- Nodemailer (admin + user mails) ---------- */
-
-// const transporter = nodemailer.createTransport({
-//   host: process.env.SMTP_HOST,
-//   port: Number(process.env.SMTP_PORT || 587),
-//   secure: !!Number(process.env.SMTP_SECURE || 0),
-//   auth: {
-//     user: process.env.SMTP_USER,
-//     pass: process.env.SMTP_PASS,
-//   },
-// });
-
-// async function sendEmail({ to, subject, html }) {
-//   if (!to) return;
-//   await transporter.sendMail({
-//     from:
-//       process.env.MAIL_FROM ||
-//       '"Conscious Karma" <no-reply@consciouskarma.co>',
-//     to,
-//     subject,
-//     html,
-//   });
-// }
-
-// /* ---------- Coupon allowlist ---------- */
-
-// const allowlist = new Set(
-//   (process.env.COUPON_ALLOWLIST || '')
-//     .split(/\s|,|;/)
-//     .map((s) => s.trim().toUpperCase())
-//     .filter(Boolean)
-// );
-// const isAllowlisted = (c = '') =>
-//   allowlist.has(String(c).toUpperCase());
-
-// /* ---------- Partner redeem ---------- */
-
-// async function redeemCoupon(code, mobile) {
-//   const url = process.env.CK_COUPON_API_URL;
-//   const key = process.env.CK_COUPON_API_KEY;
-//   if (!url || !key)
-//     throw new Error('Coupon API not configured');
-
-//   const { data } = await axios.post(
-//     url,
-//     { coupon: code, mobile_number: mobile },
-//     {
-//       headers: {
-//         'Content-Type': 'application/json',
-//         'X-API-Key': key,
-//       },
-//     }
-//   );
-//   return data;
-// }
-
-// /* ---------- Coupon preview validate ---------- */
-
-// app.post('/api/coupon/validate', (req, res) => {
-//   const { code, price } = req.body || {};
-//   const base = Number(price || 0);
-
-//   if (code && isAllowlisted(code)) {
-//     return res.json({
-//       valid: true,
-//       finalAmount: 0,
-//       code: String(code).toUpperCase(),
-//       allowlisted: true,
-//     });
-//   }
-
-//   return res.json({
-//     valid: false,
-//     finalAmount: base,
-//     message: 'Invalid coupon',
-//   });
-// });
-
-// /* ---------- Twilio: send OTP ---------- */
-
-// app.post('/api/send-otp', async (req, res) => {
-//   try {
-//     const { number } = req.body || {};
-//     if (!number) {
-//       return res
-//         .status(400)
-//         .json({ ok: false, message: 'Number required' });
-//     }
-
-//     await twilioClient.verify.v2
-//       .services(twilioVerifySid)
-//       .verifications.create({
-//         to: number,
-//         channel: 'sms',
-//       });
-
-//     res.json({ ok: true });
-//   } catch (err) {
-//     console.error('send-otp error:', err?.message || err);
-//     res
-//       .status(500)
-//       .json({ ok: false, message: 'Failed to send OTP' });
-//   }
-// });
-
-// /* ---------- Twilio: verify OTP ---------- */
-
-// app.post('/api/verify-otp', async (req, res) => {
-//   try {
-//     const { number, code } = req.body || {};
-//     if (!number || !code) {
-//       return res.status(400).json({
-//         ok: false,
-//         message: 'Number and code required',
-//       });
-//     }
-
-//     const check = await twilioClient.verify.v2
-//       .services(twilioVerifySid)
-//       .verificationChecks.create({
-//         to: number,
-//         code,
-//       });
-
-//     const verified = check.status === 'approved';
-//     res.json({ ok: true, verified });
-//   } catch (err) {
-//     console.error(
-//       'verify-otp error:',
-//       err?.response?.data || err.message || err
-//     );
-//     res.status(500).json({
-//       ok: false,
-//       verified: false,
-//       message: 'Failed to verify OTP',
-//     });
-//   }
-// });
-
-// /* ---------- Create order AFTER OTP verified ---------- */
-// /* Frontend sends full form + price once all OTPs are verified */
-
-// app.post('/api/pay/create-order', async (req, res) => {
-//   try {
-//     const {
-//       general,
-//       primary,
-//       parallels,
-//       previousNumbers,
-//       coupon,
-//       accountChoice,
-//       price, // in INR, from your totalPrice
-//     } = req.body || {};
-
-//     if (!general?.name || !general?.email || !primary?.number) {
-//       return res
-//         .status(400)
-//         .json({ ok: false, message: 'Missing required fields' });
-//     }
-
-//     const basePrice = Number(price || 0); // in INR
-//     const allowlisted = coupon && isAllowlisted(coupon);
-//     const amount = allowlisted ? 0 : basePrice * 100; // Razorpay paise
-
-//     const primaryFull = `${primary.isd || ''}${primary.number}`;
-
-//     const order = await Order.create({
-//       name: general.name,
-//       email: general.email,
-//       phone: primaryFull,
-//       amount,
-//       currency: 'INR',
-//       status: amount === 0 ? 'free' : 'pending',
-//       couponCode: allowlisted
-//         ? String(coupon).toUpperCase()
-//         : null,
-//       couponRedeemed: false,
-//       accountChoice: accountChoice || 'guest',
-//       otpVerified: true, // all OTPs were verified on UI
-//       formData: {
-//         general,
-//         primary,
-//         parallels,
-//         previousNumbers,
-//         totalPrice: basePrice,
-//       },
-//     });
-
-//     if (amount === 0) {
-//       // free order; no Razorpay checkout
-//       return res.json({
-//         ok: true,
-//         free: true,
-//         orderId: order._id,
-//         amount,
-//       });
-//     }
-
-//     const rOrder = await rp.orders.create({
-//       amount,
-//       currency: 'INR',
-//       receipt: String(order._id),
-//     });
-
-//     order.razorpay = { orderId: rOrder.id };
-//     await order.save();
-
-//     return res.json({
-//       ok: true,
-//       free: false,
-//       orderId: order._id,
-//       order: rOrder,
-//       keyId: process.env.RAZORPAY_KEY_ID,
-//     });
-//   } catch (err) {
-//     console.error(err);
-//     res
-//       .status(500)
-//       .json({ ok: false, message: 'Server error' });
-//   }
-// });
-
-// /* ---------- Verify Razorpay payment ---------- */
-
-// app.post('/api/pay/verify', async (req, res) => {
-//   try {
-//     const {
-//       razorpay_order_id,
-//       razorpay_payment_id,
-//       razorpay_signature,
-//       orderId,
-//     } = req.body || {};
-
-//     const order = await Order.findById(orderId);
-//     if (!order)
-//       return res
-//         .status(404)
-//         .json({ ok: false, message: 'Order not found' });
-
-//     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
-//     const expected = crypto
-//       .createHmac(
-//         'sha256',
-//         process.env.RAZORPAY_KEY_SECRET
-//       )
-//       .update(payload)
-//       .digest('hex');
-
-//     if (expected !== razorpay_signature) {
-//       return res
-//         .status(400)
-//         .json({ ok: false, message: 'Invalid signature' });
-//     }
-
-//     order.status = 'paid';
-//     order.razorpay = {
-//       ...(order.razorpay || {}),
-//       paymentId: razorpay_payment_id,
-//       signature: razorpay_signature,
-//     };
-//     await order.save();
-
-//     res.json({ ok: true });
-//   } catch (err) {
-//     console.error(err);
-//     res
-//       .status(500)
-//       .json({ ok: false, message: 'Server error' });
-//   }
-// });
-
-// /* ---------- Final submit AFTER payment verified ---------- */
-// /* Frontend calls this with orderId once /api/pay/verify is ok */
-
-// app.post('/api/report/submit', async (req, res) => {
-//   try {
-//     const { orderId } = req.body || {};
-//     const order = await Order.findById(orderId);
-//     if (!order)
-//       return res
-//         .status(404)
-//         .json({ ok: false, message: 'Order not found' });
-
-//     if (!(order.status === 'paid' || order.status === 'free')) {
-//       return res.status(400).json({
-//         ok: false,
-//         message: 'Payment not completed',
-//       });
-//     }
-
-//     const fd = order.formData || {};
-//     const general = fd.general || {};
-//     const primary = fd.primary || {};
-//     const parallels = fd.parallels || [];
-//     const previousNumbers = fd.previousNumbers || [];
-//     const totalPrice = fd.totalPrice || order.amount / 100;
-
-//     const primaryFull = primary
-//       ? `${primary.isd || ''}${primary.number || ''}`
-//       : order.phone;
-
-//     /* ----- Email to Admin ----- */
-//     const adminHtml = `
-//       <h2>New Personalized Report Request (Paid)</h2>
-//       <p><strong>Name:</strong> ${general.name}</p>
-//       <p><strong>Email:</strong> ${general.email}</p>
-//       <p><strong>Primary Mobile:</strong> ${primaryFull}</p>
-//       <p><strong>Total Price:</strong> ₹${totalPrice}</p>
-//       <p><strong>Order ID:</strong> ${order._id}</p>
-
-//       <h3>Full Form Data</h3>
-//       <pre>${JSON.stringify(fd, null, 2)}</pre>
-//     `;
-
-//     await sendEmail({
-//       to: 'fan818199@gmail.com',
-//       subject:
-//         'New Conscious Karma Report Request (Payment Successful)',
-//       html: adminHtml,
-//     });
-
-//     /* ----- Email to User ----- */
-//     const userHtml = `
-//       <p>Hi ${general.name || ''},</p>
-//       <p>Thank you for choosing <strong>Conscious Karma</strong>.</p>
-//       <p>Your numbers are verified and payment is successful.</p>
-//       <p><strong>Your personalized report will be delivered within 3–5 days</strong> to:
-//          <strong>${general.email}</strong>.</p>
-//       <p>Primary number recorded: <strong>${primaryFull}</strong></p>
-//       <p>Regards,<br/>Conscious Karma Team</p>
-//     `;
-
-//     await sendEmail({
-//       to: general.email,
-//       subject:
-//         'Your Conscious Karma report is in progress',
-//       html: userHtml,
-//     });
-
-//     order.status = 'submitted';
-//     await order.save();
-
-//     res.json({ ok: true });
-//   } catch (err) {
-//     console.error('report/submit error:', err);
-//     res.status(500).json({
-//       ok: false,
-//       message: 'Failed to finalize report',
-//     });
-//   }
-// });
-
-// /* ---------- Optional: existing async pipeline (if you still want it) ---------- */
-// /* You can keep /api/report/start calling triggerReportAndEmail separately if needed */
-
-// app.post('/api/mail/score', async (req, res) => {
-//   try {
-//     const { email, scoreData } = req.body;
-//     await sendScoreMail(email, scoreData);
-//     res.json({ ok: true });
-//   } catch (err) {
-//     console.error('Mail error:', err);
-//     res.status(500).json({
-//       ok: false,
-//       message: 'Mail send failed',
-//     });
-//   }
-// });
-
-// app.get('/api/health', (_req, res) =>
-//   res.json({ ok: true })
-// );
-
-// const port = process.env.PORT || 4000;
-// app.listen(port, () =>
-//   console.log('Server listening on', port)
-// );
-
-import "dotenv/config";
-import dotenv from "dotenv";
+import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 import express from "express";
 import cors from "cors";
 import crypto from "crypto";
 import Razorpay from "razorpay";
-
-
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
-
+import axios from "axios";
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
 import User from "./models/User.js";
 import Consultation from "./models/Consultation.js";
-import { triggerReportAndEmail } from "./lib/aws.js";
-import { sendScoreMail } from "./lib/sendScoreMail.js";
-import { sendOrderEmails } from "./lib/sendOrderEmails.js";
 import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
-import axios from "axios";
+import { sendScoreMail } from "./lib/sendScoreMail.js";
+
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json({ limit: "50mb" })); // Increased limit for safety
+
+// --- 🔍 DEBUG: Start-up Check ---
+console.log("---------------------------------------");
+console.log("Checking Environment Variables...");
+console.log("MONGO_DB:", process.env.MONGODB_DB ? "✅ Loaded" : "❌ Missing");
+console.log("SMTP_HOST:", process.env.SMTP_HOST);
+console.log("SMTP_USER:", process.env.SMTP_USER ? "✅ Loaded" : "❌ Missing");
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? `✅ Loaded (${process.env.SMTP_PASS.length} chars)` : "❌ Missing/Undefined");
+console.log("RAZORPAY_KEY:", process.env.RAZORPAY_KEY_ID ? "✅ Loaded" : "❌ Missing");
+console.log("---------------------------------------");
+
+
+
+// Database Connection
+await connectMongo();
+
+// Nodemailer Setup
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT || 587),
@@ -612,10 +42,28 @@ const transporter = nodemailer.createTransport({
     pass: process.env.SMTP_PASS,
   },
 });
-await connectMongo();
 
-dotenv.config();
 
+async function sendEmail({ to, subject, html }) {
+  console.log(`\n[MAIL] Sending to: ${to}`);
+  try {
+    const result = await transporter.sendMail({
+      from: process.env.MAIL_FROM || '"Conscious Karma" <no-reply@consciouskarma.co>',
+      to,
+      subject,
+      html,
+    });
+    console.log("[MAIL] Success:", result.messageId);
+    return result;
+  } catch (err) {
+    console.error("[MAIL] FAILED:", err.message);
+  }
+}
+
+const rp = new Razorpay({
+  key_id: process.env.RAZORPAY_KEY_ID,
+  key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 // Register the consultation booking endpoint on the main app instance
 // app.post("/api/consultation/book", async (req, res) => {
 //   try {
@@ -847,12 +295,6 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-/* ---------- Razorpay ---------- */
-
-const rp = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
 
 app.post("/api/pay/create-consultation-order", async (req, res) => {
   try {
@@ -862,7 +304,14 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
       return res.json({ ok: false, message: "Missing form data" });
     }
 
-    const amountInPaise = Number(price) * 100;
+    // 🛡️ FIX: Remove "₹" and spaces, convert to number
+    const numericPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+    
+    if (isNaN(numericPrice) || numericPrice <= 0) {
+        return res.json({ ok: false, message: "Invalid price format" });
+    }
+
+    const amountInPaise = numericPrice * 100;
 
     const rzpOrder = await rp.orders.create({
       amount: amountInPaise,
@@ -876,14 +325,10 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
       amount: amountInPaise,
     });
   } catch (err) {
-    console.error(err);
-    return res.json({
-      ok: false,
-      message: "Failed creating consultation order",
-    });
+    console.error("Create Order Error:", err);
+    return res.json({ ok: false, message: "Failed creating consultation order" });
   }
 });
-
 app.post("/api/pay/verify-consultation", async (req, res) => {
   try {
     const {
@@ -895,12 +340,13 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
       price,
     } = req.body;
 
+    console.log(`[VERIFY] Processing for plan: ${planName}, Price Input: ${price}`);
+
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return res.json({ ok: false, message: "Missing Razorpay params" });
     }
 
     const body = razorpay_order_id + "|" + razorpay_payment_id;
-
     const expected = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
       .update(body)
@@ -910,35 +356,49 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
       return res.json({ ok: false, message: "Invalid signature" });
     }
 
-    // 🔥 Extract core info
+    // Extract Info
     const general = formData?.general || {};
     const primary = formData?.primary || {};
     const phone = `${primary.isd || ""}${primary.number || ""}`;
 
-    // ✅ SAVE CONSULTATION ONCE
+    // 🛡️ FIX: Sanitise Price for Database (Prevents NaN Crash)
+    let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+    
+    // Fallback: If price is still invalid, try getting it from form or default to 0
+    if (isNaN(finalPrice)) {
+        console.warn("⚠️ Price invalid, attempting fallback...");
+        finalPrice = Number(formData?.price) || Number(formData?.totalPrice) || 0;
+    }
+
+    console.log(`[VERIFY] Saving to DB with Final Price: ${finalPrice}`);
+
+    // ✅ Save to DB (Only Once!)
     const consultation = await Consultation.create({
       formData,
       name: general.name,
       email: general.email,
       phone,
       planName,
-      price: Number(price),
+      price: finalPrice, 
       paymentStatus: "paid",
     });
 
-    // 📧 EMAILS
-    await sendConsultationEmails({
-      formData,
-      docId: consultation._id,
-    });
+    // Send Emails (Non-blocking)
+    try {
+      await sendConsultationEmails({
+        formData,
+        docId: consultation._id,
+      });
+    } catch (mailErr) {
+      console.error("Consultation Email Failed:", mailErr.message);
+    }
 
     return res.json({ ok: true, id: consultation._id });
   } catch (err) {
     console.error("verify-consultation error:", err);
-    res.json({ ok: false, message: "Verification failed" });
+    res.status(500).json({ ok: false, message: "Verification failed on server" });
   }
 });
-
 /* ---------- Twilio Verify ---------- */
 
 async function getAuthToken() {
@@ -974,41 +434,6 @@ async function getAuthToken() {
   }
 }
 
-/* ---------- Nodemailer (admin + user mails) ---------- */
-
-
-
-async function sendEmail({ to, subject, html }) {
-  console.log("\n[MAIL] Preparing to send email...");
-  if (!to) {
-    console.log(`[MAIL] Skipped — empty recipient`);
-    return;
-  }
-
-  console.log(`\n[MAIL] Sending email...`);
-  console.log(`[MAIL] To: ${to}`);
-  console.log(`[MAIL] Subject: ${subject}`);
-
-  try {
-    const result = await transporter.sendMail({
-      from: process.env.MAIL_FROM || '"Conscious Karma" <no-reply@consciouskarma.co>',
-      to,
-      subject,
-      html,
-    });
-
-    console.log("[MAIL] SUCCESS → Email delivered");
-    console.log("[MAIL] SMTP Response:", result.response || result);
-
-    return result;
-  } catch (err) {
-    console.error("[MAIL] ERROR → Email failed:");
-    console.error("[MAIL] Error message:", err.message);
-    console.error("[MAIL] SMTP details:", err);
-
-    throw err;
-  }
-}
 
 /* ---------- Coupon allowlist ---------- */
 

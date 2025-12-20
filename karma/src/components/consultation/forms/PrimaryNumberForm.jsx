@@ -1,5 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+// Path check kar lena apne hisab se
+import { COUNTRY_CODES } from "../../constants/countryCodes"; 
 
 export default function PrimaryNumberForm({
   data = {},
@@ -9,10 +11,27 @@ export default function PrimaryNumberForm({
 }) {
   const usageFromData = data["Usage type"] || data.usageType || "";
   const [selectedUsageType, setSelectedUsageType] = useState(usageFromData);
+  
+  // Toast State
+  const [toast, setToast] = useState({ show: false, message: "", type: "error" });
 
   useEffect(() => {
     setSelectedUsageType(usageFromData || "");
   }, [usageFromData]);
+
+  // Toast Timer
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ show: false, message: "", type: "error" });
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
+  function showToast(message, type = "error") {
+    setToast({ show: true, message, type });
+  }
 
   const months = useMemo(
     () => [
@@ -37,11 +56,52 @@ export default function PrimaryNumberForm({
     handleFieldChange("Usage type", type);
   };
 
+  // Helper to get current country details
+  const getSelectedCountry = () => {
+     const currentIsd = (data["Mobile Number"]?.isd || data.mobileNumber?.isd || "+91");
+     return COUNTRY_CODES.find(c => c.dial_code === currentIsd);
+  };
+
+  // Validation Function (Triggered on Blur)
+  const validateMobile = () => {
+    const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
+    const currentNumber = mobileObj.mobile || "";
+    const mobileDigits = currentNumber.replace(/\s+/g, ""); // Remove spaces
+    
+    const selectedCountry = getSelectedCountry();
+
+    if (currentNumber && selectedCountry && selectedCountry.max_length) {
+       const exactLength = selectedCountry.max_length;
+       
+       if (mobileDigits.length !== exactLength) {
+         showToast(`Phone number must be exactly ${exactLength} digits for ${selectedCountry.name}`);
+       }
+    } else if (currentNumber) {
+        // Fallback checks
+        if (!/^[0-9]{6,15}$/.test(mobileDigits)) {
+             showToast("Invalid phone number format");
+        }
+    }
+  };
+
+  const handleMobileChange = (e) => {
+    const val = e.target.value;
+    // Sirf numbers allow karega (aur spaces agar chahiye to, but best hai sirf numbers)
+    if (/[^0-9]/.test(val)) return; 
+
+    const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
+    handleFieldChange("Mobile Number", { ...mobileObj, mobile: val });
+  };
+
   const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
   const sinceArr = data["Using this number since"] || data.usingSince || ["", ""];
+  
+  // Calculate max length dynamically
+  const currentCountry = getSelectedCountry();
+  const maxAllowedLength = currentCountry?.max_length || 15;
 
   return (
-    <div className={`${className} font-arsenal`}>
+    <div className={`${className} font-arsenal relative`}>
       <style>{`
         .primary-number-title {
           font-size: 28px;
@@ -88,11 +148,17 @@ export default function PrimaryNumberForm({
             linear-gradient(45deg, transparent 50%, #fff 50%),
             linear-gradient(135deg, #fff 50%, transparent 50%);
           background-position:
-            calc(100% - 18px) calc(50% - 3px),
-            calc(100% - 12px) calc(50% - 3px);
+            calc(100% - 18px) center,
+            calc(100% - 12px) center;
           background-size: 6px 6px, 6px 6px;
           background-repeat: no-repeat;
           padding-right: 34px;
+        }
+        
+        /* Dropdown options styling */
+        .primary-select option {
+            background-color: #000;
+            color: #fff;
         }
 
         .primary-two-col {
@@ -117,10 +183,12 @@ export default function PrimaryNumberForm({
           transition: all 0.25s ease;
         }
         .primary-btn:hover { border-color: #ff6b35; }
+        
+        /* UPDATED: Active state color fixed to #ff6b35 */
         .primary-btn.active {
           background: #ff6b35;
           border-color: #ff6b35;
-          color: #0b0b0b;
+          color: #000; /* Text black for contrast on orange */
           font-weight: 700;
         }
 
@@ -129,7 +197,41 @@ export default function PrimaryNumberForm({
           .primary-mobile-row { grid-template-columns: 80px 1fr; gap: 10px; }
           .primary-two-col { gap: 10px; }
         }
+        
+        @keyframes slideDown {
+          from { opacity: 0; transform: translate(-50%, -20px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
       `}</style>
+
+      {/* --- TOAST NOTIFICATION --- */}
+      {toast.show && (
+        <div
+          className="fixed"
+          style={{
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            animation: 'slideDown 0.3s ease-out',
+            zIndex: 9999,
+          }}
+        >
+          <div
+            className={`px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 ${
+              toast.type === 'error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'
+            }`}
+          >
+            <span>{toast.message}</span>
+            <button
+              onClick={() => setToast({ show: false, message: "", type: "error" })}
+              className="ml-auto text-white hover:text-gray-200 border-0 bg-transparent"
+              style={{ fontSize: '18px', lineHeight: '1', cursor: 'pointer' }}
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
 
       {showTitle && <h1 className="primary-number-title">Primary Number</h1>}
 
@@ -143,30 +245,27 @@ export default function PrimaryNumberForm({
 
         <div className="primary-mobile-row">
           <select
-            className="primary-select"
+            className="primary-select text-center"
             value={mobileObj.isd || "+91"}
             onChange={(e) =>
               handleFieldChange("Mobile Number", { ...mobileObj, isd: e.target.value })
             }
           >
-            <option value="+91">+91</option>
-            <option value="+1">+1</option>
-            <option value="+44">+44</option>
-            <option value="+61">+61</option>
-            <option value="+81">+81</option>
-            <option value="+971">+971</option>
-            <option value="+49">+49</option>
-            <option value="+33">+33</option>
+            {COUNTRY_CODES.map((c) => (
+                <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                  {c.dial_code}
+                </option>
+            ))}
           </select>
 
           <input
-            type="text"
+            type="tel"
             className="primary-input"
             placeholder="Mobile Number"
             value={mobileObj.mobile || ""}
-            onChange={(e) =>
-              handleFieldChange("Mobile Number", { ...mobileObj, mobile: e.target.value })
-            }
+            onChange={handleMobileChange}
+            onBlur={validateMobile}
+            maxLength={maxAllowedLength} // Prevents typing more digits
           />
         </div>
       </div>
@@ -185,9 +284,9 @@ export default function PrimaryNumberForm({
             value={sinceArr?.[0] || ""}
             onChange={(e) => handleFieldChange("Using this number since", [e.target.value, sinceArr?.[1] || ""])}
           >
-            <option value="">Month</option>
+            <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Month</option>
             {months.map((m) => (
-              <option key={m} value={m}>{m}</option>
+              <option key={m} value={m} style={{backgroundColor: '#000', color: '#fff'}}>{m}</option>
             ))}
           </select>
 
@@ -196,9 +295,9 @@ export default function PrimaryNumberForm({
             value={sinceArr?.[1] || ""}
             onChange={(e) => handleFieldChange("Using this number since", [sinceArr?.[0] || "", e.target.value])}
           >
-            <option value="">Year</option>
+            <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Year</option>
             {years.map((y) => (
-              <option key={y} value={y}>{y}</option>
+              <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>
             ))}
           </select>
         </div>

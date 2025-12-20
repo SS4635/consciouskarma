@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
+// Ensure this path is correct
+import { COUNTRY_CODES } from "../../constants/countryCodes"; 
 
 export default function ParallelNumbersForm({
   numbers = [],
@@ -130,6 +132,7 @@ export default function ParallelNumbersForm({
         }
         .pn-star { color: #fff; }
 
+        /* Fixed Height to match Primary Form */
         .pn-input, .pn-select {
           width: 100%;
           background: transparent;
@@ -138,7 +141,7 @@ export default function ParallelNumbersForm({
           padding: 0.65rem 0.85rem;
           color: #fff;
           font-size: 0.95rem;
-          height: 44px;
+          height: 44px !important; /* Force Fixed Height */
           transition: all 0.25s ease;
         }
         .pn-input:focus, .pn-select:focus {
@@ -148,6 +151,7 @@ export default function ParallelNumbersForm({
         }
         .pn-input::placeholder { color: #999; }
 
+        /* Arrow Alignment Fixed to Center */
         .pn-select {
           appearance: none;
           -webkit-appearance: none;
@@ -156,11 +160,17 @@ export default function ParallelNumbersForm({
             linear-gradient(45deg, transparent 50%, #fff 50%),
             linear-gradient(135deg, #fff 50%, transparent 50%);
           background-position:
-            calc(100% - 18px) calc(50% - 3px),
-            calc(100% - 12px) calc(50% - 3px);
+            calc(100% - 18px) center, /* Centered Vertically */
+            calc(100% - 12px) center; /* Centered Vertically */
           background-size: 6px 6px, 6px 6px;
           background-repeat: no-repeat;
           padding-right: 34px;
+        }
+
+        /* Dropdown Options Black Background */
+        .pn-select option {
+            background-color: #000;
+            color: #fff;
         }
 
         .pn-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -176,10 +186,12 @@ export default function ParallelNumbersForm({
           transition: all 0.25s ease;
         }
         .pn-pill:hover { border-color: #ff6b35; }
+        
+        /* Active State: Orange BG, Black Text */
         .pn-pill.active {
           background: #ff6b35;
           border-color: #ff6b35;
-          color: #0b0b0b;
+          color: #000; 
           font-weight: 700;
         }
 
@@ -235,18 +247,16 @@ export default function ParallelNumbersForm({
 
                     <div className="pn-mobile-row">
                       <select
-                        className="pn-select"
+                        className="pn-select text-center"
                         value={num.isd || "+91"}
                         onChange={(e) => handleFieldChange(index, "isd", e.target.value)}
                       >
-                        <option value="+91">+91</option>
-                        <option value="+1">+1</option>
-                        <option value="+44">+44</option>
-                        <option value="+61">+61</option>
-                        <option value="+81">+81</option>
-                        <option value="+971">+971</option>
-                        <option value="+49">+49</option>
-                        <option value="+33">+33</option>
+                         {/* Dynamic Country Codes */}
+                         {COUNTRY_CODES.map((c) => (
+                            <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                              {c.dial_code}
+                            </option>
+                        ))}
                       </select>
 
                       <input
@@ -271,9 +281,9 @@ export default function ParallelNumbersForm({
                         value={num.sinceMonth || ""}
                         onChange={(e) => handleFieldChange(index, "sinceMonth", e.target.value)}
                       >
-                        <option value="">Month</option>
+                        <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Month</option>
                         {months.map((m) => (
-                          <option key={m} value={m}>{m}</option>
+                          <option key={m} value={m} style={{backgroundColor: '#000', color: '#fff'}}>{m}</option>
                         ))}
                       </select>
 
@@ -282,9 +292,9 @@ export default function ParallelNumbersForm({
                         value={num.sinceYear || ""}
                         onChange={(e) => handleFieldChange(index, "sinceYear", e.target.value)}
                       >
-                        <option value="">Year</option>
+                        <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Year</option>
                         {years.map((y) => (
-                          <option key={y} value={y}>{y}</option>
+                          <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>
                         ))}
                       </select>
                     </div>

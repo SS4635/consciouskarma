@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+// Ensure this path is correct based on your folder structure
+import { COUNTRY_CODES } from "../../constants/countryCodes"; 
 
 export default function CompatibilityNumbersForm({
   primaryData = {},
@@ -10,18 +11,18 @@ export default function CompatibilityNumbersForm({
   onRemove,
   isExtended = false,
   showTitle = false,
+  maxNumbers = 3, // LIMIT SET TO 4
   className = "",
 }) {
   const [openIndex, setOpenIndex] = useState(null);
 
-  // जब नया नंबर add हो, तो उसे auto-open करने के लिए Logic (बर्करार रखा गया है)
+  // Auto-open new number when added
   useEffect(() => {
     if (numbers.length) setOpenIndex(numbers.length - 1);
   }, [numbers.length]);
 
   return (
     <div className={`${className} font-arsenal`}>
-      {/* CSS Styles Copied from ParallelNumbersForm for Consistency */}
       <style>{`
         .pn-title {
           font-size: 28px;
@@ -94,6 +95,7 @@ export default function CompatibilityNumbersForm({
         }
         .pn-star { color: #fff; }
 
+        /* FIXED HEIGHT FOR INPUTS */
         .pn-input, .pn-select {
           width: 100%;
           background: transparent;
@@ -102,7 +104,7 @@ export default function CompatibilityNumbersForm({
           padding: 0.65rem 0.85rem;
           color: #fff;
           font-size: 0.95rem;
-          height: 44px;
+          height: 44px !important;
           transition: all 0.25s ease;
         }
         .pn-input:focus, .pn-select:focus {
@@ -112,6 +114,7 @@ export default function CompatibilityNumbersForm({
         }
         .pn-input::placeholder { color: #999; }
 
+        /* ARROW CENTERED */
         .pn-select {
           appearance: none;
           -webkit-appearance: none;
@@ -120,11 +123,17 @@ export default function CompatibilityNumbersForm({
             linear-gradient(45deg, transparent 50%, #fff 50%),
             linear-gradient(135deg, #fff 50%, transparent 50%);
           background-position:
-            calc(100% - 18px) calc(50% - 3px),
-            calc(100% - 12px) calc(50% - 3px);
+            calc(100% - 18px) center,
+            calc(100% - 12px) center;
           background-size: 6px 6px, 6px 6px;
           background-repeat: no-repeat;
           padding-right: 34px;
+        }
+        
+        /* BLACK DRAWER THEME */
+        .pn-select option {
+            background-color: #000;
+            color: #fff;
         }
 
         .pn-mobile-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; }
@@ -165,16 +174,18 @@ export default function CompatibilityNumbersForm({
 
           <div className="pn-mobile-row">
             <select
-              className="pn-select"
+              className="pn-select text-center"
               value={primaryData.isd || "+91"}
               onChange={(e) =>
                 onPrimaryChange?.({ ...primaryData, isd: e.target.value })
               }
             >
-              <option value="+91">+91</option>
-              <option value="+1">+1</option>
-              <option value="+44">+44</option>
-              <option value="+61">+61</option>
+               {/* Dynamic Country Codes */}
+               {COUNTRY_CODES.map((c) => (
+                  <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                    {c.dial_code}
+                  </option>
+              ))}
             </select>
 
             <input
@@ -252,16 +263,18 @@ export default function CompatibilityNumbersForm({
 
                         <div className="pn-mobile-row">
                           <select
-                            className="pn-select"
+                            className="pn-select text-center"
                             value={num.isd || "+91"}
                             onChange={(e) =>
                               onChange?.(index, "isd", e.target.value)
                             }
                           >
-                            <option value="+91">+91</option>
-                            <option value="+1">+1</option>
-                            <option value="+44">+44</option>
-                            <option value="+61">+61</option>
+                             {/* Dynamic Country Codes */}
+                             {COUNTRY_CODES.map((c) => (
+                                <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                                  {c.dial_code}
+                                </option>
+                            ))}
                           </select>
 
                           <input
@@ -299,13 +312,15 @@ export default function CompatibilityNumbersForm({
             })}
           </div>
 
-          {/* ADD BUTTON */}
-          <div className="pn-add-wrap">
-            <button type="button" className="pn-add" onClick={onAdd}>
-              Add Number
-            </button>
-            <span style={{ color: "#fff", opacity: 0.8 }}>If any</span>
-          </div>
+          {/* ADD BUTTON (Only visible if count < maxNumbers) */}
+          {numbers.length < maxNumbers && (
+            <div className="pn-add-wrap">
+              <button type="button" className="pn-add" onClick={onAdd}>
+                Add Number
+              </button>
+              <span style={{ color: "#fff", opacity: 0.8 }}>If any</span>
+            </div>
+          )}
         </>
       )}
     </div>

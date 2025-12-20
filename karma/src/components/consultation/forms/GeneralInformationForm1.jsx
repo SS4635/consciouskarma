@@ -192,7 +192,7 @@ export default function GeneralInformationForm({
             <div>
               <div className="gen-info-field-label">
                 {/* स्टार (*) हटा दिया है */}
-                <span>Time of Birth <small style={{opacity: 0.7, fontSize: '0.8em'}}>(Optional)</small></span>
+                <span>Time of Birth <small style={{opacity: 0.7, fontSize: '0.8em'}}></small></span>
               </div>
               <input
                 type="time"
