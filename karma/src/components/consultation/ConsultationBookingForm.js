@@ -553,7 +553,7 @@ const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); // Sirf dig
                   height: inModal ? 48 : undefined,
                   
                   // Conditional Styles based on isLastStep
-                  backgroundColor: isLastStep ? "#FF6b35" : "#222",
+                  backgroundColor: isLastStep ? "#ff6b35" : "#222",
                   color: isLastStep ? "#000" : "#cfcfcf",
                   borderColor: isLastStep ? "#ff914d" : "#444",
                   opacity: isLastStep ? 1 : 0.6,
