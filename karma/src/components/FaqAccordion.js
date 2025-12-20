@@ -282,7 +282,7 @@ export default function FaqAccordion() {
           );
         })}
       </div>
-      <div className="ck-faq-footer">
+      <div className="ck-faq-footer py-1 pb-2">
         For any questions, write to us at hello@consciouskarma.co
       </div>
 

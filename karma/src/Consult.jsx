@@ -250,7 +250,15 @@ const [showLogin, setShowLogin] = useState(false);
 
       {/* Main Content */}
       <Home />
-      <div className="ck-section-divider" />
+      <div
+  className="ck-section-divider"
+  style={{
+    height: "4px",
+    background: "linear-gradient(to right, rgb(187,187,187), rgb(68,68,68), rgb(34,34,34))",
+    opacity: 0.5,
+  }}
+/>
+
       <ConsultationSection />
       <ConsultationPlans />
       {/* <ConsultationBookingForm /> */}
