@@ -4,13 +4,15 @@ export async function sendScoreMail(to, scoreData) {
   if (!to) throw new Error("Recipient email missing");
 
   const transporter = nodemailer.createTransport({
-    service: "gmail", // or use your SES/SMTP settings
-    auth: {
-      user: process.env.EMAIL_USER, // sender email
-      pass: process.env.EMAIL_PASS, // app password (not your login password)
-    }, 
-  });
-
+      host: "smtp.hostinger.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER, // no-reply@consciouskarma.co
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  
   // 🧩 Design the HTML email
   const html = `
   <div style="font-family: Arial, sans-serif; background:#f9f9f9; padding:20px;">

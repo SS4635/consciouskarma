@@ -7,11 +7,18 @@ export async function sendConsultationEmails({ formData, docId }) {
 
   if (!email) throw new Error("Missing user email for consultation");
 
+  // ✅ HOSTINGER SMTP (SAME AS WORKING TEST-MAIL)
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+    host: "smtp.hostinger.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.SMTP_USER, // no-reply@consciouskarma.co
+      pass: process.env.SMTP_PASS,
+    },
   });
 
+  /* ================= USER MAIL (UNCHANGED) ================= */
   const userHTML = `
 <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
   <p>Dear <strong>${name}</strong>,</p>
@@ -39,20 +46,25 @@ export async function sendConsultationEmails({ formData, docId }) {
 </div>
 `;
 
-  // Admin table builder
+  /* ================= ADMIN TABLE (UNCHANGED) ================= */
   function renderStep(stepIdx) {
     const step = formData?.[stepIdx];
-    if (!step) return '';
-    const rows = Object.entries(step).map(([k, v]) => {
-      let val = v;
-      if (typeof v === 'object' && v !== null) {
-        if (Array.isArray(v)) val = v.join(' / ');
-        else if ('isd' in v || 'mobile' in v) val = `${v.isd || ''} ${v.mobile || ''}`.trim();
-        else val = JSON.stringify(v);
-      }
-      return `<tr><th style="text-align:left;padding:8px;border-bottom:1px solid #eee;">${k}</th><td style="padding:8px;border-bottom:1px solid #eee;">${val || ''}</td></tr>`;
-    }).join('');
-    return rows;
+    if (!step) return "";
+    return Object.entries(step)
+      .map(([k, v]) => {
+        let val = v;
+        if (typeof v === "object" && v !== null) {
+          if (Array.isArray(v)) val = v.join(" / ");
+          else if ("isd" in v || "mobile" in v)
+            val = `${v.isd || ""} ${v.mobile || ""}`.trim();
+          else val = JSON.stringify(v);
+        }
+        return `<tr>
+          <th style="text-align:left;padding:8px;border-bottom:1px solid #eee;">${k}</th>
+          <td style="padding:8px;border-bottom:1px solid #eee;">${val || ""}</td>
+        </tr>`;
+      })
+      .join("");
   }
 
   const adminHTML = `
@@ -77,19 +89,24 @@ export async function sendConsultationEmails({ formData, docId }) {
     </table>
   </div>`;
 
+  /* ================= SEND USER MAIL ================= */
   await transporter.sendMail({
-  from: `"Conscious Karma" <${process.env.EMAIL_USER}>`,
-  to: email,
-  subject: "Your Consultation Booking is Confirmed",
-  html: userHTML,
-});
+    from: `"Conscious Karma" <${process.env.SMTP_USER}>`,
+    to: email,
+    subject: "Your Consultation Booking is Confirmed",
+    html: userHTML,
+  });
 
+  /* ================= SEND ADMIN MAIL ================= */
+  const adminEmail =
+    process.env.ADMIN_EMAIL ||
+    process.env.INTERNAL_EMAIL ||
+    process.env.SMTP_USER;
 
-  const adminEmail = process.env.ADMIN_EMAIL || process.env.INTERNAL_EMAIL || process.env.EMAIL_USER;
   await transporter.sendMail({
-    from: `"Conscious Karma System" <${process.env.EMAIL_USER}>`,
+    from: `"Conscious Karma System" <${process.env.SMTP_USER}>`,
     to: adminEmail,
-    subject: `New Consultation: ${name} ${phone ? '('+phone+')' : ''}`,
+    subject: `New Consultation: ${name} ${phone ? "(" + phone + ")" : ""}`,
     html: adminHTML,
   });
 

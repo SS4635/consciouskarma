@@ -2,12 +2,15 @@ import nodemailer from "nodemailer";
 
 export async function sendOrderEmails(orderData) {
   const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
+      host: "smtp.hostinger.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER, // no-reply@consciouskarma.co
+        pass: process.env.SMTP_PASS,
+      },
+    });
+  
 
   // Email to User - Thank you message
   const userEmailHTML = `

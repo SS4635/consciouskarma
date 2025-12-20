@@ -25,45 +25,44 @@ export default function ConsultationSection() {
             </p>
 
             {/* PROCESS LIST */}
-            <div className="d-flex flex-column gap-3">
-  
-  {/* Step 1 */}
-  <div className="d-flex align-items-start gap-3">
-    {/* Icon Wrapper: flex-shrink-0 taaki icon pichke nahi */}
-    <span className="icon-wrap flex-shrink-0 mt-1">
-      <i className="bi bi-clipboard-check text-[#ff6b35] fs-3"></i>
-    </span>
-    <span className="fs-5 fw-light">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+
+  {/* Item 1 */}
+  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+    <div style={{ flexShrink: 0, marginTop: '5px' }}>
+      <i className="bi bi-clipboard-check text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+    </div>
+    <span className="fs-4 fw-light">
       Beginning with a discovery form,
     </span>
   </div>
 
-  {/* Step 2 */}
-  <div className="d-flex align-items-start gap-3">
-    <span className="icon-wrap flex-shrink-0 mt-1">
-      <i className="bi bi-camera-video text-[#ff6b35] fs-3"></i>
-    </span>
-    <span className="fs-5 fw-light">
+  {/* Item 2 */}
+  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+    <div style={{ flexShrink: 0, marginTop: '5px' }}>
+      <i className="bi bi-camera-video text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+    </div>
+    <span className="fs-4 fw-light">
       Moving to a focused 25-minute video call,
     </span>
   </div>
 
-  {/* Step 3 */}
-  <div className="d-flex align-items-start gap-3">
-    <span className="icon-wrap flex-shrink-0 mt-1">
-      <i className="bi bi-chat-dots text-[#ff6b35] fs-3"></i>
-    </span>
-    <span className="fs-5 fw-light">
+  {/* Item 3 */}
+  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+    <div style={{ flexShrink: 0, marginTop: '5px' }}>
+      <i className="bi bi-chat-dots text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+    </div>
+    <span className="fs-4 fw-light">
       Followed continued guidance on chat,
     </span>
   </div>
 
-  {/* Step 4 */}
-  <div className="d-flex align-items-start gap-3">
-    <span className="icon-wrap flex-shrink-0 mt-1">
-      <i className="bi bi-check-circle text-[#ff6b35] fs-3"></i>
-    </span>
-    <span className="fs-5 fw-light">
+  {/* Item 4 */}
+  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
+    <div style={{ flexShrink: 0, marginTop: '5px' }}>
+      <i className="bi bi-check-circle text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+    </div>
+    <span className="fs-4 fw-light">
       Until the right number is chosen.
     </span>
   </div>

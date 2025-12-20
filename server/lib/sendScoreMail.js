@@ -7,21 +7,16 @@ let transporter = null;
 
 function getTransporter() {
   if (!transporter) {
-    transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      pool: true,
-      maxConnections: 5,
-      maxMessages: 100,
-      rateDelta: 1000,
-      rateLimit: 5,
-      connectionTimeout: 60000,
-      greetingTimeout: 30000,
-      socketTimeout: 60000,
-    });
+    const transporter = nodemailer.createTransport({
+        host: "smtp.hostinger.com",
+        port: 465,
+        secure: true,
+        auth: {
+          user: process.env.SMTP_USER, // no-reply@consciouskarma.co
+          pass: process.env.SMTP_PASS,
+        },
+      });
+    
   }
   return transporter;
 }

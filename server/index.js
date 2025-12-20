@@ -12,6 +12,12 @@ import User from "./models/User.js";
 import Consultation from "./models/Consultation.js";
 import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
 import { sendScoreMail } from "./lib/sendScoreMail.js";
+console.log({
+  SMTP_USER: process.env.SMTP_USER,
+  SMTP_PASS_LEN: process.env.SMTP_PASS?.length,
+  SMTP_PORT: process.env.SMTP_PORT,
+});
+
 
 const app = express();
 app.use(cors());
@@ -34,14 +40,17 @@ await connectMongo();
 
 // Nodemailer Setup
 const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
-  secure: !!Number(process.env.SMTP_SECURE || 0),
+  host: "smtp.hostinger.com",
+  port: 465,
+  secure: true, // 🔴 IMPORTANT
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
+  logger: true,
+  debug: true,
 });
+
 
 
 async function sendEmail({ to, subject, html }) {
@@ -177,7 +186,7 @@ app.post("/api/auth/register", async (req, res) => {
     // Only send email AFTER successful DB save
     try {
       console.log("Sending signup emails...");
-      await sendSignupEmails({ email,name });
+      await sendSignupEmails({ email, name: email.split("@")[0] });
       console.log("Signup emails sent successfully");
     } catch (emailErr) {
       console.error("Signup email error:", emailErr);
