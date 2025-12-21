@@ -164,59 +164,79 @@ export default function ConsultationSection() {
 
               `}
             </style>
-            <div className="d-flex flex-column gap-2 consultation-container">
-              <p
-                className="fs-3 fw-light mb-0 d-flex align-items-center consultation-text font-arsenal"
-                style={{
-                  color: "#ff6b35",
-                }}
-              >
-                <i
-                  className="bi bi-clipboard-check me-2 me-md-3 text-white consultation-icon"
-                  style={{ fontSize: "2rem", flexShrink: 0 }}
-                ></i>
-                <span>Beginning with a discovery form,</span>
-              </p>
+            <div className="d-flex flex-column gap-3 consultation-container">
+  {/* Step 1 */}
+  <div className="d-flex align-items-center">
+    <i
+      className="bi bi-clipboard-check text-white me-3"
+      style={{ fontSize: "1.5rem", flexShrink: 0 }}
+    ></i>
+    <span
+      className="fw-light font-arsenal"
+      style={{
+        color: "#ff6b35",
+        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", // Mobile: 1.1rem, Desktop: 1.5rem
+        lineHeight: "1.3",
+      }}
+    >
+      Beginning with a discovery form,
+    </span>
+  </div>
 
-              <p
-                className="fs-3 fw-light mb-0 d-flex align-items-center consultation-text font-arsenal"
-                style={{
-                  color: "#ff6b35",
-                }}
-              >
-                <i
-                  className="bi bi-camera-video me-2 me-md-3 text-white consultation-icon"
-                  style={{ fontSize: "2rem", flexShrink: 0 }}
-                ></i>
-                <span>Moving to a focused 25-minute video call,</span>
-              </p>
+  {/* Step 2 */}
+  <div className="d-flex align-items-center">
+    <i
+      className="bi bi-camera-video text-white me-3"
+      style={{ fontSize: "1.5rem", flexShrink: 0 }}
+    ></i>
+    <span
+      className="fw-light font-arsenal"
+      style={{
+        color: "#ff6b35",
+        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
+        lineHeight: "1.3",
+      }}
+    >
+      Moving to a focused 25-minute video call,
+    </span>
+  </div>
 
-              <p
-                className="fs-3 fw-light mb-0 d-flex align-items-center consultation-text font-arsenal"
-                style={{
-                  color: "#ff6b35",
-                }}
-              >
-                <i
-                  className="bi bi-chat-dots me-2 me-md-3 text-white consultation-icon"
-                  style={{ fontSize: "2rem", flexShrink: 0 }}
-                ></i>
-                <span>Followed continued guidance on chat,</span>
-              </p>
+  {/* Step 3 */}
+  <div className="d-flex align-items-center">
+    <i
+      className="bi bi-chat-dots text-white me-3"
+      style={{ fontSize: "1.5rem", flexShrink: 0 }}
+    ></i>
+    <span
+      className="fw-light font-arsenal"
+      style={{
+        color: "#ff6b35",
+        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
+        lineHeight: "1.3",
+      }}
+    >
+      Followed continued guidance on chat,
+    </span>
+  </div>
 
-              <p
-                className="fs-3 fw-light d-flex align-items-center consultation-text font-arsenal"
-                style={{
-                  color: "#ff6b35",
-                }}
-              >
-                <i
-                  className="bi bi-check-circle me-2 me-md-3 text-white consultation-icon"
-                  style={{ fontSize: "2rem", flexShrink: 0 }}
-                ></i>
-                <span>Until the right number is chosen.</span>
-              </p>
-            </div>
+  {/* Step 4 */}
+  <div className="d-flex align-items-center">
+    <i
+      className="bi bi-check-circle text-white me-3"
+      style={{ fontSize: "1.5rem", flexShrink: 0 }}
+    ></i>
+    <span
+      className="fw-light font-arsenal"
+      style={{
+        color: "#ff6b35",
+        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
+        lineHeight: "1.3",
+      }}
+    >
+      Until the right number is chosen.
+    </span>
+  </div>
+</div>
           </div>
 
           {/* CTA Text */}

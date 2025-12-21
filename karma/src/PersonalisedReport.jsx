@@ -95,7 +95,9 @@ const ConsciousKarmaPage = () => {
   const getGeneralFormData = () => ({
     Name: general.name,
     Gender: general.gender,
-    Age: [general.ageYears, general.ageMonths],
+    // Change: Send separate keys instead of an array
+    AgeYears: general.ageYears,
+    AgeMonths: general.ageMonths,
     "Email-id": general.email,
   });
 
@@ -107,8 +109,12 @@ const ConsciousKarmaPage = () => {
       case "Gender":
         setGeneral((g) => ({ ...g, gender: value }));
         break;
-      case "Age":
-        setGeneral((g) => ({ ...g, ageYears: value[0], ageMonths: value[1] }));
+      // Change: Handle individual Age fields
+      case "AgeYears":
+        setGeneral((g) => ({ ...g, ageYears: value }));
+        break;
+      case "AgeMonths":
+        setGeneral((g) => ({ ...g, ageMonths: value }));
         break;
       case "Email-id":
         setGeneral((g) => ({ ...g, email: value }));
@@ -117,7 +123,6 @@ const ConsciousKarmaPage = () => {
         break;
     }
   };
-
   const getPrimaryFormData = () => ({
     "Mobile Number": { isd: primary.isd, mobile: primary.number },
     "Using this number since": [primary.sinceMonth, primary.sinceYear],
@@ -1010,7 +1015,7 @@ const ConsciousKarmaPage = () => {
             })}
           </div>
 
-          <div className="ck-faq-footer" style={{ marginBottom: "1rem" }}>
+          <div className="ck-faq-footer pt-2" style={{ marginBottom: "1rem" }}>
             For any questions, write to us at hello@consciouskarma.co
           </div>
         </section>

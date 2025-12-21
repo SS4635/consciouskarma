@@ -11,23 +11,16 @@ export default function GeneralInformationForm({
   showDateTimePickers = false,
   className = "",
 }) {
-  // Pick the key that your parent actually uses (backward compatible)
-  const pickKey = (a, b) => (Object.prototype.hasOwnProperty.call(data, a) ? a : b);
+  // --- SIMPLIFIED: Direct Data Access (No confusion) ---
+  const nameVal = data["Name"] || "";
+  const genderVal = data["Gender"] || "";
+  const emailVal = data["Email-id"] || "";
+  
+  // Ensure values are strings for Dropdowns to match <option> values
+  const ageYearsVal = data["AgeYears"] ? String(data["AgeYears"]) : "";
+  const ageMonthsVal = data["AgeMonths"] ? String(data["AgeMonths"]) : "";
 
-  const KEY_NAME = pickKey("Name", "name");
-  const KEY_GENDER = pickKey("Gender", "gender");
-  const KEY_EMAIL = pickKey("Email-id", "email");
-  const KEY_AGE_YEARS = pickKey("AgeYears", "ageYears");
-  const KEY_AGE_MONTHS = pickKey("AgeMonths", "ageMonths");
-  const KEY_DOB = "Date of Birth and Time"; // your existing structure
-
-  const nameVal = data[KEY_NAME] ?? "";
-  const genderVal = data[KEY_GENDER] ?? "";
-  const emailVal = data[KEY_EMAIL] ?? "";
-  const ageYearsVal = data[KEY_AGE_YEARS] ?? "";
-  const ageMonthsVal = data[KEY_AGE_MONTHS] ?? "";
-
-  const dobTime = data[KEY_DOB] || [];
+  const dobTime = data["Date of Birth and Time"] || [];
   const dateVal = dobTime[0] || "";
   const timeVal = dobTime[1] || "";
 
@@ -35,19 +28,26 @@ export default function GeneralInformationForm({
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  useEffect(() => setSelectedGender(genderVal || ""), [genderVal]);
+  // Sync local state with parent data
+  useEffect(() => {
+    setSelectedGender(genderVal || "");
+  }, [genderVal]);
 
+  // Generate Options
   const yearsOptions = useMemo(() => Array.from({ length: 100 }, (_, i) => i + 1), []);
   const monthsOptions = useMemo(() => Array.from({ length: 12 }, (_, i) => i), []);
 
+  // Helper to update parent
   const handleFieldChange = (field, value) => {
-    if (!onChange) return;
-    onChange(field, value);
+    if (onChange) {
+      // console.log(`Updating ${field} to:`, value); // Uncomment to debug
+      onChange(field, value);
+    }
   };
 
   const handleGenderSelect = (gender) => {
     setSelectedGender(gender);
-    handleFieldChange(KEY_GENDER, gender);
+    handleFieldChange("Gender", gender);
   };
 
   const modal = (
@@ -117,19 +117,22 @@ export default function GeneralInformationForm({
         }
         .gen-info-input::placeholder { color: #999; }
 
+        /* ARROW FIX: Ensures arrow is visible and clickable */
         .gen-info-select {
           appearance: none;
           -webkit-appearance: none;
           -moz-appearance: none;
-          background-image:
-            linear-gradient(45deg, transparent 50%, #fff 50%),
-            linear-gradient(135deg, #fff 50%, transparent 50%);
-          background-position:
-            calc(100% - 18px) calc(50% - 3px),
-            calc(100% - 12px) calc(50% - 3px);
-          background-size: 6px 6px, 6px 6px;
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
           background-repeat: no-repeat;
-          padding-right: 34px;
+          background-position: right 1rem center;
+          background-size: 16px 12px;
+          padding-right: 2.5rem;
+          cursor: pointer; /* Ensures mouse detects it as clickable */
+        }
+        /* Fix for black option text in some browsers */
+        .gen-info-select option {
+          background-color: #0f0f0f; 
+          color: white;
         }
 
         .gen-info-two-col {
@@ -183,9 +186,9 @@ export default function GeneralInformationForm({
           <input
             type="text"
             className="gen-info-input fw-light"
-            placeholder="ABCXYZ"
+            placeholder="Name"
             value={nameVal}
-            onChange={(e) => handleFieldChange(KEY_NAME, e.target.value)}
+            onChange={(e) => handleFieldChange("Name", e.target.value)}
           />
         </div>
 
@@ -222,8 +225,8 @@ export default function GeneralInformationForm({
             <div className="gen-info-two-col">
               <select
                 className="gen-info-select fw-light"
-                value={String(ageYearsVal || "")}
-                onChange={(e) => handleFieldChange(KEY_AGE_YEARS, e.target.value)}
+                value={ageYearsVal}
+                onChange={(e) => handleFieldChange("AgeYears", e.target.value)}
               >
                 <option value="">Years</option>
                 {yearsOptions.map((y) => (
@@ -235,8 +238,8 @@ export default function GeneralInformationForm({
 
               <select
                 className="gen-info-select fw-light"
-                value={String(ageMonthsVal || "")}
-                onChange={(e) => handleFieldChange(KEY_AGE_MONTHS, e.target.value)}
+                value={ageMonthsVal}
+                onChange={(e) => handleFieldChange("AgeMonths", e.target.value)}
               >
                 <option value="">Months</option>
                 {monthsOptions.map((m) => (
@@ -263,14 +266,14 @@ export default function GeneralInformationForm({
                 type="date"
                 className="gen-info-input fw-light"
                 value={dateVal}
-                onChange={(e) => handleFieldChange(KEY_DOB, [e.target.value, timeVal])}
+                onChange={(e) => handleFieldChange("Date of Birth and Time", [e.target.value, timeVal])}
               />
               <input
                 type="time"
                 step="60"
                 className="gen-info-input fw-light"
                 value={timeVal}
-                onChange={(e) => handleFieldChange(KEY_DOB, [dateVal, e.target.value])}
+                onChange={(e) => handleFieldChange("Date of Birth and Time", [dateVal, e.target.value])}
               />
             </div>
           </div>
@@ -292,10 +295,10 @@ export default function GeneralInformationForm({
             className="gen-info-input"
             placeholder="abc@gmail.com"
             value={emailVal}
-            onChange={(e) => handleFieldChange(KEY_EMAIL, e.target.value)}
+            onChange={(e) => handleFieldChange("Email-id", e.target.value)}
           />
         </div>
       </div>
     </div>
   );
-}
+} 

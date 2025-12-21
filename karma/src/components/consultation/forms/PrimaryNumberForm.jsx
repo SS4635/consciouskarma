@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from "react";
+import ReactDOM from "react-dom"; // 1. Yahan import add kiya
 import "bootstrap/dist/css/bootstrap.min.css";
 // Path check kar lena apne hisab se
 import { COUNTRY_CODES } from "../../constants/countryCodes"; 
@@ -77,16 +78,15 @@ export default function PrimaryNumberForm({
          showToast(`Phone number must be exactly ${exactLength} digits for ${selectedCountry.name}`);
        }
     } else if (currentNumber) {
-        // Fallback checks
-        if (!/^[0-9]{6,15}$/.test(mobileDigits)) {
+       // Fallback checks
+       if (!/^[0-9]{6,15}$/.test(mobileDigits)) {
              showToast("Invalid phone number format");
-        }
+       }
     }
   };
 
   const handleMobileChange = (e) => {
     const val = e.target.value;
-    // Sirf numbers allow karega (aur spaces agar chahiye to, but best hai sirf numbers)
     if (/[^0-9]/.test(val)) return; 
 
     const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
@@ -96,9 +96,45 @@ export default function PrimaryNumberForm({
   const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
   const sinceArr = data["Using this number since"] || data.usingSince || ["", ""];
   
-  // Calculate max length dynamically
   const currentCountry = getSelectedCountry();
   const maxAllowedLength = currentCountry?.max_length || 15;
+
+  // --- 2. Toast UI Component via Portal ---
+  // Yeh ensure karega ki toast hamesha screen ke top par aaye, 
+  // chahe slider kahin bhi ho.
+  const toastComponent = toast.show ? (
+    <div
+      className="fixed"
+      style={{
+        top: '20px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        animation: 'slideDown 0.3s ease-out',
+        zIndex: 9999999, // Very high Z-index
+      }}
+    >
+      <div
+        className={`px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 ${
+          toast.type === 'error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'
+        }`}
+      >
+        <span>{toast.message}</span>
+        <button
+          onClick={() => setToast({ show: false, message: "", type: "error" })}
+          className="ml-auto text-white hover:text-gray-200 border-0 bg-transparent"
+          style={{ fontSize: '18px', lineHeight: '1', cursor: 'pointer' }}
+        >
+          ×
+        </button>
+      </div>
+      <style>{`
+        @keyframes slideDown {
+          from { opacity: 0; transform: translate(-50%, -20px); }
+          to { opacity: 1; transform: translate(-50%, 0); }
+        }
+      `}</style>
+    </div>
+  ) : null;
 
   return (
     <div className={`${className} font-arsenal relative`}>
@@ -155,7 +191,6 @@ export default function PrimaryNumberForm({
           padding-right: 34px;
         }
         
-        /* Dropdown options styling */
         .primary-select option {
             background-color: #000;
             color: #fff;
@@ -184,11 +219,10 @@ export default function PrimaryNumberForm({
         }
         .primary-btn:hover { border-color: #ff6b35; }
         
-        /* UPDATED: Active state color fixed to #ff6b35 */
         .primary-btn.active {
           background: #ff6b35;
           border-color: #ff6b35;
-          color: #000; /* Text black for contrast on orange */
+          color: #000;
           font-weight: 700;
         }
 
@@ -197,41 +231,13 @@ export default function PrimaryNumberForm({
           .primary-mobile-row { grid-template-columns: 80px 1fr; gap: 10px; }
           .primary-two-col { gap: 10px; }
         }
-        
-        @keyframes slideDown {
-          from { opacity: 0; transform: translate(-50%, -20px); }
-          to { opacity: 1; transform: translate(-50%, 0); }
-        }
       `}</style>
 
-      {/* --- TOAST NOTIFICATION --- */}
-      {toast.show && (
-        <div
-          className="fixed"
-          style={{
-            top: '20px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            animation: 'slideDown 0.3s ease-out',
-            zIndex: 9999,
-          }}
-        >
-          <div
-            className={`px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 ${
-              toast.type === 'error' ? 'bg-red-600 text-white' : 'bg-green-600 text-white'
-            }`}
-          >
-            <span>{toast.message}</span>
-            <button
-              onClick={() => setToast({ show: false, message: "", type: "error" })}
-              className="ml-auto text-white hover:text-gray-200 border-0 bg-transparent"
-              style={{ fontSize: '18px', lineHeight: '1', cursor: 'pointer' }}
-            >
-              ×
-            </button>
-          </div>
-        </div>
-      )}
+      {/* 3. Render Toast via Portal outside the component hierarchy */}
+      {typeof document !== 'undefined' 
+        ? ReactDOM.createPortal(toastComponent, document.body) 
+        : toastComponent
+      }
 
       {showTitle && <h1 className="primary-number-title">Primary Number</h1>}
 
@@ -265,7 +271,7 @@ export default function PrimaryNumberForm({
             value={mobileObj.mobile || ""}
             onChange={handleMobileChange}
             onBlur={validateMobile}
-            maxLength={maxAllowedLength} // Prevents typing more digits
+            maxLength={maxAllowedLength} 
           />
         </div>
       </div>
