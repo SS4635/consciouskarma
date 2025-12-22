@@ -114,27 +114,17 @@ const Blog = () => {
 
       {/* Footer */}
       <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
-        <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-4">
-          <div className="flex flex-wrap items-center justify-center gap-4 text-center">
-            {[
-              ["Terms & Conditions", "/termsandconditions"],
-              ["Privacy Policy", "/privacy-policy"],
-              ["Refund Policy", "/refund-policy"],
-              ["Shipping & Delivery", "/shipping-policy"],
-              ["Contact Us", "/contact-us"],
-            ].map(([label, link], i) => (
-              <React.Fragment key={i}>
-                <a
-                  href={link}
-                  className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-                >
-                  {label}
-                </a>
-                {i < 4 && (
-                  <hr className="border-none bg-white w-[1px] h-[15px] opacity-100" />
-                )}
-              </React.Fragment>
-            ))}
+        <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+            <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Terms & Conditions</a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+            <a href="/privacy-policy" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Privacy Policy</a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+            <a href="/refund-policy" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Refund Policy</a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+            <a href="/shipping-policy" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Shipping & Delivery</a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+            <a href="/contact-us" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Contact Us</a>
           </div>
         </div>
       </footer>
