@@ -17,6 +17,8 @@ console.log({
   SMTP_PASS_LEN: process.env.SMTP_PASS?.length,
   SMTP_PORT: process.env.SMTP_PORT,
 });
+const emailOtps = new Map(); 
+// email -> { code, expiresAt }
 
 
 const app = express();
@@ -208,6 +210,51 @@ app.post("/api/auth/register", async (req, res) => {
 });
 
 
+app.post("/api/email/send-otp", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) return res.json({ ok: false, message: "Email required" });
+
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+
+    emailOtps.set(email, {
+      code,
+      expiresAt: Date.now() + 10 * 60 * 1000, // 10 min
+    });
+
+    const html = `
+      <p>Your verification code is:</p>
+      <h2 style="letter-spacing:3px">${code}</h2>
+      <p>This code is valid for 10 minutes.</p>
+    `;
+
+    await sendEmail({
+      to: email,
+      subject: "Verify your email – Conscious Karma",
+      html,
+    });
+
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ ok: false, message: "Failed to send OTP" });
+  }
+});
+app.post("/api/email/verify-otp", (req, res) => {
+  const { email, code } = req.body;
+
+  const entry = emailOtps.get(email);
+  if (!entry) return res.json({ ok: false, verified: false });
+
+  if (Date.now() > entry.expiresAt)
+    return res.json({ ok: false, expired: true });
+
+  if (entry.code !== code)
+    return res.json({ ok: false, verified: false });
+
+  emailOtps.delete(email);
+  res.json({ ok: true, verified: true });
+});
 
 
 // User registration endpoint

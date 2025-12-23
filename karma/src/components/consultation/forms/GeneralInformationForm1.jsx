@@ -27,10 +27,53 @@ export default function GeneralInformationForm({
   const [selectedGender, setSelectedGender] = useState(genderVal);
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+const [email, setEmail] = useState(emailVal);
+const [emailOtp, setEmailOtp] = useState("");
+const [emailOtpSent, setEmailOtpSent] = useState(false);
+const [emailVerified, setEmailVerified] = useState(false);
+const [emailCooldown, setEmailCooldown] = useState(0);
 
   useEffect(() => setSelectedGender(genderVal || ""), [genderVal]);
 
 
+const sendEmailOtp = async () => {
+  if (!email) return alert("Enter email first");
+
+  await fetch("/api/email/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  setEmailOtpSent(true);
+  setEmailCooldown(30);
+
+  const t = setInterval(() => {
+    setEmailCooldown((c) => {
+      if (c <= 1) {
+        clearInterval(t);
+        return 0;
+      }
+      return c - 1;
+    });
+  }, 1000);
+};
+const verifyEmailOtp = async () => {
+  const res = await fetch("/api/email/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, code: emailOtp }),
+  });
+
+  const data = await res.json();
+
+  if (data.ok && data.verified) {
+    setEmailVerified(true);
+    handleFieldChange(KEY_EMAIL, email);
+  } else {
+    alert("Invalid OTP");
+  }
+};
 
   const handleFieldChange = (field, value) => {
     if (!onChange) return;
