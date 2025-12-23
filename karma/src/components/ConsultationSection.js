@@ -18,11 +18,10 @@ export default function ConsultationSection() {
               aligned number can bring to a person's life.
             </p>
 
-            <p className="fs-4 fw-light mb-4">
-              Our consultation is designed to help you find
-              <br className="d-none d-md-block" />
+            {/* <p className="fs-4 fw-light mb-4">
+              Our consultation is designed to help you find 
               that alignment –
-            </p>
+            </p> */}
 
             {/* PROCESS LIST */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

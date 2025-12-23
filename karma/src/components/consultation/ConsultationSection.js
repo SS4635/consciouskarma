@@ -66,7 +66,7 @@ export default function ConsultationSection() {
             </p>
             <p className="fs-4 fs-md-4 fw-light mb-4 mt-4 font-arsenal">
               {" "}
-              Our consultation is designed to help you find
+              Our consultation is designed to help you find &nbsp;
               <br className="d-none d-md-block" />
               that alignment –
             </p>
@@ -175,11 +175,11 @@ export default function ConsultationSection() {
       className="fw-light font-arsenal"
       style={{
         color: "#ff6b35",
-        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)", // Mobile: 1.1rem, Desktop: 1.5rem
+        fontSize: "clamp(1.3rem, 2.5vw, 1.5rem)", // Mobile: 1.1rem, Desktop: 1.5rem
         lineHeight: "1.3",
       }}
     >
-      Beginning with a discovery form,
+    Beginning with a discovery form,
     </span>
   </div>
 
@@ -193,11 +193,11 @@ export default function ConsultationSection() {
       className="fw-light font-arsenal"
       style={{
         color: "#ff6b35",
-        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
+        fontSize: "clamp(1.3rem, 2.5vw, 1.5rem)",
         lineHeight: "1.3",
       }}
     >
-      Moving to a focused 25-minute video call,
+     Focused 25-minute video call,
     </span>
   </div>
 
@@ -211,11 +211,12 @@ export default function ConsultationSection() {
       className="fw-light font-arsenal"
       style={{
         color: "#ff6b35",
-        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
+        fontSize: "clamp(1.3rem, 2.5vw, 1.5rem)",
         lineHeight: "1.3",
       }}
     >
-      Followed continued guidance on chat,
+      Continued guidance via chat,
+    
     </span>
   </div>
 
@@ -229,11 +230,11 @@ export default function ConsultationSection() {
       className="fw-light font-arsenal"
       style={{
         color: "#ff6b35",
-        fontSize: "clamp(1.1rem, 2.5vw, 1.5rem)",
+        fontSize: "clamp(1.3rem, 2.5vw, 1.5rem)",
         lineHeight: "1.3",
       }}
     >
-      Until the right number is chosen.
+     Until the right number is chosen.
     </span>
   </div>
 </div>

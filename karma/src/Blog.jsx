@@ -22,7 +22,7 @@ const Blog = () => {
       
       
 <div className="flex-2 w-full max-w-3xl mx-auto p-6 md:p-12">
-        <h1 className="text-3xl md:text-4xl font-bold mb-6 pt-3 text-white">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6 pt-24 text-white">
           Why a Mobile Number
         </h1>
         <div className="text-gray-300 leading-relaxed space-y-4">
@@ -113,8 +113,8 @@ const Blog = () => {
       )}
 
       {/* Footer */}
-      <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
-        <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
+      <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3 mt-5">
+        <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5 ">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Terms & Conditions</a>
             <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />

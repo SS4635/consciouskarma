@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import SignupModal from "../../../SignupModal";
+import LoginModal from "../../../LoginModal";
 export default function GeneralInformationForm({
   data = {},
   onChange,
@@ -28,29 +30,17 @@ export default function GeneralInformationForm({
 
   useEffect(() => setSelectedGender(genderVal || ""), [genderVal]);
 
-  // 🔥 NEW LOGIC: Set Default Time if empty so validation doesn't fail
-  useEffect(() => {
-    if (showDateTimePickers && !data[KEY_DOB_TIME] && onChange) {
-      // Default set to 12:00 PM if user doesn't pick anything
-      onChange(KEY_DOB_TIME, "12:00");
-    }
-  }, [showDateTimePickers, data, onChange, KEY_DOB_TIME]);
+
 
   const handleFieldChange = (field, value) => {
     if (!onChange) return;
     onChange(field, value);
   };
 
-  const modal = (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80">
-      {/* Modal Content Placeholder */}
-    </div>
-  );
-
+ 
   return (
     <div className={`${className} font-arsenal`}>
-      {(showSignup || showLogin) &&
-        ReactDOM.createPortal(modal, document.body)}
+
 
       <style>{`
         .gen-info-field-label {
@@ -220,6 +210,32 @@ export default function GeneralInformationForm({
         />
       </div>
 
+
+
+{(showSignup || showLogin) && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          {showSignup && (
+            <SignupModal
+              onClose={() => setShowSignup(false)}
+              onSwitch={() => {
+                setShowSignup(false);
+                setShowLogin(true);
+              }}
+            />
+          )}
+      
+          {showLogin && (
+            <LoginModal
+              onClose={() => setShowLogin(false)}
+              onSwitch={() => {
+                setShowLogin(false);
+                setShowSignup(true);
+              }}
+            />
+          )}
+        </div>
+      )}
+      
       {/* Email */}
       <div className="mb-3">
         <div className="gen-info-field-label">

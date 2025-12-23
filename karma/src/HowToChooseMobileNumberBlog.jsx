@@ -23,10 +23,10 @@ const HowToChooseMobileNumberBlog = () => {
    <div className="bg-black min-h-screen w-full flex flex-col font-sans text-gray-100">
     
   
-      <div className="flex-1 w-full max-w-3xl mx-auto p-6 md:p-12">
+      <div className="flex-1 w-full max-w-3xl mx-auto p-6 md:p-12 pt-24">
         
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-bold mb-6 pt-3 text-white">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6  text-white">
           How to Choose a Mobile Number
         </h1>
         <p>Choosing the right mobile number is not a one-size-fits-all process.<br/>
@@ -65,7 +65,7 @@ A consciously chosen mobile number should:<br/>
 • bring clarity and balance to everyday life<br/><br/>
 A number is not chosen for symmetry, aesthetics, or memorability.<br/>
 It is chosen because its sequence aligns with the individual’s path and creates a harmonious field
-around their actions.<br/>
+around their actions.<br/><br/>
 <b>More Than Convenience</b><br/><br/>
 A mobile number is not just a point of contact.<br/>
 It is a Digital Age Yantra — a tool threaded with energy.<br/>

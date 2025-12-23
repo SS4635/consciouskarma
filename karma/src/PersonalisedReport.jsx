@@ -727,11 +727,9 @@ const ConsciousKarmaPage = () => {
           <div className="ck-form-layout">
             {/* LEFT HERO */}
             <div className="ck-hero">
-              <p className="ck-hero-text">
-                Every mobile number is alive with energy,
-                <br />
-                shaping how we think, feel, speak, and live.
-              </p>
+             <p className="ck-hero-text">
+  Every mobile number is alive with energy, shaping how we think, feel, speak, and live.
+</p>
 
               <div className="mx-auto max-w-[900px] px-3">
                 <div className="ck-tags-wrap space-y-3">
@@ -748,7 +746,7 @@ const ConsciousKarmaPage = () => {
                         >
                           <div className="flex items-center h-[26px] sm:h-[34px]">
                             <p
-                              className="m-0 opacity-80 px-3 sm:px-[52px] text-[12px] sm:text-[18px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap"
+                              className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] sm:text-[18px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap"
                             >
                               {text}
                             </p>

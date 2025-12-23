@@ -262,7 +262,7 @@ export default function ConsultationPlans() {
                   <h3 className="fw-normal fs-4 mb-2 text-start font-arsenal">
                     {plan.title}
                   </h3>
-                  <span className="fw-semibold fs-4 font-arsenal">
+                  <span className=" fs-4 font-arsenal">
                     {plan.price}
                   </span>
                 </div>

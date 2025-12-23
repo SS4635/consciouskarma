@@ -25,7 +25,7 @@ function HowToReadMobileNumberBlog() {
       <div className="flex-1 w-full max-w-3xl mx-auto p-6 md:p-12">
         
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-bold mb-6 pt-3 text-white text-center sm:text-left">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6 pt-24 text-white text-center sm:text-left">
           How to Read a Mobile Number
         </h1>
 
