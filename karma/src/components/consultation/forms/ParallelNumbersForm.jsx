@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-// Ensure this path is correct
+// ✅ Verify path
 import { COUNTRY_CODES } from "../../constants/countryCodes"; 
 
 export default function ParallelNumbersForm({
@@ -141,7 +141,7 @@ export default function ParallelNumbersForm({
           padding: 0.65rem 0.85rem;
           color: #fff;
           font-size: 0.95rem;
-          height: 44px !important; /* Force Fixed Height */
+          height: 44px !important; 
           transition: all 0.25s ease;
         }
         .pn-input:focus, .pn-select:focus {
@@ -151,7 +151,7 @@ export default function ParallelNumbersForm({
         }
         .pn-input::placeholder { color: #999; }
 
-        /* Arrow Alignment Fixed to Center */
+        /* General Select Arrow */
         .pn-select {
           appearance: none;
           -webkit-appearance: none;
@@ -160,8 +160,8 @@ export default function ParallelNumbersForm({
             linear-gradient(45deg, transparent 50%, #fff 50%),
             linear-gradient(135deg, #fff 50%, transparent 50%);
           background-position:
-            calc(100% - 18px) center, /* Centered Vertically */
-            calc(100% - 12px) center; /* Centered Vertically */
+            calc(100% - 18px) center, 
+            calc(100% - 12px) center; 
           background-size: 6px 6px, 6px 6px;
           background-repeat: no-repeat;
           padding-right: 34px;
@@ -174,7 +174,9 @@ export default function ParallelNumbersForm({
         }
 
         .pn-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .pn-mobile-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; }
+        
+        /* ✅ FIXED GRID FOR MOBILE ROW */
+        .pn-mobile-row { display: grid; grid-template-columns: 105px 1fr; gap: 12px; }
 
         .pn-pill {
           background: transparent;
@@ -187,7 +189,6 @@ export default function ParallelNumbersForm({
         }
         .pn-pill:hover { border-color: #ff6b35; }
         
-        /* Active State: Orange BG, Black Text */
         .pn-pill.active {
           background: #ff6b35;
           border-color: #ff6b35;
@@ -221,6 +222,8 @@ export default function ParallelNumbersForm({
       <div className="d-flex flex-column gap-3">
         {numbers.map((num, index) => {
           const isOpen = openIndex === index;
+          // Default ISD to +91 if not set
+          const currentIsd = num.isd || "+91";
 
           return (
             <div key={index} className="pn-block">
@@ -246,25 +249,59 @@ export default function ParallelNumbersForm({
                     </div>
 
                     <div className="pn-mobile-row">
-                      <select
-                        className="pn-select text-center"
-                        value={num.isd || "+91"}
-                        onChange={(e) => handleFieldChange(index, "isd", e.target.value)}
-                      >
-                         {/* Dynamic Country Codes */}
-                         {COUNTRY_CODES.map((c) => (
-                            <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                              {c.dial_code}
-                            </option>
-                        ))}
-                      </select>
+                      {/* Country Dropdown Container */}
+                      <div style={{ position: "relative", width: "100%", height: "44px" }}>
+                         <select
+                           value={currentIsd}
+                           onChange={(e) => handleFieldChange(index, "isd", e.target.value)}
+                           className="pn-select"
+                           style={{
+                             padding: "0 12px",
+                             color: "transparent", // Text invisible
+                             cursor: "pointer",
+                             appearance: "none",
+                             WebkitAppearance: "none",
+                             backgroundImage: "none", // Remove default arrow
+                             height: "100%",
+                             width: "100%"
+                           }}
+                         >
+                           {COUNTRY_CODES.map((c) => (
+                             <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                               {c.name} ({c.dial_code})
+                             </option>
+                           ))}
+                         </select>
+
+                         {/* Overlay: Code + SVG Arrow */}
+                         <div style={{
+                           position: "absolute",
+                           inset: 0,
+                           display: "flex",
+                           alignItems: "center",
+                           justifyContent: "center",
+                           pointerEvents: "none",
+                           color: "#fff",
+                           fontSize: "0.95rem",
+                           gap: "5px"
+                         }}>
+                           <span>{currentIsd}</span>
+                           <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                             <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                           </svg>
+                         </div>
+                       </div>
 
                       <input
-                        type="text"
+                        type="tel"
                         className="pn-input"
                         placeholder="Mobile Number"
                         value={num.number || ""}
-                        onChange={(e) => handleFieldChange(index, "number", e.target.value)}
+                        onChange={(e) => {
+                           const val = e.target.value;
+                           if (/[^0-9]/.test(val)) return;
+                           handleFieldChange(index, "number", val);
+                        }}
                       />
                     </div>
                   </div>

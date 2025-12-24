@@ -11,12 +11,12 @@ export default function GeneralInformationForm({
   showDateTimePickers = false,
   className = "",
 }) {
-  // --- SIMPLIFIED: Direct Data Access (No confusion) ---
+  // --- DIRECT DATA ACCESS ---
   const nameVal = data["Name"] || "";
-  const genderVal = data["Gender"] || "";
   const emailVal = data["Email-id"] || "";
+  const genderVal = data["Gender"] || "";
   
-  // Ensure values are strings for Dropdowns to match <option> values
+  // Ensure values are strings for Dropdowns
   const ageYearsVal = data["AgeYears"] ? String(data["AgeYears"]) : "";
   const ageMonthsVal = data["AgeMonths"] ? String(data["AgeMonths"]) : "";
 
@@ -28,19 +28,15 @@ export default function GeneralInformationForm({
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
 
-  // Sync local state with parent data
   useEffect(() => {
     setSelectedGender(genderVal || "");
   }, [genderVal]);
 
-  // Generate Options
   const yearsOptions = useMemo(() => Array.from({ length: 100 }, (_, i) => i + 1), []);
   const monthsOptions = useMemo(() => Array.from({ length: 12 }, (_, i) => i), []);
 
-  // Helper to update parent
   const handleFieldChange = (field, value) => {
     if (onChange) {
-      // console.log(`Updating ${field} to:`, value); // Uncomment to debug
       onChange(field, value);
     }
   };
@@ -55,19 +51,13 @@ export default function GeneralInformationForm({
       {showSignup && (
         <SignupModal
           onClose={() => setShowSignup(false)}
-          onSwitch={() => {
-            setShowSignup(false);
-            setShowLogin(true);
-          }}
+          onSwitch={() => { setShowSignup(false); setShowLogin(true); }}
         />
       )}
       {showLogin && (
         <LoginModal
           onClose={() => setShowLogin(false)}
-          onSwitch={() => {
-            setShowLogin(false);
-            setShowSignup(true);
-          }}
+          onSwitch={() => { setShowLogin(false); setShowSignup(true); }}
         />
       )}
     </div>
@@ -117,7 +107,7 @@ export default function GeneralInformationForm({
         }
         .gen-info-input::placeholder { color: #999; }
 
-        /* ARROW FIX: Ensures arrow is visible and clickable */
+        /* General Select Arrow */
         .gen-info-select {
           appearance: none;
           -webkit-appearance: none;
@@ -127,9 +117,8 @@ export default function GeneralInformationForm({
           background-position: right 1rem center;
           background-size: 16px 12px;
           padding-right: 2.5rem;
-          cursor: pointer; /* Ensures mouse detects it as clickable */
+          cursor: pointer;
         }
-        /* Fix for black option text in some browsers */
         .gen-info-select option {
           background-color: #0f0f0f; 
           color: white;
@@ -179,9 +168,7 @@ export default function GeneralInformationForm({
         {/* Name */}
         <div className="mb-3">
           <div className="gen-info-field-label">
-            <span>
-              Name<span className="gen-info-required-star">*</span>
-            </span>
+            <span>Name<span className="gen-info-required-star">*</span></span>
           </div>
           <input
             type="text"
@@ -195,9 +182,7 @@ export default function GeneralInformationForm({
         {/* Gender */}
         <div className="mb-3">
           <div className="gen-info-field-label">
-            <span>
-              Gender<span className="gen-info-required-star">*</span>
-            </span>
+            <span>Gender<span className="gen-info-required-star">*</span></span>
           </div>
           <div className="d-flex gap-2 flex-wrap w-100">
             {["Female", "Male", "Other"].map((option) => (
@@ -217,11 +202,8 @@ export default function GeneralInformationForm({
         {!showDateTimePickers && (
           <div className="mb-3">
             <div className="gen-info-field-label">
-              <span>
-                Age<span className="gen-info-required-star">*</span>
-              </span>
+              <span>Age<span className="gen-info-required-star">*</span></span>
             </div>
-
             <div className="gen-info-two-col">
               <select
                 className="gen-info-select fw-light"
@@ -231,7 +213,7 @@ export default function GeneralInformationForm({
                 <option value="">Years</option>
                 {yearsOptions.map((y) => (
                   <option key={y} value={String(y)}>
-                    {y}
+                    {y}+ {/* Plus Sign */}
                   </option>
                 ))}
               </select>
@@ -244,7 +226,7 @@ export default function GeneralInformationForm({
                 <option value="">Months</option>
                 {monthsOptions.map((m) => (
                   <option key={m} value={String(m)}>
-                    {m}
+                    {m}+ {/* Plus Sign */}
                   </option>
                 ))}
               </select>
@@ -256,11 +238,8 @@ export default function GeneralInformationForm({
         {showDateTimePickers && (
           <div className="mb-3">
             <div className="gen-info-field-label">
-              <span>
-                Date &amp; Time of Birth<span className="gen-info-required-star">*</span>
-              </span>
+              <span>Date &amp; Time of Birth<span className="gen-info-required-star">*</span></span>
             </div>
-
             <div className="gen-info-two-col">
               <input
                 type="date"
@@ -282,14 +261,11 @@ export default function GeneralInformationForm({
         {/* Email */}
         <div className="mb-3">
           <div className="gen-info-field-label">
-            <span>
-              Email-id<span className="gen-info-required-star">*</span>
-            </span>
+            <span>Email-id<span className="gen-info-required-star">*</span></span>
             <button type="button" className="gen-info-link-btn" onClick={() => setShowSignup(true)}>
               Create account
             </button>
           </div>
-
           <input
             type="email"
             className="gen-info-input"
@@ -301,4 +277,4 @@ export default function GeneralInformationForm({
       </div>
     </div>
   );
-} 
+}

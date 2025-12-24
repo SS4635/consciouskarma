@@ -280,7 +280,7 @@ export default function ConsultationBookingForm({
   const effectiveSteps = formSteps.slice(0, maxSteps);
   const currentForm = effectiveSteps[currentStep];
   
-  // Logic to determine if user is on the last step (Eligible to Proceed)
+  // Logic to determine if user is on the last step
   const isLastStep = currentStep === effectiveSteps.length - 1;
 
   // ---------- VALIDATION ----------
@@ -376,6 +376,17 @@ export default function ConsultationBookingForm({
     }
   };
 
+  // ✅ New Helper Function to Check ALL Steps
+  const checkAllStepsValid = () => {
+    for (let i = 0; i < effectiveSteps.length; i++) {
+      if (validateStep(effectiveSteps[i])) return false; // If any step has error, return false
+    }
+    return true; // All good
+  };
+
+  const isFormValid = checkAllStepsValid();
+  const canSubmit = isLastStep && isFormValid;
+
   const handleNext = () => {
     if (currentStep >= effectiveSteps.length - 1) return;
     setCurrentStep((s) => s + 1);
@@ -395,9 +406,9 @@ export default function ConsultationBookingForm({
         return;
       }
     }
-// 1. Price clean karne ka logic add kar
-const rawPrice = selectedPlan?.price || currentForm.price;
-const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); // Sirf digits nikaalo
+
+    const rawPrice = selectedPlan?.price || currentForm.price;
+    const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); 
     const finalFormData = JSON.parse(JSON.stringify(formData));
     if (!finalFormData[1]) finalFormData[1] = {};
     if (!finalFormData[1]["Time of Birth"]) finalFormData[1]["Time of Birth"] = "00:00";
@@ -413,7 +424,7 @@ const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); // Sirf dig
         body: JSON.stringify({
           formData: finalFormData,
           planName: selectedPlan?.title || currentForm.title,
-          price: finalPrice, // ✅ Sending clean number
+          price: finalPrice, 
         }),
       });
       const createData = await createRes.json();
@@ -441,7 +452,7 @@ const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); // Sirf dig
               razorpay_signature: rzpRes.razorpay_signature,
               formData,
               planName: selectedPlan?.title || currentForm.title,
-              price: finalPrice, // ✅ FIX: Send the CLEAN number here too!
+              price: finalPrice, 
             }),
           });
           const verifyData = await verifyRes.json();
@@ -543,7 +554,7 @@ const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); // Sirf dig
                 {selectedPlan?.price ?? currentForm.price}
               </button>
               
-              {/* UPDATED PROCEED BUTTON STYLING */}
+              {/* ✅ PROCEED BUTTON LOGIC UPDATED */}
               <button
                 className="proceed-btn"
                 style={{
@@ -552,14 +563,14 @@ const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); // Sirf dig
                   fontSize: inModal ? "1rem" : undefined,
                   height: inModal ? 48 : undefined,
                   
-                  // Conditional Styles based on isLastStep
-                  backgroundColor: isLastStep ? "#ff6b35" : "#222",
-                  color: isLastStep ? "#000" : "#cfcfcf",
-                  borderColor: isLastStep ? "#ff914d" : "#444",
-                  opacity: isLastStep ? 1 : 0.6,
-                  cursor: isLastStep ? "pointer" : "not-allowed",
+                  // 🔥 Logic: Last Step AND Form is Valid = Orange, Else Black/Grey
+                  backgroundColor: canSubmit ? "#ff6b35" : "#222",
+                  color: canSubmit ? "#000" : "#cfcfcf",
+                  borderColor: canSubmit ? "#ff914d" : "#444",
+                  opacity: canSubmit ? 1 : 0.6,
+                  cursor: canSubmit ? "pointer" : "not-allowed",
                 }}
-                disabled={!isLastStep}
+                disabled={!canSubmit}
                 onClick={handleProceed}
               >
                 Proceed

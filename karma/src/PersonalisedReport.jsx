@@ -1,5 +1,6 @@
 // src/ConsciousKarmaPage.jsx
 import React, { useState } from "react";
+import ReactDOM from "react-dom"; // ✅ Added for Portal
 import Swal from "sweetalert2";
 import "./PersonalizedReport.css";
 import { useIntl, FormattedMessage } from "react-intl";
@@ -14,10 +15,11 @@ import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import CKNavbar from "./components/CKNavbar";
 
+// ✅ 1. Import Country Codes for Validation
+import { COUNTRY_CODES } from "./components/constants/countryCodes"; 
 
 // =======================
 // ENV CONFIG (CRA ONLY)
-// .env: REACT_APP_API_URL, REACT_APP_REPORT_BASE_PRICE, REACT_APP_MAX_PARALLEL_NUMBERS
 // =======================
 const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
@@ -33,6 +35,8 @@ const ConsciousKarmaPage = () => {
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   
+  // ✅ New State for Report Generation Loader
+  const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   const [general, setGeneral] = useState({
     name: "",
@@ -70,7 +74,6 @@ const ConsciousKarmaPage = () => {
   // ----- FAQ STATE -----
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
-
   // ----- OTP STATE -----
   const [otpPrimary, setOtpPrimary] = useState({
     sent: false,
@@ -91,11 +94,22 @@ const ConsciousKarmaPage = () => {
   const goNext = () => setStep((s) => (s < 4 ? s + 1 : s));
   const goPrev = () => setStep((s) => (s > 0 ? s - 1 : s));
 
+  // ----- HELPER: VALIDATE MOBILE NUMBER -----
+  const validatePhoneNumber = (isd, number) => {
+    if (!number) return false;
+    const cleanNum = number.replace(/\D/g, ""); // Remove non-digits
+    const country = COUNTRY_CODES.find((c) => c.dial_code === (isd || "+91"));
+
+    if (country && country.max_length) {
+      return cleanNum.length === country.max_length;
+    }
+    return cleanNum.length >= 7 && cleanNum.length <= 15;
+  };
+
   // ----- ADAPTER FUNCTIONS FOR REUSABLE COMPONENTS -----
   const getGeneralFormData = () => ({
     Name: general.name,
     Gender: general.gender,
-    // Change: Send separate keys instead of an array
     AgeYears: general.ageYears,
     AgeMonths: general.ageMonths,
     "Email-id": general.email,
@@ -103,26 +117,15 @@ const ConsciousKarmaPage = () => {
 
   const handleGeneralFormChange = (field, value) => {
     switch (field) {
-      case "Name":
-        setGeneral((g) => ({ ...g, name: value }));
-        break;
-      case "Gender":
-        setGeneral((g) => ({ ...g, gender: value }));
-        break;
-      // Change: Handle individual Age fields
-      case "AgeYears":
-        setGeneral((g) => ({ ...g, ageYears: value }));
-        break;
-      case "AgeMonths":
-        setGeneral((g) => ({ ...g, ageMonths: value }));
-        break;
-      case "Email-id":
-        setGeneral((g) => ({ ...g, email: value }));
-        break;
-      default:
-        break;
+      case "Name": setGeneral((g) => ({ ...g, name: value })); break;
+      case "Gender": setGeneral((g) => ({ ...g, gender: value })); break;
+      case "AgeYears": setGeneral((g) => ({ ...g, ageYears: value })); break;
+      case "AgeMonths": setGeneral((g) => ({ ...g, ageMonths: value })); break;
+      case "Email-id": setGeneral((g) => ({ ...g, email: value })); break;
+      default: break;
     }
   };
+
   const getPrimaryFormData = () => ({
     "Mobile Number": { isd: primary.isd, mobile: primary.number },
     "Using this number since": [primary.sinceMonth, primary.sinceYear],
@@ -139,37 +142,20 @@ const ConsciousKarmaPage = () => {
       case "Using this number since":
         setPrimary((p) => ({ ...p, sinceMonth: value[0], sinceYear: value[1] }));
         break;
-      case "Usage type":
-        setPrimary((p) => ({ ...p, usageType: value }));
-        break;
-      case "Line of Work":
-        setPrimary((p) => ({ ...p, lineOfWork: value }));
-        break;
-      case "Role":
-        setPrimary((p) => ({ ...p, role: value }));
-        break;
-      default:
-        break;
+      case "Usage type": setPrimary((p) => ({ ...p, usageType: value })); break;
+      case "Line of Work": setPrimary((p) => ({ ...p, lineOfWork: value })); break;
+      case "Role": setPrimary((p) => ({ ...p, role: value })); break;
+      default: break;
     }
   };
 
   // ----- PARALLEL NUMBERS -----
   const addParallel = () => {
     if (parallels.length >= MAX_PARALLEL_NUMBERS) return;
-
     setParallels((list) => [
       ...list,
-      {
-        isd: "+91",
-        number: "",
-        sinceMonth: "",
-        sinceYear: "",
-        usageType: "",
-        lineOfWork: "",
-        role: "",
-      },
+      { isd: "+91", number: "", sinceMonth: "", sinceYear: "", usageType: "", lineOfWork: "", role: "" },
     ]);
-
     setOtpParallels((list) => [
       ...list,
       { sent: false, code: "", verified: false, cooldown: 0, verificationId: null },
@@ -191,16 +177,7 @@ const ConsciousKarmaPage = () => {
   const addPrevious = () => {
     setPreviousNumbers((list) => [
       ...list,
-      {
-        isd: "+91",
-        number: "",
-        usedSinceMonth: "",
-        usedSinceYear: "",
-        usedTillMonth: "",
-        usedTillYear: "",
-        usageType: "",
-        role: "",
-      },
+      { isd: "+91", number: "", usedSinceMonth: "", usedSinceYear: "", usedTillMonth: "", usedTillYear: "", usageType: "", role: "" },
     ]);
   };
 
@@ -220,44 +197,16 @@ const ConsciousKarmaPage = () => {
   };
 
   const faqs = [
-    {
-      question: "1 - What happens after I submit the form?",
-      answer:
-        "A - Once your details are submitted, the analysis begins. Each number is studied individually, and your personalised report is prepared within 5–7 working days. You'll receive it directly on your registered email.",
-    },
-    {
-      question: "2 - Why do I need to verify my mobile number with an OTP?",
-      answer:
-        "A - OTP verification confirms that the number is active and genuinely belongs to you.",
-    },
-    {
-      question: "3 - Can I include more than one number in a single report?",
-      answer:
-        "A – Yes. You can include more than one number in the same report. This gives insights into each number on its own, and also how they interact together. (Each additional number is charged.)",
-    },
-    {
-      question: "4 – How many secondary numbers can I add?",
-      answer:
-        "A - You can include up to three secondary numbers along with your primary number. If you're using more than four numbers, we recommend booking a consultation.",
-    },
-    {
-      question: "5 - What if I've changed my number in the past?",
-      answer:
-        "A - You can add your previous number(s) in the form. They help us understand how your mobile number energy has shifted over time and provide context for your current number's influence.",
-    },
-    {
-      question: "6 - Why do you ask for my age, gender, and work details?",
-      answer:
-        "A - These details help in understanding how your number's energy interacts with your stage of life and the environment you function in. Each number expresses differently depending on who uses it and for what purpose.",
-    },
-    {
-      question: "7 - What if I enter the wrong number in the form?",
-      answer:
-        "A - If an incorrect number is verified or submitted, it will produce a report for that number. Please double-check all digits before submission, as each number sequence is unique.",
-    },
+    { question: "1 - What happens after I submit the form?", answer: "A - Once your details are submitted, the analysis begins. Each number is studied individually, and your personalised report is prepared within 5–7 working days. You'll receive it directly on your registered email." },
+    { question: "2 - Why do I need to verify my mobile number with an OTP?", answer: "A - OTP verification confirms that the number is active and genuinely belongs to you." },
+    { question: "3 - Can I include more than one number in a single report?", answer: "A – Yes. You can include more than one number in the same report. This gives insights into each number on its own, and also how they interact together. (Each additional number is charged.)" },
+    { question: "4 – How many secondary numbers can I add?", answer: "A - You can include up to three secondary numbers along with your primary number. If you're using more than four numbers, we recommend booking a consultation." },
+    { question: "5 - What if I've changed my number in the past?", answer: "A - You can add your previous number(s) in the form. They help us understand how your mobile number energy has shifted over time and provide context for your current number's influence." },
+    { question: "6 - Why do you ask for my age, gender, and work details?", answer: "A - These details help in understanding how your number's energy interacts with your stage of life and the environment you function in. Each number expresses differently depending on who uses it and for what purpose." },
+    { question: "7 - What if I enter the wrong number in the form?", answer: "A - If an incorrect number is verified or submitted, it will produce a report for that number. Please double-check all digits before submission, as each number sequence is unique." },
   ];
 
-  // ========== OTP COOLDOWN HELPERS (15s) ==========
+  // ========== OTP COOLDOWN HELPERS ==========
   const startPrimaryCooldown = () => {
     setOtpPrimary((prev) => ({ ...prev, cooldown: 15 }));
     const id = setInterval(() => {
@@ -294,7 +243,11 @@ const ConsciousKarmaPage = () => {
 
   // ========== OTP API CALLS ==========
   const sendOtpPrimary = async () => {
-    if (!primary.number || otpPrimary.cooldown > 0 || otpPrimary.verified) return;
+    if (!validatePhoneNumber(primary.isd, primary.number)) {
+      return Swal.fire("Incorrect number", "Please enter correct number.", "warning");
+    }
+
+    if (otpPrimary.cooldown > 0 || otpPrimary.verified) return;
 
     try {
       const res = await fetch(`${API_BASE}/api/send-otp`, {
@@ -332,7 +285,11 @@ const ConsciousKarmaPage = () => {
     const p = parallels[index];
     const o = otpParallels[index];
 
-    if (!p || !p.number || (o && (o.cooldown > 0 || o.verified))) return;
+    if (!validatePhoneNumber(p.isd, p.number)) {
+      return Swal.fire("Incorrect number", `Please enter correct number for Parallel #${index + 1}.`, "warning");
+    }
+
+    if (!p || (o && (o.cooldown > 0 || o.verified))) return;
 
     try {
       const res = await fetch(`${API_BASE}/api/send-otp`, {
@@ -569,10 +526,8 @@ const ConsciousKarmaPage = () => {
     return true;
   };
 
-  // ✅ Proceed enabled ONLY when OTP step + all verified + form complete
   const proceedEnabled = step === 4 && isFormComplete() && allOtpsVerified;
 
-  // ========== RAZORPAY HELPER ==========
   const openRazorpayCheckout = ({ key, orderId, amount, onSuccess, onFailure }) => {
     if (!window.Razorpay) {
       Swal.fire("Error", "Razorpay SDK not loaded.", "error");
@@ -605,7 +560,6 @@ const ConsciousKarmaPage = () => {
     new window.Razorpay(options).open();
   };
 
-  // ========== FINAL PROCEED ==========
   const handleProceed = async () => {
     let err = null;
 
@@ -626,7 +580,6 @@ const ConsciousKarmaPage = () => {
     }
 
     try {
-      // 1) Create order
       const createRes = await fetch(`${API_BASE}/api/pay/create-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -643,24 +596,32 @@ const ConsciousKarmaPage = () => {
 
       const localOrderId = createData.orderId;
 
-      // 2) Free flow
       if (createData.free || !createData.order) {
-        const startRes = await fetch(`${API_BASE}/api/report/start`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ orderId: localOrderId }),
-        });
-        const startData = await startRes.json();
-        if (!startData.ok) throw new Error(startData.message || "Failed to trigger report");
+        // Free report flow - Start Loading
+        setIsGeneratingReport(true);
+        
+        try {
+            const startRes = await fetch(`${API_BASE}/api/report/start`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ orderId: localOrderId }),
+            });
+            const startData = await startRes.json();
+            if (!startData.ok) throw new Error(startData.message || "Failed to trigger report");
 
-        return Swal.fire({
-          icon: "success",
-          title: "All set!",
-          text: "OTP verified. Your request is confirmed. Your report will be sent within 3–5 days.",
-        });
+            setIsGeneratingReport(false); // Stop loading before success message
+
+            return Swal.fire({
+              icon: "success",
+              title: "All set!",
+              text: "OTP verified. Your request is confirmed. Your report will be sent within 3–5 days.",
+            });
+        } catch(freeErr) {
+            setIsGeneratingReport(false);
+            throw freeErr;
+        }
       }
 
-      // 3) Paid flow
       const { keyId, order } = createData;
 
       openRazorpayCheckout({
@@ -669,8 +630,7 @@ const ConsciousKarmaPage = () => {
         amount: order.amount,
         onSuccess: async (rzpRes) => {
           try {
-            // 4) Verify payment
-            const verifyRes = await fetch(`${API_BASE}/api/pay/verify`, {
+            const verifyRes = await fetch(`${API_BASE}/api/pay/verify-report`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
@@ -683,13 +643,19 @@ const ConsciousKarmaPage = () => {
             const verifyData = await verifyRes.json();
             if (!verifyData.ok) throw new Error(verifyData.message || "Payment verification failed");
 
-            // 5) Trigger report
+            // ✅ PAYMENT VERIFIED: START LOADING HERE
+            setIsGeneratingReport(true);
+
             const submitRes = await fetch(`${API_BASE}/api/report/submit`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ orderId: localOrderId }),
             });
             const submitData = await submitRes.json();
+            
+            // ✅ EMAIL TRIGGERED: STOP LOADING HERE
+            setIsGeneratingReport(false);
+
             if (!submitData.ok) throw new Error(submitData.message || "Failed to trigger report/mails");
 
             Swal.fire({
@@ -698,6 +664,7 @@ const ConsciousKarmaPage = () => {
               text: "OTP verified and payment successful. Your personalized report will be emailed within 3–5 days.",
             });
           } catch (err) {
+            setIsGeneratingReport(false); // Ensure loading stops on error
             console.error(err);
             Swal.fire("Error", err.message || "Something went wrong after payment.", "error");
           }
@@ -712,24 +679,43 @@ const ConsciousKarmaPage = () => {
     }
   };
 
-  // ========== RENDER ==========
+  // ✅ LOADING COMPONENT (Overlay)
+  const loadingOverlay = isGeneratingReport ? (
+    <div style={{
+      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 999999,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
+    }}>
+      <div className="spinner" style={{
+        width: '50px', height: '50px', border: '5px solid #333',
+        borderTop: '5px solid #ff6b35', borderRadius: '50%',
+        animation: 'spin 1s linear infinite', marginBottom: '20px'
+      }}></div>
+      <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal'}}>Generating Your Report...</h2>
+      <p style={{color: '#ccc', marginTop: '10px'}}>Please wait, do not close this window.</p>
+      <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+    </div>
+  ) : null;
+
   return (
     <div className="ck-page">
+      {/* RENDER LOADER (via Portal if desired, or inline since div is fixed) */}
+      {typeof document !== 'undefined' ? ReactDOM.createPortal(loadingOverlay, document.body) : loadingOverlay}
 
-<CKNavbar
-  menuOpen={menuOpen}
-  setMenuOpen={setMenuOpen}
-  setShowSignup={setShowSignup}
-/>
+      <CKNavbar
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        setShowSignup={setShowSignup}
+      />
 
       <main>
         <section className="ck-form-section">
+          {/* ... Rest of your render logic remains exactly the same ... */}
           <div className="ck-form-layout">
             {/* LEFT HERO */}
             <div className="ck-hero">
-             <p className="ck-hero-text">
-  Every mobile number is alive with energy, shaping how we think, feel, speak, and live.
-</p>
+              <p className="ck-hero-text">
+                Every mobile number is alive with energy, shaping how we think, feel, speak, and live.
+              </p>
 
               <div className="mx-auto max-w-[900px] px-3">
                 <div className="ck-tags-wrap space-y-3">
@@ -745,9 +731,7 @@ const ConsciousKarmaPage = () => {
                           style={{ borderRadius: 16 }}
                         >
                           <div className="flex items-center h-[26px] sm:h-[34px]">
-                            <p
-                              className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] sm:text-[18px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap"
-                            >
+                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] sm:text-[18px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
                               {text}
                             </p>
                           </div>
@@ -1042,29 +1026,6 @@ const ConsciousKarmaPage = () => {
             )}
           </div>
         )}
-{(showSignup || showLogin) && (
-  <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-    {showSignup && (
-      <SignupModal
-        onClose={() => setShowSignup(false)}
-        onSwitch={() => {
-          setShowSignup(false);
-          setShowLogin(true);
-        }}
-      />
-    )}
-
-    {showLogin && (
-      <LoginModal
-        onClose={() => setShowLogin(false)}
-        onSwitch={() => {
-          setShowLogin(false);
-          setShowSignup(true);
-        }}
-      />
-    )}
-  </div>
-)}
 
         {/* FOOTER */}
         <footer className="w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">

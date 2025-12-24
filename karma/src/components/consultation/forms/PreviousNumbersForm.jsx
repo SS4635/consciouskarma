@@ -131,7 +131,7 @@ export default function PreviousNumbersForm({
           padding: 0.65rem 0.85rem;
           color: #fff;
           font-size: 0.95rem;
-          height: 44px !important; /* Force Fixed Height */
+          height: 44px !important; 
           transition: all 0.25s ease;
         }
         .pr-input:focus, .pr-select:focus {
@@ -164,7 +164,9 @@ export default function PreviousNumbersForm({
         }
 
         .pr-two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .pr-mobile-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; }
+        
+        /* Fixed Grid for Mobile Row */
+        .pr-mobile-row { display: grid; grid-template-columns: 105px 1fr; gap: 12px; }
 
         .pr-pill {
           background: transparent;
@@ -211,6 +213,24 @@ export default function PreviousNumbersForm({
       <div className="d-flex flex-column gap-3">
         {numbers.map((p, i) => {
           const isOpen = openIndex === i;
+          
+          // --- COUNTRY CODE LOGIC ---
+          const currentIsd = p.isd || "+91";
+
+          // --- DATE LOGIC ---
+          const startYear = p.usedSinceYear ? parseInt(p.usedSinceYear) : 0;
+          const startMonthIdx = p.usedSinceMonth ? months.indexOf(p.usedSinceMonth) : -1;
+
+          // 1. Filter Years: Till Year >= Start Year
+          const availableTillYears = years.filter(y => y >= startYear);
+
+          // 2. Filter Months: If Years are same, Till Month >= Start Month
+          let availableTillMonths = months;
+          const tillYear = p.usedTillYear ? parseInt(p.usedTillYear) : 0;
+          
+          if (startYear > 0 && tillYear === startYear && startMonthIdx !== -1) {
+             availableTillMonths = months.slice(startMonthIdx);
+          }
 
           return (
             <div key={i}>
@@ -236,25 +256,59 @@ export default function PreviousNumbersForm({
                     </div>
 
                     <div className="pr-mobile-row">
-                      <select
-                        className="pr-select text-center"
-                        value={p.isd || "+91"}
-                        onChange={(e) => handleFieldChange(i, "isd", e.target.value)}
-                      >
-                        {/* Dynamic Country Codes */}
-                        {COUNTRY_CODES.map((c) => (
-                            <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                              {c.dial_code}
-                            </option>
-                        ))}
-                      </select>
+                      {/* Country Dropdown (FIXED) */}
+                      <div style={{ position: "relative", width: "100%", height: "44px" }}>
+                          <select
+                            className="pr-select text-center"
+                            value={currentIsd}
+                            onChange={(e) => handleFieldChange(i, "isd", e.target.value)}
+                            style={{
+                              padding: "0 12px",
+                              color: "transparent",
+                              cursor: "pointer",
+                              appearance: "none",
+                              WebkitAppearance: "none",
+                              backgroundImage: "none",
+                              height: "100%",
+                              width: "100%"
+                            }}
+                          >
+                            {COUNTRY_CODES.map((c) => (
+                                <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                                  {c.name} ({c.dial_code})
+                                </option>
+                            ))}
+                          </select>
+                          
+                          {/* Overlay */}
+                          <div style={{
+                            position: "absolute",
+                            inset: 0,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            pointerEvents: "none",
+                            color: "#fff",
+                            fontSize: "0.95rem",
+                            gap: "5px"
+                          }}>
+                            <span>{currentIsd}</span>
+                            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </div>
+                      </div>
 
                       <input
                         type="text"
                         className="pr-input"
                         placeholder="Mobile Number"
                         value={p.number || ""}
-                        onChange={(e) => handleFieldChange(i, "number", e.target.value)}
+                        onChange={(e) => {
+                           const val = e.target.value;
+                           if (/[^0-9]/.test(val)) return;
+                           handleFieldChange(i, "number", val);
+                        }}
                       />
                     </div>
                   </div>
@@ -278,7 +332,10 @@ export default function PreviousNumbersForm({
                       <select
                         className="pr-select"
                         value={p.usedSinceYear || ""}
-                        onChange={(e) => handleFieldChange(i, "usedSinceYear", e.target.value)}
+                        onChange={(e) => {
+                           // If Year changes, check if current Till Year becomes invalid
+                           handleFieldChange(i, "usedSinceYear", e.target.value);
+                        }}
                       >
                         <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Year</option>
                         {years.map((y) => <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>)}
@@ -286,7 +343,7 @@ export default function PreviousNumbersForm({
                     </div>
                   </div>
 
-                  {/* Used Till */}
+                  {/* Used Till (Filtered) */}
                   <div className="mb-3">
                     <div className="pr-field-label">
                       <span>Used Till</span><span className="pr-star">*</span>
@@ -297,18 +354,22 @@ export default function PreviousNumbersForm({
                         className="pr-select"
                         value={p.usedTillMonth || ""}
                         onChange={(e) => handleFieldChange(i, "usedTillMonth", e.target.value)}
+                        disabled={!p.usedSinceYear} // Optional: Disable until Year selected
                       >
                         <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Month</option>
-                        {months.map((m) => <option key={m} value={m} style={{backgroundColor: '#000', color: '#fff'}}>{m}</option>)}
+                        {/* ✅ Filtered Months */}
+                        {availableTillMonths.map((m) => <option key={m} value={m} style={{backgroundColor: '#000', color: '#fff'}}>{m}</option>)}
                       </select>
 
                       <select
                         className="pr-select"
                         value={p.usedTillYear || ""}
                         onChange={(e) => handleFieldChange(i, "usedTillYear", e.target.value)}
+                        disabled={!p.usedSinceYear} // Optional: Disable until Start Year selected
                       >
                         <option value="" style={{backgroundColor: '#000', color: '#fff'}}>Year</option>
-                        {years.map((y) => <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>)}
+                        {/* ✅ Filtered Years */}
+                        {availableTillYears.map((y) => <option key={y} value={y} style={{backgroundColor: '#000', color: '#fff'}}>{y}</option>)}
                       </select>
                     </div>
                   </div>

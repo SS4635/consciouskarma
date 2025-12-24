@@ -803,6 +803,69 @@ app.post("/api/pay/verify", async (req, res) => {
   }
 });
 
+app.post("/api/pay/verify-report", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      orderId,
+    } = req.body || {};
+
+    if (
+      !razorpay_order_id ||
+      !razorpay_payment_id ||
+      !razorpay_signature ||
+      !orderId
+    ) {
+      return res.status(400).json({
+        ok: false,
+        message: "Missing Razorpay parameters",
+      });
+    }
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({
+        ok: false,
+        message: "Order not found",
+      });
+    }
+
+    /* ---------- Verify Razorpay signature ---------- */
+    const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expected = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(payload)
+      .digest("hex");
+
+    if (expected !== razorpay_signature) {
+      return res.status(400).json({
+        ok: false,
+        message: "Invalid Razorpay signature",
+      });
+    }
+
+    /* ---------- Mark order paid ---------- */
+    order.status = "paid";
+    order.razorpay = {
+      ...(order.razorpay || {}),
+      paymentId: razorpay_payment_id,
+      signature: razorpay_signature,
+    };
+
+    await order.save();
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("pay/verify error:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Server error",
+    });
+  }
+});
+
 /* ---------- Final submit AFTER payment verified ---------- */
 /* Frontend calls this with orderId once /api/pay/verify is ok */
 

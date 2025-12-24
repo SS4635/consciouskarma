@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useEffect } from "react";
-import ReactDOM from "react-dom"; // 1. Yahan import add kiya
+import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-// Path check kar lena apne hisab se
+// ✅ Verify path
 import { COUNTRY_CODES } from "../../constants/countryCodes"; 
 
 export default function PrimaryNumberForm({
@@ -59,6 +59,7 @@ export default function PrimaryNumberForm({
 
   // Helper to get current country details
   const getSelectedCountry = () => {
+     // Default to +91 if missing
      const currentIsd = (data["Mobile Number"]?.isd || data.mobileNumber?.isd || "+91");
      return COUNTRY_CODES.find(c => c.dial_code === currentIsd);
   };
@@ -90,18 +91,20 @@ export default function PrimaryNumberForm({
     if (/[^0-9]/.test(val)) return; 
 
     const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
-    handleFieldChange("Mobile Number", { ...mobileObj, mobile: val });
+    // Ensure we preserve the existing ISD or default to +91
+    const currentIsd = mobileObj.isd || "+91";
+    handleFieldChange("Mobile Number", { isd: currentIsd, mobile: val });
   };
 
-  const mobileObj = data["Mobile Number"] || data.mobileNumber || {};
+  const mobileObj = data["Mobile Number"] || data.mobileNumber || { isd: "+91", mobile: "" };
+  const currentIsd = mobileObj.isd || "+91";
+
   const sinceArr = data["Using this number since"] || data.usingSince || ["", ""];
   
   const currentCountry = getSelectedCountry();
   const maxAllowedLength = currentCountry?.max_length || 15;
 
-  // --- 2. Toast UI Component via Portal ---
-  // Yeh ensure karega ki toast hamesha screen ke top par aaye, 
-  // chahe slider kahin bhi ho.
+  // --- Toast UI Component via Portal ---
   const toastComponent = toast.show ? (
     <div
       className="fixed"
@@ -110,7 +113,7 @@ export default function PrimaryNumberForm({
         left: '50%',
         transform: 'translateX(-50%)',
         animation: 'slideDown 0.3s ease-out',
-        zIndex: 9999999, // Very high Z-index
+        zIndex: 9999999, 
       }}
     >
       <div
@@ -176,19 +179,18 @@ export default function PrimaryNumberForm({
         }
         .primary-input::placeholder { color: #999; }
 
+        /* Custom Select Arrow Styling */
         .primary-select {
           appearance: none;
           -webkit-appearance: none;
           -moz-appearance: none;
-          background-image:
-            linear-gradient(45deg, transparent 50%, #fff 50%),
-            linear-gradient(135deg, #fff 50%, transparent 50%);
-          background-position:
-            calc(100% - 18px) center,
-            calc(100% - 12px) center;
-          background-size: 6px 6px, 6px 6px;
+          /* Default Arrow for non-custom dropdowns */
+          background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
           background-repeat: no-repeat;
-          padding-right: 34px;
+          background-position: right 1rem center;
+          background-size: 16px 12px;
+          padding-right: 2.5rem;
+          cursor: pointer;
         }
         
         .primary-select option {
@@ -199,12 +201,6 @@ export default function PrimaryNumberForm({
         .primary-two-col {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: 12px;
-        }
-
-        .primary-mobile-row {
-          display: grid;
-          grid-template-columns: 90px 1fr;
           gap: 12px;
         }
 
@@ -228,12 +224,11 @@ export default function PrimaryNumberForm({
 
         @media (max-width: 420px) {
           .primary-number-title { font-size: 24px; }
-          .primary-mobile-row { grid-template-columns: 80px 1fr; gap: 10px; }
           .primary-two-col { gap: 10px; }
         }
       `}</style>
 
-      {/* 3. Render Toast via Portal outside the component hierarchy */}
+      {/* Render Toast */}
       {typeof document !== 'undefined' 
         ? ReactDOM.createPortal(toastComponent, document.body) 
         : toastComponent
@@ -241,7 +236,7 @@ export default function PrimaryNumberForm({
 
       {showTitle && <h1 className="primary-number-title">Primary Number</h1>}
 
-      {/* Mobile */}
+      {/* Mobile Input Section */}
       <div className="mb-3">
         <div className="primary-label">
           <span>
@@ -249,30 +244,61 @@ export default function PrimaryNumberForm({
           </span>
         </div>
 
-        <div className="primary-mobile-row">
-          <select
-            className="primary-select text-center"
-            value={mobileObj.isd || "+91"}
-            onChange={(e) =>
-              handleFieldChange("Mobile Number", { ...mobileObj, isd: e.target.value })
-            }
-          >
-            {COUNTRY_CODES.map((c) => (
-                <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                  {c.dial_code}
-                </option>
-            ))}
-          </select>
+        <div className="d-flex gap-2">
+           {/* Country Dropdown Container */}
+           <div style={{ position: "relative", width: "105px", flexShrink: 0 }}>
+              <select
+                value={currentIsd}
+                onChange={(e) =>
+                  handleFieldChange("Mobile Number", { ...mobileObj, isd: e.target.value })
+                }
+                className="primary-input"
+                style={{
+                  padding: "0 12px",
+                  color: "transparent", // Text invisible
+                  cursor: "pointer",
+                  appearance: "none",
+                  WebkitAppearance: "none",
+                  backgroundImage: "none" // Remove default arrow
+                }}
+              >
+                {COUNTRY_CODES.map((c) => (
+                  <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                    {c.name} ({c.dial_code})
+                  </option>
+                ))}
+              </select>
 
-          <input
-            type="tel"
-            className="primary-input"
-            placeholder="Mobile Number"
-            value={mobileObj.mobile || ""}
-            onChange={handleMobileChange}
-            onBlur={validateMobile}
-            maxLength={maxAllowedLength} 
-          />
+              {/* Overlay: Code + SVG Arrow */}
+              <div style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                pointerEvents: "none",
+                color: "#fff",
+                fontSize: "0.95rem",
+                gap: "5px"
+              }}>
+                <span>{currentIsd}</span>
+                <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </div>
+            </div>
+
+            {/* Actual Number Input */}
+            <input
+              type="tel"
+              className="primary-input"
+              placeholder="Mobile Number"
+              value={mobileObj.mobile || ""}
+              onChange={handleMobileChange}
+              onBlur={validateMobile}
+              maxLength={maxAllowedLength} 
+              style={{ flex: 1 }}
+            />
         </div>
       </div>
 

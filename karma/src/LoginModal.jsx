@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { encryptEmail } from "./utils/emailCrypto";
 import Swal from "sweetalert2";
 import "./loginModal.css";
+
 /* ================= API BASE ================= */
 const API_BASE_URL = "https://server.consciouskarma.co";
 /* ============================================ */
@@ -16,7 +17,7 @@ export default function LoginModal({ onClose, onSwitch }) {
   /* ---------- LOGIN STATES ---------- */
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Login Password Toggle
 
   /* ---------- COMMON ---------- */
   const [loading, setLoading] = useState(false);
@@ -28,8 +29,13 @@ export default function LoginModal({ onClose, onSwitch }) {
 
   const [fpEmail, setFpEmail] = useState("");
   const [otp, setOtp] = useState("");
+  
   const [newPass, setNewPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
+  
+  // States for toggling password visibility in Reset Flow
+  const [showNewPass, setShowNewPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
 
   const [otpLoading, setOtpLoading] = useState(false);
 
@@ -142,6 +148,22 @@ export default function LoginModal({ onClose, onSwitch }) {
     }
   }
 
+  // Helper Component for Eye Icon to avoid repetition
+  const EyeIcon = ({ show }) => (
+    show ? (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-5 0-9-4-9-8 0-1.5.54-3 1.58-4.32M6.1 6.1A10.94 10.94 0 0 1 12 4c5 0 9 4 9 8 0 1.16-.22 2.28-.64 3.32" />
+        <path d="M3 3l18 18" />
+        <path d="M9.88 9.88A3 3 0 0 0 12 15a3 3 0 0 0 2.12-.88" />
+      </svg>
+    ) : (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12Z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    )
+  );
+
   return (
     <div className="ck-modal-backdrop">
       <div className="ck-modal">
@@ -178,9 +200,10 @@ export default function LoginModal({ onClose, onSwitch }) {
               </button>
             </div>
 
+            {/* Login Password Input with Eye */}
             <div className="ck-input-wrapper">
               <input
-                className="ck-input"
+                className="ck-input ck-input-toggle"
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
                 value={password}
@@ -191,7 +214,7 @@ export default function LoginModal({ onClose, onSwitch }) {
                 className="ck-toggle"
                 onClick={() => setShowPassword((v) => !v)}
               >
-                👁
+                <EyeIcon show={showPassword} />
               </button>
             </div>
 
@@ -250,20 +273,38 @@ export default function LoginModal({ onClose, onSwitch }) {
         {forgotMode && step === 3 && (
           <>
             <label className="ck-label">New Password</label>
-            <input
-              className="ck-input"
-              type="password"
-              value={newPass}
-              onChange={(e) => setNewPass(e.target.value)}
-            />
+            <div className="ck-input-wrapper">
+              <input
+                className="ck-input ck-input-toggle"
+                type={showNewPass ? "text" : "password"}
+                value={newPass}
+                onChange={(e) => setNewPass(e.target.value)}
+              />
+              <button
+                type="button"
+                className="ck-toggle"
+                onClick={() => setShowNewPass((v) => !v)}
+              >
+                <EyeIcon show={showNewPass} />
+              </button>
+            </div>
 
             <label className="ck-label">Confirm Password</label>
-            <input
-              className="ck-input"
-              type="password"
-              value={confirmPass}
-              onChange={(e) => setConfirmPass(e.target.value)}
-            />
+            <div className="ck-input-wrapper">
+              <input
+                className="ck-input ck-input-toggle"
+                type={showConfirmPass ? "text" : "password"}
+                value={confirmPass}
+                onChange={(e) => setConfirmPass(e.target.value)}
+              />
+              <button
+                type="button"
+                className="ck-toggle"
+                onClick={() => setShowConfirmPass((v) => !v)}
+              >
+                <EyeIcon show={showConfirmPass} />
+              </button>
+            </div>
 
             <button
               className="ck-btn"
