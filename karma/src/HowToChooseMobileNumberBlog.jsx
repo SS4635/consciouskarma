@@ -34,10 +34,10 @@ Every person moves through life with different responsibilities, priorities, and
 mobile number should be chosen to support that journey.<br/><br/>
 A mobile number influences life through the energy pattern created by its sequence.<br/>
 For this reason, it must be selected according to:<br/><br/>
-• who the person is<br/>
-• the stage of life they are in<br/>
-• and the direction they wish to move toward<br/><br/>
-<b>A Number Should Solve a Specific Need</b><br/><br/>
+• Who the person is,<br/>
+• The stage of life they are in,<br/>
+• And the direction they wish to move toward.<br/><br/>
+<span style={{"color":"#ff914d"}}>A Number Should Solve a Specific Need</span><br/><br/>
 At any point in life, every individual carries a dominant area of focus — career, family, finances,
 stability, clarity, confidence, learning, or emotional balance.<br/><br/>
 For example:<br/>
@@ -49,14 +49,14 @@ As life changes, needs change.<br/>
 What supported someone a decade ago may not support them today.<br/>
 A mobile number should match the current phase of life and the direction in which the individual
 intends to grow.<br/><br/>    
-<b>Balance Matters</b><br/><br/>
+<span style={{"color":"#ff914d"}}>Balance Matters</span><br/><br/>
 Even when a number is chosen to strengthen a particular area, it must maintain balance across life.<br/><br/>
 • A number that improves finances should not disturb relationships.<br/>
 • A number that enhances ambition should not create restlessness.<br/>
 • A number that brings emotional comfort should not weaken resolve.<br/><br/>
 The right number creates a stable, supportive field — one that uplifts multiple aspects of life without
 creating inner conflict.<br/><br/>
- <b>ThePurpose of Selection</b><br/><br/>
+ <span style={{"color":"#ff914d"}}>The Purpose of Selection</span><br/><br/>
 A consciously chosen mobile number should:<br/>
 • reduce friction<br/>
 • support growth<br/>
@@ -66,12 +66,12 @@ A consciously chosen mobile number should:<br/>
 A number is not chosen for symmetry, aesthetics, or memorability.<br/>
 It is chosen because its sequence aligns with the individual’s path and creates a harmonious field
 around their actions.<br/><br/>
-<b>More Than Convenience</b><br/><br/>
+<span style={{"color":"#ff914d"}}>More Than Convenience</span><br/><br/>
 A mobile number is not just a point of contact.<br/>
 It is a Digital Age Yantra — a tool threaded with energy.<br/>
 It becomes active each time it is used, shared, or engaged in interaction — shaping experiences in
 subtle and continuous ways.<br/><br/>
-A Number That Shapes Destiny<br/><br/>
+<span style={{"color":"#ff914d"}}>A Number That Shapes Destiny</span><br/><br/>
 Consciously chosen, a mobile number becomes your greatest asset.<br/>
 It influences how opportunities arise, how challenges are absorbed, and how progress unfolds.<br/><br/>
 A small change — with the power to transform your path.</p>

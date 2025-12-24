@@ -42,7 +42,7 @@ const Blog = () => {
             and that it flows through life in patterns.  
             To express and organise this insight, they used something simple,precise, and timeless:
             <br/><br/>
-            <strong>Numbers.</strong>
+            <span style={{"color":"#ff914d"}}>Numbers.</span>
          <br/><br/>
             Numbers are stable symbols.  
             <br/>They do not depend on culture, language, or geography.<br/>  
@@ -57,7 +57,7 @@ const Blog = () => {
             In the digital age, numbers run systems, networks, and algorithms that connect the world.
          <br/><br/>
             Among all these systems, one sequence holds a special place today:
-            <br /><br/> <strong>The mobile number.</strong>
+            <br /><br/> <span style={{"color":"#ff914d"}}>The mobile number.</span>
           
            <br/><br/> Unlike other numbers in life — names, addresses, or even dates — this one is activated
             daily through intention and interaction.
@@ -66,7 +66,7 @@ const Blog = () => {
         <br/><br/>
             A mobile number connects a person to every domain of life:<br/>
             work, finances, relationships, interactions, opportunities, and identity.<br/><br/>
-         <strong>Every mobile number is unique.</strong>
+         <span style={{"color":"#ff914d"}}>Every mobile number is unique.</span>
 <br/><br/>
              Dialled with the correct ISD code, it reaches the same user anywhere in the world,
             regardless of how it is saved — by name, spelling, or language.<br/>
@@ -113,7 +113,7 @@ const Blog = () => {
       )}
 
       {/* Footer */}
-      <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3 mt-5">
+      <footer className=" w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3 mt-5">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5 ">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Terms & Conditions</a>
