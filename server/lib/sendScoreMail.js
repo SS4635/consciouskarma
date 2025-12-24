@@ -54,7 +54,7 @@ export async function sendScoreMail(to, scoreData, mobileNumber) {
     await mailTransporter.verify();
 
     const mailOptions = {
-      from: `"Conscious Karma" <${process.env.EMAIL_USER}>`,
+      from: `"Conscious Karma" <${process.env.SMTP_USER}>`,
       to,
       subject: "Your Instant Mobile Number Report",
       html: `
