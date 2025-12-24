@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 import SignupModal from "../../../SignupModal";
 import LoginModal from "../../../LoginModal";
+
 export default function GeneralInformationForm({
   data = {},
   onChange,
@@ -27,63 +28,92 @@ export default function GeneralInformationForm({
   const [selectedGender, setSelectedGender] = useState(genderVal);
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-const [email, setEmail] = useState(emailVal);
-const [emailOtp, setEmailOtp] = useState("");
-const [emailOtpSent, setEmailOtpSent] = useState(false);
-const [emailVerified, setEmailVerified] = useState(false);
-const [emailCooldown, setEmailCooldown] = useState(0);
+  const [email, setEmail] = useState(emailVal);
+  const [emailOtp, setEmailOtp] = useState("");
+  const [emailOtpSent, setEmailOtpSent] = useState(false);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [emailCooldown, setEmailCooldown] = useState(0);
 
   useEffect(() => setSelectedGender(genderVal || ""), [genderVal]);
 
+  const sendEmailOtp = async () => {
+    if (!email) return alert("Enter email first");
 
-const sendEmailOtp = async () => {
-  if (!email) return alert("Enter email first");
-
-  await fetch("/api/email/send-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  });
-
-  setEmailOtpSent(true);
-  setEmailCooldown(30);
-
-  const t = setInterval(() => {
-    setEmailCooldown((c) => {
-      if (c <= 1) {
-        clearInterval(t);
-        return 0;
-      }
-      return c - 1;
+    await fetch("/api/email/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
     });
-  }, 1000);
-};
-const verifyEmailOtp = async () => {
-  const res = await fetch("/api/email/verify-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, code: emailOtp }),
-  });
 
-  const data = await res.json();
+    setEmailOtpSent(true);
+    setEmailCooldown(30);
 
-  if (data.ok && data.verified) {
-    setEmailVerified(true);
-    handleFieldChange(KEY_EMAIL, email);
-  } else {
-    alert("Invalid OTP");
-  }
-};
+    const t = setInterval(() => {
+      setEmailCooldown((c) => {
+        if (c <= 1) {
+          clearInterval(t);
+          return 0;
+        }
+        return c - 1;
+      });
+    }, 1000);
+  };
+
+  const verifyEmailOtp = async () => {
+    const res = await fetch("/api/email/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, code: emailOtp }),
+    });
+
+    const data = await res.json();
+
+    if (data.ok && data.verified) {
+      setEmailVerified(true);
+      handleFieldChange(KEY_EMAIL, email);
+    } else {
+      alert("Invalid OTP");
+    }
+  };
 
   const handleFieldChange = (field, value) => {
     if (!onChange) return;
     onChange(field, value);
   };
 
- 
+  // ✅ MODAL WITH SOLID BLACK BACKGROUND
+  const modal = (
+    // Yahan 'bg-black/80' ko 'bg-black' kar diya gaya hai
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black backdrop-blur-sm">
+      {showSignup && (
+        <SignupModal
+          onClose={() => setShowSignup(false)}
+          onSwitch={() => {
+            setShowSignup(false);
+            setShowLogin(true);
+          }}
+        />
+      )}
+
+      {showLogin && (
+        <LoginModal
+          onClose={() => setShowLogin(false)}
+          onSwitch={() => {
+            setShowLogin(false);
+            setShowSignup(true);
+          }}
+        />
+      )}
+    </div>
+  );
+
   return (
     <div className={`${className} font-arsenal`}>
-
+      {/* RENDER MODAL VIA PORTAL OR INLINE */}
+      {(showSignup || showLogin) &&
+        (typeof document !== "undefined"
+          ? ReactDOM.createPortal(modal, document.body)
+          : modal)}
 
       <style>{`
         .gen-info-field-label {
@@ -224,7 +254,6 @@ const verifyEmailOtp = async () => {
             {/* TIME OF BIRTH (OPTIONAL) */}
             <div>
               <div className="gen-info-field-label">
-                {/* स्टार (*) हटा दिया है */}
                 <span>Time of Birth <small style={{opacity: 0.7, fontSize: '0.8em'}}></small></span>
               </div>
               <input
@@ -253,32 +282,6 @@ const verifyEmailOtp = async () => {
         />
       </div>
 
-
-
-{(showSignup || showLogin) && (
-        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          {showSignup && (
-            <SignupModal
-              onClose={() => setShowSignup(false)}
-              onSwitch={() => {
-                setShowSignup(false);
-                setShowLogin(true);
-              }}
-            />
-          )}
-      
-          {showLogin && (
-            <LoginModal
-              onClose={() => setShowLogin(false)}
-              onSwitch={() => {
-                setShowLogin(false);
-                setShowSignup(true);
-              }}
-            />
-          )}
-        </div>
-      )}
-      
       {/* Email */}
       <div className="mb-3">
         <div className="gen-info-field-label">
