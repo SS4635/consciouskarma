@@ -7,16 +7,15 @@ let transporter = null;
 
 function getTransporter() {
   if (!transporter) {
-    const transporter = nodemailer.createTransport({
-        host: "smtp.hostinger.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: process.env.SMTP_USER, // no-reply@consciouskarma.co
-          pass: process.env.SMTP_PASS,
-        },
-      });
-    
+    transporter = nodemailer.createTransport({
+      host: "smtp.hostinger.com",
+      port: 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
   }
   return transporter;
 }
