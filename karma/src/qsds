@@ -477,6 +477,7 @@ function InlineInstantReportForm({
           value={mobile}
           onChange={e=>setMobile(e.target.value)}
           aria-label="Mobile number"
+          maxLength={10}
         />
       </div>
 

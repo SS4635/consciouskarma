@@ -183,7 +183,7 @@ export default function CompatibilityNumbersForm({
                {/* Dynamic Country Codes */}
                {COUNTRY_CODES.map((c) => (
                   <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                    {c.dial_code}
+                    {c.dial_code === (primaryData.isd || "+91") ? c.dial_code : `${c.name} (${c.dial_code})`}
                   </option>
               ))}
             </select>
@@ -193,9 +193,14 @@ export default function CompatibilityNumbersForm({
               className="pn-input"
               placeholder="Mobile number"
               value={primaryData.mobile || ""}
-              onChange={(e) =>
-                onPrimaryChange?.({ ...primaryData, mobile: e.target.value })
-              }
+              maxLength={10}
+              inputMode="numeric"
+              pattern="[0-9]*"
+              onChange={(e) => {
+                // Allow only digits, max 10
+                const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                onPrimaryChange?.({ ...primaryData, mobile: val });
+              }}
             />
           </div>
         </div>
@@ -272,7 +277,7 @@ export default function CompatibilityNumbersForm({
                              {/* Dynamic Country Codes */}
                              {COUNTRY_CODES.map((c) => (
                                 <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                                  {c.dial_code}
+                                  {c.dial_code === (num.isd || "+91") ? c.dial_code : `${c.name} (${c.dial_code})`}
                                 </option>
                             ))}
                           </select>
@@ -282,9 +287,14 @@ export default function CompatibilityNumbersForm({
                             className="pn-input"
                             placeholder="Mobile number"
                             value={num.mobile || ""}
-                            onChange={(e) =>
-                              onChange?.(index, "mobile", e.target.value)
-                            }
+                            maxLength={10}
+                            inputMode="numeric"
+                            pattern="[0-9]*"
+                            onChange={(e) => {
+                              // Allow only digits, max 10
+                              const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                              onChange?.(index, "mobile", val);
+                            }}
                           />
                         </div>
                       </div>
