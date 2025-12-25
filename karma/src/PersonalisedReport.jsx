@@ -643,28 +643,21 @@ const ConsciousKarmaPage = () => {
             const verifyData = await verifyRes.json();
             if (!verifyData.ok) throw new Error(verifyData.message || "Payment verification failed");
 
-            // ✅ PAYMENT VERIFIED: START LOADING HERE
-            setIsGeneratingReport(true);
-
             const submitRes = await fetch(`${API_BASE}/api/report/submit`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ orderId: localOrderId }),
             });
             const submitData = await submitRes.json();
-            
-            // ✅ EMAIL TRIGGERED: STOP LOADING HERE
-            setIsGeneratingReport(false);
 
             if (!submitData.ok) throw new Error(submitData.message || "Failed to trigger report/mails");
 
-            Swal.fire({
-              icon: "success",
-              title: "Verified & Confirmed",
-              text: "OTP verified and payment successful. Your personalized report will be emailed within 3–5 days.",
-            });
+            // Show Success message and redirect
+            setShowSuccess(true);
+            setTimeout(() => {
+              window.location.href = "/";
+            }, 1200);
           } catch (err) {
-            setIsGeneratingReport(false); // Ensure loading stops on error
             console.error(err);
             Swal.fire("Error", err.message || "Something went wrong after payment.", "error");
           }
@@ -679,27 +672,28 @@ const ConsciousKarmaPage = () => {
     }
   };
 
-  // ✅ LOADING COMPONENT (Overlay)
-  const loadingOverlay = isGeneratingReport ? (
+
+  // Success message overlay
+  const [showSuccess, setShowSuccess] = useState(false);
+  const successOverlay = showSuccess ? (
     <div style={{
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 999999,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
     }}>
-      <div className="spinner" style={{
-        width: '50px', height: '50px', border: '5px solid #333',
-        borderTop: '5px solid #ff6b35', borderRadius: '50%',
-        animation: 'spin 1s linear infinite', marginBottom: '20px'
-      }}></div>
-      <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal'}}>Generating Your Report...</h2>
-      <p style={{color: '#ccc', marginTop: '10px'}}>Please wait, do not close this window.</p>
-      <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+      <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginRight: '18px'}}>
+          <circle cx="12" cy="12" r="12" fill="#FB923C" opacity="0.15"/>
+          <path d="M7 13.5L10.5 17L17 10.5" stroke="#FB923C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <h2 style={{color: '#FB923C', fontSize: '32px', fontFamily: 'Arsenal', textAlign: 'center'}}>Success</h2>
+      </div>
     </div>
   ) : null;
 
   return (
     <div className="ck-page">
-      {/* RENDER LOADER (via Portal if desired, or inline since div is fixed) */}
-      {typeof document !== 'undefined' ? ReactDOM.createPortal(loadingOverlay, document.body) : loadingOverlay}
+      {/* RENDER SUCCESS OVERLAY */}
+      {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
 
       <CKNavbar
         menuOpen={menuOpen}
