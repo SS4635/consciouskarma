@@ -24,6 +24,7 @@ export default function GeneralInformationForm({
   const genderVal = data[KEY_GENDER] ?? "";
   const emailVal = data[KEY_EMAIL] ?? "";
   const placeVal = data[KEY_PLACE] ?? "";
+  const timeVal = data[KEY_DOB_TIME] ?? ""; // Format: "HH:mm"
 
   const [selectedGender, setSelectedGender] = useState(genderVal);
   const [showSignup, setShowSignup] = useState(false);
@@ -35,6 +36,24 @@ export default function GeneralInformationForm({
   const [emailCooldown, setEmailCooldown] = useState(0);
 
   useEffect(() => setSelectedGender(genderVal || ""), [genderVal]);
+
+  // Generate arrays for Hours (01 to 00) and Minutes (01 to 00)
+  // This ensures the list is finite and follows your specific order
+  const hourOptions = [...Array.from({ length: 23 }, (_, i) => (i + 1).toString().padStart(2, '0')), "00"];
+  const minuteOptions = [...Array.from({ length: 59 }, (_, i) => (i + 1).toString().padStart(2, '0')), "00"];
+
+  // Split current time value into HH and mm
+  const [currentH, currentM] = timeVal.split(":");
+
+  const handleTimeChange = (type, value) => {
+    let newH = currentH || "01";
+    let newM = currentM || "01";
+
+    if (type === "hour") newH = value;
+    if (type === "min") newM = value;
+
+    handleFieldChange(KEY_DOB_TIME, `${newH}:${newM}`);
+  };
 
   const sendEmailOtp = async () => {
     if (!email) return alert("Enter email first");
@@ -81,9 +100,7 @@ export default function GeneralInformationForm({
     onChange(field, value);
   };
 
-  // ✅ MODAL WITH SOLID BLACK BACKGROUND
   const modal = (
-    // Yahan 'bg-black/80' ko 'bg-black' kar diya gaya hai
     <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black backdrop-blur-sm">
       {showSignup && (
         <SignupModal
@@ -109,7 +126,6 @@ export default function GeneralInformationForm({
 
   return (
     <div className={`${className} font-arsenal`}>
-      {/* RENDER MODAL VIA PORTAL OR INLINE */}
       {(showSignup || showLogin) &&
         (typeof document !== "undefined"
           ? ReactDOM.createPortal(modal, document.body)
@@ -128,7 +144,7 @@ export default function GeneralInformationForm({
 
         .gen-info-input {
           width: 100%;
-          background: transparent !important;
+          background: #1a1a1a !important; /* Changed from transparent to ensure dropdown visibility */
           border: 1.5px solid #666;
           border-radius: 12px;
           padding: 10px 12px;
@@ -142,9 +158,17 @@ export default function GeneralInformationForm({
           box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
 
-        .gen-info-input[type="date"],
-        .gen-info-input[type="time"] {
+        .gen-info-input[type="date"] {
           color-scheme: dark;
+        }
+
+        /* Styling for the dropdown arrows in select */
+        select.gen-info-input {
+          appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: calc(100% - 12px) center;
+          padding-right: 30px;
         }
 
         .gen-info-btn-option {
@@ -181,6 +205,12 @@ export default function GeneralInformationForm({
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 12px;
+        }
+
+        .time-picker-row {
+          display: flex;
+          gap: 8px;
+          align-items: center;
         }
         
         @media (max-width: 420px) {
@@ -251,19 +281,36 @@ export default function GeneralInformationForm({
               />
             </div>
 
-            {/* TIME OF BIRTH (OPTIONAL) */}
+            {/* TIME OF BIRTH (CUSTOM DROPDOWNS) */}
             <div>
               <div className="gen-info-field-label">
-                <span>Time of Birth <small style={{opacity: 0.7, fontSize: '0.8em'}}></small></span>
+                <span>Time of Birth</span>
               </div>
-              <input
-                type="time"
-                className="gen-info-input"
-                value={data[KEY_DOB_TIME] || ""}
-                onChange={(e) =>
-                  onChange(KEY_DOB_TIME, e.target.value)
-                }
-              />
+              <div className="time-picker-row">
+                {/* Hours Dropdown */}
+                <select
+                  className="gen-info-input"
+                  value={currentH || "01"}
+                  onChange={(e) => handleTimeChange("hour", e.target.value)}
+                >
+                  {hourOptions.map(h => (
+                    <option key={h} value={h} style={{background: '#333'}}>{h}</option>
+                  ))}
+                </select>
+                
+                <span style={{color: 'white'}}>:</span>
+
+                {/* Minutes Dropdown */}
+                <select
+                  className="gen-info-input"
+                  value={currentM || "01"}
+                  onChange={(e) => handleTimeChange("min", e.target.value)}
+                >
+                  {minuteOptions.map(m => (
+                    <option key={m} value={m} style={{background: '#333'}}>{m}</option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
         </div>
