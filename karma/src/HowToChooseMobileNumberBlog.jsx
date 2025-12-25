@@ -102,7 +102,7 @@ A small change — with the power to transform your path.</p>
       )}
 
       {/* Footer */}
-      <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
+      <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3 mt-5">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">Terms & Conditions</a>
