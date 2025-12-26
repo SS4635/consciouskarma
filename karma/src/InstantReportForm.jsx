@@ -12,7 +12,6 @@ const PRICE = Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0) * 100;
 const API = process.env.REACT_APP_API_URL;
 const SCORE_API = process.env.REACT_APP_SCORE_API;
 
-// ✅ Added 'onClose' prop here
 export default function InstantReportForm({
   initialIsd = "+91",
   initialMobile = "",
@@ -34,9 +33,11 @@ export default function InstantReportForm({
   const [applying, setApplying] = useState(false);
   const [paying, setPaying] = useState(false);
   
-  // --- LOADER STATES ---
+  // --- LOADER & SUCCESS STATES ---
   const [generatingReport, setGeneratingReport] = useState(false);
-  const [generationStatus, setGenerationStatus] = useState("Generating Your Report..."); 
+  // The generationStatus state is no longer needed for the loading text.
+  // We use a new showSuccess state to control the success message visibility.
+  const [showSuccess, setShowSuccess] = useState(false); 
   
   const [errors, setErrors] = useState({});
   const [couponInfo, setCouponInfo] = useState(null);
@@ -142,7 +143,7 @@ export default function InstantReportForm({
     if (!coupon) return;
     setApplying(true);
     try {
-      const { data } = await axios.post(`${API}/api/coupon/validate`, { code: coupon, price: PRICE });
+      const { data } = await axios.post(`${API}/api/coupon/validate`, { code: coupon, price: PRICE,mobile:phone });
       if (!data.valid) throw new Error(data.message || "Invalid coupon");
       setCouponInfo(data);
     } catch (err) {
@@ -169,28 +170,20 @@ export default function InstantReportForm({
       price: PRICE / 100,
     };
 
-    // ✅ Updated Success Handler: Closes Form + Redirects
+    // ✅ Updated Success Handler: Shows Success Tick -> Waits -> Redirects
     const handleSuccess = () => {
-        setGenerationStatus("Report Sent! Closing...");
-        showToast("Payment successful! Report sent.", "success");
+        // 1. Show Success Overlay
+        setGeneratingReport(true);
+        setShowSuccess(true);
         
-        // Wait 1.5s then Close & Redirect
+        // 2. Wait 2 seconds, then Force Redirect
         setTimeout(() => {
+            window.location.href = "/";
+            if (onClose) onClose();
             setGeneratingReport(false);
-            
-            // 1. Close the form/modal if prop provided
-            if (onClose) {
-              onClose();
-            }
-
-            // 2. Redirect to Home
-            if(navigate) {
-                navigate("/");
-            } else {
-                window.location.href = "/";
-            }
-        }, 1500); 
-    };
+            setShowSuccess(false);
+        }, 2000); 
+    }
 
     // ---------------- FREE FLOW ----------------
     if (finalAmount === 0) {
@@ -199,8 +192,8 @@ export default function InstantReportForm({
         const { data } = await axios.post(`${API}/api/pay/create-order`, requestBody);
         if (!data.ok) throw new Error(data.message || "Failed to create free order");
 
-        setGenerationStatus("Generating Your Report...");
-        setGeneratingReport(true); 
+        // We don't set generatingReport to true here anymore, as we don't want to show the "Generating Your Report..." loader.
+        // setGeneratingReport(true); 
 
         try {
           const { data: scoreResponse } = await axios.post(
@@ -215,11 +208,11 @@ export default function InstantReportForm({
 
         } catch (apiErr) {
           console.error("Error:", apiErr);
-          setGeneratingReport(false); 
+          // setGeneratingReport(false); // This is no longer needed
           alert("Order created, but report generation failed. Contact support.");
         }
       } catch (err) {
-        setGeneratingReport(false);
+        // setGeneratingReport(false); // This is no longer needed
         setPaying(false);
         alert(err?.response?.data?.message || err.message || "Something went wrong");
       }
@@ -253,9 +246,9 @@ export default function InstantReportForm({
               return;
             }
 
-            // 2. SHOW LOADER
-            setGenerationStatus("Generating Your Report...");
-            setGeneratingReport(true);
+            // 2. SHOW LOADER (Removed as per request)
+            // setGenerationStatus("Generating Your Report...");
+            // setGeneratingReport(true);
 
             // 3. Score & Mail API
             try {
@@ -268,18 +261,18 @@ export default function InstantReportForm({
               try {
                 await axios.post(`${API}/api/mail/score`, { email, scoreData, mobileNumber: phone });
                 
-                handleSuccess(); // ✅ Calls onClose and Navigate
+                handleSuccess(); // ✅ Calls the success animation + redirect
 
               } catch (mailErr) {
-                setGeneratingReport(false);
+                // setGeneratingReport(false); // This is no longer needed
                 alert("Payment successful, but issue sending report email.");
               }
             } catch (apiErr) {
-              setGeneratingReport(false);
+              // setGeneratingReport(false); // This is no longer needed
               alert("Payment successful, but issue generating report.");
             }
           } catch (err) {
-            setGeneratingReport(false);
+            // setGeneratingReport(false); // This is no longer needed
             setPaying(false);
             alert("Verification error");
           }
@@ -287,7 +280,7 @@ export default function InstantReportForm({
         modal: { 
           ondismiss: () => {
              setPaying(false);
-             setGeneratingReport(false);
+             // setGeneratingReport(false); // This is no longer needed
           }
         },
       };
@@ -297,7 +290,7 @@ export default function InstantReportForm({
     } catch (err) {
       alert(err?.response?.data?.message || err.message || "Checkout failed");
       setPaying(false);
-      setGeneratingReport(false);
+      // setGeneratingReport(false); // This is no longer needed
     }
   };
 
@@ -323,36 +316,39 @@ export default function InstantReportForm({
     </div>
   ) : null;
 
-  const loadingComponent = generatingReport ? (
+  // ✅ LOADING / SUCCESS COMPONENT
+  // This component is now only shown when showSuccess is true.
+  // It displays the success message and tick.
+  const loadingComponent = (generatingReport && showSuccess) ? (
      <div style={{
         position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", 
         zIndex: 99999, display: "flex", flexDirection: "column", 
         alignItems: "center", justifyContent: "center", color: "#fff"
      }}>
-        <div className="spinner" style={{
-           width: "50px", height: "50px", border: "5px solid #333", 
-           borderTop: "5px solid #ff7a33", borderRadius: "50%", 
-           animation: "spin 1s linear infinite", marginBottom: "20px"
-        }}></div>
-        <h2 style={{ fontSize: "24px", fontWeight: "bold", fontFamily: "Arsenal, sans-serif" }}>
-           {generationStatus}
-        </h2>
-        <p style={{ marginTop: "10px", color: "#ccc" }}>Please wait, do not close this window.</p>
-        
-        {/* Failsafe Close Button */}
-        <button onClick={() => { setGeneratingReport(false); if(onClose) onClose(); navigate("/"); }}
-          style={{ marginTop: "30px", background: "transparent", border: "1px solid #555", color: "#888", padding: "5px 15px", borderRadius: "4px", cursor: "pointer", fontSize: "12px" }}>
-          Stuck? Click to close
-        </button>
+        {/* ✅ SUCCESS STATE: Large Checkmark (Visible for 2 seconds) */}
+        <div style={{ animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)", marginBottom: "20px" }}>
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="11" stroke="#FB923C" strokeWidth="2" fill="transparent"/>
+              <path d="M7 12L10 15L17 8" stroke="#FB923C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+        </div>
 
-        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+        <h2 style={{ fontSize: "24px", fontWeight: "bold", fontFamily: "Arsenal, sans-serif" }}>
+           Success
+        </h2>
+        
+        {/* Removed "Please wait, do not close this window." and "Stuck? Click to close" button as requested. */}
+
+        <style>{`
+            @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        `}</style>
      </div>
   ) : null;
 
   return (
     <div style={{ width: "100%" }}>
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
-      {typeof document !== 'undefined' && generatingReport ? ReactDOM.createPortal(loadingComponent, document.body) : null}
+      {typeof document !== 'undefined' && generatingReport && showSuccess ? ReactDOM.createPortal(loadingComponent, document.body) : null}
 
       <div style={{ paddingRight: "16px", paddingLeft: "16px", paddingBottom: "16px" }}>
         {showSignup && <SignupModal onClose={() => setShowSignup(false)} onSwitch={() => { setShowSignup(false); setShowLogin(true); }} />}
