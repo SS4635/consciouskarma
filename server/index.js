@@ -504,63 +504,68 @@ const isAllowlisted = (c = "") => allowlist.has(String(c).toUpperCase());
 /* ---------- Partner redeem ---------- */
 
 async function redeemCoupon(code, mobile) {
-  const url = process.env.CK_COUPON_API_URL;
-  const key = process.env.CK_COUPON_API_KEY;
-  if (!url || !key) throw new Error("Coupon API not configured");
+  if (!code) return null;
 
-  const { data } = await axios.post(
-    url,
-    { coupon: code, mobile_number: mobile },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": key,
-      },
-    }
-  );
+  const url = process.env.CK_COUPON_API_URL;
+  const apiKey = process.env.CK_COUPON_API_KEY;
+
+  if (!url || !apiKey) {
+    throw new Error("Coupon API env not configured");
+  }
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-API-Key": apiKey,
+    },
+    body: JSON.stringify({
+      coupon: code,
+      mobile_number: mobile,
+    }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.error("Coupon API HTTP Error:", response.status, text);
+    throw new Error(`Coupon API failed with status ${response.status}`);
+  }
+
+  const data = await response.json();
+  console.log("Redeem coupon response:", data);
+
   return data;
 }
 
+
 /* ---------- Coupon preview validate ---------- */
 app.post("/api/coupon/validate", async (req, res) => {
-  const { code, price } = req.body || {};
-  const base = Number(price || 0);
-
-  if (!code || !isAllowlisted(code)) {
-    return res.json({
-      valid: false,
-      finalAmount: base,
-      message: "Invalid coupon",
-    });
-  }
-
   try {
-    // Check if coupon was already used
-    const existingOrder = await Order.findOne({
-      couponCode: String(code).toUpperCase(),
-      couponRedeemed: true,
-    });
+    const { code, price, mobile } = req.body || {};
+    const baseAmount = Number(price || 0);
 
-    if (existingOrder) {
-      return res.json({
-        valid: false,
-        finalAmount: base,
-        message: "Coupon already used",
-      });
-    }
+    // 🟢 No coupon → skip API
+   
 
+    // 🔥 Trigger external coupon API
+    const result = await redeemCoupon(code, mobile);
+console.log("Coupon validate result:", result);
+
+   
+    // ✅ Coupon accepted by external system
     return res.json({
       valid: true,
       finalAmount: 0,
-      code: String(code).toUpperCase(),
-      allowlisted: true,
+      couponApplied: true,
+      coupon: code,
     });
+
   } catch (err) {
-    console.error("Coupon validation error:", err);
+    console.error("Coupon validate error:", err.message);
     return res.json({
       valid: false,
-      finalAmount: base,
-      message: "Error validating coupon",
+      finalAmount: Number(req.body?.price || 0),
+      message: "Coupon validation failed",
     });
   }
 });
@@ -634,9 +639,14 @@ app.post("/api/pay/create-order", async (req, res) => {
         .json({ ok: false, message: "Missing required fields" });
     }
 
-    const basePrice = Number(price || 0); // in INR
-    const allowlisted = coupon && isAllowlisted(coupon);
-    const amount = allowlisted ? 0 : basePrice * 100; // paise
+   const basePrice = Number(price || 0); 
+
+
+const hasCoupon = Boolean(coupon);
+
+
+const amount = hasCoupon ? 0 : basePrice * 100;
+
 
     // ALWAYS LATEST NUMBER
     const primaryFull = `${primary.isd}${primary.number}`;
@@ -648,7 +658,7 @@ app.post("/api/pay/create-order", async (req, res) => {
       amount,
       currency: "INR",
       status: amount === 0 ? "free" : "pending",
-      couponCode: allowlisted ? String(coupon).toUpperCase() : null,
+      couponCode: coupon ? String(coupon).toUpperCase() : null,
       couponRedeemed: false,
       accountChoice: accountChoice || "guest",
       otpVerified: true,
