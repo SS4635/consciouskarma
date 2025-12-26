@@ -349,6 +349,44 @@ export default function InstantReportForm({
     <div style={{ width: "100%" }}>
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
       {typeof document !== 'undefined' && generatingReport && showSuccess ? ReactDOM.createPortal(loadingComponent, document.body) : null}
+      <style>{`
+        /* SweetAlert2 Custom Styles */
+        .swal2-popup {
+          background: #111 !important;
+          color: #fff !important;
+          border: 2px solid #fb923c !important;
+          border-radius: 16px !important;
+        }
+        .swal2-title,
+        .swal2-html-container {
+          color: #fff !important;
+        }
+        .swal2-success-circular-line-left,
+        .swal2-success-circular-line-right,
+        .swal2-success-fix {
+          background: none !important;
+        }
+        .swal2-success {
+          border-color: #fb923c !important;
+        }
+        .swal2-success .swal2-success-ring {
+          border: 4px solid #fb923c !important;
+        }
+        .swal2-success .swal2-success-line-tip,
+        .swal2-success .swal2-success-line-long {
+          background-color: #fb923c !important;
+        }
+        .swal2-styled.swal2-confirm {
+          background-color: #fb923c !important;
+          color: #fff !important;
+          border: 2px solid #fb923c !important;
+          border-radius: 8px !important;
+        }
+        .swal2-styled.swal2-confirm:focus {
+          box-shadow: 0 0 0 2px #fb923c55 !important;
+        }
+        .swal2-container { z-index: 9999 !important; }
+      `}</style>
 
       <div style={{ paddingRight: "16px", paddingLeft: "16px", paddingBottom: "16px" }}>
         {showSignup && <SignupModal onClose={() => setShowSignup(false)} onSwitch={() => { setShowSignup(false); setShowLogin(true); }} />}
@@ -442,7 +480,7 @@ export default function InstantReportForm({
               <input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="e.g. CKFREE100" style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
               <button type="button" onClick={applyCoupon} disabled={!coupon || applying} style={{ height: "37px", padding: "0 16px", borderRadius: "6px", background: "#222", border: "1px solid #444", color: "#fff", cursor: "pointer", fontSize: "16px" }}>{applying ? "…" : "Apply"}</button>
             </div>
-            {couponInfo && <div style={{ color: "#2ecc71", marginTop: "6px", fontSize: "13px" }}>✓ New total: ₹{(finalAmount / 100).toFixed(2)}</div>}
+            {couponInfo && <div style={{ color: "#2ecc71", marginTop: "6px", fontSize: "13px" }}>Applied Successfully</div>}
           </div>
 
           {/* PASSWORD */}
@@ -460,7 +498,7 @@ export default function InstantReportForm({
         <div style={{ width: "50%", padding: "12px", paddingLeft: "70.5px", background: "#161616", borderRight: "2px solid #ff7a33", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
         <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
           style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff7a33", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
-          {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Free Report" : ctaLabel}
+          {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}
         </button>
       </div>
     </div>

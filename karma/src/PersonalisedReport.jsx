@@ -1,25 +1,24 @@
 // src/ConsciousKarmaPage.jsx
 import React, { useState } from "react";
-import ReactDOM from "react-dom"; // ✅ Added for Portal
+import ReactDOM from "react-dom"; 
 import Swal from "sweetalert2";
 import "./PersonalizedReport.css";
-import { useIntl, FormattedMessage } from "react-intl";
 
+// Components
 import ElectricBorder from "./ElectricBorder";
 import GeneralInformationForm from "./components/consultation/forms/GeneralInformationForm";
 import PrimaryNumberForm from "./components/consultation/forms/PrimaryNumberForm";
 import ParallelNumbersForm from "./components/consultation/forms/ParallelNumbersForm";
 import PreviousNumbersForm from "./components/consultation/forms/PreviousNumbersForm";
-
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import CKNavbar from "./components/CKNavbar";
 
-// ✅ 1. Import Country Codes for Validation
+// Constants
 import { COUNTRY_CODES } from "./components/constants/countryCodes"; 
 
 // =======================
-// ENV CONFIG (CRA ONLY)
+// ENV CONFIG
 // =======================
 const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
@@ -35,7 +34,7 @@ const ConsciousKarmaPage = () => {
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   
-  // ✅ New State for Report Generation Loader
+  // Loading State (used to disable button)
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
   const [general, setGeneral] = useState({
@@ -45,8 +44,6 @@ const ConsciousKarmaPage = () => {
     ageMonths: "",
     email: "",
   });
-
-  const intl = useIntl();
 
   const features = [
     ["Speech", "Appearance", "Emotions"],
@@ -526,7 +523,7 @@ const ConsciousKarmaPage = () => {
     return true;
   };
 
-  const proceedEnabled = step === 4 && isFormComplete() && allOtpsVerified;
+  const proceedEnabled = step === 4 && isFormComplete() && allOtpsVerified && !isGeneratingReport;
 
   const openRazorpayCheckout = ({ key, orderId, amount, onSuccess, onFailure }) => {
     if (!window.Razorpay) {
@@ -579,6 +576,9 @@ const ConsciousKarmaPage = () => {
       return Swal.fire("OTP pending", "Please verify all OTPs before proceeding to payment.", "warning");
     }
 
+    // Set loading (disables button)
+    setIsGeneratingReport(true);
+
     try {
       const createRes = await fetch(`${API_BASE}/api/pay/create-order`, {
         method: "POST",
@@ -597,9 +597,7 @@ const ConsciousKarmaPage = () => {
       const localOrderId = createData.orderId;
 
       if (createData.free || !createData.order) {
-        // Free report flow - Start Loading
-        setIsGeneratingReport(true);
-        
+        // Free report flow
         try {
             const startRes = await fetch(`${API_BASE}/api/report/start`, {
               method: "POST",
@@ -609,13 +607,15 @@ const ConsciousKarmaPage = () => {
             const startData = await startRes.json();
             if (!startData.ok) throw new Error(startData.message || "Failed to trigger report");
 
-            setIsGeneratingReport(false); // Stop loading before success message
+            setIsGeneratingReport(false); 
 
-            return Swal.fire({
-              icon: "success",
-              title: "All set!",
-              text: "OTP verified. Your request is confirmed. Your report will be sent within 3–5 days.",
-            });
+            // SUCCESS HANDLER
+            setShowSuccess(true);
+            setTimeout(() => {
+                window.location.href = "/";
+            }, 1200);
+
+            return;
         } catch(freeErr) {
             setIsGeneratingReport(false);
             throw freeErr;
@@ -652,22 +652,26 @@ const ConsciousKarmaPage = () => {
 
             if (!submitData.ok) throw new Error(submitData.message || "Failed to trigger report/mails");
 
-            // Show Success message and redirect
+            // ✅ Show Success message and redirect (Same logic as InstantReportForm)
+            setIsGeneratingReport(false);
             setShowSuccess(true);
             setTimeout(() => {
               window.location.href = "/";
             }, 1200);
           } catch (err) {
             console.error(err);
+            setIsGeneratingReport(false);
             Swal.fire("Error", err.message || "Something went wrong after payment.", "error");
           }
         },
         onFailure: () => {
+          setIsGeneratingReport(false);
           Swal.fire("Payment cancelled", "You can try again anytime.", "info");
         },
       });
     } catch (err) {
       console.error(err);
+      setIsGeneratingReport(false);
       Swal.fire("Error", err.message || "Something went wrong.", "error");
     }
   };
@@ -680,13 +684,16 @@ const ConsciousKarmaPage = () => {
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 999999,
       display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
     }}>
-      <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginRight: '18px'}}>
-          <circle cx="12" cy="12" r="12" fill="#FB923C" opacity="0.15"/>
-          <path d="M7 13.5L10.5 17L17 10.5" stroke="#FB923C" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      <div style={{animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
+          <circle cx="12" cy="12" r="11" stroke="#FB923C" strokeWidth="2" fill="transparent"/>
+          <path d="M7 12L10 15L17 8" stroke="#FB923C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <h2 style={{color: '#FB923C', fontSize: '32px', fontFamily: 'Arsenal', textAlign: 'center'}}>Success</h2>
+        <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
       </div>
+      <style>{`
+            @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+      `}</style>
     </div>
   ) : null;
 
@@ -694,6 +701,44 @@ const ConsciousKarmaPage = () => {
     <div className="ck-page">
       {/* RENDER SUCCESS OVERLAY */}
       {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
+      <style>{`
+        /* SweetAlert2 Custom Styles */
+        .swal2-popup {
+          background: #111 !important;
+          color: #fff !important;
+          border: 2px solid #fb923c !important;
+          border-radius: 16px !important;
+        }
+        .swal2-title,
+        .swal2-html-container {
+          color: #fff !important;
+        }
+        .swal2-success-circular-line-left,
+        .swal2-success-circular-line-right,
+        .swal2-success-fix {
+          background: none !important;
+        }
+        .swal2-success {
+          border-color: #fb923c !important;
+        }
+        .swal2-success .swal2-success-ring {
+          border: 4px solid #fb923c !important;
+        }
+        .swal2-success .swal2-success-line-tip,
+        .swal2-success .swal2-success-line-long {
+          background-color: #fb923c !important;
+        }
+        .swal2-styled.swal2-confirm {
+          background-color: #fb923c !important;
+          color: #fff !important;
+          border: 2px solid #fb923c !important;
+          border-radius: 8px !important;
+        }
+        .swal2-styled.swal2-confirm:focus {
+          box-shadow: 0 0 0 2px #fb923c55 !important;
+        }
+        .swal2-container { z-index: 9999 !important; }
+      `}</style>
 
       <CKNavbar
         menuOpen={menuOpen}
@@ -753,7 +798,7 @@ const ConsciousKarmaPage = () => {
 
             {/* RIGHT FORM */}
             <div className="ck-form-panel">
-              <div className="ck-form-heading">Book Personalised Report</div>
+              <div className="ck-form-heading">Book Personalized Report</div>
 
               <div className="ck-form-card">
                 <div className="scroll-area">
@@ -955,7 +1000,7 @@ const ConsciousKarmaPage = () => {
                     onClick={handleProceed}
                     disabled={!proceedEnabled}
                   >
-                    Proceed
+                    {isGeneratingReport ? "Processing..." : "Proceed"}
                   </button>
                 </div>
               </div>
