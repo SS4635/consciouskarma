@@ -142,7 +142,7 @@ export default function InstantReportForm({
     if (!coupon) return;
     setApplying(true);
     try {
-      const { data } = await axios.post(`${API}/api/coupon/validate`, { code: coupon, price: PRICE });
+      const { data } = await axios.post(`${API}/api/coupon/validate`, { code: coupon, price: PRICE,mobile:phone });
       if (!data.valid) throw new Error(data.message || "Invalid coupon");
       setCouponInfo(data);
     } catch (err) {
