@@ -175,16 +175,7 @@ export default function InstantReportForm({
     const handleSuccess = () => {
         setGeneratingReport(true);
         setShowSuccess(true);
-
-        // Auto close after 2 seconds
-        setTimeout(() => {
-        setGeneratingReport(false);
-        setShowSuccess(false);
-
-        // Optional redirect
-        window.location.href = "/";
-        if (onClose) onClose();
-        }, 2000);
+        // No auto-close or redirect. User must click to close.
     };
 
     // ---------------- FREE FLOW ----------------
@@ -351,6 +342,13 @@ const successOverlay = (generatingReport && showSuccess) ? (
       alignItems: "center",
       justifyContent: "center",
       fontFamily: "Arsenal, sans-serif",
+      cursor: "pointer"
+    }}
+    onClick={() => {
+      setGeneratingReport(false);
+      setShowSuccess(false);
+      window.location.href = "/";
+      if (onClose) onClose();
     }}
   >
     <div
@@ -363,7 +361,9 @@ const successOverlay = (generatingReport && showSuccess) ? (
         maxWidth: "420px",
         textAlign: "center",
         animation: "scaleIn 0.35s ease-out",
+        position: "relative"
       }}
+      onClick={e => e.stopPropagation()}
     >
       {/* ORANGE TICK */}
       <div style={{ marginBottom: "18px" }}>
@@ -402,6 +402,28 @@ const successOverlay = (generatingReport && showSuccess) ? (
         <br />
         It will be delivered to your email-id shortly.
       </p>
+      <button
+        style={{
+          position: "absolute",
+          top: 12,
+          right: 12,
+          background: "#fb923c",
+          color: "#fff",
+          border: "none",
+          borderRadius: "50%",
+          width: 32,
+          height: 32,
+          fontSize: 20,
+          cursor: "pointer"
+        }}
+        onClick={() => {
+          setGeneratingReport(false);
+          setShowSuccess(false);
+          window.location.href = "/";
+          if (onClose) onClose();
+        }}
+        aria-label="Close"
+      >×</button>
     </div>
 
     <style>{`
