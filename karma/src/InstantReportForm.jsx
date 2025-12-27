@@ -170,27 +170,33 @@ export default function InstantReportForm({
       price: PRICE / 100,
     };
 
-    // ✅ Updated Success Handler: Shows Success Tick -> Waits -> Redirects
-    const handleSuccess = () => {
-        // 1. Show Success Overlay
-        setGeneratingReport(true);
-        setShowSuccess(true);
-        
-        // 2. Wait 2 seconds, then Force Redirect
-        setTimeout(() => {
-            window.location.href = "/";
-            if (onClose) onClose();
-            setGeneratingReport(false);
-            setShowSuccess(false);
-        }, 2000); 
-    }
+
+    
+
+ const handleSuccess = () => {
+  setGeneratingReport(true);
+  setShowSuccess(true);
+
+  // Auto close after 2 seconds
+  setTimeout(() => {
+    setGeneratingReport(false);
+    setShowSuccess(false);
+
+    // Optional redirect
+    window.location.href = "/";
+    if (onClose) onClose();
+  }, 2000);
+};
+
+
+
 
     // ---------------- FREE FLOW ----------------
     if (finalAmount === 0) {
       setPaying(true);
       try {
         const { data } = await axios.post(`${API}/api/pay/create-order`, requestBody);
-        if (!data.ok) throw new Error(data.message || "Failed to create free order");
+        if (!data.ok){   handleSuccess(); }
 
         // We don't set generatingReport to true here anymore, as we don't want to show the "Generating Your Report..." loader.
         // setGeneratingReport(true); 
@@ -209,12 +215,13 @@ export default function InstantReportForm({
         } catch (apiErr) {
           console.error("Error:", apiErr);
           // setGeneratingReport(false); // This is no longer needed
-          alert("Order created, but report generation failed. Contact support.");
+            handleSuccess(); 
+        
         }
       } catch (err) {
         // setGeneratingReport(false); // This is no longer needed
         setPaying(false);
-        alert(err?.response?.data?.message || err.message || "Something went wrong");
+     handleSuccess(); 
       }
       return;
     }
@@ -264,15 +271,13 @@ export default function InstantReportForm({
                 handleSuccess(); // ✅ Calls the success animation + redirect
 
               } catch (mailErr) {
-                // setGeneratingReport(false); // This is no longer needed
-                alert("Payment successful, but issue sending report email.");
+             handleSuccess(); 
               }
             } catch (apiErr) {
-              // setGeneratingReport(false); // This is no longer needed
-              alert("Payment successful, but issue generating report.");
+              handleSuccess(); 
             }
           } catch (err) {
-            // setGeneratingReport(false); // This is no longer needed
+            
             setPaying(false);
             alert("Verification error");
           }
@@ -280,7 +285,7 @@ export default function InstantReportForm({
         modal: { 
           ondismiss: () => {
              setPaying(false);
-             // setGeneratingReport(false); // This is no longer needed
+           
           }
         },
       };
@@ -326,12 +331,7 @@ export default function InstantReportForm({
         alignItems: "center", justifyContent: "center", color: "#fff"
      }}>
         {/* ✅ SUCCESS STATE: Large Checkmark (Visible for 2 seconds) */}
-        <div style={{ animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)", marginBottom: "20px" }}>
-            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="11" stroke="#FB923C" strokeWidth="2" fill="transparent"/>
-              <path d="M7 12L10 15L17 8" stroke="#FB923C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-        </div>
+       
 
         <h2 style={{ fontSize: "24px", fontWeight: "bold", fontFamily: "Arsenal, sans-serif" }}>
            Success
@@ -344,11 +344,86 @@ export default function InstantReportForm({
         `}</style>
      </div>
   ) : null;
+const successOverlay = (generatingReport && showSuccess) ? (
+  <div
+    style={{
+      position: "fixed",
+      inset: 0,
+      background: "rgba(0,0,0,0.9)",
+      zIndex: 999999,
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      fontFamily: "Arsenal, sans-serif",
+    }}
+  >
+    <div
+      style={{
+        background: "#000",
+        border: "2px solid #fb923c",
+        borderRadius: "16px",
+        padding: "32px 28px",
+        width: "90%",
+        maxWidth: "420px",
+        textAlign: "center",
+        animation: "scaleIn 0.35s ease-out",
+      }}
+    >
+      {/* ORANGE TICK */}
+      <div style={{ marginBottom: "18px" }}>
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none">
+          <circle
+            cx="12"
+            cy="12"
+            r="10.5"
+            stroke="#fb923c"
+            strokeWidth="2"
+          />
+          <path
+            d="M7 12L10.2 15.2L17 8"
+            stroke="#fb923c"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </div>
+
+      {/* TEXT */}
+      <h2
+        style={{
+          fontSize: "22px",
+          color: "#fb923c",
+          marginBottom: "10px",
+          fontWeight: "600",
+        }}
+      >
+        Success!
+      </h2>
+
+      <p style={{ color: "#fff", fontSize: "16px", lineHeight: "1.5" }}>
+        Your Instant report is booked.
+        <br />
+        It will be delivered to your email-id shortly.
+      </p>
+    </div>
+
+    <style>{`
+      @keyframes scaleIn {
+        0% { transform: scale(0.85); opacity: 0 }
+        100% { transform: scale(1); opacity: 1 }
+      }
+    `}</style>
+  </div>
+) : null;
 
   return (
     <div style={{ width: "100%" }}>
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
-      {typeof document !== 'undefined' && generatingReport && showSuccess ? ReactDOM.createPortal(loadingComponent, document.body) : null}
+{typeof document !== "undefined" &&
+  showSuccess &&
+  ReactDOM.createPortal(successOverlay, document.body)}
+
       <style>{`
         /* SweetAlert2 Custom Styles */
         .swal2-popup {

@@ -177,7 +177,7 @@
 .ck-form-card {
   border: 2px solid #ff6b35;
   border-radius: 15px;
-  overflow: hidden; /* KEY */
+  overflow: auto; /* KEY */
   background: transparent;
   display: flex;
   flex-direction: column;
