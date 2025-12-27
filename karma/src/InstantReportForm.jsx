@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import { COUNTRY_CODES } from "./components/constants/countryCodes"; 
+// ✅ ADDED: Import the Loader
+import CenteredLoader from "./components/CenteredLoader";
 
 const PRICE = Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0) * 100;
 
@@ -170,26 +172,20 @@ export default function InstantReportForm({
       price: PRICE / 100,
     };
 
+    const handleSuccess = () => {
+        setGeneratingReport(true);
+        setShowSuccess(true);
 
-    
+        // Auto close after 2 seconds
+        setTimeout(() => {
+        setGeneratingReport(false);
+        setShowSuccess(false);
 
- const handleSuccess = () => {
-  setGeneratingReport(true);
-  setShowSuccess(true);
-
-  // Auto close after 2 seconds
-  setTimeout(() => {
-    setGeneratingReport(false);
-    setShowSuccess(false);
-
-    // Optional redirect
-    window.location.href = "/";
-    if (onClose) onClose();
-  }, 2000);
-};
-
-
-
+        // Optional redirect
+        window.location.href = "/";
+        if (onClose) onClose();
+        }, 2000);
+    };
 
     // ---------------- FREE FLOW ----------------
     if (finalAmount === 0) {
@@ -221,7 +217,7 @@ export default function InstantReportForm({
       } catch (err) {
         // setGeneratingReport(false); // This is no longer needed
         setPaying(false);
-     handleSuccess(); 
+       handleSuccess(); 
       }
       return;
     }
@@ -271,10 +267,10 @@ export default function InstantReportForm({
                 handleSuccess(); // ✅ Calls the success animation + redirect
 
               } catch (mailErr) {
-             handleSuccess(); 
+               handleSuccess(); 
               }
             } catch (apiErr) {
-              handleSuccess(); 
+               handleSuccess(); 
             }
           } catch (err) {
             
@@ -331,7 +327,7 @@ export default function InstantReportForm({
         alignItems: "center", justifyContent: "center", color: "#fff"
      }}>
         {/* ✅ SUCCESS STATE: Large Checkmark (Visible for 2 seconds) */}
-       
+        
 
         <h2 style={{ fontSize: "24px", fontWeight: "bold", fontFamily: "Arsenal, sans-serif" }}>
            Success
@@ -420,9 +416,12 @@ const successOverlay = (generatingReport && showSuccess) ? (
   return (
     <div style={{ width: "100%" }}>
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
-{typeof document !== "undefined" &&
-  showSuccess &&
-  ReactDOM.createPortal(successOverlay, document.body)}
+      
+      {/* ✅ ADDED: Loader overlay for payment processing */}
+      {typeof document !== "undefined" && (paying || generatingReport) && ReactDOM.createPortal(<CenteredLoader />, document.body)}
+      
+      {/* ✅ ADDED: Success overlay */}
+      {typeof document !== "undefined" && showSuccess && ReactDOM.createPortal(successOverlay, document.body)}
 
       <style>{`
         /* SweetAlert2 Custom Styles */
