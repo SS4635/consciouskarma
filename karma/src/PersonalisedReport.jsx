@@ -611,9 +611,7 @@ const ConsciousKarmaPage = () => {
 
             // SUCCESS HANDLER
             setShowSuccess(true);
-            setTimeout(() => {
-                window.location.href = "/";
-            }, 1200);
+            // No auto-redirect. User must close overlay.
 
             return;
         } catch(freeErr) {
@@ -655,9 +653,7 @@ const ConsciousKarmaPage = () => {
             // ✅ Show Success message and redirect (Same logic as InstantReportForm)
             setIsGeneratingReport(false);
             setShowSuccess(true);
-            setTimeout(() => {
-              window.location.href = "/";
-            }, 1200);
+            // No auto-redirect. User must close overlay.
           } catch (err) {
             console.error(err);
             setIsGeneratingReport(false);
@@ -680,16 +676,65 @@ const ConsciousKarmaPage = () => {
   // Success message overlay
   const [showSuccess, setShowSuccess] = useState(false);
   const successOverlay = showSuccess ? (
-    <div style={{
-      position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.9)', zIndex: 999999,
-      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'
-    }}>
-      <div style={{animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)", display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.9)',
+        zIndex: 999999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+      }}
+      onClick={() => {
+        setShowSuccess(false);
+        window.location.href = "/";
+      }}
+    >
+      <div
+        style={{
+          animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          background: '#000',
+          border: '2px solid #FB923C',
+          borderRadius: '16px',
+          padding: '32px 28px',
+          width: '90%',
+          maxWidth: '420px',
+          textAlign: 'center',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
           <circle cx="12" cy="12" r="11" stroke="#FB923C" strokeWidth="2" fill="transparent"/>
           <path d="M7 12L10 15L17 8" stroke="#FB923C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
+        <button
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            background: '#FB923C',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '50%',
+            width: 32,
+            height: 32,
+            fontSize: 20,
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            setShowSuccess(false);
+            window.location.href = "/";
+          }}
+          aria-label="Close"
+        >×</button>
       </div>
       <style>{`
             @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
