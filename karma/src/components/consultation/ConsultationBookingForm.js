@@ -1,3 +1,72 @@
+  // Success overlay state
+  const [showSuccess, setShowSuccess] = useState(false);
+  const successOverlay = showSuccess ? (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.9)',
+        zIndex: 999999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        cursor: 'pointer',
+      }}
+      onClick={() => {
+        setShowSuccess(false);
+        window.location.href = "/";
+      }}
+    >
+      <div
+        style={{
+          animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          background: '#000',
+          border: '2px solid #ff6b35',
+          borderRadius: '16px',
+          padding: '32px 28px',
+          width: '90%',
+          maxWidth: '420px',
+          textAlign: 'center',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
+          <circle cx="12" cy="12" r="11" stroke="#ff6b35" strokeWidth="2" fill="transparent"/>
+          <path d="M7 12L10 15L17 8" stroke="#ff6b35" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
+        <p style={{color: '#fff', fontSize: '16px', marginTop: '10px'}}>Your consultation is booked. We will be in touch soon.</p>
+        <button
+          style={{
+            position: 'absolute',
+            top: 12,
+            right: 12,
+            background: '#ff6b35',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '50%',
+            width: 32,
+            height: 32,
+            fontSize: 20,
+            cursor: 'pointer',
+          }}
+          onClick={() => {
+            setShowSuccess(false);
+            window.location.href = "/";
+          }}
+          aria-label="Close"
+        >×</button>
+      </div>
+      <style>{`
+            @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+      `}</style>
+    </div>
+  ) : null;
 // src/components/consultation/ConsultationBookingForm.js
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -460,11 +529,7 @@ export default function ConsultationBookingForm({
             Swal.fire("Payment Error", verifyData.message || "Verification failed", "error");
             return;
           }
-          Swal.fire(
-            "Success",
-            "Success! Your consultation is booked. We will be in touch soon.",
-            "success"
-          );
+          setShowSuccess(true);
         },
         prefill: {
           name: formData[1]?.["Name"],
@@ -486,6 +551,7 @@ export default function ConsultationBookingForm({
 
   return (
     <div className={`${outerClass} font-arsenal`}>
+      {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
       <style>{`
         /* SweetAlert2 Custom Styles */
         .swal2-popup {
