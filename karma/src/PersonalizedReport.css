@@ -191,10 +191,10 @@
 /* ========================= */
 
 .ck-form-card::-webkit-scrollbar {
-  width: 2px;                 /* ultra thin */
+  width: 0px !important;                 /* ultra thin */
 }
 
-/* 🔴 REMOVE UP / DOWN ARROWS */
+
 .ck-form-card::-webkit-scrollbar-button {
   display: none;
   width: 0;
