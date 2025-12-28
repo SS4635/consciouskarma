@@ -458,7 +458,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
         .swal2-container { z-index: 9999 !important; }
       `}</style>
 
-      <div style={{padding: "0 1.5rem 1.2rem 1.2rem"}}>
+      <div style={{padding: "0 1.5rem 1.5rem 1.2rem"}}>
         {showSignup && <SignupModal onClose={() => setShowSignup(false)} onSwitch={() => { setShowSignup(false); setShowLogin(true); }} />}
         {showLogin && <LoginModal onClose={() => setShowLogin(false)} onSwitch={() => { setShowLogin(false); setShowSignup(true); }} />}
 
@@ -565,7 +565,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
       </div>
 
       <div style={footerFix}>
-        <div style={{ width: "50%", padding: "12px", paddingLeft: "70.5px", background: "#161616", borderRight: "2px solid #ff7a33", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
+        <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff7a33", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
         <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
           style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff7a33", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
           {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}
