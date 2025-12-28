@@ -212,6 +212,8 @@
 
 .ck-form-slide {
   flex: 0 0 100%;
+  overflow: auto;
+  height: 30rem;
 }
 
 .ck-form-inner {

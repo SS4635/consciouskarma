@@ -163,7 +163,7 @@ export default function GeneralInformationForm({
       `}</style>
 
       <div className="gen-info-form">
-        {showTitle && <h1 className="gen-info-title">General Information</h1>}
+        {showTitle && <h1 className="gen-info-title" >General Information</h1>}
 
         {/* Name */}
         <div className="mb-3">

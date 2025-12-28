@@ -6,8 +6,6 @@ import { useNavigate } from "react-router-dom";
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import { COUNTRY_CODES } from "./components/constants/countryCodes"; 
-// ✅ ADDED: Import the Loader
-import CenteredLoader from "./components/CenteredLoader";
 
 const PRICE = Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0) * 100;
 
@@ -21,7 +19,7 @@ export default function InstantReportForm({
   onSubmit: onSubmitProp,
   onClose, 
 }) {
-  // form state
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [isd, setIsd] = useState(initialIsd);
@@ -35,16 +33,15 @@ export default function InstantReportForm({
   const [applying, setApplying] = useState(false);
   const [paying, setPaying] = useState(false);
   
-  // --- LOADER & SUCCESS STATES ---
+  
   const [generatingReport, setGeneratingReport] = useState(false);
-  // The generationStatus state is no longer needed for the loading text.
-  // We use a new showSuccess state to control the success message visibility.
+ 
   const [showSuccess, setShowSuccess] = useState(false); 
   
   const [errors, setErrors] = useState({});
   const [couponInfo, setCouponInfo] = useState(null);
 
-  // --- TOAST STATE ---
+  
   const [toast, setToast] = useState({ show: false, message: "", type: "error" });
 
   const navigate = useNavigate();
@@ -172,11 +169,26 @@ export default function InstantReportForm({
       price: PRICE / 100,
     };
 
-    const handleSuccess = () => {
-        setGeneratingReport(true);
-        setShowSuccess(true);
-        // No auto-close or redirect. User must click to close.
-    };
+
+    
+
+ const handleSuccess = () => {
+  setGeneratingReport(true);
+  setShowSuccess(true);
+
+  // Auto close after 2 seconds
+  setTimeout(() => {
+    setGeneratingReport(false);
+    setShowSuccess(false);
+
+    // Optional redirect
+    window.location.href = "/";
+    if (onClose) onClose();
+  }, 2000);
+};
+
+
+
 
     // ---------------- FREE FLOW ----------------
     if (finalAmount === 0) {
@@ -208,7 +220,7 @@ export default function InstantReportForm({
       } catch (err) {
         // setGeneratingReport(false); // This is no longer needed
         setPaying(false);
-       handleSuccess(); 
+     handleSuccess(); 
       }
       return;
     }
@@ -232,7 +244,7 @@ export default function InstantReportForm({
         theme: { color: "#ff8a3d" },
         handler: async (response) => {
           try {
-            // 1. Verify Payment
+           
             const { data: vj } = await axios.post(`${API}/api/pay/verify`, { ...response, orderId });
             if (!vj.ok) {
               alert("Payment verification failed");
@@ -240,11 +252,7 @@ export default function InstantReportForm({
               return;
             }
 
-            // 2. SHOW LOADER (Removed as per request)
-            // setGenerationStatus("Generating Your Report...");
-            // setGeneratingReport(true);
-
-            // 3. Score & Mail API
+          
             try {
               const { data: scoreResponse } = await axios.post(
                 `${SCORE_API}/score`,
@@ -258,10 +266,10 @@ export default function InstantReportForm({
                 handleSuccess(); // ✅ Calls the success animation + redirect
 
               } catch (mailErr) {
-               handleSuccess(); 
+             handleSuccess(); 
               }
             } catch (apiErr) {
-               handleSuccess(); 
+              handleSuccess(); 
             }
           } catch (err) {
             
@@ -318,7 +326,7 @@ export default function InstantReportForm({
         alignItems: "center", justifyContent: "center", color: "#fff"
      }}>
         {/* ✅ SUCCESS STATE: Large Checkmark (Visible for 2 seconds) */}
-        
+       
 
         <h2 style={{ fontSize: "24px", fontWeight: "bold", fontFamily: "Arsenal, sans-serif" }}>
            Success
@@ -342,13 +350,6 @@ const successOverlay = (generatingReport && showSuccess) ? (
       alignItems: "center",
       justifyContent: "center",
       fontFamily: "Arsenal, sans-serif",
-      cursor: "pointer"
-    }}
-    onClick={() => {
-      setGeneratingReport(false);
-      setShowSuccess(false);
-      window.location.href = "/";
-      if (onClose) onClose();
     }}
   >
     <div
@@ -361,9 +362,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
         maxWidth: "420px",
         textAlign: "center",
         animation: "scaleIn 0.35s ease-out",
-        position: "relative"
       }}
-      onClick={e => e.stopPropagation()}
     >
       {/* ORANGE TICK */}
       <div style={{ marginBottom: "18px" }}>
@@ -402,28 +401,6 @@ const successOverlay = (generatingReport && showSuccess) ? (
         <br />
         It will be delivered to your email-id shortly.
       </p>
-      <button
-        style={{
-          position: "absolute",
-          top: 12,
-          right: 12,
-          background: "#fb923c",
-          color: "#fff",
-          border: "none",
-          borderRadius: "50%",
-          width: 32,
-          height: 32,
-          fontSize: 20,
-          cursor: "pointer"
-        }}
-        onClick={() => {
-          setGeneratingReport(false);
-          setShowSuccess(false);
-          window.location.href = "/";
-          if (onClose) onClose();
-        }}
-        aria-label="Close"
-      >×</button>
     </div>
 
     <style>{`
@@ -436,14 +413,11 @@ const successOverlay = (generatingReport && showSuccess) ? (
 ) : null;
 
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: "100%" ,maxWidth:"400px"}}>
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
-      
-      {/* ✅ ADDED: Loader overlay for payment processing */}
-      {typeof document !== "undefined" && (paying || generatingReport) && ReactDOM.createPortal(<CenteredLoader />, document.body)}
-      
-      {/* ✅ ADDED: Success overlay */}
-      {typeof document !== "undefined" && showSuccess && ReactDOM.createPortal(successOverlay, document.body)}
+{typeof document !== "undefined" &&
+  showSuccess &&
+  ReactDOM.createPortal(successOverlay, document.body)}
 
       <style>{`
         /* SweetAlert2 Custom Styles */
@@ -484,7 +458,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
         .swal2-container { z-index: 9999 !important; }
       `}</style>
 
-      <div style={{ paddingRight: "16px", paddingLeft: "16px", paddingBottom: "16px" }}>
+      <div style={{padding: "0 1.5rem 1.2rem 1.2rem"}}>
         {showSignup && <SignupModal onClose={() => setShowSignup(false)} onSwitch={() => { setShowSignup(false); setShowLogin(true); }} />}
         {showLogin && <LoginModal onClose={() => setShowLogin(false)} onSwitch={() => { setShowLogin(false); setShowSignup(true); }} />}
 

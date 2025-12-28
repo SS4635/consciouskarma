@@ -66,7 +66,7 @@ export default function SignupModal({ onClose, onSwitch }) {
     <div className="ck-modal-backdrop">
       <div className="ck-modal">
         <div className="ck-modal-header">
-          <span>Create an Account</span>
+          <span style={{fontSize:"28px",fontWeight:"400"}}>Create an Account</span>
           <button className="ck-close" onClick={onClose}>✕</button>
         </div>
 

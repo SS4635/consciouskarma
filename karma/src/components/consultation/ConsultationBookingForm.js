@@ -1,4 +1,75 @@
-  // Success overlay state
+// src/components/consultation/ConsultationBookingForm.js
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import ReactDOM from "react-dom";
+import Swal from "sweetalert2";
+import GeneralInformationForm from "./forms/GeneralInformationForm1";
+import PrimaryNumberForm from "./forms/PrimaryNumberForm";
+import ParallelNumbersForm from "./forms/ParallelNumbersForm";
+import PreviousNumbersForm from "./forms/PreviousNumbersForm";
+import CompatibilityNumbersForm from "./forms/CompatibilityNumbersForm";
+
+
+export default function ConsultationBookingForm({
+  maxSteps = 5,
+  selectedPlan = null,
+  inModal = false,
+  onClose,
+}) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [selectedUsageType, setSelectedUsageType] = useState({});
+  const [formData, setFormData] = useState({});
+  const [dynamicNumbers, setDynamicNumbers] = useState({});
+  const [isMobile, setIsMobile] = useState(false);
+  const [containerHeight, setContainerHeight] = useState("auto");
+  const [isParallelExpanded, setIsParallelExpanded] = useState(false);
+  const [isPreviousExpanded, setIsPreviousExpanded] = useState(false);
+  const formContainerRef = useRef(null);
+
+  const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
+
+  const primaryNumberUsageType = formData[2]?.["Usage type"] || "";
+  const isExtendedCompatibility = !!selectedPlan?.isExtended;
+
+  const updateContainerHeight = useCallback(() => {
+    if (formContainerRef.current) {
+      setContainerHeight("auto");
+      setTimeout(() => {
+        if (formContainerRef.current) {
+          const contentHeight = formContainerRef.current.scrollHeight;
+          const hasExpandedParallel = currentStep === 2 && isParallelExpanded;
+          const hasExpandedPrevious = currentStep === 3 && isPreviousExpanded;
+
+          const hasWorkFieldsFromState = Object.keys(selectedUsageType).some(
+            (key) => {
+              const usageType = selectedUsageType[key];
+              return usageType === "Work" || usageType === "Both";
+            }
+          );
+
+          const hasWorkFieldsFromData =
+            primaryNumberUsageType === "Work" ||
+            primaryNumberUsageType === "Both";
+
+          const hasWorkFields = hasWorkFieldsFromState || hasWorkFieldsFromData;
+
+          const minHeight =
+            hasExpandedParallel || hasExpandedPrevious
+              ? 700
+              : hasWorkFields
+              ? 580
+              : 500;
+          setContainerHeight(Math.max(minHeight, contentHeight));
+        }
+      }, 0);
+    }
+  }, [
+    currentStep,
+    isParallelExpanded,
+    isPreviousExpanded,
+    selectedUsageType,
+    primaryNumberUsageType,
+  ]);
   const [showSuccess, setShowSuccess] = useState(false);
   const successOverlay = showSuccess ? (
     <div
@@ -67,76 +138,6 @@
       `}</style>
     </div>
   ) : null;
-// src/components/consultation/ConsultationBookingForm.js
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import Swal from "sweetalert2";
-import GeneralInformationForm from "./forms/GeneralInformationForm1";
-import PrimaryNumberForm from "./forms/PrimaryNumberForm";
-import ParallelNumbersForm from "./forms/ParallelNumbersForm";
-import PreviousNumbersForm from "./forms/PreviousNumbersForm";
-import CompatibilityNumbersForm from "./forms/CompatibilityNumbersForm";
-
-export default function ConsultationBookingForm({
-  maxSteps = 5,
-  selectedPlan = null,
-  inModal = false,
-  onClose,
-}) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [selectedUsageType, setSelectedUsageType] = useState({});
-  const [formData, setFormData] = useState({});
-  const [dynamicNumbers, setDynamicNumbers] = useState({});
-  const [isMobile, setIsMobile] = useState(false);
-  const [containerHeight, setContainerHeight] = useState("auto");
-  const [isParallelExpanded, setIsParallelExpanded] = useState(false);
-  const [isPreviousExpanded, setIsPreviousExpanded] = useState(false);
-  const formContainerRef = useRef(null);
-
-  const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
-
-  const primaryNumberUsageType = formData[2]?.["Usage type"] || "";
-  const isExtendedCompatibility = !!selectedPlan?.isExtended;
-
-  const updateContainerHeight = useCallback(() => {
-    if (formContainerRef.current) {
-      setContainerHeight("auto");
-      setTimeout(() => {
-        if (formContainerRef.current) {
-          const contentHeight = formContainerRef.current.scrollHeight;
-          const hasExpandedParallel = currentStep === 2 && isParallelExpanded;
-          const hasExpandedPrevious = currentStep === 3 && isPreviousExpanded;
-
-          const hasWorkFieldsFromState = Object.keys(selectedUsageType).some(
-            (key) => {
-              const usageType = selectedUsageType[key];
-              return usageType === "Work" || usageType === "Both";
-            }
-          );
-
-          const hasWorkFieldsFromData =
-            primaryNumberUsageType === "Work" ||
-            primaryNumberUsageType === "Both";
-
-          const hasWorkFields = hasWorkFieldsFromState || hasWorkFieldsFromData;
-
-          const minHeight =
-            hasExpandedParallel || hasExpandedPrevious
-              ? 700
-              : hasWorkFields
-              ? 580
-              : 500;
-          setContainerHeight(Math.max(minHeight, contentHeight));
-        }
-      }, 0);
-    }
-  }, [
-    currentStep,
-    isParallelExpanded,
-    isPreviousExpanded,
-    selectedUsageType,
-    primaryNumberUsageType,
-  ]);
 
   useEffect(() => {
     const onResize = () => {
@@ -596,7 +597,7 @@ export default function ConsultationBookingForm({
         .form-content { flex: 1; display: flex; flex-direction: column; }
         .form-fields { flex: 1; }
         .ck-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px; padding-bottom:0px; }
-        .ck-modal-title { font-size: 24px; font-weight: 400; line-height: 1; }
+        .ck-modal-title { font-size: 28px!important; font-weight: 400!important; line-height: 1; }
         .ck-close { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 6px; color: #fff; font-size: 18px; cursor: pointer; }
         .ck-close:hover { background: #222; }
         .ck-nav { display: flex; flex-direction:row; justify-content: space-between; align-items: center; margin-top: 24px; width: 100%; }

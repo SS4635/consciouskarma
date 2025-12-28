@@ -168,7 +168,7 @@ export default function LoginModal({ onClose, onSwitch }) {
     <div className="ck-modal-backdrop">
       <div className="ck-modal">
         <div className="ck-modal-header">
-          <span>{forgotMode ? "Reset Password" : "Login"}</span>
+          <span style={{fontSize:"28px",fontWeight:"400"}}>{forgotMode ? "Reset Password" : "Login"}</span>
           <button className="ck-close" onClick={onClose}>✕</button>
         </div>
 
