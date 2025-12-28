@@ -14,7 +14,8 @@ export default function DashboardLayout() {
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(false);
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Sidebar toggle state
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // password states – OLD PASSWORD FLOW
   const [pwdMode, setPwdMode] = useState("old"); // "old" | "email"
@@ -66,6 +67,23 @@ export default function DashboardLayout() {
     load();
   }, [finalEmail]);
 
+  // FILTER LOGIC: Hide pending/processing, show only Paid/Booked/Emailed
+  const visibleActivities = useMemo(() => {
+    return activities.filter((item) => {
+      // 1. Always show Consultations (Status: Booked)
+      if (item.kind === "consultation") return true;
+
+      // 2. For Reports, check the status string
+      const s = (item.status || "").toLowerCase();
+      
+      // Allow specific completed statuses
+      if (s === "paid" || s === "emailed" || s === "submitted") return true;
+
+      // Otherwise (pending, processing, null) -> Hide it
+      return false;
+    });
+  }, [activities]);
+
   const handleLogout = () => {
     setUser(null);
     navigate("/");
@@ -76,14 +94,14 @@ export default function DashboardLayout() {
   const firstInitial = (user.name || user.email || "?")[0].toUpperCase();
 
   /* ---------------------------
-     PASSWORD HANDLERS
+      PASSWORD HANDLERS
   ---------------------------- */
 
   async function handleVerifyOldPassword() {
     try {
       if (!oldPassword) {
         setPwdError("Please enter your current password.");
-        return
+        return;
       }
       setPwdLoading(true);
       setPwdError("");
@@ -140,10 +158,6 @@ export default function DashboardLayout() {
     }
   }
 
-  // NOTE: these three require backend endpoints:
-  //  POST /api/auth/send-reset-code
-  //  POST /api/auth/verify-reset-code
-  //  POST /api/auth/reset-password
   async function sendResetCode() {
     try {
       setPwdLoading(true);
@@ -237,17 +251,25 @@ export default function DashboardLayout() {
   return (
     <div className="ck-dashboard">
       {/* Sidebar */}
-      <aside className={`ck-sidebar ${sidebarOpen ? "open" : "closed"}`}> 
-        <a className="ck-header-logo-link" href="/">
-          <img src="/Logomy-cropped.svg" alt="CK" className="ck-header-logo" />
-        </a>
+      <aside className={`ck-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+        {/* Close Button (X) inside Sidebar */}
+        <button
+          className="ck-sidebar-close"
+          onClick={() => setSidebarOpen(false)}
+          aria-label="Close sidebar"
+        >
+          ✕
+        </button>
 
         <nav className="ck-nav">
           <button
             className={`ck-nav-item ${
               activeSection === "activity" ? "ck-nav-item--active" : ""
             }`}
-            onClick={() => setActiveSection("activity")}
+            onClick={() => {
+              setActiveSection("activity");
+              setSidebarOpen(false);
+            }}
           >
             Activity
           </button>
@@ -255,7 +277,10 @@ export default function DashboardLayout() {
             className={`ck-nav-item ${
               activeSection === "settings" ? "ck-nav-item--active" : ""
             }`}
-            onClick={() => setActiveSection("settings")}
+            onClick={() => {
+              setActiveSection("settings");
+              setSidebarOpen(false);
+            }}
           >
             Account Settings
           </button>
@@ -276,13 +301,21 @@ export default function DashboardLayout() {
       <div className="ck-main">
         {/* Header */}
         <header className="ck-navbar">
-          <div />
+          {/* Logo Text Group */}
+          <div className="ck-navbar-brand">
+            <span className="brand-text-top">conscious</span>
+            <span className="brand-text-bottom">KARMA</span>
+          </div>
+
+          {/* Hamburger Menu (Styled Lines) */}
           <button
-            className={`ck-sidebar-toggle ck-sidebar-toggle--right${sidebarOpen ? ' ck-sidebar-toggle--active' : ''}`}
+            className={`ck-menu-btn ${sidebarOpen ? "open" : ""}`}
             onClick={() => setSidebarOpen((v) => !v)}
-            aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+            aria-label="Toggle sidebar"
           >
-            {sidebarOpen ? '✕' : '☰'}
+            <span className="menu-line"></span>
+            <span className="menu-line"></span>
+            <span className="menu-line"></span>
           </button>
         </header>
 
@@ -295,9 +328,9 @@ export default function DashboardLayout() {
 
               {loadingActivities ? (
                 <div className="ck-empty-state">Loading…</div>
-              ) : activities.length === 0 ? (
+              ) : visibleActivities.length === 0 ? (
                 <div className="ck-empty-state">
-                  No activity yet. Once you book or buy, it will appear here.
+                  No paid activity yet. Once you book or buy, it will appear here.
                 </div>
               ) : (
                 <div className="ck-table-wrapper">
@@ -312,7 +345,8 @@ export default function DashboardLayout() {
                       </tr>
                     </thead>
                     <tbody>
-                      {activities.map((item) => {
+                      {visibleActivities.map((item) => {
+                        // Calculate status label
                         const statusLabel =
                           item.kind === "consultation"
                             ? "Booked"
@@ -327,7 +361,6 @@ export default function DashboardLayout() {
                               {item.kind === "consultation"
                                 ? "Consultation Booked"
                                 : item.kind === "instant-report"
-                               
                                 ? "Instant Report"
                                 : "Personalized Report"}
                             </td>
@@ -370,9 +403,7 @@ export default function DashboardLayout() {
               {(pwdError || pwdSuccess) && (
                 <div className="ck-pwd-messages">
                   {pwdError && <div className="ck-error">{pwdError}</div>}
-                  {pwdSuccess && (
-                    <div className="ck-success">{pwdSuccess}</div>
-                  )}
+                  {pwdSuccess && <div className="ck-success">{pwdSuccess}</div>}
                 </div>
               )}
 
@@ -394,96 +425,116 @@ export default function DashboardLayout() {
               </div>
 
               {/* 1️⃣ Old Password Method */}
-            {pwdMode === "old" && (
-  <div className="ck-pass-box">
-    {!pwdStepVerified ? (
-     <div className="ck-row">
-  <input
-    type="password"
-    placeholder="Current Password"
-    className="ck-input"
-    value={oldPassword}
-    onChange={(e) => setOldPassword(e.target.value)}
-  />
+              {pwdMode === "old" && (
+                <div className="ck-pass-box">
+                  {!pwdStepVerified ? (
+                    <div className="ck-row">
+                      <input
+                        type="password"
+                        placeholder="Current Password"
+                        className="ck-input"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                      />
 
-  <button
-    className="ck-btn-sm"
-    disabled={pwdLoading}
-    onClick={handleVerifyOldPassword}
-  >
-    {pwdLoading ? "Verifying..." : "Verify"}
-  </button>
-</div>
+                      <button
+                        className="ck-btn-sm"
+                        disabled={pwdLoading}
+                        onClick={handleVerifyOldPassword}
+                      >
+                        {pwdLoading ? "Verifying..." : "Verify"}
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="ck-row">
+                        <input
+                          type="text"
+                          placeholder="Code"
+                          className="ck-input"
+                          value={verifyCode}
+                          onChange={(e) => setVerifyCode(e.target.value)}
+                        />
 
-    ) : (
-      <>
-       <div className="ck-row">
-  <input
-    type="text"
-    placeholder="Code"
-    className="ck-input"
-    value={verifyCode}
-    onChange={(e) => setVerifyCode(e.target.value)}
-  />
+                        <button
+                          className="ck-btn-sm"
+                          disabled={pwdLoading}
+                          onClick={verifyResetCode}
+                        >
+                          {pwdLoading ? "Verifying..." : "Verify"}
+                        </button>
+                      </div>
 
-  <button
-    className="ck-btn-sm"
-    disabled={pwdLoading}
-    onClick={verifyResetCode}
-  >
-    {pwdLoading ? "Verifying..." : "Verify"}
-  </button>
-</div>
-
-        <input
-          type="password"
-          placeholder="Confirm New Password"
-          className="ck-input"
-          value={confirmNew}
-          onChange={(e) => setConfirmNew(e.target.value)}
-        />
-      </>
-    )}
-  </div>
-)}
-
+                      <input
+                        type="password"
+                        placeholder="Confirm New Password"
+                        className="ck-input"
+                        value={confirmNew}
+                        onChange={(e) => setConfirmNew(e.target.value)}
+                      />
+                      <button
+                        className="ck-btn-sm"
+                        style={{ marginTop: 10 }}
+                        disabled={pwdLoading}
+                        onClick={handleChangePassword}
+                      >
+                        {pwdLoading ? "Updating..." : "Update Password"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
 
               {/* 2️⃣ Email Code Method */}
-        {/* Email OTP Method */}
-{pwdMode === "email" && (
-  <div className="ck-pass-box">
+              {pwdMode === "email" && (
+                <div className="ck-pass-box">
+                  <div className="ck-row">
+                    <button
+                      className="ck-btn-sm"
+                      disabled={pwdLoading}
+                      onClick={sendResetCode}
+                    >
+                      {pwdLoading ? "Sending..." : "Send Code"}
+                    </button>
 
-    <div className="ck-row">
-      <button
-        className="ck-btn-sm"
-        disabled={pwdLoading}
-        onClick={sendResetCode}
-      >
-        {pwdLoading ? "Sending..." : "Send Code"}
-      </button>
+                    <input
+                      type="text"
+                      placeholder="Code"
+                      className="ck-input"
+                      value={verifyCode}
+                      onChange={(e) => setVerifyCode(e.target.value)}
+                    />
 
-      <input
-        type="text"
-        placeholder="Code"
-        className="ck-input"
-        value={verifyCode}
-        onChange={(e) => setVerifyCode(e.target.value)}
-      />
+                    <button
+                      className="ck-btn-sm"
+                      disabled={pwdLoading}
+                      onClick={verifyResetCode}
+                    >
+                      {pwdLoading ? "Verifying..." : "Verify"}
+                    </button>
+                  </div>
 
-      <button
-        className="ck-btn-sm"
-        disabled={pwdLoading}
-        onClick={verifyResetCode}
-      >
-        {pwdLoading ? "Verifying..." : "Verify"}
-      </button>
-    </div>
-
-  </div>
-)}
-
-
-
+                  {codeVerified && (
+                    <>
+                      <input
+                        type="password"
+                        placeholder="New Password"
+                        className="ck-input"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                      <button
+                        className="ck-btn-sm"
+                        style={{ marginTop: 10 }}
+                        disabled={pwdLoading}
+                        onClick={applyResetPassword}
+                      >
+                        {pwdLoading ? "Resetting..." : "Reset Password"}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </section>
           )}
         </main>
