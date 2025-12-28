@@ -182,8 +182,8 @@
   flex-direction: column;
 
   /* Firefox */
-  scrollbar-width: thin;                 /* thinnest allowed in Firefox */
-  scrollbar-color: #ff6b35 #000;         /* thumb | track */
+  scrollbar-width: thin;
+  scrollbar-color: #ff6b35 #000;
 }
 
 /* ========================= */
@@ -191,21 +191,29 @@
 /* ========================= */
 
 .ck-form-card::-webkit-scrollbar {
-  width: 5px;            /* 🔥 very thin scrollbar */
+  width: 2px;                 /* ultra thin */
 }
 
+/* 🔴 REMOVE UP / DOWN ARROWS */
+.ck-form-card::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Track */
 .ck-form-card::-webkit-scrollbar-track {
-  background: #000;      /* 🖤 black track */
-  border-radius: 10px;
+  background: #000;
 }
 
+/* Thumb */
 .ck-form-card::-webkit-scrollbar-thumb {
-  background: #ff6b35;   /* 🟠 orange thumb */
+  background: #ff6b35;
   border-radius: 10px;
 }
 
 .ck-form-card::-webkit-scrollbar-thumb:hover {
-  background: #ff824d;   /* hover effect */
+  background: #ff824d;
 }
 
 
