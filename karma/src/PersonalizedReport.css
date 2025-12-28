@@ -192,16 +192,16 @@
 /* ========================= */
 
 .ck-form-card::-webkit-scrollbar {
-  width: 8px;              /* scrollbar thickness */
+  width: 4px;              /* scrollbar thickness */
 }
 
 .ck-form-card::-webkit-scrollbar-track {
-  background: #3a3a3a;     /* grey path */
+  background: black;     /* grey path */
   border-radius: 10px;
 }
 
 .ck-form-card::-webkit-scrollbar-thumb {
-  background: #ff6b35;     /* orange thumb */
+  background: #ff7a33;     /* orange thumb */
   border-radius: 10px;
 }
 
