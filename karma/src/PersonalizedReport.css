@@ -173,7 +173,6 @@
   text-align: left;
 }
 
-/* ✅ CARD BORDER FIX (NO CORNER GAP) */
 .ck-form-card {
   border: 2px solid #ff6b35;
   border-radius: 15px;
@@ -182,9 +181,9 @@
   display: flex;
   flex-direction: column;
 
-  /* Firefox support */
-  scrollbar-width: thin;
-  scrollbar-color: #ff6b35 #3a3a3a; /* thumb | track */
+  /* Firefox */
+  scrollbar-width: thin;                 /* thinnest allowed in Firefox */
+  scrollbar-color: #ff6b35 #000;         /* thumb | track */
 }
 
 /* ========================= */
@@ -192,22 +191,23 @@
 /* ========================= */
 
 .ck-form-card::-webkit-scrollbar {
-  width: 4px;              /* scrollbar thickness */
+  width: 5px;            /* 🔥 very thin scrollbar */
 }
 
 .ck-form-card::-webkit-scrollbar-track {
-  background: black;     /* grey path */
+  background: #000;      /* 🖤 black track */
   border-radius: 10px;
 }
 
 .ck-form-card::-webkit-scrollbar-thumb {
-  background: #ff7a33;     /* orange thumb */
+  background: #ff6b35;   /* 🟠 orange thumb */
   border-radius: 10px;
 }
 
 .ck-form-card::-webkit-scrollbar-thumb:hover {
-  background: #ff824d;     /* slightly lighter on hover */
+  background: #ff824d;   /* hover effect */
 }
+
 
 /* PersonalizedReport.css (or OTP step css) */
 .otp-title,
