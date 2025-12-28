@@ -237,7 +237,7 @@ export default function DashboardLayout() {
   return (
     <div className="ck-dashboard">
       {/* Sidebar */}
-      <aside className={`ck-sidebar ${sidebarOpen ? "open" : "closed"}`}>
+      <aside className={`ck-sidebar ${sidebarOpen ? "open" : "closed"}`}> 
         <a className="ck-header-logo-link" href="/">
           <img src="/Logomy-cropped.svg" alt="CK" className="ck-header-logo" />
         </a>
@@ -260,30 +260,30 @@ export default function DashboardLayout() {
             Account Settings
           </button>
         </nav>
+
+        <div className="ck-sidebar-user">
+          <div className="ck-avatar">{firstInitial}</div>
+          <div className="ck-user-meta">
+            <span className="ck-user-email">{finalEmail}</span>
+            <button onClick={handleLogout} className="ck-link-button">
+              Logout
+            </button>
+          </div>
+        </div>
       </aside>
 
       {/* Main area */}
       <div className="ck-main">
         {/* Header */}
         <header className="ck-navbar">
+          <div />
           <button
-            className="ck-sidebar-toggle"
+            className={`ck-sidebar-toggle ck-sidebar-toggle--right${sidebarOpen ? ' ck-sidebar-toggle--active' : ''}`}
             onClick={() => setSidebarOpen((v) => !v)}
+            aria-label={sidebarOpen ? 'Close sidebar' : 'Open sidebar'}
           >
-            ☰
+            {sidebarOpen ? '✕' : '☰'}
           </button>
-
-          <div className="ck-navbar-right">
-            <div className="ck-user">
-              <div className="ck-avatar">{firstInitial}</div>
-              <div className="ck-user-meta">
-                <span className="ck-user-email">{finalEmail}</span>
-                <button onClick={handleLogout} className="ck-link-button">
-                  Logout
-                </button>
-              </div>
-            </div>
-          </div>
         </header>
 
         {/* Main Content */}
