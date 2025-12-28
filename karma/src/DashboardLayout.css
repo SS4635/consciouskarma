@@ -44,7 +44,7 @@ body {
   transform: translateX(100%);
 }
 
-/* --- NEW X CLOSE BUTTON INSIDE SIDEBAR --- */
+/* SIDEBAR CLOSE BUTTON (X) */
 .ck-sidebar-close {
   position: absolute;
   top: 20px;
@@ -66,7 +66,7 @@ body {
 
 /* NAVIGATION */
 .ck-nav {
-  margin-top: 60px; /* Space to push nav down below the close button */
+  margin-top: 60px;
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -104,9 +104,7 @@ body {
   min-height: 100vh;
 }
 
-/* -------------------------------------------
-   HEADER (EXACT MATCH TO IMAGE)
-------------------------------------------- */
+/* HEADER */
 .ck-navbar {
   background: #000;
   height: 80px; 
@@ -120,7 +118,6 @@ body {
   border-bottom: 1px solid #1a1a1a;
 }
 
-/* BRAND LOGO TEXT */
 .ck-navbar-brand {
   display: flex;
   flex-direction: column;
@@ -136,14 +133,13 @@ body {
 }
 
 .brand-text-bottom {
-  color: #ff8a3d; /* The Orange Color */
+  color: #ff8a3d;
   font-size: 18px;
   text-transform: uppercase;
   font-weight: 400;
   letter-spacing: 1px;
 }
 
-/* HAMBURGER MENU BUTTON (Turns to X when open) */
 .ck-menu-btn {
   background: transparent;
   border: none;
@@ -165,7 +161,6 @@ body {
   transition: all 0.3s ease;
 }
 
-/* Transform to X when open */
 .ck-menu-btn.open .menu-line:nth-child(1) {
   transform: rotate(45deg) translate(5px, 6px);
 }
@@ -176,9 +171,7 @@ body {
   transform: rotate(-45deg) translate(5px, -6px);
 }
 
-/* -------------------------------------------
-   SIDEBAR USER PROFILE
-------------------------------------------- */
+/* SIDEBAR USER PROFILE */
 .ck-sidebar-user {
   margin-top: auto;
   display: flex;
@@ -237,7 +230,6 @@ body {
   padding-bottom: 80px; 
 }
 
-/* PANELS */
 .ck-panel-title {
   font-size: 20px;
   font-weight: 600;
@@ -302,6 +294,42 @@ body {
   background: rgba(63, 140, 255, 0.2);
   color: #3f8cff;
   border: 1px solid #3f8cff;
+}
+
+/* PAGINATION */
+.ck-pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 10px 0;
+}
+
+.ck-page-info {
+  font-size: 14px;
+  color: #888;
+}
+
+.ck-page-btn {
+  background: #111;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.ck-page-btn:hover:not(:disabled) {
+  border-color: #ff8a3d;
+  color: #ff8a3d;
+}
+
+.ck-page-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 /* FOOTER */

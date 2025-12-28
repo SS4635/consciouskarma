@@ -14,6 +14,10 @@ export default function DashboardLayout() {
   const [activities, setActivities] = useState([]);
   const [loadingActivities, setLoadingActivities] = useState(false);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 7;
+
   // Sidebar toggle state
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -79,10 +83,19 @@ export default function DashboardLayout() {
       // Allow specific completed statuses
       if (s === "paid" || s === "emailed" || s === "submitted") return true;
 
-      // Otherwise (pending, processing, null) -> Hide it
       return false;
     });
   }, [activities]);
+
+  // PAGINATION LOGIC
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = visibleActivities.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(visibleActivities.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
 
   const handleLogout = () => {
     setUser(null);
@@ -96,7 +109,7 @@ export default function DashboardLayout() {
   /* ---------------------------
       PASSWORD HANDLERS
   ---------------------------- */
-
+  // ... (Password handlers remain unchanged) ...
   async function handleVerifyOldPassword() {
     try {
       if (!oldPassword) {
@@ -252,7 +265,6 @@ export default function DashboardLayout() {
     <div className="ck-dashboard">
       {/* Sidebar */}
       <aside className={`ck-sidebar ${sidebarOpen ? "open" : "closed"}`}>
-        {/* Close Button (X) inside Sidebar */}
         <button
           className="ck-sidebar-close"
           onClick={() => setSidebarOpen(false)}
@@ -301,13 +313,11 @@ export default function DashboardLayout() {
       <div className="ck-main">
         {/* Header */}
         <header className="ck-navbar">
-          {/* Logo Text Group */}
           <div className="ck-navbar-brand">
             <span className="brand-text-top">conscious</span>
             <span className="brand-text-bottom">KARMA</span>
           </div>
 
-          {/* Hamburger Menu (Styled Lines) */}
           <button
             className={`ck-menu-btn ${sidebarOpen ? "open" : ""}`}
             onClick={() => setSidebarOpen((v) => !v)}
@@ -333,64 +343,88 @@ export default function DashboardLayout() {
                   No paid activity yet. Once you book or buy, it will appear here.
                 </div>
               ) : (
-                <div className="ck-table-wrapper">
-                  <table className="ck-table">
-                    <thead>
-                      <tr>
-                        <th>Report Type</th>
-                        <th>Date</th>
-                        <th>Mobile</th>
-                        <th>Amount</th>
-                        <th>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {visibleActivities.map((item) => {
-                        // Calculate status label
-                        const statusLabel =
-                          item.kind === "consultation"
-                            ? "Booked"
-                            : item.status === "emailed" ||
-                              item.status === "submitted"
-                            ? "Report emailed"
-                            : item.status || "Processing";
+                <>
+                  <div className="ck-table-wrapper">
+                    <table className="ck-table">
+                      <thead>
+                        <tr>
+                          <th>Report Type</th>
+                          <th>Date</th>
+                          <th>Mobile</th>
+                          <th>Amount</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentItems.map((item) => {
+                          const statusLabel =
+                            item.kind === "consultation"
+                              ? "Booked"
+                              : item.status === "emailed" ||
+                                item.status === "submitted"
+                              ? "Report emailed"
+                              : item.status || "Processing";
 
-                        return (
-                          <tr key={item._id}>
-                            <td>
-                              {item.kind === "consultation"
-                                ? "Consultation Booked"
-                                : item.kind === "instant-report"
-                                ? "Instant Report"
-                                : "Personalized Report"}
-                            </td>
-                            <td>
-                              {new Date(item.createdAt).toLocaleString()}
-                            </td>
-                            <td>{item.phone || "-"}</td>
-                            <td>₹{(item.amount || item.price) / 100}</td>
-                            <td>
-                              <span
-                                className={`ck-status-badge ${
-                                  statusLabel.toLowerCase().includes("email") ||
-                                  statusLabel.toLowerCase() === "paid"
-                                    ? "paid"
-                                    : statusLabel
-                                        .toLowerCase()
-                                        .includes("pending")
-                                    ? "pending"
-                                    : "booked"
-                                }`}
-                              >
-                                {statusLabel}
-                              </span>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                </div>
+                          return (
+                            <tr key={item._id}>
+                              <td>
+                                {item.kind === "consultation"
+                                  ? "Consultation Booked"
+                                  : item.kind === "instant-report"
+                                  ? "Instant Report"
+                                  : "Personalized Report"}
+                              </td>
+                              <td>
+                                {new Date(item.createdAt).toLocaleString()}
+                              </td>
+                              <td>{item.phone || "-"}</td>
+                              <td>₹{(item.amount || item.price) / 100}</td>
+                              <td>
+                                <span
+                                  className={`ck-status-badge ${
+                                    statusLabel.toLowerCase().includes("email") ||
+                                    statusLabel.toLowerCase() === "paid"
+                                      ? "paid"
+                                      : statusLabel
+                                          .toLowerCase()
+                                          .includes("pending")
+                                      ? "pending"
+                                      : "booked"
+                                  }`}
+                                >
+                                  {statusLabel}
+                                </span>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="ck-pagination">
+                      <button
+                        className="ck-page-btn"
+                        disabled={currentPage === 1}
+                        onClick={() => handlePageChange(currentPage - 1)}
+                      >
+                        Prev
+                      </button>
+                      <span className="ck-page-info">
+                        Page {currentPage} of {totalPages}
+                      </span>
+                      <button
+                        className="ck-page-btn"
+                        disabled={currentPage === totalPages}
+                        onClick={() => handlePageChange(currentPage + 1)}
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
             </section>
           )}
@@ -539,7 +573,6 @@ export default function DashboardLayout() {
           )}
         </main>
 
-        {/* Footer */}
         <footer className="ck-footer">
           <div className="container-footer">
             <a href="/termsandconditions">Terms & Conditions</a>
