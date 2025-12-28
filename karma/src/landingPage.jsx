@@ -1023,8 +1023,8 @@ const [showLogin, setShowLogin] = useState(false);
   <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm z-50 flex items-center justify-center p-4">
     <div className="bg-black border-2 border-[#F97316] rounded-[16px] p-0 max-w-[380px] w-full max-h-[70vh] overflow-y-auto relative">
 
-        <div className="" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700" }}>
-          <p  style={{fontSize:"28px",fontWeight:"300"}}>Instant Report</p>
+        <div className="" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px" }}>
+          <p  style={{fontSize:"28px",fontWeight:"300",marginBottom:"2rem"}}>Instant Report</p>
           <button className="ck-close mb-[1rem]" onClick={() => setShowForm(false)}>✕</button>
         </div>
 

@@ -173,15 +173,50 @@
   text-align: left;
 }
 
-/* ✅ CARD BORDER FIX (NO CORNER GAP) */
 .ck-form-card {
   border: 2px solid #ff6b35;
   border-radius: 15px;
-  overflow: auto; /* KEY */
+  overflow: auto;
   background: transparent;
   display: flex;
   flex-direction: column;
+
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #ff6b35 #000;
 }
+
+/* ========================= */
+/* Chrome, Edge, Safari */
+/* ========================= */
+
+.ck-form-card::-webkit-scrollbar {
+  width: 0px !important;                 /* ultra thin */
+}
+
+
+.ck-form-card::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Track */
+.ck-form-card::-webkit-scrollbar-track {
+  background: #000;
+}
+
+/* Thumb */
+.ck-form-card::-webkit-scrollbar-thumb {
+  background: #ff6b35;
+  border-radius: 10px;
+}
+
+.ck-form-card::-webkit-scrollbar-thumb:hover {
+  background: #ff824d;
+}
+
+
 /* PersonalizedReport.css (or OTP step css) */
 .otp-title,
 .otp-step-title,
@@ -323,7 +358,7 @@
   display: flex;
   width: 100%;
   background: #000;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+border-top: 2px solid rgb(255,122,51);
 }
 
 /* IMPORTANT: no borders here (borders cause corner cut) */
@@ -333,28 +368,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.05rem;
-  font-weight: 300;
+  font-size: 21px;
+
   background: transparent;
   color: #fff;
+  padding:19px;
+  border-right: 2px solid rgb(255,122,51);
 }
 
 .ck-proceed-btn {
   flex: 1;
-  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 21px;
   border: none;
-  background: #2b2b2b;
-  color: #fff;
-  font-size: 1.05rem;
-  font-weight: 300;
-  cursor: pointer;
-  transition: background 0.2s ease, opacity 0.2s ease;
+  background: grey;
+  
+
 }
 
 .ck-proceed-btn:disabled {
-  opacity: 0.6;
+ opacity: 0.5;
   cursor: not-allowed;
 }
+
 
 /* ✅ FULL ORANGE ONLY WHEN READY */
 .ck-proceed-btn.ck-proceed-btn-ready {
