@@ -413,164 +413,166 @@ const successOverlay = (generatingReport && showSuccess) ? (
 ) : null;
 
   return (
-    <div style={{ width: "100%" ,maxWidth:"400px"}}>
+    <div style={{ width: "100%", maxWidth: "400px" }}>
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
-{typeof document !== "undefined" &&
-  showSuccess &&
-  ReactDOM.createPortal(successOverlay, document.body)}
+      {typeof document !== "undefined" && showSuccess && ReactDOM.createPortal(successOverlay, document.body)}
 
-      <style>{`
-        /* SweetAlert2 Custom Styles */
-        .swal2-popup {
-          background: #111 !important;
-          color: #fff !important;
-          border: 2px solid #fb923c !important;
-          border-radius: 16px !important;
-        }
-        .swal2-title,
-        .swal2-html-container {
-          color: #fff !important;
-        }
-        .swal2-success-circular-line-left,
-        .swal2-success-circular-line-right,
-        .swal2-success-fix {
-          background: none !important;
-        }
-        .swal2-success {
-          border-color: #fb923c !important;
-        }
-        .swal2-success .swal2-success-ring {
-          border: 4px solid #fb923c !important;
-        }
-        .swal2-success .swal2-success-line-tip,
-        .swal2-success .swal2-success-line-long {
-          background-color: #fb923c !important;
-        }
-        .swal2-styled.swal2-confirm {
-          background-color: #fb923c !important;
-          color: #fff !important;
-          border: 2px solid #fb923c !important;
-          border-radius: 8px !important;
-        }
-        .swal2-styled.swal2-confirm:focus {
-          box-shadow: 0 0 0 2px #fb923c55 !important;
-        }
-        .swal2-container { z-index: 9999 !important; }
-      `}</style>
+      {/* Hide the Instant Report form when Login modal is visible */}
+      {showLogin ? (
+        <LoginModal onClose={() => setShowLogin(false)} onSwitch={() => { setShowLogin(false); setShowSignup(true); }} />
+      ) : (
+        <>
+          {showSignup && <SignupModal onClose={() => setShowSignup(false)} onSwitch={() => { setShowSignup(false); setShowLogin(true); }} />}
 
-      <div style={{padding: "0 1.5rem 1.5rem 1.2rem"}}>
-        {showSignup && <SignupModal onClose={() => setShowSignup(false)} onSwitch={() => { setShowSignup(false); setShowLogin(true); }} />}
-        {showLogin && <LoginModal onClose={() => setShowLogin(false)} onSwitch={() => { setShowLogin(false); setShowSignup(true); }} />}
+          <style>{`
+            /* SweetAlert2 Custom Styles */
+            .swal2-popup {
+              background: #111 !important;
+              color: #fff !important;
+              border: 2px solid #fb923c !important;
+              border-radius: 16px !important;
+            }
+            .swal2-title,
+            .swal2-html-container {
+              color: #fff !important;
+            }
+            .swal2-success-circular-line-left,
+            .swal2-success-circular-line-right,
+            .swal2-success-fix {
+              background: none !important;
+            }
+            .swal2-success {
+              border-color: #fb923c !important;
+            }
+            .swal2-success .swal2-success-ring {
+              border: 4px solid #fb923c !important;
+            }
+            .swal2-success .swal2-success-line-tip,
+            .swal2-success .swal2-success-line-long {
+              background-color: #fb923c !important;
+            }
+            .swal2-styled.swal2-confirm {
+              background-color: #fb923c !important;
+              color: #fff !important;
+              border: 2px solid #fb923c !important;
+              border-radius: 8px !important;
+            }
+            .swal2-styled.swal2-confirm:focus {
+              box-shadow: 0 0 0 2px #fb923c55 !important;
+            }
+            .swal2-container { z-index: 9999 !important; }
+          `}</style>
 
-        <form onSubmit={handleSubmit}>
-          {/* MOBILE */}
-          <div style={{ marginBottom: "18px" }}>
-            <div style={{ fontSize: "17px", color: "#fff", marginBottom: "6px" }}>Mobile Number*</div>
-            <div style={{ display: "flex", gap: "10px" }}>
-              
-              {/* --- DROPDOWN WITH ARROW FIXED --- */}
-              <div style={{ position: "relative", width: "100px" }}>
-                <select
-                  value={isd}
-                  onChange={(e) => {
-                      setIsd(e.target.value);
-                      setPhone("");
-                      setErrors(prev => ({...prev, phone: null}));
-                  }}
-                  style={{
-                    background: "#111", 
-                    border: "1px solid #444", 
-                    borderRadius: "6px",
-                    height: "37px", 
-                    padding: "0 12px", 
-                    fontSize: "16px",
-                    width: "100%",
-                    color: "transparent", 
-                    cursor: "pointer",
-                    appearance: "none",       
-                    WebkitAppearance: "none",
-                    MozAppearance: "none"
-                  }}
-                >
-                    {COUNTRY_CODES.map((c) => (
-                      <option key={c.code + c.dial_code} value={c.dial_code} style={{ background: "#000", color: "#fff" }}>
-                        {c.name} ({c.dial_code})
-                      </option>
-                    ))}
-                </select>
-                
-                {/* ✨ Overlay with Code + SVG Arrow */}
-                <div style={{
-                  position: "absolute",
-                  inset: 0,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  pointerEvents: "none",
-                  color: "#fff",
-                  fontSize: "16px",
-                  gap: "6px"
-                }}>
-                  <span>{isd}</span>
-                  <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+          <div style={{ padding: "0 1.5rem 1.5rem 1.2rem" }}>
+            <form onSubmit={handleSubmit}>
+              {/* MOBILE */}
+              <div style={{ marginBottom: "18px" }}>
+                <div style={{ fontSize: "17px", color: "#fff", marginBottom: "6px" }}>Mobile Number*</div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  {/* --- DROPDOWN WITH ARROW FIXED --- */}
+                  <div style={{ position: "relative", width: "100px" }}>
+                    <select
+                      value={isd}
+                      onChange={(e) => {
+                        setIsd(e.target.value);
+                        setPhone("");
+                        setErrors(prev => ({ ...prev, phone: null }));
+                      }}
+                      style={{
+                        background: "#111",
+                        border: "1px solid #444",
+                        borderRadius: "6px",
+                        height: "37px",
+                        padding: "0 12px",
+                        fontSize: "16px",
+                        width: "100%",
+                        color: "transparent",
+                        cursor: "pointer",
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none"
+                      }}
+                    >
+                      {COUNTRY_CODES.map((c) => (
+                        <option key={c.code + c.dial_code} value={c.dial_code} style={{ background: "#000", color: "#fff" }}>
+                          {c.name} ({c.dial_code})
+                        </option>
+                      ))}
+                    </select>
+                    {/* ✨ Overlay with Code + SVG Arrow */}
+                    <div style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      pointerEvents: "none",
+                      color: "#fff",
+                      fontSize: "16px",
+                      gap: "6px"
+                    }}>
+                      <span>{isd}</span>
+                      <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  </div>
+
+                  <input value={phone} onChange={(e) => { if (/[^0-9]/.test(e.target.value)) return; setPhone(e.target.value); if (errors.phone) setErrors(prev => ({ ...prev, phone: null })); }}
+                    onBlur={validateMobileOnBlur} maxLength={maxAllowedLength} placeholder="Mobile Number" inputMode="numeric"
+                    style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }}
+                  />
                 </div>
+                {errors.phone && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.phone}</span>}
               </div>
 
-              <input value={phone} onChange={(e) => { if (/[^0-9]/.test(e.target.value)) return; setPhone(e.target.value); if(errors.phone) setErrors(prev => ({...prev, phone: null})); }}
-                onBlur={validateMobileOnBlur} maxLength={maxAllowedLength} placeholder="Mobile Number" inputMode="numeric"
-                style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }}
-              />
-            </div>
-            {errors.phone && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.phone}</span>}
+              {/* NAME */}
+              <div style={{ marginBottom: "18px" }}>
+                <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Name*</div>
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                {errors.name && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.name}</span>}
+              </div>
+
+              {/* EMAIL */}
+              <div style={{ marginBottom: "18px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", marginBottom: "6px", fontSize: "17px" }}>
+                  <span>Email*</span>
+                  <button type="button" style={{ color: "#ff7a33", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
+                </div>
+                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
+              </div>
+
+              {/* COUPON */}
+              <div style={{ marginBottom: "18px" }}>
+                <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Coupon</div>
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="e.g. CKFREE100" style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                  <button type="button" onClick={applyCoupon} disabled={!coupon || applying} style={{ height: "37px", padding: "0 16px", borderRadius: "6px", background: "#222", border: "1px solid #444", color: "#fff", cursor: "pointer", fontSize: "16px" }}>{applying ? "…" : "Apply"}</button>
+                </div>
+                {couponInfo && <div style={{ color: "#2ecc71", marginTop: "6px", fontSize: "13px" }}>Applied Successfully</div>}
+              </div>
+
+              {/* PASSWORD */}
+              {accountChoice === "create" && (
+                <div style={{ marginBottom: "18px" }}>
+                  <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Password</div>
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                  {errors.password && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.password}</span>}
+                </div>
+              )}
+            </form>
           </div>
 
-          {/* NAME */}
-          <div style={{ marginBottom: "18px" }}>
-            <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Name*</div>
-            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
-            {errors.name && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.name}</span>}
+          <div style={footerFix}>
+            <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff7a33", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
+            <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
+              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff7a33", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
+              {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}
+            </button>
           </div>
-
-          {/* EMAIL */}
-          <div style={{ marginBottom: "18px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", marginBottom: "6px", fontSize: "17px" }}>
-              <span>Email*</span>
-              <button type="button" style={{ color: "#ff7a33", background:'transparent', border:'none', cursor:'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
-            </div>
-            <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
-            {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
-          </div>
-
-          {/* COUPON */}
-          <div style={{ marginBottom: "18px" }}>
-            <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Coupon</div>
-            <div style={{ display: "flex", gap: "10px" }}>
-              <input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="e.g. CKFREE100" style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
-              <button type="button" onClick={applyCoupon} disabled={!coupon || applying} style={{ height: "37px", padding: "0 16px", borderRadius: "6px", background: "#222", border: "1px solid #444", color: "#fff", cursor: "pointer", fontSize: "16px" }}>{applying ? "…" : "Apply"}</button>
-            </div>
-            {couponInfo && <div style={{ color: "#2ecc71", marginTop: "6px", fontSize: "13px" }}>Applied Successfully</div>}
-          </div>
-
-          {/* PASSWORD */}
-          {accountChoice === "create" && (
-            <div style={{ marginBottom: "18px" }}>
-              <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Password</div>
-              <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
-              {errors.password && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.password}</span>}
-            </div>
-          )}
-        </form>
-      </div>
-
-      <div style={footerFix}>
-        <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff7a33", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
-        <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
-          style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff7a33", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
-          {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}
-        </button>
-      </div>
+        </>
+      )}
     </div>
   );
 }
