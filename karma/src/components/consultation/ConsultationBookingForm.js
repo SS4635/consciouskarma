@@ -31,6 +31,15 @@ export default function ConsultationBookingForm({
   const primaryNumberUsageType = formData[2]?.["Usage type"] || "";
   const isExtendedCompatibility = !!selectedPlan?.isExtended;
 
+  // --- HELPER: Extract numeric price safely (Defined here to use in Render & Logic) ---
+  const getNumericPrice = (p) => {
+    const str = String(p || "");
+    // If the string contains a calculation like "1x1=1", we might need to handle it.
+    // For now, we strip non-numeric characters to ensure we get a clean number.
+    // If you are passing clean strings like "2000", this works perfectly.
+    return Number(str.replace(/[^0-9.]/g, ""));
+  };
+
   const updateContainerHeight = useCallback(() => {
     if (formContainerRef.current) {
       setContainerHeight("auto");
@@ -477,14 +486,11 @@ export default function ConsultationBookingForm({
       }
     }
 
-    const rawPrice = selectedPlan?.price || currentForm.price;
-    const cleanPrice = Number(String(rawPrice).replace(/[^0-9.]/g, "")); 
     const finalFormData = JSON.parse(JSON.stringify(formData));
     if (!finalFormData[1]) finalFormData[1] = {};
     if (!finalFormData[1]["Time of Birth"]) finalFormData[1]["Time of Birth"] = "00:00";
     
     // 🛡️ HELPER: Extract numeric price safely
-    const getNumericPrice = (p) => Number(String(p).replace(/[^0-9.]/g, ""));
     const finalPrice = getNumericPrice(selectedPlan?.price || currentForm.price);
 
     try {
@@ -606,7 +612,7 @@ export default function ConsultationBookingForm({
         .ck-nav-btn:not(:disabled):hover { opacity: 0.8; }
         .modal-footer { position: sticky; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #000; padding: 0; margin-top: -8px; margin-left: -40px; margin-right: -40px; z-index: 2; }
         .modal-footer .price-btn, .modal-footer .proceed-btn { width: 100%; border-radius: 0; margin: 0; height: 56px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: none; }
-        .modal-footer .price-btn { background: transparent; color: #ffffff; border: 2px solid #ff6b35; border-right-width: 1px; border-bottom-left-radius: 10px; justify-content: center; padding-left: 0; text-align: center; }
+        .modal-footer .price-btn { background: transparent; color: #ffffff; border-top: 2px solid #ff6b35; border-right: 2px solid #ff6b35; border-right-width: 1px; border-bottom-left-radius: 10px; justify-content: center; padding-left: 0; text-align: center; }
         .modal-footer .proceed-btn { border: 2px solid #444; border-left-width: 1px; border-bottom-right-radius: 10px; transition: all 0.3s ease; }
         @media (max-width: 576px) {
           .modal-footer { margin-left: -16px; margin-right: -16px; }
@@ -653,10 +659,10 @@ export default function ConsultationBookingForm({
 
             <div className={inModal ? "modal-footer" : "d-flex gap-3 mt-4"}>
               <button className="price-btn" style={{ flex: inModal ? undefined : 1, padding: inModal ? "0.75rem 1rem" : undefined, fontSize: inModal ? "1rem" : undefined, height: inModal ? 48 : undefined }}>
-                {selectedPlan?.price ?? currentForm.price}
+                ₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}
               </button>
               
-              {/* ✅ PROCEED BUTTON LOGIC UPDATED */}
+              {/* ✅ PROCEED BUTTON LOGIC */}
               <button
                 className="proceed-btn"
                 style={{
