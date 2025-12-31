@@ -1,4 +1,3 @@
-// src/ConsciousKarmaPage.jsx
 import React, { useState } from "react";
 import ReactDOM from "react-dom"; 
 import Swal from "sweetalert2";
@@ -798,7 +797,7 @@ const ConsciousKarmaPage = () => {
             {/* LEFT HERO */}
             <div className="ck-hero">
               <p className="ck-hero-text">
-                Every mobile number is alive with energy, shaping how we think, feel, speak, and live.
+                Every mobile number is alive with energy,<br /> shaping how we think, feel, speak, and live.
               </p>
 
               <div className="mx-auto max-w-[900px] px-3">

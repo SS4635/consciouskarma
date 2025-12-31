@@ -171,6 +171,28 @@
   font-weight: 300;
   margin-bottom: 1.2rem;
   text-align: left;
+  min-height: 48px;
+  line-height: 48px;
+  display: flex;
+  align-items: center;
+}
+
+.ck-label {
+  min-height: 32px;
+  line-height: 32px;
+  display: flex;
+  align-items: center;
+}
+
+
+/* ========================================================= */
+/* SCROLLBAR STYLING - UPDATED: Ultra thin & No Arrows */
+/* ========================================================= */
+.ck-form-card,
+.ck-form-slide {
+  /* Firefox */
+  scrollbar-width: thin; 
+  scrollbar-color: #ff6b35 transparent;
 }
 
 .ck-form-card {
@@ -180,40 +202,38 @@
   background: transparent;
   display: flex;
   flex-direction: column;
-
-  /* Firefox */
-  scrollbar-width: thin;
-  scrollbar-color: #ff6b35 #000;
 }
 
-/* ========================= */
 /* Chrome, Edge, Safari */
-/* ========================= */
-
-.ck-form-card::-webkit-scrollbar {
-  width: 0px !important;                 /* ultra thin */
+.ck-form-card::-webkit-scrollbar,
+.ck-form-slide::-webkit-scrollbar {
+  width: 2px !important;    /* Ultra thin vertical */
+  height: 2px !important;   /* Ultra thin horizontal */
+  background: transparent;
 }
 
-
-.ck-form-card::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
-}
-
-/* Track */
-.ck-form-card::-webkit-scrollbar-track {
-  background: #000;
-}
-
-/* Thumb */
-.ck-form-card::-webkit-scrollbar-thumb {
+.ck-form-card::-webkit-scrollbar-thumb,
+.ck-form-slide::-webkit-scrollbar-thumb {
   background: #ff6b35;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
-.ck-form-card::-webkit-scrollbar-thumb:hover {
+.ck-form-card::-webkit-scrollbar-thumb:hover,
+.ck-form-slide::-webkit-scrollbar-thumb:hover {
   background: #ff824d;
+}
+
+.ck-form-card::-webkit-scrollbar-track,
+.ck-form-slide::-webkit-scrollbar-track {
+  background: transparent; /* or #000 */
+}
+
+/* Hide Arrows/Buttons */
+.ck-form-card::-webkit-scrollbar-button,
+.ck-form-slide::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 
