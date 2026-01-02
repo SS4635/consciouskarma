@@ -167,9 +167,9 @@
 }
 
 .ck-form-heading {
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 300;
-  margin-bottom: 1.2rem;
+  margin-bottom: 2rem;
   text-align: left;
   min-height: 48px;
   line-height: 48px;
@@ -247,6 +247,9 @@
   text-align: center !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  min-height: auto !important;
+  line-height: normal !important;
+  margin-bottom: 2rem !important;
 }
 
 /* Slider area */
@@ -383,7 +386,8 @@ border-top: 2px solid #ff914d;
 
 /* IMPORTANT: no borders here (borders cause corner cut) */
 .ck-price-pill {
-  flex: 1;
+  flex: 0 0 50%;
+  width: 50%;
   height: 48px;
   display: flex;
   align-items: center;
@@ -392,20 +396,21 @@ border-top: 2px solid #ff914d;
 
   background: transparent;
   color: #fff;
-  padding:19px;
+  padding: 0;
   border-right: 2px solid #ff914d;
 }
 
 .ck-proceed-btn {
-  flex: 1;
+  flex: 0 0 50%;
+  width: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 21px;
   border: none;
   background: grey;
-  
-
+  height: 48px;
+  padding: 0;
 }
 
 .ck-proceed-btn:disabled {

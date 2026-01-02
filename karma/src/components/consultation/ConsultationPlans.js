@@ -309,7 +309,8 @@ export default function ConsultationPlans() {
             <div
               className="ck-modal-card"
               style={{
-                width: isMobile ? "94vw" : "min(50vw, 440px)",
+                width: "100%",
+                maxWidth: "400px",
                 background: "#000",
                 border: "2px solid #ff6b35",
                 borderRadius: 12,

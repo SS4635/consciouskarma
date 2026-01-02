@@ -104,7 +104,7 @@ export default function DashboardLayout() {
   const firstInitial = (user.name || user.email || "?")[0].toUpperCase();
 
   /* ---------------------------
-     PASSWORD HANDLERS
+      PASSWORD HANDLERS
   ---------------------------- */
   async function handleVerifyOldPassword() {
     try {
@@ -270,136 +270,7 @@ export default function DashboardLayout() {
       {/* Navbar with Hamburger */}
       <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
 
-      {/* INJECTED STYLES FOR RESPONSIVENESS */}
-      <style>{`
-        /* Reset & Base */
-        * { box-sizing: border-box; }
-        
-        /* Layout Wrappers */
-        .dashboard-body {
-          display: flex;
-          flex: 1;
-          min-height: 0;
-          width: 100%;
-        }
 
-        /* Sidebar Base */
-        .ck-sidebar {
-          width: 260px;
-          min-width: 240px;
-          background: #181818;
-          border-right: 1.5px solid #222;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          padding-top: 32px;
-          position: sticky;
-          top: 56px;
-          height: calc(100vh - 56px);
-          z-index: 1;
-        }
-
-        /* Main Content Base */
-        .ck-main {
-          flex: 1;
-          min-width: 0;
-          background: #0a0a0a;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        .ck-content {
-           flex: 1;
-           padding: 20px;
-        }
-        
-        /* Footer Base */
-        .ck-footer {
-           width: 100%;
-           background: #000000; /* Pure black like the image */
-           border-top: 2px solid #ff914d;
-           padding: 25px 0;
-           margin-top: auto;
-        }
-        
-        .container-footer {
-           max-width: 1200px;
-           margin: 0 auto;
-           padding: 0 24px;
-           text-align: right;
-           display: flex;
-           justify-content: flex-end;
-           flex-wrap: wrap;
-           align-items: center;
-           line-height: 1.6;
-        }
-
-        .container-footer a {
-           color: #fff;
-           text-decoration: none;
-           font-size: 0.9rem;
-           font-weight: 700; /* Bold font like the image */
-           transition: color 0.2s;
-        }
-        .container-footer a:hover {
-           color: #ff914d;
-        }
-        .footer-pipe {
-           color: white; /* White pipes */
-           margin: 0 8px;
-           font-weight: bold;
-        }
-
-        /* Table Responsive */
-        .ck-table-wrapper {
-           overflow-x: auto;
-           width: 100%;
-        }
-
-        /* --------------------------
-           MOBILE RESPONSIVENESS 
-           (Breakpoints)
-        --------------------------- */
-        @media (max-width: 768px) {
-          .dashboard-body {
-            flex-direction: column;
-          }
-
-          .ck-sidebar {
-            width: 100%;
-            min-width: 100%;
-            height: auto;
-            position: relative;
-            top: 0;
-            border-right: none;
-            border-bottom: 1.5px solid #222;
-            padding: 20px;
-          }
-
-          .ck-sidebar-user {
-             margin-top: 20px;
-             margin-bottom: 0 !important;
-          }
-
-          /* --- EXACT FOOTER REPLICATION FOR MOBILE --- */
-          .container-footer {
-             justify-content: center; /* Center horizontally */
-             text-align: center;
-             padding: 0 16px; /* Ensure text doesn't touch edges */
-             flex-direction: row; /* Allow side-by-side */
-          }
-          
-          .footer-pipe {
-             display: inline-block; /* Keep pipes visible */
-             margin: 0 5px; /* Adjust spacing slightly for mobile */
-          }
-          
-          .container-footer a {
-             font-size: 0.85rem;
-             white-space: nowrap; /* Keep link text together */
-          }
-        }
-      `}</style>
 
       {/* Header/Navbar */}
       <header

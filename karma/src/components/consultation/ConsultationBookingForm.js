@@ -106,7 +106,7 @@ export default function ConsultationBookingForm({
           justifyContent: 'center',
           position: 'relative',
           background: '#000',
-          border: '2px solid #ff6b35',
+          border: '2px solid #ff914d',
           borderRadius: '16px',
           padding: '32px 28px',
           width: '90%',
@@ -116,8 +116,8 @@ export default function ConsultationBookingForm({
         onClick={e => e.stopPropagation()}
       >
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-          <circle cx="12" cy="12" r="11" stroke="#ff6b35" strokeWidth="2" fill="transparent"/>
-          <path d="M7 12L10 15L17 8" stroke="#ff6b35" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
+          <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
         <p style={{color: '#fff', fontSize: '16px', marginTop: '10px'}}>Your consultation is booked. We will be in touch soon.</p>
@@ -126,7 +126,7 @@ export default function ConsultationBookingForm({
             position: 'absolute',
             top: 12,
             right: 12,
-            background: '#ff6b35',
+            background: '#ff914d',
             color: '#fff',
             border: 'none',
             borderRadius: '50%',
@@ -543,7 +543,7 @@ export default function ConsultationBookingForm({
           email: formData[1]?.["Email-id"],
           contact: `${formData[2]?.["Mobile Number"]?.isd}${formData[2]?.["Mobile Number"]?.mobile}`,
         },
-        theme: { color: "#ff6b35" },
+        theme: { color: "#ff914d" },
       };
       new window.Razorpay(options).open();
     } catch (err) {
@@ -598,7 +598,7 @@ export default function ConsultationBookingForm({
         .swal2-container { z-index: 9999 !important; }
         .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; }
         .form-container * { font-family: "Arsenal", sans-serif; }
-        .form-card { background: transparent; border: 2px solid #ff6b35; border-radius: 15px; min-height: 500px; height: auto; transition: height 0.3s ease; display: flex; flex-direction: column; }
+        .form-card { background: transparent; border: 2px solid #ff914d; border-radius: 15px; min-height: 500px; height: auto; transition: height 0.3s ease; display: flex; flex-direction: column; }
         .form-cards { padding: 2.6rem 1.5rem 2rem; flex: 1; display: flex; flex-direction: column; }
         .form-content { flex: 1; display: flex; flex-direction: column; }
         .form-fields { flex: 1; }
@@ -607,12 +607,12 @@ export default function ConsultationBookingForm({
         .ck-close { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 6px; color: #fff; font-size: 18px; cursor: pointer; }
         .ck-close:hover { background: #222; }
         .ck-nav { display: flex; flex-direction:row; justify-content: space-between; align-items: center; margin-top: 24px; width: 100%; }
-        .ck-nav-btn { background: none; border: none; color: #ff6b35; font-size: 15px; cursor: pointer; padding: 4px 6px; transition: opacity 0.2s ease; }
+        .ck-nav-btn { background: none; border: none; color: #ff914d; font-size: 15px; cursor: pointer; padding: 4px 6px; transition: opacity 0.2s ease; }
         .ck-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
         .ck-nav-btn:not(:disabled):hover { opacity: 0.8; }
         .modal-footer { position: sticky; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #000; padding: 0; margin-top: -8px; margin-left: -40px; margin-right: -40px; z-index: 2; }
         .modal-footer .price-btn, .modal-footer .proceed-btn { width: 100%; border-radius: 0; margin: 0; height: 56px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: none; }
-        .modal-footer .price-btn { background: transparent; color: #ffffff; border-top: 2px solid #ff6b35; border-right: 2px solid #ff6b35; border-right-width: 1px; border-bottom-left-radius: 10px; justify-content: center; padding-left: 0; text-align: center; }
+        .modal-footer .price-btn { background: transparent; color: #ffffff; border-top: 2px solid #ff914d; border-right: 2px solid #ff914d; border-right-width: 1px; border-bottom-left-radius: 10px; justify-content: center; padding-left: 0; text-align: center; }
         .modal-footer .proceed-btn { border: 2px solid #444; border-left-width: 1px; border-bottom-right-radius: 10px; transition: all 0.3s ease; }
         @media (max-width: 576px) {
           .modal-footer { margin-left: -16px; margin-right: -16px; }
@@ -672,9 +672,12 @@ export default function ConsultationBookingForm({
                   height: inModal ? 48 : undefined,
                   
                   // 🔥 Logic: Last Step AND Form is Valid = Orange, Else Black/Grey
-                  backgroundColor: canSubmit ? "#ff6b35" : "#222",
+                  backgroundColor: canSubmit ? "#ff914d" : "#222",
                   color: canSubmit ? "#000" : "#cfcfcf",
-                  borderColor: canSubmit ? "#ff914d" : "#444",
+                  borderTop: "2px solid #ff914d",
+                  borderRight: canSubmit ? "2px solid #ff914d" : "2px solid #444",
+                  borderBottom: canSubmit ? "2px solid #ff914d" : "2px solid #444",
+                  borderLeft: canSubmit ? "1px solid #ff914d" : "1px solid #444",
                   opacity: canSubmit ? 1 : 0.6,
                   cursor: canSubmit ? "pointer" : "not-allowed",
                 }}

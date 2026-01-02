@@ -64,7 +64,6 @@ export default function ParallelNumbersForm({
         .pn-title {
           font-size: 28px;
           font-weight: 300;
-          margin-top: 1rem;
           margin-bottom: 2rem;
           text-align: center;
           color: #fff;
