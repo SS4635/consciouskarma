@@ -158,8 +158,8 @@ export default function InlineInstantReportForm({
               padding: 3px;
               background: conic-gradient(
                 from var(--angle),
-                #FB923C,
-                #FB923C 20%,
+                #ff914d,
+                #ff914d 20%,
                 transparent 60%
               );
               -webkit-mask:
@@ -191,7 +191,7 @@ export default function InlineInstantReportForm({
             target="_blank"
             rel="noopener noreferrer"
             className="font-balgin no-underline hover:no-underline transition-colors"
-            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#FB923C' }}
+            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#ff914d' }}
           >
             sample report
           </a>

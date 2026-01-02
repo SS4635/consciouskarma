@@ -209,7 +209,7 @@ const [showLogin, setShowLogin] = useState(false);
 
       {/* FOOTER */}
       {/* Orange line above footer, same as landing page */}
-      <div style={{ width: "100%", height: "1px", background: "#ff8a3d", marginTop: "32px", marginBottom: "-30px", borderRadius: "2px" }}></div>
+      <div style={{ width: "100%", height: "1px", background: "#ff914d", marginTop: "32px", marginBottom: "-30px", borderRadius: "2px" }}></div>
       <footer className="tc-footer bg-black text-white py-3 sm:py-2 md:py-3 mt-8">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">

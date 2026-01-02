@@ -29,7 +29,7 @@
   color: #ffffff;
   background-color: #1a1a1a;
   padding: 20px;
-  border-left: 4px solid #ff8a2b;
+  border-left: 4px solid #ff914d;
 }
 
 .sp-section {
@@ -39,7 +39,7 @@
 .sp-heading {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #ff8a2b;
+  color: #ff914d;
   margin-bottom: 15px;
 }
 
@@ -59,25 +59,25 @@
   padding: 12px 0;
   line-height: 1.8;
   color: #e0e0e0;
-  border-left: 3px solid #ff8a2b;
+  border-left: 3px solid #ff914d;
   padding-left: 20px;
   margin-bottom: 10px;
 }
 
 .sp-list li strong {
-  color: #ff8a2b;
+  color: #ff914d;
   font-weight: 600;
 }
 
 .sp-email {
-  color: #ff8a2b;
+  color: #ff914d;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .sp-email:hover {
-  color: #ffb366;
+  color: #ff914d;
   text-decoration: underline;
 }
 
@@ -94,7 +94,7 @@
   background-color: #1a1a1a;
   border-radius: 8px;
   text-align: center;
-  border: 2px solid #ff8a2b;
+  border: 2px solid #ff914d;
 }
 
 .sp-footer p {

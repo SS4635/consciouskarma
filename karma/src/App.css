@@ -50,7 +50,7 @@
   width: 100%;
   max-width: 400px;
   background: #111;
-  border: 2px solid #ff7a33;
+  border: 2px solid #ff914d;
   border-radius: 14px;
   padding: 22px;
   color: white;
@@ -107,7 +107,7 @@
   right: 10px;
   background: none;
   border: none;
-  color: #ff7a33;
+  color: #ff914d;
   cursor: pointer;
   font-weight: 600;
   display: inline-flex;
@@ -122,8 +122,8 @@
   width: 100%;
   padding: 12px 0;
   background: transparent;
-  color: #ff7a33;
-  border: 2px solid #ff7a33;
+  color: #ff914d;
+  border: 2px solid #ff914d;
   border-radius: 8px;
   margin-top: 16px;
   font-weight: bold;
@@ -132,7 +132,7 @@
 }
 
 .ck-btn:hover:not(:disabled) {
-  background: #ff7a33;
+  background: #ff914d;
   color: #111;
 }
 
@@ -156,7 +156,7 @@
 
 .ck-switch {
   font-size: 14px;
-  color: #ff7a33;
+  color: #ff914d;
   background: none;
   border: none;
   cursor: pointer;
@@ -167,7 +167,7 @@
 }
 
 .ck-switch:hover {
-  color: #ff8a4a;
+  color: #ff914d;
 }
 
 .ck-switch-divider {

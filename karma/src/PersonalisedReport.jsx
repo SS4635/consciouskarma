@@ -700,7 +700,7 @@ const ConsciousKarmaPage = () => {
           justifyContent: 'center',
           position: 'relative',
           background: '#000',
-          border: '2px solid #FB923C',
+          border: '2px solid #ff914d',
           borderRadius: '16px',
           padding: '32px 28px',
           width: '90%',
@@ -710,8 +710,8 @@ const ConsciousKarmaPage = () => {
         onClick={e => e.stopPropagation()}
       >
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-          <circle cx="12" cy="12" r="11" stroke="#FB923C" strokeWidth="2" fill="transparent"/>
-          <path d="M7 12L10 15L17 8" stroke="#FB923C" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
+          <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
         <button
@@ -719,7 +719,7 @@ const ConsciousKarmaPage = () => {
             position: 'absolute',
             top: 12,
             right: 12,
-            background: '#FB923C',
+            background: '#ff914d',
             color: '#fff',
             border: 'none',
             borderRadius: '50%',
@@ -750,7 +750,7 @@ const ConsciousKarmaPage = () => {
         .swal2-popup {
           background: #111 !important;
           color: #fff !important;
-          border: 2px solid #fb923c !important;
+          border: 2px solid #ff914d !important;
           border-radius: 16px !important;
         }
         .swal2-title,
@@ -763,23 +763,23 @@ const ConsciousKarmaPage = () => {
           background: none !important;
         }
         .swal2-success {
-          border-color: #fb923c !important;
+          border-color: #ff914d !important;
         }
         .swal2-success .swal2-success-ring {
-          border: 4px solid #fb923c !important;
+          border: 4px solid #ff914d !important;
         }
         .swal2-success .swal2-success-line-tip,
         .swal2-success .swal2-success-line-long {
-          background-color: #fb923c !important;
+          background-color: #ff914d !important;
         }
         .swal2-styled.swal2-confirm {
-          background-color: #fb923c !important;
+          background-color: #ff914d !important;
           color: #fff !important;
-          border: 2px solid #fb923c !important;
+          border: 2px solid #ff914d !important;
           border-radius: 8px !important;
         }
         .swal2-styled.swal2-confirm:focus {
-          box-shadow: 0 0 0 2px #fb923c55 !important;
+          box-shadow: 0 0 0 2px #ff914d55 !important;
         }
         .swal2-container { z-index: 9999 !important; }
       `}</style>
@@ -807,7 +807,7 @@ const ConsciousKarmaPage = () => {
                       {row.map((text, index) => (
                         <ElectricBorder
                           key={index}
-                          color="#ff6b35"
+                          color="#ff914d"
                           speed={2.1}
                           chaos={0.5}
                           thickness={1}

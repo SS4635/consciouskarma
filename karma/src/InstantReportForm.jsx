@@ -295,7 +295,7 @@ export default function InstantReportForm({
   };
 
   const footerFix = {
-    width: "100%", display: "flex", borderTop: "2px solid #ff7a33",
+    width: "100%", display: "flex", borderTop: "2px solid #ff914d",
   };
   const currentCountry = getSelectedCountry();
   const maxAllowedLength = currentCountry?.max_length || 15;
@@ -355,7 +355,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
     <div
       style={{
         background: "#000",
-        border: "2px solid #fb923c",
+        border: "2px solid #ff914d",
         borderRadius: "16px",
         padding: "32px 28px",
         width: "90%",
@@ -371,12 +371,12 @@ const successOverlay = (generatingReport && showSuccess) ? (
             cx="12"
             cy="12"
             r="10.5"
-            stroke="#fb923c"
+            stroke="#ff914d"
             strokeWidth="2"
           />
           <path
             d="M7 12L10.2 15.2L17 8"
-            stroke="#fb923c"
+            stroke="#ff914d"
             strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -388,7 +388,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
       <h2
         style={{
           fontSize: "22px",
-          color: "#fb923c",
+          color: "#ff914d",
           marginBottom: "10px",
           fontWeight: "600",
         }}
@@ -429,7 +429,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
             .swal2-popup {
               background: #111 !important;
               color: #fff !important;
-              border: 2px solid #fb923c !important;
+              border: 2px solid #ff914d !important;
               border-radius: 16px !important;
             }
             .swal2-title,
@@ -442,23 +442,23 @@ const successOverlay = (generatingReport && showSuccess) ? (
               background: none !important;
             }
             .swal2-success {
-              border-color: #fb923c !important;
+              border-color: #ff914d !important;
             }
             .swal2-success .swal2-success-ring {
-              border: 4px solid #fb923c !important;
+              border: 4px solid #ff914d !important;
             }
             .swal2-success .swal2-success-line-tip,
             .swal2-success .swal2-success-line-long {
-              background-color: #fb923c !important;
+              background-color: #ff914d !important;
             }
             .swal2-styled.swal2-confirm {
-              background-color: #fb923c !important;
+              background-color: #ff914d !important;
               color: #fff !important;
-              border: 2px solid #fb923c !important;
+              border: 2px solid #ff914d !important;
               border-radius: 8px !important;
             }
             .swal2-styled.swal2-confirm:focus {
-              box-shadow: 0 0 0 2px #fb923c55 !important;
+              box-shadow: 0 0 0 2px #ff914d55 !important;
             }
             .swal2-container { z-index: 9999 !important; }
           `}</style>
@@ -537,7 +537,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
               <div style={{ marginBottom: "18px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", marginBottom: "6px", fontSize: "17px" }}>
                   <span>Email*</span>
-                  <button type="button" style={{ color: "#ff7a33", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
+                  <button type="button" style={{ color: "#ff914d", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
                 </div>
                 <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
                 {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
@@ -565,9 +565,9 @@ const successOverlay = (generatingReport && showSuccess) ? (
           </div>
 
           <div style={footerFix}>
-            <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff7a33", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
+            <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff914d", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
             <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
-              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff7a33", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
+              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff914d", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
               {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}
             </button>
           </div>

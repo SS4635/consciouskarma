@@ -226,10 +226,10 @@ const [showLogin, setShowLogin] = useState(false);
      
 
       <style>{`
-        .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #ff8a3d;border-radius:10px;overflow:hidden}
-        .rotating-border-btn::before{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;background:conic-gradient(from 0deg, rgba(255,138,61,0.95), rgba(255,138,61,0.2) 18%, transparent 30%, transparent 70%, rgba(255,138,61,0.2) 82%, rgba(255,138,61,0.95));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ckSpin 3.2s linear infinite;pointer-events:none}
+        .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #ff914d;border-radius:10px;overflow:hidden}
+        .rotating-border-btn::before{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;background:conic-gradient(from 0deg, rgba(255,145,77,0.95), rgba(255,145,77,0.2) 18%, transparent 30%, transparent 70%, rgba(255,145,77,0.2) 82%, rgba(255,145,77,0.95));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ckSpin 3.2s linear infinite;pointer-events:none}
         @keyframes ckSpin{to{transform:rotate(360deg)}}
-        .rotating-border-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(255,138,61,.25)}
+        .rotating-border-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(255,145,77,.25)}
 
         /* Fluid type helpers for consistent responsive text sizing */
         .text-fluid-16-20{font-size:clamp(16px,3.8vw,20px)}
@@ -297,13 +297,13 @@ const [showLogin, setShowLogin] = useState(false);
                   <FormattedMessage id="hero.title.line1" />
                 </span>
                 <span className="block mb-1 sm:mb-2 text-center sm:text-left whitespace-nowrap" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <FormattedMessage id="hero.title.line2" /> <span className="text-orange-400"><FormattedMessage id="hero.title.key" /></span>
+                  <FormattedMessage id="hero.title.line2" /> <span className="text-[#ff914d]"><FormattedMessage id="hero.title.key" /></span>
                 </span>
                 <span className="block mb-1 sm:mb-2 text-center sm:text-left whitespace-nowrap" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <span className="text-orange-400"><FormattedMessage id="hero.title.line3" /></span> <FormattedMessage id="hero.title.line3b" />
+                  <span className="text-[#ff914d]"><FormattedMessage id="hero.title.line3" /></span> <FormattedMessage id="hero.title.line3b" />
                 </span>
                 <span className="block mb-1 sm:mb-2 text-center sm:text-left whitespace-nowrap" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <span className="text-orange-400"><FormattedMessage id="hero.title.dreams" /></span>
+                  <span className="text-[#ff914d]"><FormattedMessage id="hero.title.dreams" /></span>
                 </span>
               </p>
             </div>
@@ -411,8 +411,8 @@ const [showLogin, setShowLogin] = useState(false);
                 <FormattedMessage
                   id="whatIsThis.universe.line1"
                   values={{
-                    universe: <span style={{ color: "#FB923c" }}>{intl.formatMessage({ id: "whatIsThis.universe" })}</span>,
-                    energy: <span style={{ color: "#FB923c" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
+                    universe: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.universe" })}</span>,
+                    energy: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
                   }}
                 />
                 <br />
@@ -441,8 +441,8 @@ const [showLogin, setShowLogin] = useState(false);
                 <FormattedMessage
                   id="whatIsThis.numbers.line1"
                   values={{
-                    numbers: <span style={{ color: "#FB923c" }}>{intl.formatMessage({ id: "whatIsThis.numbers" })}</span>,
-                    symbols: <span style={{ color: "#FB923c" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
+                    numbers: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.numbers" })}</span>,
+                    symbols: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
                   }}
                 />
                 <br /> <FormattedMessage id="whatIsThis.numbers.line2" />
@@ -471,13 +471,13 @@ const [showLogin, setShowLogin] = useState(false);
                 <FormattedMessage
                   id="whatIsThis.karma.line1"
                   values={{
-                    choices: <span style={{ color: "#FB923c" }}>{intl.formatMessage({ id: "whatIsThis.karma.choices" })}</span>
+                    choices: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.choices" })}</span>
                   }}
                 />
                 <br /> <FormattedMessage
                   id="whatIsThis.karma.line2"
                   values={{
-                    destiny: <span style={{ color: "#FB923c" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
+                    destiny: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
                   }}
                 />
                 <br />
@@ -507,7 +507,7 @@ const [showLogin, setShowLogin] = useState(false);
           <motion.div variants={item}>
             <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
               <p className="m-0 leading-[1.7] text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
-                <span className="block text-[#d87d3d] ">
+                <span className="block text-[#ff914d] ">
                   <FormattedMessage id="mobileEnergy.line1" />
                   <br />
                 </span>
@@ -562,7 +562,7 @@ const [showLogin, setShowLogin] = useState(false);
                     index === 0 ? typedLine + cursor : lines[0]
                   ).replace(
                     "shared",
-                    `<span class='text-[#d87d3d]'>shared</span>`
+                    `<span class='text-[#ff914d]'>shared</span>`
                   ),
                 }}
               />
@@ -578,7 +578,7 @@ const [showLogin, setShowLogin] = useState(false);
                     index === 1 ? typedLine + cursor : lines[1]
                   ).replace(
                     "repeated",
-                    `<span class='text-[#d87d3d]'>repeated</span>`
+                    `<span class='text-[#ff914d]'>repeated</span>`
                   ),
                 }}
               />
@@ -599,7 +599,7 @@ const [showLogin, setShowLogin] = useState(false);
                     index === 3 ? typedLine + cursor : lines[3]
                   ).replace(
                     "DISTINCTLY YOURS",
-                    `<span class='text-[#d87d3d]'>DISTINCTLY YOURS</span>`
+                    `<span class='text-[#ff914d]'>DISTINCTLY YOURS</span>`
                   ),
                 }}
               />
@@ -607,12 +607,12 @@ const [showLogin, setShowLogin] = useState(false);
           </p>
 
           {/* CTA LAST */}
-          <p className="mt-8 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#d87d3d] font-light" style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}>
+          <p className="mt-8 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light" style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}>
             {index >= 4 && (
               <a
                 href="/personalised-report"
                 className="inline-block mt-12 sm:mt-16 md:mt-20 lg:mt-[170px]
-                  text-[#d87d3d] font-light hover:opacity-80 transition-opacity no-underline"
+                  text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
                 style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}
                 dangerouslySetInnerHTML={{
                   __html: index === 4 ? typedLine + cursor : lines[4],
@@ -645,7 +645,7 @@ const [showLogin, setShowLogin] = useState(false);
             <br />
             <FormattedMessage id="woven.line3" />
           </p>
-          <p className="text-[#d87d3d]" style={{ fontSize: 'clamp(17px, 2.2vw, 20px)' }}>
+          <p className="text-[#ff914d]" style={{ fontSize: 'clamp(17px, 2.2vw, 20px)' }}>
             <FormattedMessage id="woven.line4" />
             <br />
             <FormattedMessage id="woven.line5" />
@@ -681,28 +681,28 @@ const [showLogin, setShowLogin] = useState(false);
           <div className="mb-10 space-y-1">
             {/* Line 1 */}
             {journeyIndex >= 0 && (
-              <p className="text-[#d87d3d] font-light leading-none mb-0" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
+              <p className="text-[#ff914d] font-light leading-none mb-0" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
                 {journeyIndex === 0 ? journeyTyped + journeyCursor : journeyLines[0]}
               </p>
             )}
 
             {/* Line 2 */}
             {journeyIndex >= 1 && (
-              <p className="text-[#d87d3d] font-light leading-none" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
+              <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
                 {journeyIndex === 1 ? journeyTyped + journeyCursor : journeyLines[1]}
               </p>
             )}
 
             {/* Line 3 */}
             {journeyIndex >= 2 && (
-              <p className="text-[#d87d3d] font-light leading-none" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
+              <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
                 {journeyIndex === 2 ? journeyTyped + journeyCursor : journeyLines[2]}
               </p>
             )}
 
             {/* Line 4 */}
             {journeyIndex >= 3 && (
-              <p className="text-[#d87d3d] font-light leading-none" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
+              <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(16px, 2vw, 18px)' }}>
                 {journeyIndex === 3 ? journeyTyped + journeyCursor : journeyLines[3]}
               </p>
             )}
@@ -718,7 +718,7 @@ const [showLogin, setShowLogin] = useState(false);
           {/* CTA */}
           <a
             href="/consult"
-            className="text-[#d87d3d] font-light no-underline hover:opacity-80"
+            className="text-[#ff914d] font-light no-underline hover:opacity-80"
             style={{ fontSize: 'clamp(16px, 2vw, 20px)' }}
           >
             <FormattedMessage id="digitalYantra.cta" />
@@ -746,7 +746,7 @@ const [showLogin, setShowLogin] = useState(false);
                   <a
                     key={i}
                     href="/blogs"
-                    className="w-full max-w-[380px] border-2 border-orange-400 rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
@@ -768,7 +768,7 @@ const [showLogin, setShowLogin] = useState(false);
                         {b.excerpt}
                       </p>
                       <div className="mt-2">
-                        <span className="text-orange-400 font-semibold text-sm hover:text-orange-300">
+                        <span className="text-[#ff914d] font-semibold text-sm hover:text-orange-300">
                           <FormattedMessage id="blogs.readMore" />
                         </span>
                       </div>
@@ -778,7 +778,7 @@ const [showLogin, setShowLogin] = useState(false);
                   <a
                     key={i}
                     href="/blog/how-to-read-mobile-number"
-                    className="w-full max-w-[380px] border-2 border-orange-400 rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
@@ -800,7 +800,7 @@ const [showLogin, setShowLogin] = useState(false);
                         {b.excerpt}
                       </p>
                       <div className="mt-2">
-                        <span className="text-orange-400 font-semibold text-sm hover:text-orange-300">
+                        <span className="text-[#ff914d] font-semibold text-sm hover:text-orange-300">
                           <FormattedMessage id="blogs.readMore" />
                         </span>
                       </div>
@@ -810,7 +810,7 @@ const [showLogin, setShowLogin] = useState(false);
                   <a
                     key={i}
                     href="/blog/how-to-choose-mobile-number"
-                    className="w-full max-w-[380px] border-2 border-orange-400 rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
@@ -832,7 +832,7 @@ const [showLogin, setShowLogin] = useState(false);
                         {b.excerpt}
                       </p>
                       <div className="mt-2">
-                        <span className="text-orange-400 font-semibold text-sm hover:text-orange-300">
+                        <span className="text-[#ff914d] font-semibold text-sm hover:text-orange-300">
                           <FormattedMessage id="blogs.readMore" />
                         </span>
                       </div>
@@ -841,7 +841,7 @@ const [showLogin, setShowLogin] = useState(false);
                 ) : (
                   <div
                     key={i}
-                    className="w-full max-w-[380px] border-2 border-orange-400 rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all"
+                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all"
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
                       {b.img ? (
@@ -876,7 +876,7 @@ const [showLogin, setShowLogin] = useState(false);
                       ) : (
                         <div className="mt-2">
                           <button
-                            className="text-orange-400 font-semibold text-sm hover:text-orange-300"
+                            className="text-[#ff914d] font-semibold text-sm hover:text-orange-300"
                             onClick={() => setExpandedBlog(i)}
                             aria-expanded={false}
                           >
@@ -937,7 +937,7 @@ const [showLogin, setShowLogin] = useState(false);
       </section >
 
       {/* Global Footer */}
-      < footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3" >
+      < footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
@@ -1021,7 +1021,7 @@ const [showLogin, setShowLogin] = useState(false);
       </footer >
 {showForm && (
   <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div className="bg-black border-2 border-[#F97316] rounded-[16px] p-0 max-w-[380px] w-full max-h-[70vh] overflow-y-auto relative">
+    <div className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[380px] w-full max-h-[70vh] overflow-y-auto relative">
 
         <div className="" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px" }}>
           <p  style={{fontSize:"28px",fontWeight:"300",marginBottom:"2rem"}}>Instant Report</p>

@@ -40,7 +40,7 @@ function Typewriter({
     display: "inline-block",
     width: 2,
     height: "1em",
-    background: "var(--accent,#ff8a3d)",
+    background: "var(--accent,#ff914d)",
     marginLeft: 4,
     verticalAlign: "-0.12em",
     animation: "caretBlink 1s steps(1) infinite",

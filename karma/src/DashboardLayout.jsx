@@ -317,7 +317,7 @@ export default function DashboardLayout() {
         .ck-footer {
            width: 100%;
            background: #000000; /* Pure black like the image */
-           border-top: 2px solid #ff7a33;
+           border-top: 2px solid #ff914d;
            padding: 25px 0;
            margin-top: auto;
         }
@@ -342,7 +342,7 @@ export default function DashboardLayout() {
            transition: color 0.2s;
         }
         .container-footer a:hover {
-           color: #ff7a33;
+           color: #ff914d;
         }
         .footer-pipe {
            color: white; /* White pipes */

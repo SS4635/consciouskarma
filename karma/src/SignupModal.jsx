@@ -44,7 +44,7 @@ export default function SignupModal({ onClose, onSwitch }) {
       icon: "success",
       title: "Signup Successful",
       text: "Your account has been created successfully!",
-      confirmButtonColor: "#ff7a33",
+      confirmButtonColor: "#ff914d",
       timer: 1800,
       showConfirmButton: false,
     });
