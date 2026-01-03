@@ -57,7 +57,11 @@ useEffect(() => {
   async function fetchPrice() {
     try {
       const res = await axios.get(`${API}/api/config/price`);
-      setPRICE(Number(res.price) * 100); // convert to paise
+
+     const price = Number(res.data.price) * 100;
+
+      console.log("Fetched price:", price);
+      setPRICE(price);
     } catch (err) {
       console.error("Price fetch failed", err);
       setPRICE(0);
@@ -82,8 +86,9 @@ useEffect(() => {
 
   const finalAmount = useMemo(
     () => (!couponInfo ? PRICE : Math.max(0, couponInfo.finalAmount)),
-    [couponInfo]
+    [couponInfo,PRICE]
   );
+ 
 
   const [rzReady, setRzReady] = useState(false);
 
@@ -582,7 +587,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
           </div>
 
           <div style={footerFix}>
-            <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff914d", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100).toFixed(2)}</div>
+            <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff914d", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100)}</div>
             <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
               style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff914d", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
               {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}

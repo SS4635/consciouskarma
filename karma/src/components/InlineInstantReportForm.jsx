@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
 import { COUNTRY_CODES } from "../components/constants/countryCodes";
 import sampleReportPdf from "../instant_report.pdf";
-
+import axios from "axios";
+const API = process.env.REACT_APP_API_URL;
 export default function InlineInstantReportForm({
   ctaLabel = "Instant Report",
   onSubmit,
@@ -13,7 +14,7 @@ export default function InlineInstantReportForm({
   const [isd, setIsd] = useState(initialIsd);
   const [mobile, setMobile] = useState(initialMobile);
   const [toast, setToast] = useState({ show: false, message: "", type: "error" });
-
+ const [price, setPrice] = useState(0);
   useEffect(() => {
     setIsd(initialIsd);
   }, [initialIsd]);
@@ -32,7 +33,7 @@ export default function InlineInstantReportForm({
     }
   }, [toast.show]);
 
-  
+
   function showToast(message, type = "error") {
     setToast({ show: true, message, type });
   }
@@ -72,7 +73,17 @@ export default function InlineInstantReportForm({
       ? onSubmit({ isd, mobile, full })
       : alert(intl.formatMessage({ id: "form.alert.generatingReport" }, { number: full }));
   }
-
+ useEffect(() => {
+    async function fetchPrice() {
+      try {
+        const res = await axios.get(`${API}/api/config/price`);
+        setPrice(Number(res.data.price) * 100); // paise
+      } catch (e) {
+        setPrice(0);
+      }
+    }
+    fetchPrice();
+  }, []);
   return (
     <form
       onSubmit={handleSubmit}
@@ -126,7 +137,7 @@ export default function InlineInstantReportForm({
 
       <div className="flex flex-row items-start justify-between w-full" style={{ marginTop: '-12px' }}>
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
-        269
+      ₹ {price/100}
         </span>
 
         <div className="flex flex-col items-start gap-1" style={{ marginRight: '28px' }}>
