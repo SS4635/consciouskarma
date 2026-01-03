@@ -1,4 +1,4 @@
-import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
+
 import express from "express";
 import cors from "cors";
 import crypto from "crypto";
@@ -6,7 +6,9 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-import { callScoreApi } from "./lib/callScoreApi.js";
+import dotenv from "dotenv";
+dotenv.config({ path: "/var/www/.env" });
+
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
 import User from "./models/User.js";
@@ -19,10 +21,7 @@ console.log({
   SMTP_PORT: process.env.SMTP_PORT,
 });
 const emailOtps = new Map(); 
-// email -> { code, expiresAt }
 
-import dotenv from "dotenv";
-dotenv.config({ path: "/var/www/.env" });
 
 const app = express();
 app.use(cors());
