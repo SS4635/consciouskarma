@@ -1,4 +1,4 @@
-import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
+// import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 import express from "express";
 import cors from "cors";
 import crypto from "crypto";
@@ -6,6 +6,9 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
+import dotenv from "dotenv";
+dotenv.config(); // 👈 loads .env from current folder
+
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
 import User from "./models/User.js";
@@ -18,7 +21,6 @@ console.log({
   SMTP_PORT: process.env.SMTP_PORT,
 });
 const emailOtps = new Map(); 
-// email -> { code, expiresAt }
 
 
 const app = express();
@@ -619,6 +621,51 @@ app.post("/api/send-otp", async (req, res) => {
 });
 
 
+
+app.get("/api/consultation/plans", (req, res) => {
+  const plans = [
+    {
+      id: 1,
+      title: process.env.REACT_APP_PLAN_1_TITLE,
+      price: Number(
+        String(process.env.REACT_APP_PLAN_1_PRICE || "")
+          .replace(/[^0-9.]/g, "")
+      ),
+      displayPrice: process.env.REACT_APP_PLAN_1_PRICE,
+      description: process.env.REACT_APP_PLAN_1_DESC,
+      maxSteps: 4,
+      isExtended: false,
+    },
+    {
+      id: 2,
+      title: process.env.REACT_APP_PLAN_2_TITLE,
+      price: Number(
+        String(process.env.REACT_APP_PLAN_2_PRICE || "")
+          .replace(/[^0-9.]/g, "")
+      ),
+      displayPrice: process.env.REACT_APP_PLAN_2_PRICE,
+      description: process.env.REACT_APP_PLAN_2_DESC,
+      maxSteps: 5,
+      isExtended: false,
+    },
+    {
+      id: 3,
+      title: process.env.REACT_APP_PLAN_3_TITLE,
+      price: Number(
+        String(process.env.REACT_APP_PLAN_3_PRICE || "")
+          .replace(/[^0-9.]/g, "")
+      ),
+      displayPrice: process.env.REACT_APP_PLAN_3_PRICE,
+      description: process.env.REACT_APP_PLAN_3_DESC,
+      maxSteps: 5,
+      isExtended: true,
+    },
+  ];
+
+  res.json({ ok: true, plans });
+});
+
+
 /* ---------- Create order AFTER OTP verified ---------- */
 /* Frontend sends full form + price once all OTPs are verified */
 app.post("/api/pay/create-order", async (req, res) => {
@@ -795,11 +842,47 @@ app.post("/api/pay/verify", async (req, res) => {
           html: userHtml,
         });
 
+          if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
+  throw new Error("Internal security misconfigured");
+  
+}
+
+try {
+  const phone = order.phone; // already stored as full number
+  const email = order.email;
+
+  console.log("[SCORE] Generating score for:", phone, email);
+
+  const { data: scoreResponse } = await axios.post(
+    `${process.env.REACT_APP_SCORE_API}/score`,
+    { mobile_number: phone },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+      },
+    }
+  );
+
+  const scoreData = scoreResponse.score || scoreResponse;
+
+  await sendScoreMail(email, scoreData, phone);
+
+  console.log("[SCORE] Score generated and mailed successfully");
+} catch (err) {
+  console.error("[SCORE] Failed:", err.response?.data || err.message);
+}
         order.instantEmailSent = true; // 🔒 prevent duplicate mail
       } catch (mailErr) {
         console.error("Instant report mail failed:", mailErr);
       }
     }
+
+    /* ---------- AUTO SCORE GENERATION (BACKEND ONLY) ---------- */
+
+         /* ---------- AUTO SCORE GENERATION (BACKEND ONLY) ---------- */
+
+
 
     await order.save();
 
@@ -876,8 +959,22 @@ app.post("/api/pay/verify-report", async (req, res) => {
   }
 });
 
+
+// routes/config.js or directly in server.js
+app.get("/api/config/price", (req, res) => {
+  res.json({
+    price: Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0),
+  });
+});
+app.get("/api/config/personalizereportprice", (req, res) => {
+  res.json({ price: Number(process.env.REACT_APP_REPORT_BASE_PRICE || 1) });
+});
+
+
 /* ---------- Final submit AFTER payment verified ---------- */
 /* Frontend calls this with orderId once /api/pay/verify is ok */
+
+
 
 
 app.get("/test-mail", async (req, res) => {
@@ -946,7 +1043,6 @@ app.post("/api/verify-otp", async (req, res) => {
     });
   }
 });
-// After /api/auth/login
 
 app.post("/api/auth/check-password", async (req, res) => {
   try {

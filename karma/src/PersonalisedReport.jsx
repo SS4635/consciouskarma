@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom"; 
 import Swal from "sweetalert2";
 import "./PersonalizedReport.css";
-
+import { useEffect,axios } from "react";
 // Components
 import ElectricBorder from "./ElectricBorder";
 import GeneralInformationForm from "./components/consultation/forms/GeneralInformationForm";
@@ -22,7 +22,7 @@ import { COUNTRY_CODES } from "./components/constants/countryCodes";
 const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
 const BASE_PRICE_RAW = Number(process.env.REACT_APP_REPORT_BASE_PRICE ?? 1);
-const BASE_PRICE = Number.isFinite(BASE_PRICE_RAW) ? BASE_PRICE_RAW : 1;
+
 
 const MAX_PARALLEL_RAW = Number(process.env.REACT_APP_MAX_PARALLEL_NUMBERS ?? 3);
 const MAX_PARALLEL_NUMBERS = Number.isFinite(MAX_PARALLEL_RAW) ? MAX_PARALLEL_RAW : 3;
@@ -32,7 +32,7 @@ const ConsciousKarmaPage = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-  
+  const [BASE_PRICE, setBASE_PRICE] = useState(0); // default ₹1 = 100 paise
   // Loading State (used to disable button)
   const [isGeneratingReport, setIsGeneratingReport] = useState(false);
 
@@ -80,6 +80,35 @@ const ConsciousKarmaPage = () => {
   });
 
   const [otpParallels, setOtpParallels] = useState([]);
+
+
+ useEffect(() => {
+  async function loadPrice() {
+    console.log("Loading personalized report base price from server...");
+    try {
+      const res = await fetch(
+        `${API_BASE}/api/config/personalizereportprice`
+      );
+
+      const data = await res.json(); // ✅ IMPORTANT
+      console.log("Fetched personalized report base price:", data);
+
+      const raw = Number(data?.price);
+      const safePrice =
+        Number.isFinite(raw) && raw > 0 ? raw : 1;
+
+      setBASE_PRICE(safePrice ); // convert ₹ → paise
+    } catch (err) {
+      console.error(
+        "Failed to load personalized report base price, using default.",
+        err
+      );
+      
+    }
+  }
+
+  loadPrice();
+}, []);
 
   // ----- PRICE -----
   const paidCount = 1 + parallels.length; // primary + each parallel
