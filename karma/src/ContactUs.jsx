@@ -13,8 +13,8 @@ export default function ContactUs() {
   const [message, setMessage] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
   
-        const [showSignup, setShowSignup] = useState(false);
-      const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const ADDRESS = "B1/H3, mohan estate, New delhi - 110044";
   const CONTACT_EMAIL = "hello@consciouskarma.co";
@@ -59,8 +59,74 @@ export default function ContactUs() {
           <div className="w-full max-w-5xl mx-auto">
             <h1 className="font-balgin text-2xl sm:text-3xl md:text-4xl mb-6">Contact Us</h1>
 
-            <div className="flex flex-col md:flex-row gap-8 mb-8 items-start">
+            <div className="flex flex-col md:flex-col gap-8 mb-8 items-center">
+              {/* RIGHT FORM */}
+              <div className="md:w-1/2 w-full">
+                <form onSubmit={onSubmit} className="space-y-4 sm:space-y-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm mb-1">First Name</label>
+                      <input
+                        type="text"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                        className="contact-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm mb-1">Last Name</label>
+                      <input
+                        type="text"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                        className="contact-input"
+                      />
+                    </div>
+                  </div>
 
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm mb-1">Email</label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="contact-input"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm mb-1">WhatsApp / Phone</label>
+                      <input
+                        type="tel"
+                        placeholder="+91"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="contact-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm mb-1">Message</label>
+                    <textarea
+                      rows={5}
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
+                      required
+                      className="contact-input"
+                    />
+                  </div>
+
+                  <div className="flex flex-col items-center gap-4">
+                    <button type="submit" className="rotating-border-btn px-5 py-2 text-sm sm:text-base">
+                      Send Email
+                    </button>
+                  </div>
+                </form>
+              </div>
               {/* LEFT ADDRESS CARD */}
               <div className="md:w-1/2 w-full pt-4 md:pt-6">
                 <div className="border border-orange-400 rounded-lg p-4">
@@ -88,74 +154,6 @@ export default function ContactUs() {
                   </div>
                 </div>
               </div>
-
-              {/* RIGHT FORM */}
-              <div className="md:w-1/2 w-full">
-                <form onSubmit={onSubmit} className="space-y-4 sm:space-y-5">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm mb-1">First Name</label>
-                      <input
-                        type="text"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required
-                        className="w-full bg-transparent border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-1">Last Name</label>
-                      <input
-                        type="text"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required
-                        className="w-full bg-transparent border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm mb-1">Email</label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="w-full bg-transparent border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm mb-1">WhatsApp / Phone</label>
-                      <input
-                        type="tel"
-                        placeholder="+91"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className="w-full bg-transparent border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm mb-1">Message</label>
-                    <textarea
-                      rows={5}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      required
-                      className="w-full bg-transparent border border-gray-600 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-orange-400"
-                    />
-                  </div>
-
-                  <div className="flex flex-col items-center gap-4">
-                    <button type="submit" className="rotating-border-btn px-5 py-2 text-sm sm:text-base">
-                      Send Email
-                    </button>
-                  </div>
-                </form>
-              </div>
             </div>
 
             {/* BUTTON CSS */}
@@ -173,6 +171,21 @@ export default function ContactUs() {
               }
               .rotating-border-btn::before {
                 display: none;
+              }
+              .contact-input {
+                width: 100%;
+                background: transparent;
+                border: 1.5px solid #666;
+                border-radius: 12px;
+                padding: 0.65rem 0.85rem;
+                color: #fff;
+                font-size: 1rem;
+                transition: all 0.25s ease;
+                outline: none;
+              }
+              .contact-input:focus {
+                border-color: #ff914d;
+                box-shadow: 0 0 0 0.2rem rgba(255, 145, 77, 0.25);
               }
             `}</style>
           </div>

@@ -39,15 +39,15 @@ export default function GeneralInformationForm({
 
   // Generate arrays for Hours (01 to 00) and Minutes (01 to 00)
   // This ensures the list is finite and follows your specific order
-  const hourOptions = [...Array.from({ length: 23 }, (_, i) => (i + 1).toString().padStart(2, '0')), "00"];
-  const minuteOptions = [...Array.from({ length: 59 }, (_, i) => (i + 1).toString().padStart(2, '0')), "00"];
+  const hourOptions = ["-", ...Array.from({ length: 23 }, (_, i) => (i + 1).toString().padStart(2, '0')), "00"];
+  const minuteOptions = ["-", ...Array.from({ length: 59 }, (_, i) => (i + 1).toString().padStart(2, '0')), "00"];
 
   // Split current time value into HH and mm
-  const [currentH, currentM] = timeVal.split(":");
+  const [currentH, currentM] = timeVal && timeVal.includes(":") ? timeVal.split(":") : ["-", "-"];
 
   const handleTimeChange = (type, value) => {
-    let newH = currentH || "01";
-    let newM = currentM || "01";
+    let newH = currentH || "-";
+    let newM = currentM || "-";
 
     if (type === "hour") newH = value;
     if (type === "min") newM = value;
@@ -144,7 +144,7 @@ export default function GeneralInformationForm({
 
         .gen-info-input {
           width: 100%;
-          background: #1a1a1a !important; /* Changed from transparent to ensure dropdown visibility */
+          background: transparent !important;
           border: 1.5px solid #666;
           border-radius: 12px;
           padding: 10px 12px;
@@ -290,7 +290,7 @@ export default function GeneralInformationForm({
                 {/* Hours Dropdown */}
                 <select
                   className="gen-info-input"
-                  value={currentH || "01"}
+                  value={currentH || "-"}
                   onChange={(e) => handleTimeChange("hour", e.target.value)}
                 >
                   {hourOptions.map(h => (
@@ -303,7 +303,7 @@ export default function GeneralInformationForm({
                 {/* Minutes Dropdown */}
                 <select
                   className="gen-info-input"
-                  value={currentM || "01"}
+                  value={currentM || "-"}
                   onChange={(e) => handleTimeChange("min", e.target.value)}
                 >
                   {minuteOptions.map(m => (

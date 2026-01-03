@@ -271,15 +271,30 @@ export function InlineInstantReportForm({ ctaLabel="Get Instant Report", onSubmi
 
   return (
     <form onSubmit={handleSubmit} className="formWrap" aria-label="Instant Report Form">
-      <div className="formRow">
-        <select value={isd} onChange={e=>setIsd(e.target.value)} aria-label="Country code">
-          <option value="+91">🇮🇳 +91</option>
-          <option value="+1">🇺🇸 +1</option>
-          <option value="+44">🇬🇧 +44</option>
-          <option value="+61">🇦🇺 +61</option>
-          <option value="+971">🇦🇪 +971</option>
-        </select>
-        <input className="input" type="tel" inputMode="numeric" pattern="[0-9 ]*" placeholder="Enter your mobile number" value={mobile} onChange={e=>setMobile(e.target.value)} aria-label="Mobile number" />
+      <div className="formRow" style={{ display: "grid", gridTemplateColumns: "105px 1fr", gap: "12px" }}>
+        <div style={{ position: "relative", width: "100%", height: "44px" }}>
+          <select value={isd} onChange={e=>setIsd(e.target.value)} aria-label="Country code"
+            style={{
+              width: "100%", height: "100%", background: "transparent", border: "1.5px solid #666", borderRadius: "12px",
+              padding: "0 12px", color: "transparent", appearance: "none", cursor: "pointer"
+            }}
+          >
+            <option value="+91" style={{background: "#000", color: "#fff"}}>🇮🇳 +91</option>
+            <option value="+1" style={{background: "#000", color: "#fff"}}>🇺🇸 +1</option>
+            <option value="+44" style={{background: "#000", color: "#fff"}}>🇬🇧 +44</option>
+            <option value="+61" style={{background: "#000", color: "#fff"}}>🇦🇺 +61</option>
+            <option value="+971" style={{background: "#000", color: "#fff"}}>🇦🇪 +971</option>
+          </select>
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none", color: "#fff", fontSize: "0.95rem", gap: "5px" }}>
+             <span>{isd}</span>
+             <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+             </svg>
+          </div>
+        </div>
+        <input className="input" type="tel" inputMode="numeric" pattern="[0-9 ]*" placeholder="Enter your mobile number" value={mobile} onChange={e=>setMobile(e.target.value)} aria-label="Mobile number"
+          style={{ width: "100%", height: "44px", background: "transparent", border: "1.5px solid #666", borderRadius: "12px", padding: "0.65rem 0.85rem", color: "#fff", fontSize: "0.95rem" }}
+        />
       </div>
       <div className="actionsRow">
         <span className="priceTag">₹269</span>

@@ -16,6 +16,13 @@
   box-sizing: border-box;
 }
 
+.ck-page input,
+.ck-page select,
+.ck-page button,
+.ck-page textarea {
+  font-family: "Arsenal", sans-serif;
+}
+
 /* =========================
    HEADER
    ========================= */
@@ -318,7 +325,7 @@
 }
 
 .readonly-input {
-  background: #0d0d0d;
+  background: transparent;
   border-color: #2a2a2a;
   cursor: default;
 }

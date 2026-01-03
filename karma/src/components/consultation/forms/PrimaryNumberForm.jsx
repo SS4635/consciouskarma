@@ -204,6 +204,8 @@ export default function PrimaryNumberForm({
           gap: 12px;
         }
 
+        .primary-mobile-row { display: grid; grid-template-columns: 105px 1fr; gap: 12px; }
+
         .primary-btn {
           background: transparent;
           border: 1.5px solid #666;
@@ -244,9 +246,9 @@ export default function PrimaryNumberForm({
           </span>
         </div>
 
-        <div className="d-flex gap-2">
+        <div className="primary-mobile-row">
            {/* Country Dropdown Container */}
-           <div style={{ position: "relative", width: "105px", flexShrink: 0 }}>
+           <div style={{ position: "relative", width: "100%", height: "44px" }}>
               <select
                 value={currentIsd}
                 onChange={(e) =>
@@ -259,7 +261,9 @@ export default function PrimaryNumberForm({
                   cursor: "pointer",
                   appearance: "none",
                   WebkitAppearance: "none",
-                  backgroundImage: "none" // Remove default arrow
+                  backgroundImage: "none", // Remove default arrow
+                  height: "100%",
+                  width: "100%"
                 }}
               >
                 {COUNTRY_CODES.map((c) => (
@@ -297,7 +301,7 @@ export default function PrimaryNumberForm({
               onChange={handleMobileChange}
               onBlur={validateMobile}
               maxLength={maxAllowedLength} 
-              style={{ flex: 1 }}
+              style={{ width: "100%", height: "44px" }}
             />
         </div>
       </div>

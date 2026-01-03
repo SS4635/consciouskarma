@@ -136,7 +136,7 @@ export default function CompatibilityNumbersForm({
             color: #fff;
         }
 
-        .pn-mobile-row { display: grid; grid-template-columns: 90px 1fr; gap: 12px; }
+        .pn-mobile-row { display: grid; grid-template-columns: 105px 1fr; gap: 12px; }
 
         .pn-add-wrap { display: flex; align-items: center; gap: 12px; margin-top: 1rem; }
         .pn-add {
@@ -173,20 +173,50 @@ export default function CompatibilityNumbersForm({
           </div>
 
           <div className="pn-mobile-row">
-            <select
-              className="pn-select text-center"
-              value={primaryData.isd || "+91"}
-              onChange={(e) =>
-                onPrimaryChange?.({ ...primaryData, isd: e.target.value })
-              }
-            >
-               {/* Dynamic Country Codes */}
-               {COUNTRY_CODES.map((c) => (
-                  <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                    {c.dial_code === (primaryData.isd || "+91") ? c.dial_code : `${c.name} (${c.dial_code})`}
-                  </option>
-              ))}
-            </select>
+            {/* Country Dropdown Container */}
+            <div style={{ position: "relative", width: "100%", height: "44px" }}>
+               <select
+                 value={primaryData.isd || "+91"}
+                 onChange={(e) =>
+                   onPrimaryChange?.({ ...primaryData, isd: e.target.value })
+                 }
+                 className="pn-select"
+                 style={{
+                   padding: "0 12px",
+                   color: "transparent", // Text invisible
+                   cursor: "pointer",
+                   appearance: "none",
+                   WebkitAppearance: "none",
+                   backgroundImage: "none", // Remove default arrow
+                   height: "100%",
+                   width: "100%"
+                 }}
+               >
+                 {COUNTRY_CODES.map((c) => (
+                   <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                     {c.name} ({c.dial_code})
+                   </option>
+                 ))}
+               </select>
+
+               {/* Overlay: Code + SVG Arrow */}
+               <div style={{
+                 position: "absolute",
+                 inset: 0,
+                 display: "flex",
+                 alignItems: "center",
+                 justifyContent: "center",
+                 pointerEvents: "none",
+                 color: "#fff",
+                 fontSize: "0.95rem",
+                 gap: "5px"
+               }}>
+                 <span>{primaryData.isd || "+91"}</span>
+                 <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                   <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                 </svg>
+               </div>
+             </div>
 
             <input
               type="text"
@@ -267,20 +297,50 @@ export default function CompatibilityNumbersForm({
                         </div>
 
                         <div className="pn-mobile-row">
-                          <select
-                            className="pn-select text-center"
-                            value={num.isd || "+91"}
-                            onChange={(e) =>
-                              onChange?.(index, "isd", e.target.value)
-                            }
-                          >
-                             {/* Dynamic Country Codes */}
-                             {COUNTRY_CODES.map((c) => (
-                                <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
-                                  {c.dial_code === (num.isd || "+91") ? c.dial_code : `${c.name} (${c.dial_code})`}
-                                </option>
-                            ))}
-                          </select>
+                          {/* Country Dropdown Container */}
+                          <div style={{ position: "relative", width: "100%", height: "44px" }}>
+                             <select
+                               value={num.isd || "+91"}
+                               onChange={(e) =>
+                                 onChange?.(index, "isd", e.target.value)
+                               }
+                               className="pn-select"
+                               style={{
+                                 padding: "0 12px",
+                                 color: "transparent", // Text invisible
+                                 cursor: "pointer",
+                                 appearance: "none",
+                                 WebkitAppearance: "none",
+                                 backgroundImage: "none", // Remove default arrow
+                                 height: "100%",
+                                 width: "100%"
+                               }}
+                             >
+                               {COUNTRY_CODES.map((c) => (
+                                 <option key={c.code + c.dial_code} value={c.dial_code} style={{backgroundColor: '#000', color: '#fff'}}>
+                                   {c.name} ({c.dial_code})
+                                 </option>
+                               ))}
+                             </select>
+
+                             {/* Overlay: Code + SVG Arrow */}
+                             <div style={{
+                               position: "absolute",
+                               inset: 0,
+                               display: "flex",
+                               alignItems: "center",
+                               justifyContent: "center",
+                               pointerEvents: "none",
+                               color: "#fff",
+                               fontSize: "0.95rem",
+                               gap: "5px"
+                             }}>
+                               <span>{num.isd || "+91"}</span>
+                               <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                 <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                               </svg>
+                             </div>
+                           </div>
 
                           <input
                             type="text"

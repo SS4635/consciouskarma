@@ -258,46 +258,35 @@ export default function DashboardLayout() {
   }
 
   return (
-    <div
-      className="ck-dashboard"
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        background: "#0a0a0a",
-      }}
-    >
-      {/* Navbar with Hamburger */}
+    <div className="ck-dashboard">
+      {/* CKNavbar handles the Hamburger button internally.
+         It typically renders the button with class "ck-menu-btn" 
+      */}
       <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
 
-
-
-      {/* Header/Navbar */}
-      <header
-        className="ck-navbar"
-        style={{ width: "100%", position: "relative", zIndex: 2 }}
-      >
+      {/* Main Header/Navbar (Desktop Visuals) */}
+      <header className="ck-navbar">
         <div className="ck-navbar-brand">
           <span className="brand-text-top">conscious</span>
           <span className="brand-text-bottom">KARMA</span>
         </div>
       </header>
 
-      {/* Main Layout Area */}
+      {/* Main Body Wrapper: Holds Sidebar + Content */}
       <div className="dashboard-body">
+        
         {/* Sidebar */}
-        <aside className="ck-sidebar">
+        <aside className={`ck-sidebar ${menuOpen ? 'open' : ''}`}>
           <div>
-            <nav
-              className="ck-nav"
-              style={{ display: "flex", flexDirection: "column", gap: 8 }}
-            >
+            <nav className="ck-nav">
               <button
                 className={`ck-nav-item ${
                   activeSection === "activity" ? "ck-nav-item--active" : ""
                 }`}
-                onClick={() => setActiveSection("activity")}
-                style={{ textAlign: "left" }}
+                onClick={() => {
+                   setActiveSection("activity");
+                   setMenuOpen(false); // Close menu on mobile click
+                }}
               >
                 Activity
               </button>
@@ -305,14 +294,16 @@ export default function DashboardLayout() {
                 className={`ck-nav-item ${
                   activeSection === "settings" ? "ck-nav-item--active" : ""
                 }`}
-                onClick={() => setActiveSection("settings")}
-                style={{ textAlign: "left" }}
+                onClick={() => {
+                   setActiveSection("settings");
+                   setMenuOpen(false);
+                }}
               >
                 Account Settings
               </button>
             </nav>
           </div>
-          <div className="ck-sidebar-user" style={{ marginBottom: 24 }}>
+          <div className="ck-sidebar-user">
             <div className="ck-avatar">{firstInitial}</div>
             <div className="ck-user-meta">
               <span className="ck-user-email">{finalEmail}</span>
@@ -323,7 +314,7 @@ export default function DashboardLayout() {
           </div>
         </aside>
 
-        {/* Right Side: Content + Footer */}
+        {/* Main Content Area */}
         <div className="ck-main">
           <main className="ck-content">
             {/* ACTIVITY SECTION */}
@@ -348,18 +339,15 @@ export default function DashboardLayout() {
                             <th>Date</th>
                             <th>Time</th>
                             <th>Mobile</th>
-                            <th>Amount</th>
                             <th>Status</th>
                           </tr>
                         </thead>
                         <tbody>
                           {currentItems.map((item) => {
-                            // Extract date and time
                             const createdDate = new Date(item.createdAt);
                             const dateStr = createdDate.toLocaleDateString();
                             const timeStr = createdDate.toLocaleTimeString();
 
-                            // Determine status (show all types)
                             let paymentStatus = "Processing";
                             if (item.status) {
                               const s = item.status.toLowerCase();
@@ -367,11 +355,10 @@ export default function DashboardLayout() {
                               else if (s === "pending") paymentStatus = "Pending";
                               else if (s === "submitted") paymentStatus = "Submitted";
                               else if (s === "processing") paymentStatus = "Processing";
-                              else if (s === "emailed") paymentStatus = "Paid"; // treat emailed as paid for badge color, but show email below
+                              else if (s === "emailed") paymentStatus = "Paid";
                               else paymentStatus = item.status;
                             }
 
-                            // Always show Email Sent if status is emailed or submitted
                             let emailStatus = null;
                             if (item.status && (item.status.toLowerCase() === "emailed" || item.status.toLowerCase() === "submitted")) {
                               emailStatus = "Email Sent";
@@ -389,7 +376,6 @@ export default function DashboardLayout() {
                                 <td>{dateStr}</td>
                                 <td>{timeStr}</td>
                                 <td>{item.phone || "-"}</td>
-                                <td>₹{(item.amount || item.price) / 100}</td>
                                 <td style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                                   <span
                                     className={`ck-status-badge ${
@@ -594,22 +580,23 @@ export default function DashboardLayout() {
               </section>
             )}
           </main>
-
-          <footer className="ck-footer">
-            <div className="container-footer">
-              <a href="/termsandconditions">Terms & Conditions</a>
-              <span className="footer-pipe"> | </span>
-              <a href="/privacy-policy">Privacy Policy</a>
-              <span className="footer-pipe"> | </span>
-              <a href="/refund-policy">Refund Policy</a>
-              <span className="footer-pipe"> | </span>
-              <a href="/shipping-policy">Shipping & Delivery</a>
-              <span className="footer-pipe"> | </span>
-              <a href="/contact-us">Contact Us</a>
-            </div>
-          </footer>
         </div>
       </div>
+
+      {/* Footer Moved Outside Main Content for Full Width Border */}
+      <footer className="ck-footer">
+        <div className="container-footer">
+          <a href="/termsandconditions">Terms & Conditions</a>
+          <span className="footer-pipe"> | </span>
+          <a href="/privacy-policy">Privacy Policy</a>
+          <span className="footer-pipe"> | </span>
+          <a href="/refund-policy">Refund Policy</a>
+          <span className="footer-pipe"> | </span>
+          <a href="/shipping-policy">Shipping & Delivery</a>
+          <span className="footer-pipe"> | </span>
+          <a href="/contact-us">Contact Us</a>
+        </div>
+      </footer>
     </div>
   );
 }

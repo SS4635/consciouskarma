@@ -461,6 +461,48 @@ const successOverlay = (generatingReport && showSuccess) ? (
               box-shadow: 0 0 0 2px #ff914d55 !important;
             }
             .swal2-container { z-index: 9999 !important; }
+
+            /* New Input Styles */
+            .instant-input {
+              width: 100%;
+              height: 44px;
+              padding: 0 12px;
+              border-radius: 12px;
+              background: transparent;
+              border: 1.5px solid #666;
+              color: #fff;
+              font-size: 16px;
+              transition: all 0.25s ease;
+              outline: none;
+            }
+            .instant-input:focus {
+              border-color: #ff914d;
+              box-shadow: 0 0 0 0.2rem rgba(255, 145, 77, 0.25);
+            }
+            .instant-input.error {
+              border-color: #dc2626;
+            }
+
+            .instant-select {
+              background: transparent;
+              border: 1.5px solid #666;
+              border-radius: 12px;
+              height: 44px;
+              padding: 0 12px;
+              font-size: 0.95rem;
+              width: 100%;
+              color: transparent;
+              cursor: pointer;
+              appearance: none;
+              -webkit-appearance: none;
+              -moz-appearance: none;
+              outline: none;
+              transition: all 0.25s ease;
+            }
+            .instant-select:focus {
+              border-color: #ff914d;
+              box-shadow: 0 0 0 0.2rem rgba(255, 145, 77, 0.25);
+            }
           `}</style>
 
           <div style={{ padding: "0 1.5rem 1.5rem 1.2rem" }}>
@@ -468,9 +510,9 @@ const successOverlay = (generatingReport && showSuccess) ? (
               {/* MOBILE */}
               <div style={{ marginBottom: "18px" }}>
                 <div style={{ fontSize: "17px", color: "#fff", marginBottom: "6px" }}>Mobile Number*</div>
-                <div style={{ display: "flex", gap: "10px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "105px 1fr", gap: "12px" }}>
                   {/* --- DROPDOWN WITH ARROW FIXED --- */}
-                  <div style={{ position: "relative", width: "100px" }}>
+                  <div style={{ position: "relative", width: "100%", height: "44px" }}>
                     <select
                       value={isd}
                       onChange={(e) => {
@@ -478,20 +520,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
                         setPhone("");
                         setErrors(prev => ({ ...prev, phone: null }));
                       }}
-                      style={{
-                        background: "#111",
-                        border: "1px solid #444",
-                        borderRadius: "6px",
-                        height: "37px",
-                        padding: "0 12px",
-                        fontSize: "16px",
-                        width: "100%",
-                        color: "transparent",
-                        cursor: "pointer",
-                        appearance: "none",
-                        WebkitAppearance: "none",
-                        MozAppearance: "none"
-                      }}
+                      className="instant-select"
                     >
                       {COUNTRY_CODES.map((c) => (
                         <option key={c.code + c.dial_code} value={c.dial_code} style={{ background: "#000", color: "#fff" }}>
@@ -508,8 +537,8 @@ const successOverlay = (generatingReport && showSuccess) ? (
                       justifyContent: "center",
                       pointerEvents: "none",
                       color: "#fff",
-                      fontSize: "16px",
-                      gap: "6px"
+                      fontSize: "0.95rem",
+                      gap: "5px"
                     }}>
                       <span>{isd}</span>
                       <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -520,7 +549,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
 
                   <input value={phone} onChange={(e) => { if (/[^0-9]/.test(e.target.value)) return; setPhone(e.target.value); if (errors.phone) setErrors(prev => ({ ...prev, phone: null })); }}
                     onBlur={validateMobileOnBlur} maxLength={maxAllowedLength} placeholder="Mobile Number" inputMode="numeric"
-                    style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }}
+                    className={`instant-input ${errors.phone ? 'error' : ''}`}
                   />
                 </div>
                 {errors.phone && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.phone}</span>}
@@ -529,7 +558,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
               {/* NAME */}
               <div style={{ marginBottom: "18px" }}>
                 <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Name*</div>
-                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" className={`instant-input ${errors.name ? 'error' : ''}`} />
                 {errors.name && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.name}</span>}
               </div>
 
@@ -539,7 +568,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
                   <span>Email*</span>
                   <button type="button" style={{ color: "#ff914d", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
                 </div>
-                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className={`instant-input ${errors.email ? 'error' : ''}`} />
                 {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
               </div>
 
@@ -547,8 +576,8 @@ const successOverlay = (generatingReport && showSuccess) ? (
               <div style={{ marginBottom: "18px" }}>
                 <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Coupon</div>
                 <div style={{ display: "flex", gap: "10px" }}>
-                  <input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="e.g. CKFREE100" style={{ flex: 1, height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
-                  <button type="button" onClick={applyCoupon} disabled={!coupon || applying} style={{ height: "37px", padding: "0 16px", borderRadius: "6px", background: "#222", border: "1px solid #444", color: "#fff", cursor: "pointer", fontSize: "16px" }}>{applying ? "…" : "Apply"}</button>
+                  <input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="e.g. CKFREE100" className="instant-input" style={{ flex: 1 }} />
+                  <button type="button" onClick={applyCoupon} disabled={!coupon || applying} style={{ height: "44px", padding: "0 16px", borderRadius: "12px", background: "#222", border: "1.5px solid #666", color: "#fff", cursor: "pointer", fontSize: "16px" }}>{applying ? "…" : "Apply"}</button>
                 </div>
                 {couponInfo && <div style={{ color: "#2ecc71", marginTop: "6px", fontSize: "13px" }}>Applied Successfully</div>}
               </div>
@@ -557,7 +586,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
               {accountChoice === "create" && (
                 <div style={{ marginBottom: "18px" }}>
                   <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Password</div>
-                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" style={{ width: "100%", height: "37px", padding: "0 12px", borderRadius: "6px", background: "#111", border: "1px solid #444", color: "#fff", fontSize: "16px" }} />
+                  <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Create a password" className={`instant-input ${errors.password ? 'error' : ''}`} />
                   {errors.password && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.password}</span>}
                 </div>
               )}

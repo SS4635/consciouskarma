@@ -78,40 +78,37 @@ export default function InlineInstantReportForm({
       className="px-0 pb-3 sm:pb-4 pt-0 bg-transparent rounded-[10px] flex flex-col gap-3 sm:gap-4 w-full"
       aria-label={intl.formatMessage({ id: "form.aria.instantReportForm" })}
     >
-      <div className="flex gap-2 sm:gap-3 w-full items-center justify-center">
-        <div className="relative">
+      <div className="grid grid-cols-[105px_1fr] gap-[12px] w-full items-center justify-center">
+        <div className="relative w-full h-[44px]">
           <select
             value={isd}
             onChange={(e) => setIsd(e.target.value)}
-            className="w-[85px] sm:w-[85px] py-2.5 sm:py-3 pl-3 sm:pl-3 pr-7 rounded-md bg-black border border-gray-500
-                     text-gray-50 font-medium appearance-none bg-no-repeat text-center
-                     cursor-pointer hover:border-gray-400 focus:border-orange-400 focus:outline-none transition-colors"
+            className="w-full h-full px-3 rounded-[12px] bg-transparent border-[1.5px] border-[#666]
+                     text-transparent appearance-none cursor-pointer focus:outline-none focus:border-[#ff6b35] transition-all duration-250"
             style={{
-           
-              backgroundPosition: "right 0.35rem center",
-              backgroundSize: "0.9em",
-              fontSize: 'clamp(14px, 2vw, 16px)',
-              letterSpacing: '0.15em',
-              paddingRight: '0.15em',
-              color: 'transparent'
+              fontSize: '0.95rem',
             }}
             aria-label={intl.formatMessage({ id: "form.aria.countryCode" })}
           >
             {/* render list */}
             {COUNTRY_CODES.map((c) => (
-              <option key={c.code + c.dial_code} value={c.dial_code} style={{ color: '#f9fafb' }}>
+              <option key={c.code + c.dial_code} value={c.dial_code} style={{ backgroundColor: '#000', color: '#fff' }}>
                 {c.name} ({c.dial_code})
               </option>
             ))}
           </select>
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ fontSize: 'clamp(14px, 2vw, 16px)', color: '#f9fafb', letterSpacing: '0.15em', paddingRight: '0.15em' }}>
-            {isd}
+          
+          {/* Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none text-white text-[0.95rem] gap-[5px]">
+             <span>{isd}</span>
+             <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1 1L5 5L9 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+             </svg>
           </div>
         </div>
 
         <input
-          className="flex-1 py-2.5 sm:py-3 px-3 rounded-md bg-black border border-gray-500 text-gray-50 placeholder:text-gray-500 hover:border-gray-400 focus:border-orange-400 focus:outline-none transition-colors text-center"
-          style={{ fontSize: 'clamp(14px, 2vw, 16px)', letterSpacing: '0.15em', paddingRight: '0.15em' }}
+          className="w-full h-[44px] px-[0.85rem] rounded-[12px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
           type="tel"
           inputMode="numeric"
           pattern="[0-9 ]*"

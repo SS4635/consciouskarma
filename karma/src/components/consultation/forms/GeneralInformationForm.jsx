@@ -91,7 +91,7 @@ export default function GeneralInformationForm({
 
         .gen-info-input, .gen-info-select {
           width: 100%;
-          background: #0f0f0f;
+          background: transparent;
           border: 1.5px solid #666;
           border-radius: 12px;
           padding: 0.65rem 0.85rem;
