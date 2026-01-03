@@ -7,7 +7,7 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config({ path: "/var/www/.env" });
+dotenv.config(); // 👈 loads .env from current folder
 
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
@@ -618,6 +618,51 @@ app.post("/api/send-otp", async (req, res) => {
       message: "Failed to send OTP",
     });
   }
+});
+
+
+
+app.get("/api/consultation/plans", (req, res) => {
+  const plans = [
+    {
+      id: 1,
+      title: process.env.REACT_APP_PLAN_1_TITLE,
+      price: Number(
+        String(process.env.REACT_APP_PLAN_1_PRICE || "")
+          .replace(/[^0-9.]/g, "")
+      ),
+      displayPrice: process.env.REACT_APP_PLAN_1_PRICE,
+      description: process.env.REACT_APP_PLAN_1_DESC,
+      maxSteps: 4,
+      isExtended: false,
+    },
+    {
+      id: 2,
+      title: process.env.REACT_APP_PLAN_2_TITLE,
+      price: Number(
+        String(process.env.REACT_APP_PLAN_2_PRICE || "")
+          .replace(/[^0-9.]/g, "")
+      ),
+      displayPrice: process.env.REACT_APP_PLAN_2_PRICE,
+      description: process.env.REACT_APP_PLAN_2_DESC,
+      maxSteps: 5,
+      isExtended: false,
+    },
+    {
+      id: 3,
+      title: process.env.REACT_APP_PLAN_3_TITLE,
+      price: Number(
+        String(process.env.REACT_APP_PLAN_3_PRICE || "")
+          .replace(/[^0-9.]/g, "")
+      ),
+      displayPrice: process.env.REACT_APP_PLAN_3_PRICE,
+      description: process.env.REACT_APP_PLAN_3_DESC,
+      maxSteps: 5,
+      isExtended: true,
+    },
+  ];
+
+  res.json({ ok: true, plans });
 });
 
 

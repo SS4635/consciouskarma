@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+const API_BASE = "http://localhost:4000";
+
+
 export default function ConsultationPlans() {
   const [selectedPlan, setSelectedPlan] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -41,37 +44,26 @@ export default function ConsultationPlans() {
   };
 
   // --- PLANS DATA FROM ENV ---
-  const plans = [
-    {
-      id: 1,
-      title: process.env.REACT_APP_PLAN_1_TITLE || "Unmarried Individual",
-      price: process.env.REACT_APP_PLAN_1_PRICE || " ₹1",
-      description:
-        process.env.REACT_APP_PLAN_1_DESC ||
-        "For students, freelancers, or solo entrepreneurs",
-      isExtended: false,
-    },
-    {
-      id: 2,
-      title: process.env.REACT_APP_PLAN_2_TITLE || "Married Individual",
-      price: process.env.REACT_APP_PLAN_2_PRICE || " ₹2500",
-      description:
-        process.env.REACT_APP_PLAN_2_DESC ||
-        "For those whose number must be considered alongside a spouse or partner",
-      isExtended: false,
-    },
-    {
-      id: 3,
-      title:
-        process.env.REACT_APP_PLAN_3_TITLE ||
-        "Individual with Extended Compatibility",
-      price: process.env.REACT_APP_PLAN_3_PRICE || " ₹3000",
-      description:
-        process.env.REACT_APP_PLAN_3_DESC ||
-        "For entrepreneurs, co-founders, or professionals requiring compatibility checks with up to 4 other people.",
-      isExtended: true,
-    },
-  ];
+  const [plans, setPlans] = useState([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  async function loadPlans() {
+    try {
+      const res = await fetch(`${API_BASE}/api/consultation/plans`);
+      const data = await res.json();
+      if (data.ok) {
+        setPlans(data.plans);
+      }
+    } catch (err) {
+      console.error("Failed to load plans", err);
+    } finally {
+      setLoading(false);
+    }
+  }
+  loadPlans();
+}, []);
+
 
   const handleSelect = (plan) => {
     setSelectedPlan(plan);
