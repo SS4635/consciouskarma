@@ -1,4 +1,4 @@
-
+// import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 import express from "express";
 import cors from "cors";
 import crypto from "crypto";
@@ -841,6 +841,12 @@ app.post("/api/pay/verify", async (req, res) => {
           subject: "Your Instant Report is being prepared",
           html: userHtml,
         });
+
+          if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
+  throw new Error("Internal security misconfigured");
+  
+}
+
 try {
   const phone = order.phone; // already stored as full number
   const email = order.email;
