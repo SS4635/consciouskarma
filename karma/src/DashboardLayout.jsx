@@ -262,7 +262,11 @@ export default function DashboardLayout() {
       {/* CKNavbar handles the Hamburger button internally.
          It typically renders the button with class "ck-menu-btn" 
       */}
-      <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
+      <CKNavbar 
+        menuOpen={menuOpen} 
+        setMenuOpen={setMenuOpen} 
+        setShowSignup={setShowSignup} 
+      />
 
       {/* Main Header/Navbar (Desktop Visuals) */}
       <header className="ck-navbar">
@@ -301,6 +305,14 @@ export default function DashboardLayout() {
               >
                 Account Settings
               </button>
+
+              {/* Mobile Only: Main Site Navigation */}
+              <div className="ck-nav-mobile-menu">
+                <div className="ck-nav-divider"></div>
+                <a href="/" className="ck-nav-item">Home</a>
+                <a href="/personalised-report" className="ck-nav-item">Personalized Report</a>
+                <a href="/consult" className="ck-nav-item">Consult</a>
+              </div>
             </nav>
           </div>
           <div className="ck-sidebar-user">

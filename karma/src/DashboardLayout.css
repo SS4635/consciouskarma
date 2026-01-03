@@ -150,6 +150,20 @@ body {
   font-size: 14px;
   letter-spacing: 0.05em;
   transition: color 0.2s;
+  text-decoration: none;
+  display: block;
+}
+
+.ck-nav-mobile-menu {
+  display: none; /* Hidden on desktop */
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ck-nav-divider {
+  height: 1px;
+  background: #333;
+  margin: 8px 0;
 }
 
 .ck-nav-item:hover {
@@ -508,6 +522,11 @@ body {
     display: flex; 
   }
 
+  /* Hide the dashboard header on mobile since CKNavbar is used */
+  .ck-navbar {
+    display: none;
+  }
+
   /* Body stacks vertically on mobile */
   .dashboard-body {
     flex-direction: column;
@@ -516,10 +535,10 @@ body {
   /* Sidebar becomes off-canvas drawer */
   .ck-sidebar {
     position: fixed;
-    top: 80px; /* Below the header */
+    top: 60px; /* Below the CKNavbar (60px) */
     left: 0;
     width: 100%;
-    height: calc(100vh - 80px); /* Fill rest of screen */
+    height: calc(100vh - 60px); /* Fill rest of screen */
     transform: translateX(-100%); /* Hide left by default */
     border-right: none;
     border-bottom: 1px solid #222;
@@ -529,6 +548,16 @@ body {
   .ck-sidebar.open {
     transform: translateX(0);
     box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+  }
+
+  /* Show mobile menu links */
+  .ck-nav-mobile-menu {
+    display: flex;
+  }
+
+  /* Hide CKNavbar drawer on mobile (we use the sidebar instead) */
+  .ck-dashboard .ck-navbar-drawer {
+    display: none !important;
   }
 
   /* Footer adjustments for mobile */
