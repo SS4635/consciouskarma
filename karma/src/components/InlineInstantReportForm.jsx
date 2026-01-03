@@ -22,7 +22,7 @@ export default function InlineInstantReportForm({
     setMobile(initialMobile);
   }, [initialMobile]);
 
-  // Auto-hide toast after 4 seconds
+
   useEffect(() => {
     if (toast.show) {
       const timer = setTimeout(() => {
@@ -32,6 +32,7 @@ export default function InlineInstantReportForm({
     }
   }, [toast.show]);
 
+  
   function showToast(message, type = "error") {
     setToast({ show: true, message, type });
   }
@@ -125,7 +126,7 @@ export default function InlineInstantReportForm({
 
       <div className="flex flex-row items-start justify-between w-full" style={{ marginTop: '-12px' }}>
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
-          <FormattedMessage id="form.price" />
+        269
         </span>
 
         <div className="flex flex-col items-start gap-1" style={{ marginRight: '28px' }}>

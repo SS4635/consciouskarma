@@ -10,7 +10,7 @@ export default function ConsultationSection() {
       >
         <div className="text-center mx-auto" style={{ maxWidth: "800px" }}>
           
-          {/* Main Description */}
+         
           <div
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}

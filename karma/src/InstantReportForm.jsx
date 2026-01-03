@@ -7,10 +7,13 @@ import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 import { COUNTRY_CODES } from "./components/constants/countryCodes"; 
 
-const PRICE = Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0) * 100;
+// const PRICE = Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0) * 100;
+
+
+
 
 const API = process.env.REACT_APP_API_URL;
-const SCORE_API = process.env.REACT_APP_SCORE_API;
+
 
 export default function InstantReportForm({
   initialIsd = "+91",
@@ -29,7 +32,8 @@ export default function InstantReportForm({
   const [password, setPassword] = useState("");
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
-
+  // const [applying, setApplying] = useState(false);
+  const [PRICE, setPRICE] = useState(0);
   const [applying, setApplying] = useState(false);
   const [paying, setPaying] = useState(false);
   
@@ -49,6 +53,19 @@ export default function InstantReportForm({
   useEffect(() => {
     setPhone(initialMobile);
   }, [initialMobile]);
+useEffect(() => {
+  async function fetchPrice() {
+    try {
+      const res = await axios.get(`${API}/api/config/price`);
+      setPRICE(Number(res.price) * 100); // convert to paise
+    } catch (err) {
+      console.error("Price fetch failed", err);
+      setPRICE(0);
+    }
+  }
+
+  fetchPrice();
+}, []);
 
   useEffect(() => {
     setIsd(initialIsd);
@@ -193,35 +210,35 @@ export default function InstantReportForm({
     // ---------------- FREE FLOW ----------------
     if (finalAmount === 0) {
       setPaying(true);
-      try {
-        const { data } = await axios.post(`${API}/api/pay/create-order`, requestBody);
-        if (!data.ok){   handleSuccess(); }
+    //   try {
+    //     const { data } = await axios.post(`${API}/api/pay/create-order`, requestBody);
+    //     if (!data.ok){   handleSuccess(); }
 
-        // We don't set generatingReport to true here anymore, as we don't want to show the "Generating Your Report..." loader.
-        // setGeneratingReport(true); 
+    //     // We don't set generatingReport to true here anymore, as we don't want to show the "Generating Your Report..." loader.
+    //     // setGeneratingReport(true); 
 
-        try {
-          const { data: scoreResponse } = await axios.post(
-            `${SCORE_API}/score`,
-            { mobile_number: phone },
-            { headers: { "Content-Type": "application/json", "X-API-Key": process.env.REACT_APP_SCORE_API_KEY } }
-          );
-          const scoreData = scoreResponse.score || scoreResponse;
-          await axios.post(`${API}/api/mail/score`, { email, mobileNumber: phone, scoreData });
+    //     try {
+    //       const { data: scoreResponse } = await axios.post(
+    //         `${SCORE_API}/score`,
+    //         { mobile_number: phone },
+    //         { headers: { "Content-Type": "application/json", "X-API-Key": process.env.REACT_APP_SCORE_API_KEY } }
+    //       );
+    //       const scoreData = scoreResponse.score || scoreResponse;
+    //       await axios.post(`${API}/api/mail/score`, { email, mobileNumber: phone, scoreData });
           
-          handleSuccess(); 
+    //       handleSuccess(); 
 
-        } catch (apiErr) {
-          console.error("Error:", apiErr);
-          // setGeneratingReport(false); // This is no longer needed
-            handleSuccess(); 
+    //     } catch (apiErr) {
+    //       console.error("Error:", apiErr);
+    //       // setGeneratingReport(false); // This is no longer needed
+    //         handleSuccess(); 
         
-        }
-      } catch (err) {
-        // setGeneratingReport(false); // This is no longer needed
-        setPaying(false);
-     handleSuccess(); 
-      }
+    //     }
+    //   } catch (err) {
+    //     // setGeneratingReport(false); // This is no longer needed
+    //     setPaying(false);
+    //  handleSuccess(); 
+    //   }
       return;
     }
 
@@ -253,24 +270,24 @@ export default function InstantReportForm({
             }
 
           
-            try {
-              const { data: scoreResponse } = await axios.post(
-                `${SCORE_API}/score`,
-                { mobile_number: phone },
-                { headers: { "Content-Type": "application/json", "X-API-Key": process.env.REACT_APP_SCORE_API_KEY } }
-              );
-              const scoreData = scoreResponse.score || scoreResponse;
-              try {
-                await axios.post(`${API}/api/mail/score`, { email, scoreData, mobileNumber: phone });
+            // try {
+            //   const { data: scoreResponse } = await axios.post(
+            //     `${SCORE_API}/score`,
+            //     { mobile_number: phone },
+            //     { headers: { "Content-Type": "application/json", "X-API-Key": process.env.REACT_APP_SCORE_API_KEY } }
+            //   );
+            //   const scoreData = scoreResponse.score || scoreResponse;
+            //   try {
+            //     await axios.post(`${API}/api/mail/score`, { email, scoreData, mobileNumber: phone });
                 
-                handleSuccess(); // ✅ Calls the success animation + redirect
+            //     handleSuccess(); // ✅ Calls the success animation + redirect
 
-              } catch (mailErr) {
-             handleSuccess(); 
-              }
-            } catch (apiErr) {
-              handleSuccess(); 
-            }
+            //   } catch (mailErr) {
+            //  handleSuccess(); 
+            //   }
+            // } catch (apiErr) {
+            //   handleSuccess(); 
+            // }
           } catch (err) {
             
             setPaying(false);

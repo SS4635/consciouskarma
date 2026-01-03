@@ -6,6 +6,7 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
+import { callScoreApi } from "./lib/callScoreApi.js";
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
 import User from "./models/User.js";
@@ -20,6 +21,8 @@ console.log({
 const emailOtps = new Map(); 
 // email -> { code, expiresAt }
 
+import dotenv from "dotenv";
+dotenv.config({ path: "/var/www/.env" });
 
 const app = express();
 app.use(cors());
@@ -794,12 +797,42 @@ app.post("/api/pay/verify", async (req, res) => {
           subject: "Your Instant Report is being prepared",
           html: userHtml,
         });
+try {
+  const phone = order.phone; // already stored as full number
+  const email = order.email;
 
+  console.log("[SCORE] Generating score for:", phone, email);
+
+  const { data: scoreResponse } = await axios.post(
+    `${process.env.REACT_APP_SCORE_API}/score`,
+    { mobile_number: phone },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+      },
+    }
+  );
+
+  const scoreData = scoreResponse.score || scoreResponse;
+
+  await sendScoreMail(email, scoreData, phone);
+
+  console.log("[SCORE] Score generated and mailed successfully");
+} catch (err) {
+  console.error("[SCORE] Failed:", err.response?.data || err.message);
+}
         order.instantEmailSent = true; // 🔒 prevent duplicate mail
       } catch (mailErr) {
         console.error("Instant report mail failed:", mailErr);
       }
     }
+
+    /* ---------- AUTO SCORE GENERATION (BACKEND ONLY) ---------- */
+
+         /* ---------- AUTO SCORE GENERATION (BACKEND ONLY) ---------- */
+
+
 
     await order.save();
 
@@ -876,8 +909,22 @@ app.post("/api/pay/verify-report", async (req, res) => {
   }
 });
 
+
+// routes/config.js or directly in server.js
+app.get("/api/config/price", (req, res) => {
+  res.json({
+    price: Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0),
+  });
+});
+app.get("/api/config/personalizereportprice", (req, res) => {
+  res.json({ price: Number(process.env.REACT_APP_REPORT_BASE_PRICE || 1) });
+});
+
+
 /* ---------- Final submit AFTER payment verified ---------- */
 /* Frontend calls this with orderId once /api/pay/verify is ok */
+
+
 
 
 app.get("/test-mail", async (req, res) => {
@@ -946,7 +993,6 @@ app.post("/api/verify-otp", async (req, res) => {
     });
   }
 });
-// After /api/auth/login
 
 app.post("/api/auth/check-password", async (req, res) => {
   try {
