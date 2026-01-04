@@ -1,4 +1,4 @@
-import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
+// import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 import express from "express";
 import cors from "cors";
 import crypto from "crypto";
