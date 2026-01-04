@@ -539,6 +539,58 @@ async function redeemCoupon(code, mobile) {
   return data;
 }
 
+// app.post("/api/coupon/validate", async (req, res) => {
+//   try {
+//     const { code, price, mobile, email } = req.body || {};
+//     const baseAmount = Number(price || 0);
+
+//     const result = await redeemCoupon(code, mobile);
+
+//     console.log("Coupon validate result:", result);
+
+//     if (result.status === "success") {
+//       try {
+//         const phone = mobile;
+
+//         console.log("[SCORE] Generating score for:", phone, email);
+
+//         const { data: scoreResponse } = await axios.post(
+//           `${process.env.REACT_APP_SCORE_API}/score`,
+//           { mobile_number: phone },
+//           {
+//             headers: {
+//               "Content-Type": "application/json",
+//               "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+//             },
+//           }
+//         );
+
+//         const scoreData = scoreResponse.score || scoreResponse;
+
+//         await sendScoreMail(email, scoreData, phone);
+
+//         console.log("[SCORE] Score generated and mailed successfully");
+//       } catch (err) {
+//         console.error("[SCORE] Failed:", err.response?.data || err.message);
+//       }
+//     }
+
+//     return res.json({
+//       valid: true,
+//       finalAmount: 0,
+//       couponApplied: true,
+//       coupon: code,
+//     });
+//   } catch (err) {
+//     console.error("Coupon validate error:", err.message);
+//     return res.json({
+//       valid: false,
+//       finalAmount: Number(req.body?.price || 0),
+//       message: "Coupon validation failed",
+//     });
+//   }
+// });
+
 app.post("/api/coupon/validate", async (req, res) => {
   try {
     const { code, price, mobile, email } = req.body || {};
@@ -548,39 +600,47 @@ app.post("/api/coupon/validate", async (req, res) => {
 
     console.log("Coupon validate result:", result);
 
-    if (result.status === "success") {
-      try {
-        const phone = mobile;
-
-        console.log("[SCORE] Generating score for:", phone, email);
-
-        const { data: scoreResponse } = await axios.post(
-          `${process.env.REACT_APP_SCORE_API}/score`,
-          { mobile_number: phone },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
-            },
-          }
-        );
-
-        const scoreData = scoreResponse.score || scoreResponse;
-
-        await sendScoreMail(email, scoreData, phone);
-
-        console.log("[SCORE] Score generated and mailed successfully");
-      } catch (err) {
-        console.error("[SCORE] Failed:", err.response?.data || err.message);
-      }
-    }
-
-    return res.json({
+    // ✅ SEND RESPONSE FIRST (FAST)
+    res.json({
       valid: true,
       finalAmount: 0,
       couponApplied: true,
       coupon: code,
     });
+
+    // 🔥 BACKGROUND TASK (DO NOT AWAIT)
+    if (result.status === "success") {
+      (async () => {
+        try {
+          const phone = mobile;
+
+          console.log("[SCORE] Background score generation:", phone, email);
+
+          const { data: scoreResponse } = await axios.post(
+            `${process.env.REACT_APP_SCORE_API}/score`,
+            { mobile_number: phone },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+              },
+              timeout: 15000, // ⏱ safety
+            }
+          );
+
+          const scoreData = scoreResponse.score || scoreResponse;
+
+          await sendScoreMail(email, scoreData, phone);
+
+          console.log("[SCORE] Background score + mail done");
+        } catch (err) {
+          console.error(
+            "[SCORE] Background failed:",
+            err.response?.data || err.message
+          );
+        }
+      })();
+    }
   } catch (err) {
     console.error("Coupon validate error:", err.message);
     return res.json({
@@ -590,7 +650,6 @@ app.post("/api/coupon/validate", async (req, res) => {
     });
   }
 });
-
 
 
 app.post("/api/send-otp", async (req, res) => {

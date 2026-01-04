@@ -57,25 +57,26 @@ export async function sendScoreMail(to, scoreData, mobileNumber) {
       from: `"Conscious Karma" <${process.env.SMTP_USER}>`,
       to,
       subject: "Your Instant Mobile Number Report",
-      html: `
-        <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
-          <p>Dear <strong>${name}</strong>,</p>
+    html: `
+  <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;text-align:left;">
+    <p>Dear <strong>${name}</strong>,</p>
 
-          <p>Your Instant Report is ready.</p>
+    <p>Your Instant Report is ready.</p>
 
-          <p>Please find the PDF attached to this email.</p>
+    <p>Please find the PDF attached to this email.</p>
 
-          <p>
-            If you have any questions about the report, feel free to write to us at
-            <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
-          </p>
+    <p>
+      If you have any questions about the report, feel free to write to us at
+      <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
+    </p>
 
-          <p style="margin-top:24px;">
-            Warm regards,<br/>
-            <strong>Conscious Karma</strong>
-          </p>
-        </div>
-      `,
+    <p style="margin-top:24px;">
+      Warm regards,<br/>
+      <strong>Conscious Karma</strong>
+    </p>
+  </div>
+`
+,
       attachments: [
         {
           filename: "Instant_Mobile_Number_Report.pdf",

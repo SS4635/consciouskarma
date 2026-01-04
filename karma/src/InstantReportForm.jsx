@@ -601,7 +601,10 @@ const successOverlay = (generatingReport && showSuccess) ? (
         justifyContent: "center",
         fontFamily: "Arsenal, sans-serif",
       }}
-      onClick={(e) => e.stopPropagation()} // 🔒 outside click block
+    onClick={() => {
+    setShowCouponSuccess(false);
+    window.location.href = "/";
+  }}
     >
       <div
         style={{
