@@ -9,7 +9,7 @@ import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config({
-  path: "/var/www/" // 👈 EXACT .env FILE
+  path: "/var/www/.env" // 👈 EXACT .env FILE
 });
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
