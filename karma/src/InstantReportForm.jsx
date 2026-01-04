@@ -37,7 +37,8 @@ export default function InstantReportForm({
   const [applying, setApplying] = useState(false);
   const [paying, setPaying] = useState(false);
   
-  
+  const [showCouponSuccess, setShowCouponSuccess] = useState(false);
+
   const [generatingReport, setGeneratingReport] = useState(false);
  
   const [showSuccess, setShowSuccess] = useState(false); 
@@ -115,6 +116,10 @@ useEffect(() => {
   const getSelectedCountry = () => {
     return COUNTRY_CODES.find((c) => c.dial_code === isd);
   };
+const canApplyCoupon =
+  coupon &&
+  name.trim().length > 0 &&
+  /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
 
   const isFormValid = useMemo(() => {
     if (!name.trim()) return false;
@@ -159,21 +164,35 @@ useEffect(() => {
     return Object.keys(e).length === 0;
   };
 
-  const applyCoupon = async (ev) => {
-    ev.preventDefault();
-    if (!coupon) return;
-    setApplying(true);
-    try {
-      const { data } = await axios.post(`${API}/api/coupon/validate`, { code: coupon, price: PRICE,mobile:phone });
-      if (!data.valid) throw new Error(data.message || "Invalid coupon");
-      setCouponInfo(data);
-    } catch (err) {
-      setCouponInfo(null);
-      alert(err?.response?.data?.message || err.message || "Coupon error");
-    } finally {
-      setApplying(false);
-    }
-  };
+ const applyCoupon = async (ev) => {
+  ev.preventDefault();
+  if (!coupon) return;
+
+  setApplying(true);
+  try {
+    const { data } = await axios.post(`${API}/api/coupon/validate`, {
+      code: coupon,
+      price: PRICE,
+      mobile: phone,
+      email,
+      name
+    });
+   
+  
+    if (!data.valid) throw new Error(data.message || "Invalid coupon");
+
+   
+    setShowCouponSuccess(true);
+
+  } catch (err) {
+
+    
+    alert(err?.response?.data?.message || err.message || "Coupon error");
+  } finally {
+    setApplying(false);
+  }
+};
+
 
   // --- HANDLE SUBMISSION ---
   const handleSubmit = async (ev) => {
@@ -214,38 +233,24 @@ useEffect(() => {
 
     // ---------------- FREE FLOW ----------------
     if (finalAmount === 0) {
-      setPaying(true);
-    //   try {
-    //     const { data } = await axios.post(`${API}/api/pay/create-order`, requestBody);
-    //     if (!data.ok){   handleSuccess(); }
+  setPaying(true);
 
-    //     // We don't set generatingReport to true here anymore, as we don't want to show the "Generating Your Report..." loader.
-    //     // setGeneratingReport(true); 
+  try {
+    const { data } = await axios.post(
+      `${API}/api/pay/create-order`,
+      requestBody
+    );
 
-    //     try {
-    //       const { data: scoreResponse } = await axios.post(
-    //         `${SCORE_API}/score`,
-    //         { mobile_number: phone },
-    //         { headers: { "Content-Type": "application/json", "X-API-Key": process.env.REACT_APP_SCORE_API_KEY } }
-    //       );
-    //       const scoreData = scoreResponse.score || scoreResponse;
-    //       await axios.post(`${API}/api/mail/score`, { email, mobileNumber: phone, scoreData });
-          
-    //       handleSuccess(); 
-
-    //     } catch (apiErr) {
-    //       console.error("Error:", apiErr);
-    //       // setGeneratingReport(false); // This is no longer needed
-    //         handleSuccess(); 
-        
-    //     }
-    //   } catch (err) {
-    //     // setGeneratingReport(false); // This is no longer needed
-    //     setPaying(false);
-    //  handleSuccess(); 
-    //   }
-      return;
+    if (data.ok) {
+      handleSuccess();
     }
+  } catch (err) {
+    handleSuccess(); // free flow me block mat karo
+  }
+
+  return; // 🔒 Razorpay skipped
+}
+
 
     // ---------------- PAID FLOW ----------------
     setPaying(true);
@@ -315,6 +320,10 @@ useEffect(() => {
       // setGeneratingReport(false); // This is no longer needed
     }
   };
+
+
+
+
 
   const footerFix = {
     width: "100%", display: "flex", borderTop: "2px solid #ff914d",
@@ -434,8 +443,60 @@ const successOverlay = (generatingReport && showSuccess) ? (
   </div>
 ) : null;
 
+
+
+
+
+
   return (
+
+    
     <div style={{ width: "100%", maxWidth: "400px" }}>
+      {applying &&
+  typeof document !== "undefined" &&
+  ReactDOM.createPortal(
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.9)",
+        zIndex: 9999999,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arsenal, sans-serif",
+      }}
+    >
+      {/* SPINNER */}
+      <div
+        style={{
+          width: "48px",
+          height: "48px",
+          border: "4px solid #333",
+          borderTop: "4px solid #ff914d",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          marginBottom: "16px",
+        }}
+      />
+
+      {/* TEXT */}
+      <div style={{ color: "#fff", fontSize: "16px", letterSpacing: "0.5px" }}>
+        Applying coupon…
+      </div>
+
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>,
+    document.body
+  )
+}
+
       {typeof document !== 'undefined' ? ReactDOM.createPortal(toastComponent, document.body) : toastComponent}
       {typeof document !== "undefined" && showSuccess && ReactDOM.createPortal(successOverlay, document.body)}
 
@@ -527,6 +588,69 @@ const successOverlay = (generatingReport && showSuccess) ? (
             }
           `}</style>
 
+{showCouponSuccess &&
+  ReactDOM.createPortal(
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.85)",
+        zIndex: 999999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arsenal, sans-serif",
+      }}
+      onClick={(e) => e.stopPropagation()} // 🔒 outside click block
+    >
+      <div
+        style={{
+          background: "#000",
+          border: "2px solid #ff914d",
+          borderRadius: "16px",
+          padding: "30px",
+          width: "90%",
+          maxWidth: "400px",
+          textAlign: "center",
+          animation: "scaleIn 0.3s ease-out",
+        }}
+      >
+        {/* TICK */}
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10.5" stroke="#ff914d" strokeWidth="2" />
+          <path
+            d="M7 12L10.2 15.2L17 8"
+            stroke="#ff914d"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+
+        <h2 style={{ color: "#ff914d", marginTop: "16px" }}>
+          Coupon Applied!
+        </h2>
+
+        <p style={{ color: "#fff", marginTop: "8px" }}>
+         Your Instant report is booked.
+        <br />
+        It will be delivered to your email-id shortly.
+        </p>
+
+        {/* CLOSE BUTTON */}
+       
+      </div>
+
+      <style>{`
+        @keyframes scaleIn {
+          0% { transform: scale(0.9); opacity: 0 }
+          100% { transform: scale(1); opacity: 1 }
+        }
+      `}</style>
+    </div>,
+    document.body
+  )
+}
           <div style={{ padding: "0 1.5rem 1.5rem 1.2rem" }}>
             <form onSubmit={handleSubmit}>
               {/* MOBILE */}
@@ -599,7 +723,24 @@ const successOverlay = (generatingReport && showSuccess) ? (
                 <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Coupon</div>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <input value={coupon} onChange={(e) => setCoupon(e.target.value)} placeholder="e.g. CKFREE100" className="instant-input" style={{ flex: 1 }} />
-                  <button type="button" onClick={applyCoupon} disabled={!coupon || applying} style={{ height: "44px", padding: "0 16px", borderRadius: "12px", background: "#222", border: "1.5px solid #666", color: "#fff", cursor: "pointer", fontSize: "16px" }}>{applying ? "…" : "Apply"}</button>
+             <button
+  type="button"
+  onClick={applyCoupon}
+  disabled={!canApplyCoupon || applying}
+  style={{
+    height: "44px",
+    padding: "0 16px",
+    borderRadius: "12px",
+    background: (!canApplyCoupon || applying) ? "#333" : "#222",
+    border: "1.5px solid #666",
+    color: (!canApplyCoupon || applying) ? "#777" : "#fff",
+    cursor: (!canApplyCoupon || applying) ? "not-allowed" : "pointer",
+    fontSize: "16px",
+  }}
+>
+  {applying ? "…" : "Apply"}
+</button>
+
                 </div>
                 {couponInfo && <div style={{ color: "#2ecc71", marginTop: "6px", fontSize: "13px" }}>Applied Successfully</div>}
               </div>

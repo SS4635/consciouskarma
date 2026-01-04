@@ -539,29 +539,48 @@ async function redeemCoupon(code, mobile) {
   return data;
 }
 
-
-/* ---------- Coupon preview validate ---------- */
 app.post("/api/coupon/validate", async (req, res) => {
   try {
-    const { code, price, mobile } = req.body || {};
+    const { code, price, mobile, email } = req.body || {};
     const baseAmount = Number(price || 0);
 
-    // 🟢 No coupon → skip API
-   
-
-    // 🔥 Trigger external coupon API
     const result = await redeemCoupon(code, mobile);
-console.log("Coupon validate result:", result);
 
-   
-    // ✅ Coupon accepted by external system
+    console.log("Coupon validate result:", result);
+
+    if (result.status === "success") {
+      try {
+        const phone = mobile;
+
+        console.log("[SCORE] Generating score for:", phone, email);
+
+        const { data: scoreResponse } = await axios.post(
+          `${process.env.REACT_APP_SCORE_API}/score`,
+          { mobile_number: phone },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+            },
+          }
+        );
+
+        const scoreData = scoreResponse.score || scoreResponse;
+
+        await sendScoreMail(email, scoreData, phone);
+
+        console.log("[SCORE] Score generated and mailed successfully");
+      } catch (err) {
+        console.error("[SCORE] Failed:", err.response?.data || err.message);
+      }
+    }
+
     return res.json({
       valid: true,
       finalAmount: 0,
       couponApplied: true,
       coupon: code,
     });
-
   } catch (err) {
     console.error("Coupon validate error:", err.message);
     return res.json({
@@ -572,7 +591,8 @@ console.log("Coupon validate result:", result);
   }
 });
 
-/* ---------- Twilio: send OTP ---------- */
+
+
 app.post("/api/send-otp", async (req, res) => {
   try {
     const { number } = req.body;
@@ -878,9 +898,7 @@ try {
       }
     }
 
-    /* ---------- AUTO SCORE GENERATION (BACKEND ONLY) ---------- */
-
-         /* ---------- AUTO SCORE GENERATION (BACKEND ONLY) ---------- */
+   
 
 
 
