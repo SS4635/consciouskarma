@@ -493,7 +493,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
         }}
       />
       <div style={{ color: "#fff", fontSize: 16 }}>
-        Processing payment…
+       
       </div>
 
       <style>{`

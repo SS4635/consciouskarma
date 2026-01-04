@@ -41,7 +41,7 @@ export async function sendScoreMail(to, scoreData, mobileNumber) {
       scoreData?.full_name ||
       "User";
 
-    console.log("📱 FINAL MOBILE USED IN SCORE REPORT:", finalMobile);
+    console.log("📱 FINAL MOBILE USED IN SCORE REPORT:", scoreData);
 
     // Generate PDF
     pdfPath = await generateInstantReportPDF(
