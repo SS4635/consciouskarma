@@ -295,7 +295,7 @@ export default function ConsultationPlans() {
                 borderRadius: 12,
                 boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
                 // constrain the modal height but allow internal scrolling if content is tall
-                maxHeight: isMobile ? '90vh' : '80vh',
+              height:'32rem',
                 overflowY: 'auto',
                 transform: modalOpening 
                   ? 'translateY(0) scale(1)'

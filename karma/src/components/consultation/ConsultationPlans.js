@@ -307,7 +307,7 @@ useEffect(() => {
                 border: "2px solid #ff6b35",
                 borderRadius: 12,
                 boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-                maxHeight: isMobile ? "90vh" : "80vh",
+                maxHeight: "34rem",
                 overflowY: "auto",
                 transform: modalOpening
                   ? "translateY(0) scale(1)"
