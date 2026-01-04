@@ -836,6 +836,146 @@ const amount = hasCoupon ? 0 : basePrice * 100;
 
 /* ---------- Verify Razorpay payment ---------- */
 
+// app.post("/api/pay/verify", async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       orderId,
+//     } = req.body || {};
+
+//     if (
+//       !razorpay_order_id ||
+//       !razorpay_payment_id ||
+//       !razorpay_signature ||
+//       !orderId
+//     ) {
+//       return res.status(400).json({
+//         ok: false,
+//         message: "Missing Razorpay parameters",
+//       });
+//     }
+
+//     const order = await Order.findById(orderId);
+//     if (!order) {
+//       return res.status(404).json({
+//         ok: false,
+//         message: "Order not found",
+//       });
+//     }
+
+//     /* ---------- Verify Razorpay signature ---------- */
+//     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(payload)
+//       .digest("hex");
+
+//     if (expected !== razorpay_signature) {
+//       return res.status(400).json({
+//         ok: false,
+//         message: "Invalid Razorpay signature",
+//       });
+//     }
+
+//     /* ---------- Mark order paid ---------- */
+//     order.status = "paid";
+//     order.razorpay = {
+//       ...(order.razorpay || {}),
+//       paymentId: razorpay_payment_id,
+//       signature: razorpay_signature,
+//     };
+
+//     /* ---------- Instant Report detection (CORRECT) ---------- */
+//     const isInstantReport =
+//       (order.formData?.parallels?.length || 0) === 0 &&
+//       (order.formData?.previousNumbers?.length || 0) === 0;
+
+//     /* ---------- Send email ONLY ONCE ---------- */
+//     if (isInstantReport && !order.instantEmailSent) {
+//       const userHtml = `
+//         <p>Dear ${order.name},</p>
+
+//         <p>
+//           Thank you for your order.<br/>
+//           Your <strong>Instant Mobile Number Report</strong> is now being generated
+//           and will be delivered to this email shortly.
+//         </p>
+
+//         <p>
+//           If you have any questions, feel free to write to us at
+//           <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
+//         </p>
+
+//         <p>
+//           Warm regards,<br/>
+//           <strong>Conscious Karma</strong>
+//         </p>
+//       `;
+
+//       try {
+//         await sendEmail({
+//           to: order.email,
+//           subject: "Your Instant Report is being prepared",
+//           html: userHtml,
+//         });
+
+//           if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
+//   throw new Error("Internal security misconfigured");
+  
+// }
+
+// try {
+//   const phone = order.phone; // already stored as full number
+//   const email = order.email;
+
+//   console.log("[SCORE] Generating score for:", phone, email);
+
+//   const { data: scoreResponse } = await axios.post(
+//     `${process.env.REACT_APP_SCORE_API}/score`,
+//     { mobile_number: phone },
+//     {
+//       headers: {
+//         "Content-Type": "application/json",
+//         "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+//       },
+//     }
+//   );
+
+//   const scoreData = scoreResponse.score || scoreResponse;
+
+//   await sendScoreMail(email, scoreData, phone);
+
+//   console.log("[SCORE] Score generated and mailed successfully");
+// } catch (err) {
+//   console.error("[SCORE] Failed:", err.response?.data || err.message);
+// }
+//         order.instantEmailSent = true; // 🔒 prevent duplicate mail
+//       } catch (mailErr) {
+//         console.error("Instant report mail failed:", mailErr);
+//       }
+//     }
+
+   
+
+
+
+//     await order.save();
+
+//     return res.json({ ok: true });
+//   } catch (err) {
+//     console.error("pay/verify error:", err);
+//     return res.status(500).json({
+//       ok: false,
+//       message: "Server error",
+//     });
+//   }
+// });
+
+
+
+
 app.post("/api/pay/verify", async (req, res) => {
   try {
     const {
@@ -851,21 +991,15 @@ app.post("/api/pay/verify", async (req, res) => {
       !razorpay_signature ||
       !orderId
     ) {
-      return res.status(400).json({
-        ok: false,
-        message: "Missing Razorpay parameters",
-      });
+      return res.status(400).json({ ok: false, message: "Missing params" });
     }
 
     const order = await Order.findById(orderId);
     if (!order) {
-      return res.status(404).json({
-        ok: false,
-        message: "Order not found",
-      });
+      return res.status(404).json({ ok: false, message: "Order not found" });
     }
 
-    /* ---------- Verify Razorpay signature ---------- */
+    // 🔐 Verify Razorpay signature
     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -873,105 +1007,85 @@ app.post("/api/pay/verify", async (req, res) => {
       .digest("hex");
 
     if (expected !== razorpay_signature) {
-      return res.status(400).json({
-        ok: false,
-        message: "Invalid Razorpay signature",
-      });
+      return res.status(400).json({ ok: false, message: "Invalid signature" });
     }
 
-    /* ---------- Mark order paid ---------- */
+    // ✅ Mark order paid
     order.status = "paid";
     order.razorpay = {
-      ...(order.razorpay || {}),
       paymentId: razorpay_payment_id,
       signature: razorpay_signature,
     };
 
-    /* ---------- Instant Report detection (CORRECT) ---------- */
+    await order.save();
+
+    // 🚀 IMPORTANT: SEND RESPONSE IMMEDIATELY
+    res.json({ ok: true });
+
+    // ===============================
+    // 🔁 BACKGROUND TASKS (NO AWAIT)
+    // ===============================
+    processInstantReport(order).catch((err) => {
+      console.error("Background task failed:", err);
+    });
+
+  } catch (err) {
+    console.error("pay/verify error:", err);
+    return res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+async function processInstantReport(order) {
+  try {
     const isInstantReport =
       (order.formData?.parallels?.length || 0) === 0 &&
       (order.formData?.previousNumbers?.length || 0) === 0;
 
-    /* ---------- Send email ONLY ONCE ---------- */
-    if (isInstantReport && !order.instantEmailSent) {
-      const userHtml = `
+    if (!isInstantReport || order.instantEmailSent) return;
+
+    // 📧 User mail
+    await sendEmail({
+      to: order.email,
+      subject: "Your Instant Report is being prepared",
+      html: `
         <p>Dear ${order.name},</p>
+        <p>Your Instant Mobile Number Report is being generated.</p>
+        <p>— Conscious Karma</p>
+      `,
+    });
 
-        <p>
-          Thank you for your order.<br/>
-          Your <strong>Instant Mobile Number Report</strong> is now being generated
-          and will be delivered to this email shortly.
-        </p>
-
-        <p>
-          If you have any questions, feel free to write to us at
-          <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
-        </p>
-
-        <p>
-          Warm regards,<br/>
-          <strong>Conscious Karma</strong>
-        </p>
-      `;
-
-      try {
-        await sendEmail({
-          to: order.email,
-          subject: "Your Instant Report is being prepared",
-          html: userHtml,
-        });
-
-          if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
-  throw new Error("Internal security misconfigured");
-  
-}
-
-try {
-  const phone = order.phone; // already stored as full number
-  const email = order.email;
-
-  console.log("[SCORE] Generating score for:", phone, email);
-
-  const { data: scoreResponse } = await axios.post(
-    `${process.env.REACT_APP_SCORE_API}/score`,
-    { mobile_number: phone },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
-      },
+    // 🔐 Internal security check
+    if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
+      throw new Error("Security misconfigured");
     }
-  );
 
-  const scoreData = scoreResponse.score || scoreResponse;
-
-  await sendScoreMail(email, scoreData, phone);
-
-  console.log("[SCORE] Score generated and mailed successfully");
-} catch (err) {
-  console.error("[SCORE] Failed:", err.response?.data || err.message);
-}
-        order.instantEmailSent = true; // 🔒 prevent duplicate mail
-      } catch (mailErr) {
-        console.error("Instant report mail failed:", mailErr);
+    // 📊 Score generation
+    const { data } = await axios.post(
+      `${process.env.REACT_APP_SCORE_API}/score`,
+      { mobile_number: order.phone },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+        },
       }
-    }
+    );
 
-   
+    const scoreData = data.score || data;
 
+    await sendScoreMail(order.email, scoreData, order.phone);
 
-
+    order.instantEmailSent = true;
     await order.save();
 
-    return res.json({ ok: true });
+    console.log("✅ Instant report completed");
+
   } catch (err) {
-    console.error("pay/verify error:", err);
-    return res.status(500).json({
-      ok: false,
-      message: "Server error",
-    });
+    console.error("❌ Instant report failed:", err.message);
   }
-});
+}
+
+
+
 
 app.post("/api/pay/verify-report", async (req, res) => {
   try {
