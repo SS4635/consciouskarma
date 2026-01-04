@@ -271,13 +271,25 @@ const canApplyCoupon =
         theme: { color: "#ff8a3d" },
         handler: async (response) => {
           try {
-           
+            setPaying(false);
+    setGeneratingReport(true);
             const { data: vj } = await axios.post(`${API}/api/pay/verify`, { ...response, orderId });
+            
             if (!vj.ok) {
+                setGeneratingReport(false);
               alert("Payment verification failed");
               setPaying(false);
               return;
             }
+
+    // ✅ PAYMENT SUCCESS
+    setPaying(false);
+    setShowSuccess(true);
+
+ setTimeout(() => {
+      setGeneratingReport(false);
+      setShowSuccess(true);
+    }, 1200); // ⏳ loader visible rahe thoda
 
           
             // try {
@@ -317,6 +329,7 @@ const canApplyCoupon =
     } catch (err) {
       alert(err?.response?.data?.message || err.message || "Checkout failed");
       setPaying(false);
+       setGeneratingReport(false);
       // setGeneratingReport(false); // This is no longer needed
     }
   };
@@ -452,6 +465,48 @@ const successOverlay = (generatingReport && showSuccess) ? (
 
     
     <div style={{ width: "100%", maxWidth: "400px" }}>
+
+      {generatingReport &&
+  ReactDOM.createPortal(
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.9)",
+        zIndex: 999999,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arsenal, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          width: 52,
+          height: 52,
+          border: "4px solid #333",
+          borderTop: "4px solid #ff914d",
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          marginBottom: 16,
+        }}
+      />
+      <div style={{ color: "#fff", fontSize: 16 }}>
+        Processing payment…
+      </div>
+
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>,
+    document.body
+  )
+}
+
       {applying &&
   typeof document !== "undefined" &&
   ReactDOM.createPortal(
@@ -654,6 +709,78 @@ const successOverlay = (generatingReport && showSuccess) ? (
     document.body
   )
 }
+{showSuccess &&
+  ReactDOM.createPortal(
+    <div
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          setShowSuccess(false);
+          window.location.href = "/";
+        }
+      }}
+      onClick={() => {
+        setShowSuccess(false);
+        window.location.href = "/";
+      }}
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.9)",
+        zIndex: 999999,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arsenal, sans-serif",
+        outline: "none",
+      }}
+    >
+      <div
+        style={{
+          background: "#000",
+          border: "2px solid #ff914d",
+          borderRadius: "16px",
+          padding: "32px",
+          width: "90%",
+          maxWidth: "420px",
+          textAlign: "center",
+          animation: "scaleIn 0.3s ease-out",
+        }}
+      >
+        {/* TICK */}
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10.5" stroke="#ff914d" strokeWidth="2" />
+          <path
+            d="M7 12L10.2 15.2L17 8"
+            stroke="#ff914d"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+
+        <h2 style={{ color: "#ff914d", marginTop: 16 }}>
+          Payment Successful
+        </h2>
+
+        <p style={{ color: "#fff", marginTop: 8 }}>
+          Your Instant report is booked.
+          <br />
+          It will be delivered to your email shortly.
+        </p>
+      </div>
+
+      <style>{`
+        @keyframes scaleIn {
+          0% { transform: scale(0.9); opacity: 0 }
+          100% { transform: scale(1); opacity: 1 }
+        }
+      `}</style>
+    </div>,
+    document.body
+  )
+}
+
           <div style={{ padding: "0 1.5rem 1.5rem 1.2rem" }}>
             <form onSubmit={handleSubmit}>
               {/* MOBILE */}
