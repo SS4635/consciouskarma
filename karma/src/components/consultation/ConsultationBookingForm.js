@@ -25,6 +25,9 @@ export default function ConsultationBookingForm({
   const [isParallelExpanded, setIsParallelExpanded] = useState(false);
   const [isPreviousExpanded, setIsPreviousExpanded] = useState(false);
   const formContainerRef = useRef(null);
+  // 🔥 ADD THIS (UI impact = ZERO)
+const [isPaying, setIsPaying] = useState(false);
+
 
   const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
@@ -477,7 +480,9 @@ export default function ConsultationBookingForm({
 
   const handleProceed = async () => {
     if (currentStep !== effectiveSteps.length - 1) return;
+  if (isPaying) return; // ✅ ADD THIS
 
+  setIsPaying(true);
     for (let i = 0; i < effectiveSteps.length; i++) {
       const err = validateStep(effectiveSteps[i]);
       if (err) {
@@ -519,25 +524,48 @@ export default function ConsultationBookingForm({
         description: "Consultation Booking",
         order_id: orderId,
         handler: async function (rzpRes) {
-          const verifyRes = await fetch(`${API_BASE}/api/pay/verify-consultation`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              razorpay_order_id: rzpRes.razorpay_order_id,
-              razorpay_payment_id: rzpRes.razorpay_payment_id,
-              razorpay_signature: rzpRes.razorpay_signature,
-              formData,
-              planName: selectedPlan?.title || currentForm.title,
-              price: finalPrice, 
-            }),
-          });
-          const verifyData = await verifyRes.json();
-          if (!verifyData.ok) {
-            Swal.fire("Payment Error", verifyData.message || "Verification failed", "error");
-            return;
-          }
-          setShowSuccess(true);
-        },
+  
+  try {
+    const verifyRes = await fetch(
+      `${API_BASE}/api/pay/verify-consultation`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          razorpay_order_id: rzpRes.razorpay_order_id,
+          razorpay_payment_id: rzpRes.razorpay_payment_id,
+          razorpay_signature: rzpRes.razorpay_signature,
+          formData,
+          planName: selectedPlan?.title || currentForm.title,
+          price: finalPrice,
+        }),
+      }
+    );
+
+    const verifyData = await verifyRes.json();
+    if (!verifyData.ok) {
+      throw new Error(verifyData.message || "Verification failed");
+    }
+
+    setIsPaying(false);
+    setShowSuccess(true);
+
+  } catch (err) {
+    console.error(err);
+    setIsPaying(false);
+    Swal.fire(
+      "Payment received but verification failed",
+      err.message || "Please contact support",
+      "error"
+    );
+  }
+},
+modal: {
+  ondismiss: () => {
+    setIsPaying(false);
+  },
+},
+
         prefill: {
           name: formData[1]?.["Name"],
           email: formData[1]?.["Email-id"],
@@ -545,7 +573,19 @@ export default function ConsultationBookingForm({
         },
         theme: { color: "#ff914d" },
       };
-      new window.Razorpay(options).open();
+      const rzp = new window.Razorpay(options);
+
+rzp.on("payment.failed", function (response) {
+  setIsPaying(false);
+  Swal.fire(
+    "Payment Failed",
+    response.error.description || "Payment failed",
+    "error"
+  );
+});
+
+rzp.open();
+
     } catch (err) {
       console.error(err);
       Swal.fire("Network Error", "Something went wrong.", "error");
@@ -683,10 +723,11 @@ export default function ConsultationBookingForm({
                   opacity: canSubmit ? 1 : 0.6,
                   cursor: canSubmit ? "pointer" : "not-allowed",
                 }}
-                disabled={!canSubmit}
+                disabled={!canSubmit || isPaying}
                 onClick={handleProceed}
               >
-                Proceed
+                {isPaying ? "Processing payment..." : "Proceed"}
+
               </button>
             </div>
           </div>
