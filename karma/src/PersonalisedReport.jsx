@@ -871,7 +871,12 @@ const ConsciousKarmaPage = () => {
 
             {/* RIGHT FORM */}
             <div className="ck-form-panel">
-              <div className="ck-form-heading" style={{ textAlign: "center" }}>  Book Personalized Report</div>
+              <div className="ck-form-heading" style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+  }}>  Book Personalized Report</div>
 
               <div className="ck-form-card">
                 <div className="scroll-area">

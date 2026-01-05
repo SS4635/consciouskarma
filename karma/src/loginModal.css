@@ -5,6 +5,13 @@
   margin-bottom: 6px;
 }
 
+.center {
+  display: flex;
+  align-items: center;   /* vertical */
+  justify-content: center; /* horizontal */
+}
+
+
 .ck-forgot {
   background: none;
   border: none;

@@ -65,9 +65,13 @@ export default function SignupModal({ onClose, onSwitch }) {
   return (
     <div className="ck-modal-backdrop">
       <div className="ck-modal">
-        <div className="ck-modal-header">
+        <div className="ck-modal-header" style={{
+  display: "flex",
+  alignItems: "center",   /* vertical */
+  justifyContent: "center", /* horizontal */
+}}>
           <span style={{fontSize:"28px",fontWeight:"400"}}>Create an Account</span>
-          <button className="ck-close" onClick={onClose}>✕</button>
+          
         </div>
 
         {error && <div className="ck-error">{error}</div>}

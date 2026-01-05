@@ -624,7 +624,10 @@ export default function ConsultationBookingForm({
         <div className="form-container" style={{ maxWidth: inModal ? (isMobile ? "100%" : "450px") : undefined }}>
           <div className="form-card" style={{ border: inModal ? "none" : undefined, borderRadius: inModal ? "8px" : undefined, height: containerHeight !== "auto" ? `${containerHeight}px` : "auto" }} ref={formContainerRef}>
             <div className="ck-modal-header">
-              <span className="ck-modal-title">{currentForm.title}</span>
+              <span className="ck-modal-title text-center w-100 " style={{display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",}}>{currentForm.title}</span>
             </div>
 
             <div className="form-cards" style={{ padding: inModal ? "1.2rem 1.2rem 1.5rem" : undefined }}>

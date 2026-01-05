@@ -219,7 +219,12 @@ export default function GeneralInformationForm({
       `}</style>
 
       {showTitle && (
-        <h2 style={{ color: "white", marginBottom: "24px", fontWeight: 300 }}>
+        <h2 style={{ color: "white", marginBottom: "24px", fontWeight: 300,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+}}>
           General Information
         </h2>
       )}
