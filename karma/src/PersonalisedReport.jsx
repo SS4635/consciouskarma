@@ -717,7 +717,7 @@ const ConsciousKarmaPage = () => {
       }}
       onClick={() => {
         setShowSuccess(false);
-        window.location.href = "/";
+        window.location.href = "/personalised-report";
       }}
     >
       <div
@@ -759,7 +759,7 @@ const ConsciousKarmaPage = () => {
           }}
           onClick={() => {
             setShowSuccess(false);
-            window.location.href = "/";
+            window.location.href = "/personalised-report";
           }}
           aria-label="Close"
         >×</button>

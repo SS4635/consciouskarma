@@ -94,7 +94,7 @@ export default function ConsultationBookingForm({
       }}
       onClick={() => {
         setShowSuccess(false);
-        window.location.href = "/";
+        window.location.href = "/consult";
       }}
     >
       <div
@@ -137,7 +137,7 @@ export default function ConsultationBookingForm({
           }}
           onClick={() => {
             setShowSuccess(false);
-            window.location.href = "/";
+            window.location.href = "/consult";
           }}
           aria-label="Close"
         >×</button>
