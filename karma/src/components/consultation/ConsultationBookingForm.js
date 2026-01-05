@@ -25,21 +25,18 @@ export default function ConsultationBookingForm({
   const [isParallelExpanded, setIsParallelExpanded] = useState(false);
   const [isPreviousExpanded, setIsPreviousExpanded] = useState(false);
   const formContainerRef = useRef(null);
-  // 🔥 ADD THIS (UI impact = ZERO)
-const [isPaying, setIsPaying] = useState(false);
-
+  
+  // 🔥 PAYMENT LOADER STATES
+  const [isPaying, setIsPaying] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const API_BASE = process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
   const primaryNumberUsageType = formData[2]?.["Usage type"] || "";
   const isExtendedCompatibility = !!selectedPlan?.isExtended;
 
-  // --- HELPER: Extract numeric price safely (Defined here to use in Render & Logic) ---
   const getNumericPrice = (p) => {
     const str = String(p || "");
-    // If the string contains a calculation like "1x1=1", we might need to handle it.
-    // For now, we strip non-numeric characters to ensure we get a clean number.
-    // If you are passing clean strings like "2000", this works perfectly.
     return Number(str.replace(/[^0-9.]/g, ""));
   };
 
@@ -82,7 +79,46 @@ const [isPaying, setIsPaying] = useState(false);
     selectedUsageType,
     primaryNumberUsageType,
   ]);
-  const [showSuccess, setShowSuccess] = useState(false);
+
+  // 🔥 FULL SCREEN BLACK SCREEN LOADER PORTAL
+  const paymentLoaderPortal = isPaying && typeof document !== "undefined" ? ReactDOM.createPortal(
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.98)", 
+        zIndex: 9999999, 
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        fontFamily: "Arsenal, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          width: 65,
+          height: 65,
+          border: "6px solid #222",
+          borderTop: "6px solid #ff914d", 
+          borderRadius: "50%",
+          animation: "spin 1s linear infinite",
+          marginBottom: 20,
+        }}
+      />
+      <div style={{ color: "#fff", fontSize: 20, letterSpacing: '0.5px' }}>
+        Processing payment…
+      </div>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
+    </div>,
+    document.body
+  ) : null;
+
   const successOverlay = showSuccess ? (
     <div
       style={{
@@ -241,7 +277,6 @@ const [isPaying, setIsPaying] = useState(false);
     });
   };
 
-  // ----- PARALLEL ADAPTERS -----
   const getParallelNumbersData = () => {
     const parallelData = dynamicNumbers[3] || [];
     return parallelData.map((num) => ({
@@ -279,7 +314,6 @@ const [isPaying, setIsPaying] = useState(false);
   const handleParallelToggle = (isExpanded) => setIsParallelExpanded(isExpanded);
   const handlePreviousToggle = (isExpanded) => setIsPreviousExpanded(isExpanded);
 
-  // ----- PREVIOUS ADAPTERS -----
   const getPreviousNumbersData = () => {
     const previousData = dynamicNumbers[4] || [];
     return previousData.map((num) => ({
@@ -325,7 +359,6 @@ const [isPaying, setIsPaying] = useState(false);
     if (remaining === 0) setIsPreviousExpanded(false);
   };
 
-  // --- FORM STEPS ---
   const formSteps = [
     {
       id: 1,
@@ -361,11 +394,8 @@ const [isPaying, setIsPaying] = useState(false);
 
   const effectiveSteps = formSteps.slice(0, maxSteps);
   const currentForm = effectiveSteps[currentStep];
-  
-  // Logic to determine if user is on the last step
   const isLastStep = currentStep === effectiveSteps.length - 1;
 
-  // ---------- VALIDATION ----------
   const validateStep = (step) => {
     const data = getStepData(step.id);
     const requireField = (key, label) => {
@@ -458,12 +488,11 @@ const [isPaying, setIsPaying] = useState(false);
     }
   };
 
-  // ✅ New Helper Function to Check ALL Steps
   const checkAllStepsValid = () => {
     for (let i = 0; i < effectiveSteps.length; i++) {
-      if (validateStep(effectiveSteps[i])) return false; // If any step has error, return false
+      if (validateStep(effectiveSteps[i])) return false; 
     }
-    return true; // All good
+    return true; 
   };
 
   const isFormValid = checkAllStepsValid();
@@ -479,13 +508,13 @@ const [isPaying, setIsPaying] = useState(false);
   };
 
   const handleProceed = async () => {
-    if (currentStep !== effectiveSteps.length - 1) return;
-  if (isPaying) return; // ✅ ADD THIS
+    if (currentStep !== effectiveSteps.length - 1 || isPaying) return;
+    setIsPaying(true); 
 
-  setIsPaying(true);
     for (let i = 0; i < effectiveSteps.length; i++) {
       const err = validateStep(effectiveSteps[i]);
       if (err) {
+        setIsPaying(false);
         Swal.fire("Missing Information", err, "warning");
         return;
       }
@@ -494,78 +523,45 @@ const [isPaying, setIsPaying] = useState(false);
     const finalFormData = JSON.parse(JSON.stringify(formData));
     if (!finalFormData[1]) finalFormData[1] = {};
     if (!finalFormData[1]["Time of Birth"]) finalFormData[1]["Time of Birth"] = "00:00";
-    
-    // 🛡️ HELPER: Extract numeric price safely
     const finalPrice = getNumericPrice(selectedPlan?.price || currentForm.price);
 
     try {
       const createRes = await fetch(`${API_BASE}/api/pay/create-consultation-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          formData: finalFormData,
-          planName: selectedPlan?.title || currentForm.title,
-          price: finalPrice, 
-        }),
+        body: JSON.stringify({ formData: finalFormData, planName: selectedPlan?.title || currentForm.title, price: finalPrice }),
       });
       const createData = await createRes.json();
       if (!createData.ok) {
+        setIsPaying(false);
         Swal.fire("Error", createData.message || "Order creation failed", "error");
         return;
       }
 
-      const { keyId, orderId, amount } = createData;
-
       const options = {
-        key: keyId,
-        amount,
+        key: createData.keyId,
+        amount: createData.amount,
         currency: "INR",
         name: "Conscious Karma",
-        description: "Consultation Booking",
-        order_id: orderId,
+        order_id: createData.orderId,
         handler: async function (rzpRes) {
-  
-  try {
-    const verifyRes = await fetch(
-      `${API_BASE}/api/pay/verify-consultation`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          razorpay_order_id: rzpRes.razorpay_order_id,
-          razorpay_payment_id: rzpRes.razorpay_payment_id,
-          razorpay_signature: rzpRes.razorpay_signature,
-          formData,
-          planName: selectedPlan?.title || currentForm.title,
-          price: finalPrice,
-        }),
-      }
-    );
-
-    const verifyData = await verifyRes.json();
-    if (!verifyData.ok) {
-      throw new Error(verifyData.message || "Verification failed");
-    }
-
-    setIsPaying(false);
-    setShowSuccess(true);
-
-  } catch (err) {
-    console.error(err);
-    setIsPaying(false);
-    Swal.fire(
-      "Payment received but verification failed",
-      err.message || "Please contact support",
-      "error"
-    );
-  }
-},
-modal: {
-  ondismiss: () => {
-    setIsPaying(false);
-  },
-},
-
+          setIsPaying(true);
+          try {
+            const verifyRes = await fetch(`${API_BASE}/api/pay/verify-consultation`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...rzpRes, formData, planName: selectedPlan?.title || currentForm.title, price: finalPrice }),
+            });
+            const verifyData = await verifyRes.json();
+            setIsPaying(false); 
+            if (verifyData.ok) setShowSuccess(true);
+            else throw new Error(verifyData.message);
+          } catch (err) {
+            setIsPaying(false);
+            Swal.fire("Error", err.message, "error");
+          }
+        },
+        modal: { ondismiss: () => setIsPaying(false) },
         prefill: {
           name: formData[1]?.["Name"],
           email: formData[1]?.["Email-id"],
@@ -574,113 +570,115 @@ modal: {
         theme: { color: "#ff914d" },
       };
       const rzp = new window.Razorpay(options);
-
-rzp.on("payment.failed", function (response) {
-  setIsPaying(false);
-  Swal.fire(
-    "Payment Failed",
-    response.error.description || "Payment failed",
-    "error"
-  );
-});
-
-rzp.open();
-
+      rzp.on("payment.failed", () => setIsPaying(false));
+      rzp.open();
     } catch (err) {
-      console.error(err);
+      setIsPaying(false);
       Swal.fire("Network Error", "Something went wrong.", "error");
     }
   };
 
-  const outerClass = inModal
-    ? "bg-black text-white"
-    : "min-vh-100 bg-black text-white d-flex align-items-center py-5";
+  const outerClass = inModal ? "bg-black text-white h-100" : "min-vh-100 bg-black text-white d-flex align-items-center py-5";
 
   return (
     <div className={`${outerClass} font-arsenal`}>
+      {paymentLoaderPortal}
       {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
+      
       <style>{`
-        /* SweetAlert2 Custom Styles */
-        .swal2-popup {
-          background: #111 !important;
-          color: #fff !important;
-          border: 2px solid #fb923c !important;
-          border-radius: 16px !important;
-        }
-        .swal2-title,
-        .swal2-html-container {
-          color: #fff !important;
-        }
-        .swal2-success-circular-line-left,
-        .swal2-success-circular-line-right,
-        .swal2-success-fix {
-          background: none !important;
-        }
-        .swal2-success {
-          border-color: #fb923c !important;
-        }
-        .swal2-success .swal2-success-ring {
-          border: 4px solid #fb923c !important;
-        }
-        .swal2-success .swal2-success-line-tip,
-        .swal2-success .swal2-success-line-long {
-          background-color: #fb923c !important;
-        }
-        .swal2-styled.swal2-confirm {
-          background-color: #fb923c !important;
-          color: #fff !important;
-          border: 2px solid #fb923c !important;
-          border-radius: 8px !important;
-        }
-        .swal2-styled.swal2-confirm:focus {
-          box-shadow: 0 0 0 2px #fb923c55 !important;
-        }
+        .swal2-popup { background: #111 !important; color: #fff !important; border: 2px solid #fb923c !important; border-radius: 16px !important; }
         .swal2-container { z-index: 9999 !important; }
-        .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; }
-        .form-container * { font-family: "Arsenal", sans-serif; }
-        .form-card { background: transparent; border: 2px solid #ff914d; border-radius: 15px; min-height: 500px; height: auto; transition: height 0.3s ease; display: flex; flex-direction: column; }
-        .form-cards { padding: 2.6rem 1.5rem 2rem; flex: 1; display: flex; flex-direction: column; }
-        .form-content { flex: 1; display: flex; flex-direction: column; }
-        .form-fields { flex: 1; }
-        .ck-modal-header { display: flex; align-items: center; justify-content: space-between; padding: 20px; padding-bottom:0px; }
-        .ck-modal-title { font-size: 28px!important; font-weight: 400!important; line-height: 1; }
-        .ck-close { width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; border-radius: 6px; color: #fff; font-size: 18px; cursor: pointer; }
-        .ck-close:hover { background: #222; }
+        
+        .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; height: 100%; }
+        
+        /* 🔥 OUTER BORDER: SIRF ISKO RAKHENGE */
+        /* 🔥 COMPLETELY FLATTEN INNER FORMS */
+.form-card * {
+  box-shadow: none !important;
+}
+
+.form-card form,
+.form-card .card,
+.form-card .card-body,
+.form-card .inner-card,
+.form-card fieldset,
+.form-card .form-section {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.form-fields > * {
+  margin-bottom: 14px;
+}
+
+.form-fields > *:last-child {
+  margin-bottom: 0;
+}
+
+/* MAKE THE CARD A FLEX COLUMN SO margin-top:auto on footer works */
+.form-card {
+  display: flex;
+  flex-direction: column;
+  /* height is controlled inline from component: either containerHeight px or 100% */
+  width: 100%;
+}
+
+        .ck-modal-header { padding: 22px 20px 6px; text-align: center; display: flex; align-items: center; justify-content: center; }
+        .ck-modal-title { font-size: 30px !important; font-weight: 400 !important; line-height: 1.2; color: #fff; text-align: center; }
+
+        .form-cards { padding: 16px 20px 18px; flex: 1; display: flex; flex-direction: column; }
         .ck-nav { display: flex; flex-direction:row; justify-content: space-between; align-items: center; margin-top: 24px; width: 100%; }
-        .ck-nav-btn { background: none; border: none; color: #ff914d; font-size: 15px; cursor: pointer; padding: 4px 6px; transition: opacity 0.2s ease; }
-        .ck-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-        .ck-nav-btn:not(:disabled):hover { opacity: 0.8; }
-        .modal-footer { position: sticky; bottom: 0; left: 0; right: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0; background: #000; padding: 0; margin-top: -8px; margin-left: -40px; margin-right: -40px; z-index: 2; }
-        .modal-footer .price-btn, .modal-footer .proceed-btn { width: 100%; border-radius: 0; margin: 0; height: 56px; line-height: 1; display: flex; align-items: center; justify-content: center; box-shadow: none; }
-        .modal-footer .price-btn { background: transparent; color: #ffffff; border-top: 2px solid #ff914d; border-right: 2px solid #ff914d; border-right-width: 1px; border-bottom-left-radius: 10px; justify-content: center; padding-left: 0; text-align: center; }
-        .modal-footer .proceed-btn { border: 2px solid #444; border-left-width: 1px; border-bottom-right-radius: 10px; transition: all 0.3s ease; }
-        @media (max-width: 576px) {
-          .modal-footer { margin-left: -16px; margin-right: -16px; }
-          .modal-footer .price-btn, .modal-footer .proceed-btn { height: 52px; font-size: 1rem; padding: 0.6rem 1rem; }
+        .ck-nav-btn { background: none; border: none; color: #ff914d; font-size: 15px; cursor: pointer; padding: 4px 6px; }
+        
+        .modal-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #000;
+  border-top: 1px solid #ff914d;
+  margin-top: auto;   /* 🔥 this will now push footer to the bottom of .form-card */
+  width: 100%;
+}
+
+        .modal-footer .price-btn, .modal-footer .proceed-btn { 
+            width: 100% !important; 
+            height: 58px; 
+            display: flex; align-items: center; justify-content: center; 
+            border: none; background: transparent; color: #fff; font-size: 17px;
+            margin: 0; padding: 0;
+        }
+        .modal-footer .price-btn { border-right: 1px solid #ff914d !important; cursor: default; }
+        .modal-footer .proceed-btn { border-left: 0px !important; transition: all 0.3s ease; }
+        
+        @media (max-width: 576px) { 
+            .modal-footer { margin-left: 0; margin-right: 0; } 
+            .ck-modal-title { font-size: 26px !important; }
         }
       `}</style>
 
       <div className="container">
-        <div className="form-container" style={{ maxWidth: inModal ? (isMobile ? "100%" : "450px") : undefined }}>
-          <div className="form-card" style={{ border: inModal ? "none" : undefined, borderRadius: inModal ? "8px" : undefined, height: containerHeight !== "auto" ? `${containerHeight}px` : "auto" }} ref={formContainerRef}>
+        <div className="form-container" style={{ maxWidth: inModal ? (isMobile ? "100%" : "450px") : "450px" }}>
+          <div
+  className="form-card"
+  style={{
+    height: containerHeight !== "auto" ? `${containerHeight}px` : "100%"
+  }}
+  ref={formContainerRef}
+>
+  
             <div className="ck-modal-header">
-              <span className="ck-modal-title text-center w-100 " style={{display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",}}>{currentForm.title}</span>
+              <span className="ck-modal-title">{currentForm.title}</span>
             </div>
 
-            <div className="form-cards" style={{ padding: inModal ? "1.2rem 1.2rem 1.5rem" : undefined }}>
-              <div className="form-fields">
-                {currentForm.id === 1 ? (
-                  <GeneralInformationForm data={getStepData(1)} onChange={(field, value) => setFieldValue(1, field, value)} showTitle={false} showDateTimePickers={true} />
-                ) : currentForm.id === 2 ? (
-                  <PrimaryNumberForm data={getStepData(2)} onChange={(field, value) => setFieldValue(2, field, value)} showTitle={false} />
-                ) : currentForm.id === 3 ? (
-                  <ParallelNumbersForm numbers={getParallelNumbersData()} onChange={handleParallelNumberChange} onAdd={handleAddParallelNumber} onRemove={handleRemoveParallelNumber} onToggle={handleParallelToggle} maxNumbers={3} showTitle={false} />
-                ) : currentForm.id === 4 ? (
-                  <PreviousNumbersForm numbers={getPreviousNumbersData()} onChange={handlePreviousNumberChange} onAdd={handleAddPreviousNumber} onRemove={handleRemovePreviousNumber} onToggle={handlePreviousToggle} showTitle={false} />
-                ) : currentForm.id === 5 ? (
+            <div className="form-cards flex-grow-1">
+              <div className="form-fields flex-grow-1">
+                {currentForm.id === 1 && <GeneralInformationForm data={getStepData(1)} onChange={(f, v) => setFieldValue(1, f, v)} showTitle={false} showDateTimePickers={true} />}
+                {currentForm.id === 2 && <PrimaryNumberForm data={getStepData(2)} onChange={(f, v) => setFieldValue(2, f, v)} showTitle={false} />}
+                {currentForm.id === 3 && <ParallelNumbersForm numbers={getParallelNumbersData()} onChange={handleParallelNumberChange} onAdd={handleAddParallelNumber} onRemove={handleRemoveParallelNumber} onToggle={handleParallelToggle} maxNumbers={3} showTitle={false} />}
+                {currentForm.id === 4 && <PreviousNumbersForm numbers={getPreviousNumbersData()} onChange={handlePreviousNumberChange} onAdd={handleAddPreviousNumber} onRemove={handleRemovePreviousNumber} onToggle={handlePreviousToggle} showTitle={false} />}
+                {currentForm.id === 5 && (
                   <CompatibilityNumbersForm
                     primaryData={{ ...(getStepData(5)["Mobile Number"] || {}), relationship: getStepData(5)["Relationship with the user"] }}
                     numbers={dynamicNumbers[5] || []}
@@ -690,44 +688,29 @@ rzp.open();
                     onRemove={(idx) => handleRemoveNumber(5, idx)}
                     onChange={(idx, field, value) => setDynamicNumberValue(5, idx, field, value)}
                   />
-                ) : null}
+                )}
               </div>
 
-              <div className="ck-nav w-100">
-                <button className="ck-nav-btn" disabled={currentStep === 0} onClick={handlePrev} type="button">‹‹‹ prev</button>
-                <button className="ck-nav-btn" disabled={currentStep === effectiveSteps.length - 1} onClick={handleNext} type="button">next ›››</button>
+              <div className="ck-nav mt-auto">
+                <button className="ck-nav-btn" disabled={currentStep === 0} onClick={handlePrev}>‹‹‹ prev</button>
+                <button className="ck-nav-btn" disabled={currentStep === effectiveSteps.length - 1} onClick={handleNext}>next ›››</button>
               </div>
             </div>
 
-            <div className={inModal ? "modal-footer" : "d-flex gap-3 mt-4"}>
-              <button className="price-btn" style={{ flex: inModal ? undefined : 1, padding: inModal ? "0.75rem 1rem" : undefined, fontSize: inModal ? "1rem" : undefined, height: inModal ? 48 : undefined }}>
-                ₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}
-              </button>
-              
-              {/* ✅ PROCEED BUTTON LOGIC */}
+            <div className="modal-footer">
+              <div className="price-btn">₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}</div>
               <button
                 className="proceed-btn"
                 style={{
-                  flex: inModal ? undefined : 1,
-                  padding: inModal ? "0.75rem 1rem" : undefined,
-                  fontSize: inModal ? "1rem" : undefined,
-                  height: inModal ? 48 : undefined,
-                  
-                  // 🔥 Logic: Last Step AND Form is Valid = Orange, Else Black/Grey
-                  backgroundColor: canSubmit ? "#ff914d" : "#222",
-                  color: canSubmit ? "#000" : "#cfcfcf",
-                  borderTop: "2px solid #ff914d",
-                  borderRight: canSubmit ? "2px solid #ff914d" : "2px solid #444",
-                  borderBottom: canSubmit ? "2px solid #ff914d" : "2px solid #444",
-                  borderLeft: canSubmit ? "1px solid #ff914d" : "1px solid #444",
-                  opacity: canSubmit ? 1 : 0.6,
+                  backgroundColor: canSubmit ? "#ff914d" : "#1a1a1a",
+                  color: canSubmit ? "#000" : "#666",
                   cursor: canSubmit ? "pointer" : "not-allowed",
+                  fontWeight: canSubmit ? "600" : "400"
                 }}
                 disabled={!canSubmit || isPaying}
                 onClick={handleProceed}
               >
-                {isPaying ? "Processing payment..." : "Proceed"}
-
+                {isPaying ? "Processing..." : "Proceed"}
               </button>
             </div>
           </div>
