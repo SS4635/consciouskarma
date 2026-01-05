@@ -625,7 +625,6 @@ export default function ConsultationBookingForm({
           <div className="form-card" style={{ border: inModal ? "none" : undefined, borderRadius: inModal ? "8px" : undefined, height: containerHeight !== "auto" ? `${containerHeight}px` : "auto" }} ref={formContainerRef}>
             <div className="ck-modal-header">
               <span className="ck-modal-title">{currentForm.title}</span>
-              {inModal && <button className="ck-close" onClick={onClose} aria-label="Close">✕</button>}
             </div>
 
             <div className="form-cards" style={{ padding: inModal ? "1.2rem 1.2rem 1.5rem" : undefined }}>
