@@ -9,7 +9,6 @@ import ParallelNumbersForm from "./forms/ParallelNumbersForm";
 import PreviousNumbersForm from "./forms/PreviousNumbersForm";
 import CompatibilityNumbersForm from "./forms/CompatibilityNumbersForm";
 
-
 export default function ConsultationBookingForm({
   maxSteps = 5,
   selectedPlan = null,
@@ -25,7 +24,7 @@ export default function ConsultationBookingForm({
   const [isParallelExpanded, setIsParallelExpanded] = useState(false);
   const [isPreviousExpanded, setIsPreviousExpanded] = useState(false);
   const formContainerRef = useRef(null);
-  
+
   // 🔥 PAYMENT LOADER STATES
   const [isPaying, setIsPaying] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -586,78 +585,98 @@ export default function ConsultationBookingForm({
       {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
       
       <style>{`
+        .container{
+          padding: 0;
+        }
         .swal2-popup { background: #111 !important; color: #fff !important; border: 2px solid #fb923c !important; border-radius: 16px !important; }
         .swal2-container { z-index: 9999 !important; }
         
         .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; height: 100%; }
         
-        /* 🔥 OUTER BORDER: SIRF ISKO RAKHENGE */
-        /* 🔥 COMPLETELY FLATTEN INNER FORMS */
-.form-card * {
-  box-shadow: none !important;
-}
+        .form-card * {
+          box-shadow: none !important;
+        }
 
-.form-card form,
-.form-card .card,
-.form-card .card-body,
-.form-card .inner-card,
-.form-card fieldset,
-.form-card .form-section {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
+        .form-card form,
+        .form-card .card,
+        .form-card .card-body,
+        .form-card .inner-card,
+        .form-card fieldset,
+        .form-card .form-section {
+          background: transparent !important;
+          border: none !important;
+          border-radius: 0 !important;
+          padding: 0 !important;
+          margin: 0 !important;
+        }
 
-.form-fields > * {
-  margin-bottom: 14px;
-}
+        .form-container{
+          padding: 0;
+        }
 
-.form-fields > *:last-child {
-  margin-bottom: 0;
-}
+        .form-fields > * {
+          margin-bottom: 14px;
+        }
 
-/* MAKE THE CARD A FLEX COLUMN SO margin-top:auto on footer works */
-.form-card {
-  display: flex;
-  flex-direction: column;
-  /* height is controlled inline from component: either containerHeight px or 100% */
-  width: 100%;
-}
+        .form-fields > *:last-child {
+          margin-bottom: 0;
+        }
+
+        // /* 🔥 MAIN CARD CONTAINER STYLING */
+        // .form-card {
+        //   display: flex;
+        //   flex-direction: column;
+        //   width: 100%;
+        //   /* ENFORCE OUTER BORDER AND RADIUS HERE */
+        //   border: 1px solid #ff914d;
+        //   border-radius: 16px;
+        //   overflow: hidden; /* Clips footer to the curve */
+        //   background-color: transparent; 
+        // }
 
         .ck-modal-header { padding: 22px 20px 6px; text-align: center; display: flex; align-items: center; justify-content: center; }
         .ck-modal-title { font-size: 30px !important; font-weight: 400 !important; line-height: 1.2; color: #fff; text-align: center; }
 
-        .form-cards { padding: 16px 20px 18px; flex: 1; display: flex; flex-direction: column; }
-        .ck-nav { display: flex; flex-direction:row; justify-content: space-between; align-items: center; margin-top: 24px; width: 100%; }
+        .form-cards { 
+          padding: 16px 20px 18px; 
+          flex: 1; 
+          display: flex; 
+          flex-direction: column; 
+          overflow-y: auto;   /* Scrollable content */
+          min-height: 0;      /* Required for flex scrolling */
+        }
+        .ck-nav { display: flex; flex-direction:row; justify-content: space-between; align-items: center; margin-top: 24px; width: 100%; flex-shrink: 0; }
         .ck-nav-btn { background: none; border: none; color: #ff914d; font-size: 15px; cursor: pointer; padding: 4px 6px; }
         
+        /* 🔥 MODAL FOOTER */
         .modal-footer {
-  display: flex; /* Changed from grid to flex to handle full width correctly */
-  background: #000;
-  border-top: 2px solid #ff914d; /* Match the 2px border from InstantReport */
-  margin-top: auto;   
-  width: 100%;
-}
+          display: flex; 
+          background: #000; /* Ensure black background */
+          border-top: 2px solid #ff914d; 
+          margin-top: auto;   
+          width: 100%;
+          height: 58px;
+          flex-shrink: 0; /* Keep footer fixed height */
+        }
 
         .modal-footer .price-btn, .modal-footer .proceed-btn { 
-            /* width: 100% !important;  <- Removed this */
-            flex: 1; /* Both take equal space */
-            height: 58px; 
+            flex: 1; 
+            height: 100%; 
             display: flex; align-items: center; justify-content: center; 
             border: none;
-            background: transparent; color: #fff; font-size: 17px;
+            background: transparent; 
+            color: #fff; 
+            font-size: 17px;
             margin: 0; padding: 0;
-            box-sizing: border-box; /* Ensure borders are included in dimensions */
+            box-sizing: border-box; 
         }
+
         .modal-footer .price-btn { 
-          border-right: 2px solid #ff914d !important; /* Match the 2px vertical divider */
+          border-right: 1px solid #ff914d !important; 
           cursor: default; 
-          background: #161616; /* Match InstantReport left background */
         }
+
         .modal-footer .proceed-btn { 
-          border-left: 0px !important; 
           transition: all 0.3s ease; 
         }
         
@@ -670,12 +689,12 @@ export default function ConsultationBookingForm({
       <div className="container">
         <div className="form-container" style={{ maxWidth: inModal ? (isMobile ? "100%" : "450px") : "450px" }}>
           <div
-  className="form-card"
-  style={{
-    height: containerHeight !== "auto" ? `${containerHeight}px` : "100%"
-  }}
-  ref={formContainerRef}
->
+            className="form-card"
+            style={{
+              height: containerHeight !== "auto" ? `${containerHeight}px` : "100%"
+            }}
+            ref={formContainerRef}
+          >
   
             <div className="ck-modal-header">
               <span className="ck-modal-title">{currentForm.title}</span>
@@ -711,8 +730,9 @@ export default function ConsultationBookingForm({
               <button
                 className="proceed-btn"
                 style={{
-                  backgroundColor: canSubmit ? "#ff914d" : "#1a1a1a",
-                  color: canSubmit ? "#000" : "#666",
+                  backgroundColor: canSubmit ? "#ff914d" : "transparent",
+                  // 🔥 Logic Update: Lighter grey text when disabled to appear more visible like Image 1
+                  color: canSubmit ? "#000" : "#9CA3AF", 
                   cursor: canSubmit ? "pointer" : "not-allowed",
                   fontWeight: canSubmit ? "600" : "400"
                 }}

@@ -1042,11 +1042,11 @@ const [showLogin, setShowLogin] = useState(false);
     onClick={() => setShowForm(false)}
   >
     <div 
-      className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] overflow-y-auto relative"
+      className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
 
-        <div className="" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px" }}>
+        <div className="" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px", flexShrink: 0 }}>
           <p  style={{fontSize:"28px",fontWeight:"300",marginBottom:"2rem"}}>Instant Report</p>
         </div>
 

@@ -464,7 +464,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
   return (
 
     
-    <div style={{ width: "100%", maxWidth: "400px" }}>
+    <div style={{ width: "100%", maxWidth: "400px", display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
 
       {generatingReport &&
   ReactDOM.createPortal(
@@ -781,7 +781,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
   )
 }
 
-          <div style={{ padding: "0 1.5rem 1.5rem 1.2rem" }}>
+          <div style={{ padding: "0 1.5rem 1.5rem 1.2rem", overflowY: "auto", flex: "1" }}>
             <form onSubmit={handleSubmit}>
               {/* MOBILE */}
               <div style={{ marginBottom: "18px" }}>
@@ -888,7 +888,8 @@ const successOverlay = (generatingReport && showSuccess) ? (
 
           <div style={{
             width: "100%", 
-            display: "flex", 
+            display: "flex",
+            flexShrink: 0,
             // borderTop: "2px solid #ff914d" // Removed container border to fix overlap
           }}>
             <div style={{ 

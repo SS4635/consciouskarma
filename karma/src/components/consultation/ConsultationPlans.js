@@ -337,7 +337,9 @@ useEffect(() => {
                 borderRadius: 12,
                 boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
                 maxHeight: "34rem",
-                overflowY: "auto",
+                overflow: "hidden", // <-- Changed from overflowY: "auto"
+                display: "flex",    // <-- Added flex
+                flexDirection: "column", // <-- Added column
                 transform: modalOpening
                   ? "translateY(0) scale(1)"
                   : isMobile
@@ -350,7 +352,7 @@ useEffect(() => {
               }}
               onClick={(ev) => ev.stopPropagation()}
             >
-              <div style={{ marginTop: 8 }}>{renderBooking()}</div>
+              <div style={{ marginTop: 8, height: "100%", display: "flex", flexDirection: "column" }}>{renderBooking()}</div>
             </div>
           </div>
         )}
