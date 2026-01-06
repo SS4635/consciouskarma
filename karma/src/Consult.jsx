@@ -293,7 +293,7 @@ const [showLogin, setShowLogin] = useState(false);
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a
               href="/termsandconditions"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
             >
               Terms & Conditions
             </a>
@@ -310,7 +310,7 @@ const [showLogin, setShowLogin] = useState(false);
 
             <a
               href="/privacy-policy"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
             >
               Privacy Policy
             </a>
@@ -327,7 +327,7 @@ const [showLogin, setShowLogin] = useState(false);
 
             <a
               href="/refund-policy"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
             >
               Refund Policy
             </a>
@@ -344,7 +344,7 @@ const [showLogin, setShowLogin] = useState(false);
 
             <a
               href="/shipping-policy"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
             >
               Shipping & Delivery
             </a>
@@ -361,7 +361,7 @@ const [showLogin, setShowLogin] = useState(false);
 
             <a
               href="/contact-us"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
             >
               Contact Us
             </a>
