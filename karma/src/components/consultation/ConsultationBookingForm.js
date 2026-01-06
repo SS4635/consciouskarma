@@ -689,7 +689,7 @@ export default function ConsultationBookingForm({
       <div className="container">
         <div className="form-container" style={{ maxWidth: inModal ? (isMobile ? "100%" : "450px") : "450px" }}>
           <div
-            className="form-card"
+            className="form-card overflow-scroll"
             style={{
               height: containerHeight !== "auto" ? `${containerHeight}px` : "100%"
             }}
