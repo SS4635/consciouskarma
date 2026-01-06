@@ -886,10 +886,40 @@ const successOverlay = (generatingReport && showSuccess) ? (
             </form>
           </div>
 
-          <div style={footerFix}>
-            <div style={{ width: "50%", padding: "7px 61px", background: "#161616", borderRight: "2px solid #ff914d", color: "#fff", borderBottomLeftRadius: "12px", fontSize: "21px" }}>₹{(finalAmount / 100)}</div>
+          <div style={{
+            width: "100%", 
+            display: "flex", 
+            // borderTop: "2px solid #ff914d" // Removed container border to fix overlap
+          }}>
+            <div style={{ 
+              width: "50%", 
+              padding: "7px 61px", 
+              background: "#161616", 
+              borderRight: "2px solid #ff914d", 
+              borderTop: "2px solid #ff914d", // Moved border to children
+              color: "#fff", 
+              borderBottomLeftRadius: "12px", 
+              fontSize: "21px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              ₹{(finalAmount / 100)}
+            </div>
             <button type="submit" disabled={paying || !rzReady || !isFormValid || generatingReport} onClick={handleSubmit}
-              style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", fontSize: "21px", background: (paying || !rzReady || !isFormValid || generatingReport) ? "#444" : "#ff914d", border: "none", color: (paying || !rzReady || !isFormValid || generatingReport) ? "#888" : "black", cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer" }}>
+              style={{ 
+                flex: 1, 
+                display: "flex", 
+                justifyContent: "center", 
+                alignItems: "center", 
+                fontSize: "21px", 
+                background: (paying || !rzReady || !isFormValid || generatingReport) ? "#1a1a1a" : "#ff914d", 
+                border: "none", 
+                borderTop: "2px solid #ff914d", // Explicit border top for button
+                color: (paying || !rzReady || !isFormValid || generatingReport) ? "#666" : "black", 
+                cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer",
+                borderBottomRightRadius: "12px"
+              }}>
               {!rzReady ? "Loading…" : paying || generatingReport ? "Processing…" : finalAmount === 0 ? "Get Report" : ctaLabel}
             </button>
           </div>

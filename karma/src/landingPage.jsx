@@ -86,6 +86,23 @@ const [showLogin, setShowLogin] = useState(false);
   const [step3Done, setStep3Done] = useState(false);
 
   useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        if (showForm) setShowForm(false);
+        if (showSignup) setShowSignup(false);
+        if (showLogin) setShowLogin(false);
+      }
+    };
+    // Attach listener if any modal is open
+    if (showForm || showSignup || showLogin) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showForm, showSignup, showLogin]);
+
+  useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -1020,10 +1037,16 @@ const [showLogin, setShowLogin] = useState(false);
         
       </footer >
 {showForm && (
-  <div className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] overflow-y-auto relative">
+  <div 
+    className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    onClick={() => setShowForm(false)}
+  >
+    <div 
+      className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] overflow-y-auto relative"
+      onClick={(e) => e.stopPropagation()}
+    >
 
-        <div className="" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px" }}>
+        <div className="" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px" }}>
           <p  style={{fontSize:"28px",fontWeight:"300",marginBottom:"2rem"}}>Instant Report</p>
         </div>
 

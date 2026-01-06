@@ -634,23 +634,32 @@ export default function ConsultationBookingForm({
         .ck-nav-btn { background: none; border: none; color: #ff914d; font-size: 15px; cursor: pointer; padding: 4px 6px; }
         
         .modal-footer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex; /* Changed from grid to flex to handle full width correctly */
   background: #000;
-  border-top: 1px solid #ff914d;
-  margin-top: auto;   /* 🔥 this will now push footer to the bottom of .form-card */
+  border-top: 2px solid #ff914d; /* Match the 2px border from InstantReport */
+  margin-top: auto;   
   width: 100%;
 }
 
         .modal-footer .price-btn, .modal-footer .proceed-btn { 
-            width: 100% !important; 
+            /* width: 100% !important;  <- Removed this */
+            flex: 1; /* Both take equal space */
             height: 58px; 
             display: flex; align-items: center; justify-content: center; 
-            border: none; background: transparent; color: #fff; font-size: 17px;
+            border: none;
+            background: transparent; color: #fff; font-size: 17px;
             margin: 0; padding: 0;
+            box-sizing: border-box; /* Ensure borders are included in dimensions */
         }
-        .modal-footer .price-btn { border-right: 1px solid #ff914d !important; cursor: default; }
-        .modal-footer .proceed-btn { border-left: 0px !important; transition: all 0.3s ease; }
+        .modal-footer .price-btn { 
+          border-right: 2px solid #ff914d !important; /* Match the 2px vertical divider */
+          cursor: default; 
+          background: #161616; /* Match InstantReport left background */
+        }
+        .modal-footer .proceed-btn { 
+          border-left: 0px !important; 
+          transition: all 0.3s ease; 
+        }
         
         @media (max-width: 576px) { 
             .modal-footer { margin-left: 0; margin-right: 0; } 

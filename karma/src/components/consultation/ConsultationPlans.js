@@ -27,6 +27,21 @@ export default function ConsultationPlans() {
     }
   }, [showModal]);
 
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && showModal) {
+        closeModal();
+      }
+    };
+    if (showModal) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showModal]);
+
   // detect mobile viewport
   useEffect(() => {
     const onResize = () => setIsMobile(window.innerWidth <= 576);
@@ -105,8 +120,22 @@ useEffect(() => {
     <section className="bg-black text-white d-flex align-items-center py-5 font-arsenal">
       <div className="container">
         <style>{`
-          .ck-modal-card { -ms-overflow-style: none; scrollbar-width: none; }
-          .ck-modal-card::-webkit-scrollbar { display: none; width: 0; height: 0; }
+          /* Thin Scrollbar */
+          .ck-modal-card {
+            scrollbar-width: thin;
+            scrollbar-color: #ff914d #000;
+          }
+          .ck-modal-card::-webkit-scrollbar {
+            width: 4px;
+          }
+          .ck-modal-card::-webkit-scrollbar-track {
+            background: #000;
+          }
+          .ck-modal-card::-webkit-scrollbar-thumb {
+            background-color: #ff914d;
+            border-radius: 4px;
+          }
+          
           .ck-modal-backdrop { -ms-overflow-style: none; scrollbar-width: none; }
           .ck-modal-backdrop::-webkit-scrollbar { display: none; width: 0; height: 0; }
           
@@ -287,7 +316,7 @@ useEffect(() => {
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.6)",
+              background: "rgba(0,0,0,0.9)",
               opacity: modalOpening ? 1 : 0,
               transition: "opacity 400ms ease-in-out",
               display: "flex",

@@ -63,8 +63,8 @@ export default function SignupModal({ onClose, onSwitch }) {
 }
 
   return (
-    <div className="ck-modal-backdrop">
-      <div className="ck-modal">
+    <div className="ck-modal-backdrop" onClick={onClose}>
+      <div className="ck-modal" onClick={(e) => e.stopPropagation()}>
         <div className="ck-modal-header" style={{
   display: "flex",
   alignItems: "center",   /* vertical */
