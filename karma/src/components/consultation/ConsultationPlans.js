@@ -284,7 +284,7 @@ useEffect(() => {
                     {plan.title}
                   </h3>
                   <span className=" fs-4 font-arsenal">
-                    {plan.price}
+                    ₹{plan.price}
                   </span>
                 </div>
                 <p
