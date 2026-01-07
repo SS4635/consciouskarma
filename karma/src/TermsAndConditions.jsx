@@ -212,7 +212,54 @@ const [showLogin, setShowLogin] = useState(false);
       <div style={{ width: "100%", height: "1px", background: "#ff914d", marginTop: "32px", marginBottom: "-30px", borderRadius: "2px" }}></div>
       <footer className="tc-footer bg-black text-white py-3 sm:py-2 md:py-3 mt-8">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+          {/* Mobile footer (matches screenshot) */}
+          <nav aria-label="Footer" className="sm:hidden">
+            <div className="tc-footer-links flex flex-wrap items-center justify-center text-center text-white font-bold text-xs">
+              <a
+                href="/termsandconditions"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Terms & Conditions
+              </a>
+              <span className="tc-footer-sep" aria-hidden="true">|</span>
+              <a
+                href="/privacy-policy"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Privacy Policy
+              </a>
+              <span className="tc-footer-sep" aria-hidden="true">|</span>
+              <a
+                href="/refund-policy"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Refund Policy
+              </a>
+
+              {/* First line ends with a trailing pipe, like the screenshot */}
+              <span className="tc-footer-sep" aria-hidden="true">|</span>
+
+              {/* Force the 2-line wrap exactly like the screenshot */}
+              <span className="tc-footer-break" aria-hidden="true"></span>
+
+              <a
+                href="/shipping-policy"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Shipping & Delivery
+              </a>
+              <span className="tc-footer-sep" aria-hidden="true">|</span>
+              <a
+                href="/contact-us"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Contact Us
+              </a>
+            </div>
+          </nav>
+
+          {/* Desktop/tablet footer (existing layout) */}
+          <div className="hidden sm:flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a
               href="/termsandconditions"
               className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"

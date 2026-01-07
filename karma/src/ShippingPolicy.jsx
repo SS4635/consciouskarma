@@ -118,10 +118,57 @@ const ShippingPolicy = () => {
       )}
 
       {/* FOOTER OUTSIDE CONTENT */}
-      <footer className="mt-12 w-full bg-black text-white border-t-2 border-orange-400 py-1 sm:py-2 md:py-3">
+      <footer className="sp-policy-footer mt-12 w-full bg-black text-white border-t-2 border-orange-400 py-1 sm:py-2 md:py-3">
         <div className="w-full flex flex-col items-center justify-center text-center px-4 sm:px-6 gap-4">
 
-          <div className="flex flex-wrap items-center justify-center gap-4">
+          {/* Mobile footer (matches screenshot) */}
+          <nav aria-label="Footer" className="sm:hidden">
+            <div className="sp-footer-links flex flex-wrap items-center justify-center text-center text-white font-bold text-xs">
+              <a
+                href="/termsandconditions"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Terms & Conditions
+              </a>
+              <span className="sp-footer-sep" aria-hidden="true">|</span>
+              <a
+                href="/privacy-policy"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Privacy Policy
+              </a>
+              <span className="sp-footer-sep" aria-hidden="true">|</span>
+              <a
+                href="/refund-policy"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Refund Policy
+              </a>
+
+              {/* First line ends with a trailing pipe, like the screenshot */}
+              <span className="sp-footer-sep" aria-hidden="true">|</span>
+
+              {/* Force the 2-line wrap exactly like the screenshot */}
+              <span className="sp-footer-break" aria-hidden="true"></span>
+
+              <a
+                href="/shipping-policy"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Shipping & Delivery
+              </a>
+              <span className="sp-footer-sep" aria-hidden="true">|</span>
+              <a
+                href="/contact-us"
+                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
+              >
+                Contact Us
+              </a>
+            </div>
+          </nav>
+
+          {/* Desktop/tablet footer (existing layout) */}
+          <div className="hidden sm:flex flex-wrap items-center justify-center gap-4">
             {[
               ["Terms & Conditions", "/termsandconditions"],
               ["Privacy Policy", "/privacy-policy"],

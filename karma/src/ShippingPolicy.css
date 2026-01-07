@@ -125,3 +125,45 @@
     padding-left: 15px;
   }
 }
+
+/* MOBILE POLICY FOOTER (match screenshot) */
+@media (max-width: 640px) {
+  .sp-policy-footer {
+    background: #000000 !important;
+    border-top: 1px solid #ff914d !important;
+    padding: 12px 0 !important;
+    color: #ffffff !important;
+  }
+
+  .sp-policy-footer > div {
+    gap: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .sp-policy-footer nav {
+    width: 100%;
+  }
+
+  .sp-policy-footer .sp-footer-links {
+    line-height: 1.25;
+  }
+
+  .sp-policy-footer nav a {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 12px;
+    text-decoration: none;
+  }
+
+  .sp-policy-footer .sp-footer-sep {
+    margin: 0 8px;
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  .sp-policy-footer .sp-footer-break {
+    flex-basis: 100%;
+    height: 0;
+  }
+}
