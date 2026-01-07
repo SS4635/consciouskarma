@@ -329,7 +329,7 @@ const [showLogin, setShowLogin] = useState(false);
             <div className="flex flex-col items-center justify-start text-center gap-2  pt-[2px]">
               {/* Heading */}
               <div style={{ marginTop: 'clamp(20px, 4vw, 32px)' }}>
-                <h2 className="font-thin text-gray-200 leading-tight" style={{ fontSize: 'clamp(20px, 3.5vw, 32px)', lineHeight: '1.3' }}>
+                <h2 className="font-thin text-gray-200 leading-tight" style={{ fontSize: 'clamp(22px, 3.5vw, 32px)', lineHeight: '1.3' }}>
                   <span className="block" style={{ marginBottom: 'clamp(2px, 0.5vw, 4px)' }}>
                     <FormattedMessage id="hero.subtitle" />
                   </span>
@@ -940,8 +940,8 @@ const [showLogin, setShowLogin] = useState(false);
       < section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
         <div className="container mx-auto flex flex-col items-center text-center space-y-6 sm:space-y-7 md:space-y-8 mb-8 sm:mb-12">
 
-          <p className="font-thin text-white max-w-[90%] sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(20px, 2.5vw, 30px)', lineHeight: '1' }}>
-            <span className="block" style={{ marginBottom: 'clamp(4px, 0.5vw, 8px)' }}>
+          <p className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 30px)', lineHeight: '1' }}>
+            <span className="block whitespace-nowrap sm:whitespace-normal" style={{ marginBottom: 'clamp(4px, 0.5vw, 8px)' }}>
               <FormattedMessage id="finalCta.line1" />
             </span>
             <span className="block"><FormattedMessage id="finalCta.line2" /></span>
