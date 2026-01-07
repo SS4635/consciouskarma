@@ -222,13 +222,13 @@ const ConsciousKarmaPage = () => {
   };
 
   const faqs = [
-    { question: "1 - What happens after I submit the form?", answer: "A - Once your details are submitted, the analysis begins. Each number is studied individually, and your personalised report is prepared within 5–7 working days. You'll receive it directly on your registered email." },
-    { question: "2 - Why do I need to verify my mobile number with an OTP?", answer: "A - OTP verification confirms that the number is active and genuinely belongs to you." },
-    { question: "3 - Can I include more than one number in a single report?", answer: "A – Yes. You can include more than one number in the same report. This gives insights into each number on its own, and also how they interact together. (Each additional number is charged.)" },
-    { question: "4 – How many secondary numbers can I add?", answer: "A - You can include up to three secondary numbers along with your primary number. If you're using more than four numbers, we recommend booking a consultation." },
-    { question: "5 - What if I've changed my number in the past?", answer: "A - You can add your previous number(s) in the form. They help us understand how your mobile number energy has shifted over time and provide context for your current number's influence." },
-    { question: "6 - Why do you ask for my age, gender, and work details?", answer: "A - These details help in understanding how your number's energy interacts with your stage of life and the environment you function in. Each number expresses differently depending on who uses it and for what purpose." },
-    { question: "7 - What if I enter the wrong number in the form?", answer: "A - If an incorrect number is verified or submitted, it will produce a report for that number. Please double-check all digits before submission, as each number sequence is unique." },
+    { question: "1 - What happens after I submit the form?", answer: "Once your details are submitted, the analysis begins. Each number is studied individually, and your personalised report is prepared within 5–7 working days. You'll receive it directly on your registered email." },
+    { question: "2 - Why do I need to verify my mobile number with an OTP?", answer: "OTP verification confirms that the number is active and genuinely belongs to you." },
+    { question: "3 - Can I include more than one number in a single report?", answer: "Yes. You can include more than one number in the same report. This gives insights into each number on its own, and also how they interact together. (Each additional number is charged.)" },
+    { question: "4 – How many secondary numbers can I add?", answer: "You can include up to three secondary numbers along with your primary number. If you're using more than four numbers, we recommend booking a consultation." },
+    { question: "5 - What if I've changed my number in the past?", answer: "You can add your previous number(s) in the form. They help us understand how your mobile number energy has shifted over time and provide context for your current number's influence." },
+    { question: "6 - Why do you ask for my age, gender, and work details?", answer: "These details help in understanding how your number's energy interacts with your stage of life and the environment you function in. Each number expresses differently depending on who uses it and for what purpose." },
+    { question: "7 - What if I enter the wrong number in the form?", answer: "If an incorrect number is verified or submitted, it will produce a report for that number. Please double-check all digits before submission, as each number sequence is unique." },
   ];
 
   // ========== OTP COOLDOWN HELPERS ==========
