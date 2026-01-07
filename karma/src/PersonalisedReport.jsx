@@ -825,7 +825,7 @@ const ConsciousKarmaPage = () => {
           <div className="ck-form-layout">
             {/* LEFT HERO */}
             <div className="ck-hero">
-              <p className="ck-hero-text">
+              <p className="ck-hero-text text-[25px] md:text-[24px]">
                 Every mobile number is alive with energy,<br /> shaping how we think, feel, speak, and live.
               </p>
 
@@ -854,13 +854,13 @@ const ConsciousKarmaPage = () => {
                 </div>
               </div>
 
-              <p className="ck-hero-sub">
+              <p className="ck-hero-sub text-[25px] md:text-[24px]">
                 Every Mobile Number tells a story.
                 <br />
                 This is YOURS.
               </p>
 
-              <p className="ck-delivery-text-left">
+              <p className="ck-delivery-text-left text-[17px] md:text-[15px]">
                 <>
                   Delivery within 5–7 days
                   <br />
