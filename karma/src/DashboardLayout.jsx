@@ -365,15 +365,9 @@ export default function DashboardLayout() {
                               const s = item.status.toLowerCase();
                               if (s === "paid") paymentStatus = "Paid";
                               else if (s === "pending") paymentStatus = "Pending";
-                              else if (s === "submitted") paymentStatus = "Submitted";
                               else if (s === "processing") paymentStatus = "Processing";
-                              else if (s === "emailed") paymentStatus = "Paid";
+                              else if (s === "submitted" || s === "emailed") paymentStatus = "Sent";
                               else paymentStatus = item.status;
-                            }
-
-                            let emailStatus = null;
-                            if (item.status && (item.status.toLowerCase() === "emailed" || item.status.toLowerCase() === "submitted")) {
-                              emailStatus = "Email Sent";
                             }
 
                             return (
@@ -399,19 +393,13 @@ export default function DashboardLayout() {
                                         ? "booked"
                                         : paymentStatus.toLowerCase() === "processing"
                                         ? "processing"
+                                        : paymentStatus.toLowerCase() === "sent"
+                                        ? "sent"
                                         : "other"
                                     }`}
                                   >
                                     {paymentStatus.charAt(0).toUpperCase() + paymentStatus.slice(1)}
                                   </span>
-                                  {emailStatus && (
-                                    <span
-                                      className="ck-status-badge paid"
-                                      style={{ background: "#256029", color: "#fff", marginTop: 2 }}
-                                    >
-                                      {emailStatus}
-                                    </span>
-                                  )}
                                 </td>
                               </tr>
                             );
