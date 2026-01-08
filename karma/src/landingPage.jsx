@@ -1,5 +1,4 @@
 
-
 // src/ConsciousKarmaSections.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
@@ -925,7 +924,7 @@ const [showLogin, setShowLogin] = useState(false);
       < section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
         <div className="container mx-auto flex flex-col items-center text-center space-y-6 sm:space-y-7 md:space-y-8 mb-8 sm:mb-12">
 
-          <p className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(18px, 2.5vw, 30px)', lineHeight: '1' }}>
+          <p className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', lineHeight: '1' }}>
             <span className="block whitespace-nowrap sm:whitespace-normal" style={{ marginBottom: 'clamp(4px, 0.5vw, 8px)' }}>
               <FormattedMessage id="finalCta.line1" />
             </span>
@@ -947,7 +946,7 @@ const [showLogin, setShowLogin] = useState(false);
           </div>
 
           {/* Form Section */}
-          <div className="w-[260px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center">
+          <div className="w-[300px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center justify-center">
             <InlineInstantReportForm
               ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
               onSubmit={openPrefilledModal}

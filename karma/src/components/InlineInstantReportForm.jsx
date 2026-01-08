@@ -133,12 +133,12 @@ export default function InlineInstantReportForm({
         />
       </div>
 
-      <div className="flex flex-row items-start justify-between w-full" style={{ marginTop: '-12px' }}>
+      <div className="flex flex-row items-center justify-evenly w-full" style={{ marginTop: '-12px' }}>
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
       ₹ {price/100}
         </span>
 
-        <div className="flex flex-col items-start gap-1" style={{ marginRight: '28px' }}>
+        <div className="flex flex-col gap-1" style={{ marginRight: '28px' }}>
           <button
             type="submit"
             className="relative overflow-hidden rounded-md text-white font-balgin font-bold animated-border-btn"
@@ -195,8 +195,9 @@ export default function InlineInstantReportForm({
             }
           `}</style>
           </button>
-
-          <a
+        </div>
+      </div>
+      <a
             href={sampleReportPdf}
             target="_blank"
             rel="noopener noreferrer"
@@ -205,9 +206,6 @@ export default function InlineInstantReportForm({
           >
             sample report
           </a>
-        </div>
-      </div>
-
       {/* Toast Notification */}
       {toast.show && (
         <div
