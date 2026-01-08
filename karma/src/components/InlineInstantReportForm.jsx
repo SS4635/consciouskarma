@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./InlineInstantReportForm.css";
 import { useIntl, FormattedMessage } from "react-intl";
 import { COUNTRY_CODES } from "../components/constants/countryCodes";
 import sampleReportPdf from "../instant_report.pdf";
@@ -90,7 +91,7 @@ export default function InlineInstantReportForm({
       className="px-0 pb-3 sm:pb-4 pt-0 bg-transparent rounded-[10px] flex flex-col gap-3 sm:gap-4 w-full"
       aria-label={intl.formatMessage({ id: "form.aria.instantReportForm" })}
     >
-      <div className="grid grid-cols-[105px_1fr] gap-[12px] w-full items-center justify-center">
+      <div className="inline-report-grid grid grid-cols-[105px_1fr] gap-[12px] w-full items-center justify-center">
         <div className="relative w-full h-[44px]">
           <select
             value={isd}
@@ -120,7 +121,7 @@ export default function InlineInstantReportForm({
         </div>
 
         <input
-          className="w-full h-[44px] px-[0.85rem] rounded-[12px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
+          className="inline-report-mobile-input w-full h-[44px] px-[0.85rem] rounded-[12px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
           type="tel"
           inputMode="numeric"
           pattern="[0-9 ]*"

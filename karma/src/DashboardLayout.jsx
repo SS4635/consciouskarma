@@ -328,7 +328,7 @@ export default function DashboardLayout() {
 
         {/* Main Content Area */}
         <div className="ck-main">
-          <main className="ck-content">
+          <main className="ck-content mt-16 md:mt-0">
             {/* ACTIVITY SECTION */}
             {activeSection === "activity" && (
               <section className="ck-panel ck-panel-main">

@@ -587,7 +587,7 @@ const [showLogin, setShowLogin] = useState(false);
 
       {/* DISTINCTLY YOURS – TYPING EFFECT */}
       < section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6" >
-        <div className="container mx-auto space-y-0.5 sm:space-y-1 md:space-y-1.5">
+        <div className="container mx-auto space-y-1 sm:space-y-1 md:space-y-1.5">
           {/* Line 1 */}
           <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
             {index >= 0 && (
@@ -646,7 +646,7 @@ const [showLogin, setShowLogin] = useState(false);
             {index >= 4 && (
               <a
                 href="/personalised-report"
-                className="inline-block mt-12 sm:mt-16 md:mt-20 lg:mt-[170px]
+                className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
                   text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
                 style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}
                 dangerouslySetInnerHTML={{
@@ -714,33 +714,18 @@ const [showLogin, setShowLogin] = useState(false);
 
           {/* TYPING EFFECT 4-LINES */}
           <div className="mb-10 space-y-1">
-            {/* Line 1 */}
-            {journeyIndex >= 0 && (
-              <p className="text-[#ff914d] font-light leading-none mb-0" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
-                {journeyIndex === 0 ? journeyTyped + journeyCursor : journeyLines[0]}
-              </p>
-            )}
-
-            {/* Line 2 */}
-            {journeyIndex >= 1 && (
-              <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
-                {journeyIndex === 1 ? journeyTyped + journeyCursor : journeyLines[1]}
-              </p>
-            )}
-
-            {/* Line 3 */}
-            {journeyIndex >= 2 && (
-              <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
-                {journeyIndex === 2 ? journeyTyped + journeyCursor : journeyLines[2]}
-              </p>
-            )}
-
-            {/* Line 4 */}
-            {journeyIndex >= 3 && (
-              <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
-                {journeyIndex === 3 ? journeyTyped + journeyCursor : journeyLines[3]}
-              </p>
-            )}
+            <p className="text-[#ff914d] font-light leading-none mb-0" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+              {journeyLines[0]}
+            </p>
+            <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+              {journeyLines[1]}
+            </p>
+            <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+              {journeyLines[2]}
+            </p>
+            <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+              {journeyLines[3]}
+            </p>
           </div>
 
 
@@ -955,7 +940,7 @@ const [showLogin, setShowLogin] = useState(false);
                   key={i}
                   src={src}
                   alt=""
-                  className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex-shrink-0 object-contain"
+                  className="w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex-shrink-0 object-contain"
                 />
               )
             )}

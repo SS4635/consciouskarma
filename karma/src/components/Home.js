@@ -75,7 +75,7 @@ export default function UniqueLifeDesign() {
             A mobile number can amplify good phases,
           </p>
           <p className="fw-light unique-text">
-            and ease the path in times of challenge
+            and ease the path in times of challenge.
           </p>
         </div>
       </div>

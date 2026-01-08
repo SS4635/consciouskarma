@@ -242,6 +242,8 @@ body {
 .ck-content {
   padding: 25px;
   flex: 1;
+  scrollbar-width: thin;
+  scrollbar-color: #ff8a3d;
 }
 
 .ck-panel-title {
@@ -253,9 +255,42 @@ body {
 /* TABLE STYLING */
 .ck-table-wrapper {
   overflow-x: auto;
+  overflow-y: hidden;
   margin-top: 20px;
   border: 1px solid #222;
   border-radius: 6px;
+  position: relative;
+  padding-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #ff8a3d #111;
+  scrollbar-gutter: stable both-edges;
+}
+
+.ck-table-wrapper::after {
+  content: "";
+  position: absolute;
+  bottom: 4px;
+  left: 8px;
+  right: 8px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 145, 77, 0.1) 40%, rgba(255, 145, 77, 0.6) 60%, rgba(255, 145, 77, 0.15) 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.ck-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.ck-table-wrapper::-webkit-scrollbar-track {
+  background: #111;
+  border-radius: 999px;
+}
+
+.ck-table-wrapper::-webkit-scrollbar-thumb {
+  background: #ff914d;
+  border-radius: 999px;
 }
 
 .ck-table {

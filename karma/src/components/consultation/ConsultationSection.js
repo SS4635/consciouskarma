@@ -15,7 +15,7 @@ export default function ConsultationSection() {
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}
           >
-            <p className="fs-4 fs-md-4 fw-light mb-3 font-arsenal">
+            <p className="fs-4 fs-md-4 fw-light text-[23px] mb-3 font-arsenal">
               At Conscious Karma, we understand what an
               <br className="d-none d-md-block" />
               aligned number can bring to a person's life.

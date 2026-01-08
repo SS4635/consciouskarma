@@ -1,0 +1,19 @@
+@media (max-width: 640px) {
+  .inline-report-grid {
+    grid-template-columns: 80px 1fr !important;
+    gap: 8px !important;
+  }
+
+  .inline-report-grid select,
+  /* .inline-report-mobile-input {
+    height: 56px !important;
+  } */
+
+  .inline-report-mobile-input {
+    font-size: 1rem !important;
+    min-width: 0;
+    letter-spacing: 0.2rem;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+}
