@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const API_BASE = "https://server.consciouskarma.co";
+const API_BASE = "http://localhost:4000"; // Update as needed
 
 
 export default function ConsultationPlans() {
@@ -327,33 +327,37 @@ useEffect(() => {
             }}
             onClick={closeModal}
           >
-            <div
-              className="ck-modal-card"
-              style={{
-                width: "100%",
-                maxWidth: "400px",
-                background: "#000",
-                border: "2px solid #ff6b35",
-                borderRadius: 12,
-                boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-                maxHeight: "34rem",
-                overflow: "hidden", // <-- Changed from overflowY: "auto"
-                display: "flex",    // <-- Added flex
-                flexDirection: "column", // <-- Added column
-                transform: modalOpening
-                  ? "translateY(0) scale(1)"
-                  : isMobile
-                  ? "translateY(14px) scale(0.98)"
-                  : "scale(0.92)",
-                opacity: modalOpening ? 1 : 0.85,
-                transition: isMobile
-                  ? "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease"
-                  : "transform 220ms ease, opacity 220ms ease",
-              }}
-              onClick={(ev) => ev.stopPropagation()}
-            >
-              <div style={{ marginTop: 8, height: "100%", display: "flex", flexDirection: "column" }}>{renderBooking()}</div>
-            </div>
+            
+           <div
+  className="ck-modal-card"
+  style={{
+    width: "100%",
+    maxWidth: "400px",
+    maxHeight: "min(44.9rem, calc(100vh - 32px))", // fixed height, responsive
+    background: "#000",
+   
+    borderRadius: 12,
+    boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+    overflow: "hidden",            // ✅ IMPORTANT (modal itself must NOT scroll)
+    display: "flex",
+    flexDirection: "column",
+    transform: modalOpening
+      ? "translateY(0) scale(1)"
+      : isMobile
+      ? "translateY(14px) scale(0.98)"
+      : "scale(0.92)",
+    opacity: modalOpening ? 1 : 0.85,
+    transition: isMobile
+      ? "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease"
+      : "transform 220ms ease, opacity 220ms ease",
+  }}
+  onClick={(ev) => ev.stopPropagation()}
+>
+  <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    {renderBooking()}
+  </div>
+</div>
+
           </div>
         )}
       </div>
