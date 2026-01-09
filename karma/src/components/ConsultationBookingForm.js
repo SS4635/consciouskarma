@@ -16,7 +16,7 @@ export default function ConsultationBookingForm({
   const [containerHeight, setContainerHeight] = useState("auto");
   const formContainerRef = useRef(null);
 
-  const API_BASE = "http://localhost:4000"; // Update as needed
+  const API_BASE = "https://server.consciouskarma.co"; // Update as needed
 
   // months & years for dropdowns
   const months = [
