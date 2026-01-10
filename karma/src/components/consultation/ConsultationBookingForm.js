@@ -594,13 +594,14 @@ export default function ConsultationBookingForm({
         .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; height: 100%; }
         
         .form-card {
-  max-height: 34rem;                 /* ✅ fills modal height */
+  max-height: 35rem;                 /* ✅ fills modal height */
   display: flex;
   flex-direction: column;
   border: 1px solid #ff914d;
   border-radius: 16px;
   overflow: hidden;             /* ✅ clips footer/header correctly */
   background: #000;
+  height: 34rem;
 }
 
 .ck-modal-header {
@@ -638,7 +639,7 @@ export default function ConsultationBookingForm({
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  padding: 0px 20px;
+  padding: 7px 20px;
 
   background: #000;
 }
