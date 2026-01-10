@@ -605,7 +605,7 @@ export default function ConsultationBookingForm({
 
 .ck-modal-header {
   flex: 0 0 auto;
-  padding: 22px 20px 10px;
+  padding: 22px 20px 1px;
   text-align: center;
 }
 
@@ -619,7 +619,7 @@ export default function ConsultationBookingForm({
   flex: 1 1 auto;
   min-height: 0;                /* ✅ REQUIRED for flex scroll */
   overflow-y: scroll;           /* ✅ “scroll by default” */
-  padding: 16px 20px 18px;
+  padding: 16px 20px 1px;
   scrollbar-gutter: stable;     /* prevents layout shift when scrollbar appears */
 }
 
@@ -638,7 +638,7 @@ export default function ConsultationBookingForm({
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
-  padding: 10px 20px;
+  padding: 0px 20px;
 
   background: #000;
 }
