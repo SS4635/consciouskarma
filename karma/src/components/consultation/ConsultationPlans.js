@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const API_BASE = "https://server.consciouskarma.co"; // Update as needed
+const API_BASE =  process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
 
 export default function ConsultationPlans() {

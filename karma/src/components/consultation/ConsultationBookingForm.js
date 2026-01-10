@@ -594,7 +594,7 @@ export default function ConsultationBookingForm({
         .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; height: 100%; }
         
         .form-card {
-  max-height: 33rem;                 /* ✅ fills modal height */
+  max-height: 34rem;                 /* ✅ fills modal height */
   display: flex;
   flex-direction: column;
   border: 1px solid #ff914d;
