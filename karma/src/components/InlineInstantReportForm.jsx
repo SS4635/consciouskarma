@@ -121,7 +121,7 @@ export default function InlineInstantReportForm({
         </div>
 
         <input
-          className="inline-report-mobile-input w-full h-[44px] px-[0.85rem] rounded-[7px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
+          className="inline-report-mobile-input w-full h-[44px] px-[2.1rem] rounded-[7px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
           type="tel"
           inputMode="numeric"
           pattern="[0-9 ]*"
@@ -129,7 +129,7 @@ export default function InlineInstantReportForm({
           placeholder={intl.formatMessage({ id: "form.placeholder.mobile" })}
           value={mobile}
           onChange={(e) => setMobile(e.target.value)}
-          aria-label={intl.formatMessage({ id: "form.aria.mobileNumber" })}
+          aria-label={intl.formatMessage({ id: "form.aria.mobileNumber" })} style={{"letterSpacing":'4px'}}
         />
       </div>
 
