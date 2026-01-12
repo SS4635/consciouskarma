@@ -19,7 +19,7 @@ export default function DashboardLayout() {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 7;
+  const itemsPerPage = 6;
 
   // password states – OLD PASSWORD FLOW
   const [pwdMode, setPwdMode] = useState("old"); // "old" | "email"
@@ -76,7 +76,7 @@ export default function DashboardLayout() {
     return activities.filter((item) => {
       if (item.kind === "consultation") return true;
       const s = (item.status || "").toLowerCase();
-      if (s === "paid" || s === "emailed" || s === "submitted") return true;
+      if (s === "paid" || s === "emailed" ) return true;
       return false;
     });
   }, [activities]);
