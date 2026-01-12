@@ -9,7 +9,6 @@ import ParallelNumbersForm from "./forms/ParallelNumbersForm";
 import PreviousNumbersForm from "./forms/PreviousNumbersForm";
 import CompatibilityNumbersForm from "./forms/CompatibilityNumbersForm";
 
-
 export default function ConsultationBookingForm({
   maxSteps = 5,
   selectedPlan = null,
@@ -25,7 +24,7 @@ export default function ConsultationBookingForm({
   const [isParallelExpanded, setIsParallelExpanded] = useState(false);
   const [isPreviousExpanded, setIsPreviousExpanded] = useState(false);
   const formContainerRef = useRef(null);
-  
+
   // 🔥 PAYMENT LOADER STATES
   const [isPaying, setIsPaying] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -586,134 +585,213 @@ export default function ConsultationBookingForm({
       {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
       
       <style>{`
+        .container{
+          padding: 0;
+        }
         .swal2-popup { background: #111 !important; color: #fff !important; border: 2px solid #fb923c !important; border-radius: 16px !important; }
         .swal2-container { z-index: 9999 !important; }
         
         .form-container { max-width: 450px; margin: 0 auto; font-family: "Arsenal", sans-serif; height: 100%; }
         
-        /* 🔥 OUTER BORDER: SIRF ISKO RAKHENGE */
-        /* 🔥 COMPLETELY FLATTEN INNER FORMS */
-.form-card * {
-  box-shadow: none !important;
-}
-
-.form-card form,
-.form-card .card,
-.form-card .card-body,
-.form-card .inner-card,
-.form-card fieldset,
-.form-card .form-section {
-  background: transparent !important;
-  border: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  margin: 0 !important;
-}
-
-.form-fields > * {
-  margin-bottom: 14px;
-}
-
-.form-fields > *:last-child {
-  margin-bottom: 0;
-}
-
-/* MAKE THE CARD A FLEX COLUMN SO margin-top:auto on footer works */
-.form-card {
+        .form-card {
+  max-height: 35rem;                 /* ✅ fills modal height */
   display: flex;
   flex-direction: column;
-  /* height is controlled inline from component: either containerHeight px or 100% */
-  width: 100%;
-}
-
-        .ck-modal-header { padding: 22px 20px 6px; text-align: center; display: flex; align-items: center; justify-content: center; }
-        .ck-modal-title { font-size: 30px !important; font-weight: 400 !important; line-height: 1.2; color: #fff; text-align: center; }
-
-        .form-cards { padding: 16px 20px 18px; flex: 1; display: flex; flex-direction: column; }
-        .ck-nav { display: flex; flex-direction:row; justify-content: space-between; align-items: center; margin-top: 24px; width: 100%; }
-        .ck-nav-btn { background: none; border: none; color: #ff914d; font-size: 15px; cursor: pointer; padding: 4px 6px; }
-        
-        .modal-footer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  border: 1px solid #ff914d;
+  border-radius: 16px;
+  overflow: hidden;             /* ✅ clips footer/header correctly */
   background: #000;
-  border-top: 1px solid #ff914d;
-  margin-top: auto;   /* 🔥 this will now push footer to the bottom of .form-card */
-  width: 100%;
+  height: 34rem;
 }
 
-        .modal-footer .price-btn, .modal-footer .proceed-btn { 
-            width: 100% !important; 
-            height: 58px; 
-            display: flex; align-items: center; justify-content: center; 
-            border: none; background: transparent; color: #fff; font-size: 17px;
-            margin: 0; padding: 0;
-        }
-        .modal-footer .price-btn { border-right: 1px solid #ff914d !important; cursor: default; }
-        .modal-footer .proceed-btn { border-left: 0px !important; transition: all 0.3s ease; }
-        
-        @media (max-width: 576px) { 
-            .modal-footer { margin-left: 0; margin-right: 0; } 
-            .ck-modal-title { font-size: 26px !important; }
-        }
+.ck-modal-header {
+  flex: 0 0 auto;
+  padding: 22px 20px 1px;
+  text-align: center;
+}
+
+.ck-modal-title {
+  font-size: 30px !important;
+  font-weight: 400 !important;
+  color: #fff;
+}
+
+.ck-scroll-body {
+  flex: 1 1 auto;
+  min-height: 0;                /* ✅ REQUIRED for flex scroll */
+  overflow-y: scroll;           /* ✅ “scroll by default” */
+  padding: 16px 20px 1px;
+  scrollbar-gutter: stable;     /* prevents layout shift when scrollbar appears */
+}
+
+/* Optional: thin orange scrollbar */
+.ck-scroll-body {
+  scrollbar-width: thin;
+  scrollbar-color: #ff914d #000;
+}
+.ck-scroll-body::-webkit-scrollbar { width: 4px; }
+.ck-scroll-body::-webkit-scrollbar-track { background: #000; }
+.ck-scroll-body::-webkit-scrollbar-thumb { background: #ff914d; border-radius: 4px; }
+
+.ck-nav {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: 7px 20px;
+
+  background: #000;
+}
+
+.ck-nav-btn {
+  background: none;
+  border: none;
+  color: #ff914d;
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.ck-nav-btn:disabled {
+  color: #666;
+  cursor: not-allowed;
+}
+
+.modal-footer {
+  flex: 0 0 58px;               /* ✅ fixed footer height */
+  display: flex;
+  border-top: 2px solid #ff914d;
+  background: #000;
+}
+
+.modal-footer .price-btn,
+.modal-footer .proceed-btn {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  font-size: 17px;
+}
+
+.modal-footer .price-btn {
+  border-right: 1px solid #ff914d;
+  color: #fff;
+}
+
+.modal-footer .proceed-btn {
+  border: none;
+}
+
       `}</style>
 
       <div className="container">
         <div className="form-container" style={{ maxWidth: inModal ? (isMobile ? "100%" : "450px") : "450px" }}>
-          <div
-  className="form-card"
-  style={{
-    height: containerHeight !== "auto" ? `${containerHeight}px` : "100%"
-  }}
-  ref={formContainerRef}
->
-  
-            <div className="ck-modal-header">
-              <span className="ck-modal-title">{currentForm.title}</span>
-            </div>
+          
+         <div className="form-card" ref={formContainerRef}>
+  {/* Header (fixed) */}
+  <div className="ck-modal-header">
+    <span className="ck-modal-title">{currentForm.title}</span>
+  </div>
 
-            <div className="form-cards flex-grow-1">
-              <div className="form-fields flex-grow-1">
-                {currentForm.id === 1 && <GeneralInformationForm data={getStepData(1)} onChange={(f, v) => setFieldValue(1, f, v)} showTitle={false} showDateTimePickers={true} />}
-                {currentForm.id === 2 && <PrimaryNumberForm data={getStepData(2)} onChange={(f, v) => setFieldValue(2, f, v)} showTitle={false} />}
-                {currentForm.id === 3 && <ParallelNumbersForm numbers={getParallelNumbersData()} onChange={handleParallelNumberChange} onAdd={handleAddParallelNumber} onRemove={handleRemoveParallelNumber} onToggle={handleParallelToggle} maxNumbers={3} showTitle={false} />}
-                {currentForm.id === 4 && <PreviousNumbersForm numbers={getPreviousNumbersData()} onChange={handlePreviousNumberChange} onAdd={handleAddPreviousNumber} onRemove={handleRemovePreviousNumber} onToggle={handlePreviousToggle} showTitle={false} />}
-                {currentForm.id === 5 && (
-                  <CompatibilityNumbersForm
-                    primaryData={{ ...(getStepData(5)["Mobile Number"] || {}), relationship: getStepData(5)["Relationship with the user"] }}
-                    numbers={dynamicNumbers[5] || []}
-                    isExtended={isExtendedCompatibility}
-                    onPrimaryChange={(val) => { setFieldValue(5, "Mobile Number", { isd: val.isd, mobile: val.mobile }); setFieldValue(5, "Relationship with the user", val.relationship); }}
-                    onAdd={() => handleAddNumber(5)}
-                    onRemove={(idx) => handleRemoveNumber(5, idx)}
-                    onChange={(idx, field, value) => setDynamicNumberValue(5, idx, field, value)}
-                  />
-                )}
-              </div>
+  {/* Scrollable body ONLY */}
+  <div className="ck-scroll-body">
+    <div className="form-fields">
+      {currentForm.id === 1 && (
+        <GeneralInformationForm
+          data={getStepData(1)}
+          onChange={(f, v) => setFieldValue(1, f, v)}
+          showTitle={false}
+          showDateTimePickers={true}
+        />
+      )}
 
-              <div className="ck-nav mt-auto">
-                <button className="ck-nav-btn" disabled={currentStep === 0} onClick={handlePrev}>‹‹‹ prev</button>
-                <button className="ck-nav-btn" disabled={currentStep === effectiveSteps.length - 1} onClick={handleNext}>next ›››</button>
-              </div>
-            </div>
+      {currentForm.id === 2 && (
+        <PrimaryNumberForm
+          data={getStepData(2)}
+          onChange={(f, v) => setFieldValue(2, f, v)}
+          showTitle={false}
+        />
+      )}
 
-            <div className="modal-footer">
-              <div className="price-btn">₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}</div>
-              <button
-                className="proceed-btn"
-                style={{
-                  backgroundColor: canSubmit ? "#ff914d" : "#1a1a1a",
-                  color: canSubmit ? "#000" : "#666",
-                  cursor: canSubmit ? "pointer" : "not-allowed",
-                  fontWeight: canSubmit ? "600" : "400"
-                }}
-                disabled={!canSubmit || isPaying}
-                onClick={handleProceed}
-              >
-                {isPaying ? "Processing..." : "Proceed"}
-              </button>
-            </div>
-          </div>
+      {currentForm.id === 3 && (
+        <ParallelNumbersForm
+          numbers={getParallelNumbersData()}
+          onChange={handleParallelNumberChange}
+          onAdd={handleAddParallelNumber}
+          onRemove={handleRemoveParallelNumber}
+          onToggle={handleParallelToggle}
+          maxNumbers={3}
+          showTitle={false}
+        />
+      )}
+
+      {currentForm.id === 4 && (
+        <PreviousNumbersForm
+          numbers={getPreviousNumbersData()}
+          onChange={handlePreviousNumberChange}
+          onAdd={handleAddPreviousNumber}
+          onRemove={handleRemovePreviousNumber}
+          onToggle={handlePreviousToggle}
+          showTitle={false}
+        />
+      )}
+
+      {currentForm.id === 5 && (
+        <CompatibilityNumbersForm
+          primaryData={{
+            ...(getStepData(5)["Mobile Number"] || {}),
+            relationship: getStepData(5)["Relationship with the user"],
+          }}
+          numbers={dynamicNumbers[5] || []}
+          isExtended={isExtendedCompatibility}
+          onPrimaryChange={(val) => {
+            setFieldValue(5, "Mobile Number", { isd: val.isd, mobile: val.mobile });
+            setFieldValue(5, "Relationship with the user", val.relationship);
+          }}
+          onAdd={() => handleAddNumber(5)}
+          onRemove={(idx) => handleRemoveNumber(5, idx)}
+          onChange={(idx, field, value) => setDynamicNumberValue(5, idx, field, value)}
+        />
+      )}
+    </div>
+  </div>
+
+  {/* Prev / Next (fixed) */}
+  <div className="ck-nav">
+    <button className="ck-nav-btn" disabled={currentStep === 0} onClick={handlePrev}>
+      ‹‹‹ prev
+    </button>
+    <button
+      className="ck-nav-btn"
+      disabled={currentStep === effectiveSteps.length - 1}
+      onClick={handleNext}
+    >
+      next ›››
+    </button>
+  </div>
+
+  {/* Footer (fixed) */}
+  <div className="modal-footer">
+    <div className="price-btn">₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}</div>
+
+    <button
+      className="proceed-btn"
+      disabled={!canSubmit || isPaying}
+      onClick={handleProceed}
+      style={{
+        backgroundColor: canSubmit ? "#ff914d" : "transparent",
+        color: canSubmit ? "#000" : "#9CA3AF",
+        cursor: canSubmit ? "pointer" : "not-allowed",
+        fontWeight: canSubmit ? 600 : 400,
+      }}
+    >
+      {isPaying ? "Processing..." : "Proceed"}
+    </button>
+  </div>
+</div>
+
         </div>
       </div>
     </div>

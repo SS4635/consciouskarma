@@ -165,8 +165,8 @@ export default function LoginModal({ onClose, onSwitch }) {
   );
 
   return (
-    <div className="ck-modal-backdrop">
-      <div className="ck-modal">
+    <div className="ck-modal-backdrop" onClick={onClose}>
+      <div className="ck-modal" onClick={(e) => e.stopPropagation()}>
         <div className="ck-modal-header center">
           <span style={{fontSize:"28px",fontWeight:"400", }}>{forgotMode ? "Reset Password" : "Login"}</span>
         </div>

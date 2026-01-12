@@ -16,7 +16,7 @@ export default function ConsultationBookingForm({
   const [containerHeight, setContainerHeight] = useState("auto");
   const formContainerRef = useRef(null);
 
-  const API_BASE = "https://server.consciouskarma.co";
+  const API_BASE = "https://server.consciouskarma.co"; // Update as needed
 
   // months & years for dropdowns
   const months = [
@@ -833,7 +833,7 @@ const [otpVerified, setOtpVerified] = useState(false);
         .modal-footer .proceed-btn {
           width: 100%;
           border-radius: 0;
-          margin: 0;
+          margin-top: 0;
           height: 56px;
           line-height: 1;
           display: flex;
@@ -1241,9 +1241,9 @@ const [otpVerified, setOtpVerified] = useState(false);
                                   backgroundColor:"black",
                                   color:"#FF6B35",
                                   boxSizing: "border-box",
-    borderWidth: "1px",
-    borderStyle: "solid",
-    borderColor: "#e5e7eb",
+                borderWidth: "1px",
+                    borderStyle: "solid",
+                borderColor: "#e5e7eb",
                                 }}
                                 onClick={() =>
                                   handleRemoveNumber(currentForm.id, idx)
@@ -1706,7 +1706,9 @@ const [otpVerified, setOtpVerified] = useState(false);
             </div>
 
             {/* Footer Buttons */}
-            <div className={inModal ? "modal-footer" : "d-flex gap-5"}>
+           
+          </div>
+           <div className= "modal-footer">
               <button
                 className="price-btn"
                 style={{
@@ -1738,7 +1740,6 @@ const [otpVerified, setOtpVerified] = useState(false);
                 Proceed
               </button>
             </div>
-          </div>
         </div>
       </div>
     </div>

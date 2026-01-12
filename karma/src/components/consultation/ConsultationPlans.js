@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-const API_BASE = "https://server.consciouskarma.co";
+const API_BASE =  process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
 
 export default function ConsultationPlans() {
@@ -25,6 +25,21 @@ export default function ConsultationPlans() {
       document.body.style.paddingRight = "0px";
       setModalOpening(false);
     }
+  }, [showModal]);
+
+  // Handle Escape key to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && showModal) {
+        closeModal();
+      }
+    };
+    if (showModal) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, [showModal]);
 
   // detect mobile viewport
@@ -105,8 +120,22 @@ useEffect(() => {
     <section className="bg-black text-white d-flex align-items-center py-5 font-arsenal">
       <div className="container">
         <style>{`
-          .ck-modal-card { -ms-overflow-style: none; scrollbar-width: none; }
-          .ck-modal-card::-webkit-scrollbar { display: none; width: 0; height: 0; }
+          /* Thin Scrollbar */
+          .ck-modal-card {
+            scrollbar-width: thin;
+            scrollbar-color: #ff914d #000;
+          }
+          .ck-modal-card::-webkit-scrollbar {
+            width: 4px;
+          }
+          .ck-modal-card::-webkit-scrollbar-track {
+            background: #000;
+          }
+          .ck-modal-card::-webkit-scrollbar-thumb {
+            background-color: #ff914d;
+            border-radius: 4px;
+          }
+          
           .ck-modal-backdrop { -ms-overflow-style: none; scrollbar-width: none; }
           .ck-modal-backdrop::-webkit-scrollbar { display: none; width: 0; height: 0; }
           
@@ -255,7 +284,7 @@ useEffect(() => {
                     {plan.title}
                   </h3>
                   <span className=" fs-4 font-arsenal">
-                    {plan.price}
+                    ₹{plan.price}
                   </span>
                 </div>
                 <p
@@ -287,7 +316,7 @@ useEffect(() => {
             style={{
               position: "fixed",
               inset: 0,
-              background: "rgba(0,0,0,0.6)",
+              background: "rgba(0,0,0,0.9)",
               opacity: modalOpening ? 1 : 0,
               transition: "opacity 400ms ease-in-out",
               display: "flex",
@@ -298,31 +327,37 @@ useEffect(() => {
             }}
             onClick={closeModal}
           >
-            <div
-              className="ck-modal-card"
-              style={{
-                width: "100%",
-                maxWidth: "400px",
-                background: "#000",
-                border: "2px solid #ff6b35",
-                borderRadius: 12,
-                boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
-                maxHeight: "34rem",
-                overflowY: "auto",
-                transform: modalOpening
-                  ? "translateY(0) scale(1)"
-                  : isMobile
-                  ? "translateY(14px) scale(0.98)"
-                  : "scale(0.92)",
-                opacity: modalOpening ? 1 : 0.85,
-                transition: isMobile
-                  ? "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease"
-                  : "transform 220ms ease, opacity 220ms ease",
-              }}
-              onClick={(ev) => ev.stopPropagation()}
-            >
-              <div style={{ marginTop: 8 }}>{renderBooking()}</div>
-            </div>
+            
+           <div
+  className="ck-modal-card"
+  style={{
+    width: "100%",
+    maxWidth: "400px",
+    maxHeight: "min(44.9rem, calc(100vh - 32px))", // fixed height, responsive
+    background: "#000",
+   
+    borderRadius: 12,
+    boxShadow: "0 20px 60px rgba(0,0,0,0.6)",
+    overflow: "hidden",            // ✅ IMPORTANT (modal itself must NOT scroll)
+    display: "flex",
+    flexDirection: "column",
+    transform: modalOpening
+      ? "translateY(0) scale(1)"
+      : isMobile
+      ? "translateY(14px) scale(0.98)"
+      : "scale(0.92)",
+    opacity: modalOpening ? 1 : 0.85,
+    transition: isMobile
+      ? "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease"
+      : "transform 220ms ease, opacity 220ms ease",
+  }}
+  onClick={(ev) => ev.stopPropagation()}
+>
+  <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
+    {renderBooking()}
+  </div>
+</div>
+
           </div>
         )}
       </div>
