@@ -88,7 +88,7 @@ export default function InlineInstantReportForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="px-0 pb-3 sm:pb-4 pt-0 bg-transparent rounded-[10px] flex flex-col gap-3 sm:gap-4 w-full"
+      className="px-0 pb-3 sm:pb-4 pt-0 bg-transparent rounded-[8px] flex flex-col gap-3 sm:gap-4 w-full"
       aria-label={intl.formatMessage({ id: "form.aria.instantReportForm" })}
     >
       <div className="inline-report-grid grid grid-cols-[105px_1fr] gap-[12px] w-full items-center justify-center">
@@ -96,7 +96,7 @@ export default function InlineInstantReportForm({
           <select
             value={isd}
             onChange={(e) => setIsd(e.target.value)}
-            className="w-full h-full px-3 rounded-[12px] bg-transparent border-[1.5px] border-[#666]
+            className="w-full h-full px-3 rounded-[8px] bg-transparent border-[1.5px] border-[#666]
                      text-transparent appearance-none cursor-pointer focus:outline-none focus:border-[#ff6b35] transition-all duration-250"
             style={{
               fontSize: '0.95rem',
@@ -121,7 +121,7 @@ export default function InlineInstantReportForm({
         </div>
 
         <input
-          className="inline-report-mobile-input w-full h-[44px] px-[0.85rem] rounded-[12px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
+          className="inline-report-mobile-input w-full h-[44px] px-[0.85rem] rounded-[8px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
           type="tel"
           inputMode="numeric"
           pattern="[0-9 ]*"
@@ -133,7 +133,7 @@ export default function InlineInstantReportForm({
         />
       </div>
 
-      <div className="flex flex-row items-center justify-evenly w-full" style={{ marginTop: '-12px' }}>
+      <div className="flex flex-row items-center justify-evenly w-full" style={{ marginTop: '-12px',marginLeft:'13px',gap:'12px' }}>
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
       ₹ {price/100}
         </span>
