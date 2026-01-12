@@ -1079,16 +1079,31 @@ async function processInstantReport(order) {
     const userPhone = `${primary.isd || ""}${primary.number || ""}`;
 
     // 3️⃣ ईमेल भेजते समय userName पास करें
-    await sendEmail({
-      to: freshOrder.email,
-      subject: "Your Instant Report is being prepared",
-      html: `
-        <p>Dear ${userName},</p>
-        <p>Your Instant Mobile Number Report is being generated.</p>
-        <p><strong>Registered Mobile:</strong> ${userPhone}</p>
-        <p>— Conscious Karma</p>
-      `,
-    });
+   await sendEmail({
+  to: freshOrder.email,
+  subject: "Your Instant Report is being prepared",
+  html: `
+    <p>Dear ${userName},</p>
+
+    <p>Thank you for your order.</p>
+
+    <p>
+      Your Instant Mobile Number Report is now being generated and will be
+      delivered to this email shortly.
+    </p>
+
+    <p>
+      If you have any questions, feel free to write to us at
+      <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
+    </p>
+
+    <p>
+      Warm regards,<br/>
+      Conscious Karma
+    </p>
+  `,
+});
+
     // 4️⃣ Internal security check
     if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
       throw new Error("Security misconfigured");
