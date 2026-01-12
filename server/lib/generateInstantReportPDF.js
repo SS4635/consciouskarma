@@ -104,19 +104,25 @@ export async function generateInstantReportPDF(scoreData, email, mobileNumber) {
 
     // Extract values with defensive checks
     // Use parameter mobileNumber first, fallback to score data if not provided
-    const rawMobileNumber = mobileNumber;
+// इस फ़ंक्शन को ढूँढें और अपडेट करें
+function normalizeIndianMobile(num = "") {
+  const digits = String(num).replace(/\D/g, ""); // सिर्फ नंबर रखें
+  // अगर नंबर 10 अंक से बड़ा है (जैसे 9198...), तो पीछे के 10 अंक लें
+  return digits.length > 10 ? digits.slice(-10) : digits;
+}
 
+// फिर generateInstantReportPDF के अंदर जहाँ formatMobileNumber है:
+const rawMobileNumber = normalizeIndianMobile(mobileNumber);
 
-    // Format mobile number with dash after 5th digit (e.g., 77038-93440)
-    const formatMobileNumber = (num) => {
-      const numStr = String(num).replace(/\D/g, ""); // Remove non-digits
-      if (numStr.length === 10) {
-        return `${numStr.slice(0, 5)}-${numStr.slice(5)}`;
-      }
-      return numStr; // Return as-is if not 10 digits
-    };
+const formatMobileNumber = (num) => {
+  const numStr = String(num); 
+  if (numStr.length === 10) {
+    return `${numStr.slice(0, 5)}-${numStr.slice(5)}`;
+  }
+  return numStr;
+};
 
-    const finalMobileNumber = formatMobileNumber(rawMobileNumber);
+const finalMobileNumber = formatMobileNumber(rawMobileNumber);
     const gradeValue = score.grade || score.Grade || score.gradeValue || "N/A";
     const basicNumber =
       score.basic_number || score.basicNumber || score.basic_number_score || 0;

@@ -8,15 +8,15 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config({
-  path: "/var/www/.env" 
-});
+dotenv.config();
+
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
 import User from "./models/User.js";
 import Consultation from "./models/Consultation.js";
 import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
 import { sendScoreMail } from "./lib/sendScoreMail.js";
+
 console.log({
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS_LEN: process.env.SMTP_PASS?.length,
@@ -57,6 +57,11 @@ const transporter = nodemailer.createTransport({
   debug: true,
 });
 
+function normalizeIndianMobile(num = "") {
+  const digits = String(num).replace(/\D/g, ""); // सिर्फ नंबर रखें
+  // अगर नंबर 10 अंक से बड़ा है (जैसे 9198...), तो पीछे के 10 अंक लें
+  return digits.length > 10 ? digits.slice(-10) : digits;
+}
 
 
 async function sendEmail({ to, subject, html }) {
@@ -595,7 +600,8 @@ async function redeemCoupon(code, mobile) {
 
 app.post("/api/coupon/validate", async (req, res) => {
   try {
-    const { code, price, mobile, email } = req.body || {};
+    const { code, price, mobile, email, name } = req.body || {};
+
     const baseAmount = Number(price || 0);
 
     const result = await redeemCoupon(code, mobile);
@@ -631,8 +637,12 @@ app.post("/api/coupon/validate", async (req, res) => {
           );
 
           const scoreData = scoreResponse.score || scoreResponse;
+const userName =
+  name ||
+  email?.split("@")[0] ||
+  "User";
 
-          await sendScoreMail(email, scoreData, phone);
+await sendScoreMail(email, scoreData, phone, userName);
 
           console.log("[SCORE] Background score + mail done");
         } catch (err) {
@@ -804,6 +814,8 @@ const amount = hasCoupon ? 0 : basePrice * 100;
 
     // If coupon made it fully free, no Razorpay
     if (amount === 0) {
+      
+  processInstantReport(order).catch(console.error);
       return res.json({
         ok: true,
         free: true,
@@ -1037,50 +1049,70 @@ app.post("/api/pay/verify", async (req, res) => {
   }
 });
 async function processInstantReport(order) {
+  // 1️⃣ Check: Instant report hai ya nahi
+  const isInstantReport =
+    (order.formData?.parallels?.length || 0) === 0 &&
+    (order.formData?.previousNumbers?.length || 0) === 0;
+
+  if (!isInstantReport) return;
+
+  // 2️⃣ Atomic lock (duplicate email protection)
+  const freshOrder = await Order.findOneAndUpdate(
+    { _id: order._id, instantEmailSent: { $ne: true } },
+    { $set: { instantEmailSent: "processing", status: "processing" } },
+    { new: true }
+  );
+
+  if (!freshOrder) return; // already processed or in-progress
+
   try {
-    const isInstantReport =
-      (order.formData?.parallels?.length || 0) === 0 &&
-      (order.formData?.previousNumbers?.length || 0) === 0;
+    const fd = freshOrder.formData || {};
+    const general = fd.general || {};
+    
+    // नाम निकालने का सही क्रम: पहले Form का नाम, फिर Order का नाम, फिर Email
+    const userName = 
+      general.name || 
+      freshOrder.name || 
+      (freshOrder.email ? freshOrder.email.split("@")[0] : "User");
 
-    if (!isInstantReport || order.instantEmailSent) return;
+    const primary = fd.primary || {};
+    const userPhone = `${primary.isd || ""}${primary.number || ""}`;
 
-    // 📧 User mail
+    // 3️⃣ ईमेल भेजते समय userName पास करें
     await sendEmail({
-      to: order.email,
+      to: freshOrder.email,
       subject: "Your Instant Report is being prepared",
       html: `
-        <p>Dear ${order.name},</p>
+        <p>Dear ${userName},</p>
         <p>Your Instant Mobile Number Report is being generated.</p>
+        <p><strong>Registered Mobile:</strong> ${userPhone}</p>
         <p>— Conscious Karma</p>
       `,
     });
-
-    // 🔐 Internal security check
+    // 4️⃣ Internal security check
     if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
       throw new Error("Security misconfigured");
     }
 
-    // 📊 Score generation
+    // 5️⃣ Generate score
     const { data } = await axios.post(
       `${process.env.REACT_APP_SCORE_API}/score`,
-      { mobile_number: order.phone },
+      { mobile_number: userPhone },
       {
         headers: {
           "Content-Type": "application/json",
           "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
         },
+        timeout: 15000,
       }
     );
 
     const scoreData = data.score || data;
 
-    await sendScoreMail(order.email, scoreData, order.phone);
+    // 6️⃣ Send score email
+    await sendScoreMail(freshOrder.email, scoreData, userPhone, userName);
 
-    order.instantEmailSent = true;
-    await order.save();
-
-    console.log("✅ Instant report completed");
-
+    // ...
   } catch (err) {
     console.error("❌ Instant report failed:", err.message);
   }
@@ -1465,8 +1497,14 @@ console.log("Final mobile for score mail:", req.body, mobileNumber);
       scoreData?.primaryMobile ||
       scoreData?.phone ||
       "";
+const userName =
+  scoreData?.name ||
+  scoreData?.user_name ||
+  email?.split("@")[0] ||
+  "User";
 
-    await sendScoreMail(email, scoreData, finalMobile);
+await sendScoreMail(email, scoreData, finalMobile, userName);
+
 
     res.json({ ok: true });
   } catch (err) {

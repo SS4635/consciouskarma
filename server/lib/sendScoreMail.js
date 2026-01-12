@@ -2,8 +2,12 @@ import nodemailer from "nodemailer";
 import fs from "fs";
 import { generateInstantReportPDF } from "./generateInstantReportPDF.js";
 
-// Create transporter once and reuse (connection pooling)
 let transporter = null;
+function normalizeIndianMobile(num = "") {
+  const digits = String(num).replace(/\D/g, ""); // सिर्फ नंबर रखें
+  // अगर नंबर 10 अंक से बड़ा है (जैसे 9198...), तो पीछे के 10 अंक लें
+  return digits.length > 10 ? digits.slice(-10) : digits;
+}
 
 function getTransporter() {
   if (!transporter) {
@@ -20,30 +24,21 @@ function getTransporter() {
   return transporter;
 }
 
-export async function sendScoreMail(to, scoreData, mobileNumber) {
+export async function sendScoreMail(to, scoreData, mobileNumber, userName) {
   let pdfPath;
 
   try {
     if (!to) throw new Error("Recipient email missing");
 
-    // Always pick latest mobile number
-    const finalMobile =
+    const rawMobile =
       mobileNumber ||
       scoreData?.mobile_number ||
       scoreData?.mobile ||
-      scoreData?.primaryMobile ||
-      scoreData?.phone ||
       "";
 
-    const name =
-      scoreData?.name ||
-      scoreData?.user_name ||
-      scoreData?.full_name ||
-      "User";
+    const finalMobile = normalizeIndianMobile(rawMobile);
 
-    console.log("📱 FINAL MOBILE USED IN SCORE REPORT:", scoreData);
-
-    // Generate PDF
+const safeName = userName || to.split("@")[0] || "User";
     pdfPath = await generateInstantReportPDF(
       scoreData,
       to,
@@ -51,49 +46,27 @@ export async function sendScoreMail(to, scoreData, mobileNumber) {
     );
 
     const mailTransporter = getTransporter();
-    await mailTransporter.verify();
-
-    const mailOptions = {
-      from: `"Conscious Karma" <${process.env.SMTP_USER}>`,
-      to,
-      subject: "Your Instant Mobile Number Report",
+    await mailTransporter.sendMail({
+    from: `"Conscious Karma" <${process.env.SMTP_USER}>`,
+    to,
+    subject: "Your Instant Mobile Number Report",
     html: `
-  <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;text-align:left;">
-    <p>Dear <strong>${name}</strong>,</p>
-
-    <p>Your Instant Report is ready.</p>
-
-    <p>Please find the PDF attached to this email.</p>
-
-    <p>
-      If you have any questions about the report, feel free to write to us at
-      <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
-    </p>
-
-    <p style="margin-top:24px;">
-      Warm regards,<br/>
-      <strong>Conscious Karma</strong>
-    </p>
-  </div>
-`
-,
+      <p>Dear <strong>${safeName}</strong>,</p>
+      <p>Your Instant Report is ready.</p>
+      <p>Please find the PDF attached to this email.</p>
+      <p>Warm regards,<br/>Conscious Karma</p>
+    `,
       attachments: [
         {
           filename: "Instant_Mobile_Number_Report.pdf",
           path: pdfPath,
         },
       ],
-    };
+    });
 
-    await mailTransporter.sendMail(mailOptions);
-
-    // Cleanup temp PDF
-    if (pdfPath && fs.existsSync(pdfPath)) {
-      fs.unlink(pdfPath, () => {});
-    }
-  } catch (error) {
-    console.error("❌ Error in sendScoreMail:", error);
-    if (pdfPath && fs.existsSync(pdfPath)) fs.unlink(pdfPath, () => {});
-    throw error;
+    if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
+  } catch (err) {
+    if (pdfPath && fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
+    throw err;
   }
 }
