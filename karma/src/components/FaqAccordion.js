@@ -198,7 +198,7 @@ export default function FaqAccordion() {
       id: 1,
       question: "What happens after I book the consultation?",
       answer:
-        "Once your booking is confirmed, you’ll receive a discovery form within 3 days to share your details and context.After submission, a 25-minute video consultation is scheduled — you will receive a link with available time slots to choose from.",
+        "Once your booking is confirmed, you’ll receive a discovery form within 3 days to share your details and context. After submission, a 25-minute video consultation is scheduled — you will receive a link with available time slots to choose from.",
     },
     {
       id: 2,
@@ -210,7 +210,7 @@ export default function FaqAccordion() {
       id: 3,
       question: "Can I keep my existing number and still benefit from consultation?",
       answer:
-        "Yes. If your current number is energetically aligned, you may not need to change it.The consultation can help you understand whether it supports your goals or if a better alternative is needed.Once a new number is chosen, it’s best to close the old number within 2–3 weeks.This allows the new number’s energy to stabilise and reduces interference from overlapping vibrations.",
+        "Yes. If your current number is energetically aligned, you may not need to change it. The consultation can help you understand whether it supports your goals or if a better alternative is needed. Once a new number is chosen, it’s best to close the old number within 2–3 weeks. This allows the new number’s energy to stabilise and reduces interference from overlapping vibrations.",
     },
     {
       id: 4,
