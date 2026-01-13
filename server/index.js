@@ -8,7 +8,10 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config({
+  path: "/var/www/.env",
+});
+
 
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
