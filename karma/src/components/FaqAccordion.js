@@ -198,19 +198,19 @@ export default function FaqAccordion() {
       id: 1,
       question: "What happens after I book the consultation?",
       answer:
-        " Once your booking is confirmed, you’ll receive a discovery form within 3 days to share your details and context.After submission, a 25-minute video consultation is scheduled — you’ll receive a link with available time slots to choose from.",
+        "Once your booking is confirmed, you’ll receive a discovery form within 3 days to share your details and context.After submission, a 25-minute video consultation is scheduled — you will receive a link with available time slots to choose from.",
     },
     {
       id: 2,
       question: "Do you provide the new mobile number?",
       answer:
-        "No. We don’t sell or supply numbers.You’ll request available options from your network provider, and we’ll analyse them to help you choose the most aligned one.(You can also read our guide — “How to Read a Mobile Number” [link])",
+        "No. We don’t sell or supply numbers. You’ll request available options from your network provider, and we’ll analyse them to help you choose the most aligned one.",
     },
     {
       id: 3,
       question: "Can I keep my existing number and still benefit from consultation?",
       answer:
-        "Yes. If your current number is energetically aligned, you may not need to change it.The consultation can help you understand whether it supports your goals or if a better alternative is needed.Once a new number is chosen, it’s best to close the old one within 2–3 weeks.This allows the new number’s energy to stabilise and reduces interference from overlapping vibrations.",
+        "Yes. If your current number is energetically aligned, you may not need to change it.The consultation can help you understand whether it supports your goals or if a better alternative is needed.Once a new number is chosen, it’s best to close the old number within 2–3 weeks.This allows the new number’s energy to stabilise and reduces interference from overlapping vibrations.",
     },
     {
       id: 4,
@@ -222,13 +222,13 @@ export default function FaqAccordion() {
       id: 5,
       question: " Why are there different consultation prices?",
       answer:
-        "Pricing depends on the depth of compatibility analysis involved.Some consultations review only one number, while others consider multiple connections — such as a spouse, business partner, or family — to ensure harmony across all energies.",
+        "The difference in price comes from how many surrounding influences are considered during the alignment. Unmarried Individual consultations focus solely on the user’s mobile number and personal life context. Married Individual consultations also consider a spouse or partner, ensuring the selected number remains supportive within shared life dynamics. Extended Compatibility consultations review additional close connections—such as co-founders, partners, or family members—to ensure the number stays aligned across all significant relationships. Each level requires a broader review of compatibility, which changes the depth and time of analysis.",
     },
     {
       id: 6,
       question: "What is the usual availability for video consultations?",
       answer:
-        "Consultations are generally scheduled within 5-7 working days after form submission.You’ll receive confirmation via email for your preferred time slot.",
+        "Consultations are generally scheduled within 5-7 working days after discovery form submission. You will receive a link on email, with available time slots to choose from.",
     },
     {
       id: 7,
