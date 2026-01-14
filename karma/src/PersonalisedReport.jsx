@@ -824,7 +824,7 @@ const ConsciousKarmaPage = () => {
           {/* ... Rest of your render logic remains exactly the same ... */}
           <div className="ck-form-layout">
             {/* LEFT HERO */}
-            <div className="ck-hero mt-3 md:mt-0">
+            <div className="ck-hero mt-4 md:mt-0">
               <p className="ck-hero-text text-[23px] md:text-[24px]">
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
               </p>

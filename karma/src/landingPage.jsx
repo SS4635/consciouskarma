@@ -12,7 +12,6 @@ import TypingParagraphs from "./components/ui/shadcn-io/TypingParagraphs.jsx";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 // import DecryptedText from "./components/DecryptedText.jsx";
 import FadeInOnScroll from "./components/FadeInOnScroll.jsx";
-import useTypeSequence from "./hooks/useTypeSequence.js";
 import CKNavbar from "./components/CKNavbar";
 
 /* === Images (your filenames) === */
@@ -51,18 +50,6 @@ const [showLogin, setShowLogin] = useState(false);
   const progress = useMotionValue(0);
   const dashOffset = useTransform(progress, [0, 1], [120, -120]);
 
-  // -----> Typing effect hook <----- //
-  const lines = [
-    intl.formatMessage({ id: "distinctly.line1" }, { shared: intl.formatMessage({ id: "distinctly.shared" }) }),
-    intl.formatMessage({ id: "distinctly.line2" }, { repeated: intl.formatMessage({ id: "distinctly.repeated" }) }),
-    intl.formatMessage({ id: "distinctly.line3" }),
-    intl.formatMessage({ id: "distinctly.line4" }, { distinctly: intl.formatMessage({ id: "distinctly.distinctly" }) }),
-    intl.formatMessage({ id: "distinctly.line5" }),
-  ];
-
-  const { typedLine, index, cursor } = useTypeSequence(lines, 35, 700);
-
-  // -----> Typing effect for decrypted (journey) lines <----- //
   const journeyLines = [
     intl.formatMessage({ id: "digitalYantra.journey1" }),
     intl.formatMessage({ id: "digitalYantra.journey2" }),
@@ -70,11 +57,11 @@ const [showLogin, setShowLogin] = useState(false);
     intl.formatMessage({ id: "digitalYantra.journey4" }),
   ];
 
-  const {
-    typedLine: journeyTyped,
-    index: journeyIndex,
-    cursor: journeyCursor,
-  } = useTypeSequence(journeyLines, 65, 900);
+  const highlightValue = (id) => (
+    <span className="text-[#ff914d]">
+      {intl.formatMessage({ id })}
+    </span>
+  );
 
   // -----> Intersection Observer for section animations <----- //
   const sectionWatcher = useRef(null);
@@ -584,75 +571,43 @@ const [showLogin, setShowLogin] = useState(false);
         <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 opacity-40" />
       </motion.section >
 
-      {/* DISTINCTLY YOURS – TYPING EFFECT */}
+      {/* DISTINCTLY YOURS */}
       < section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6" >
         <div className="container mx-auto space-y-1 sm:space-y-1 md:space-y-1.5">
-          {/* Line 1 */}
           <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
-            {index >= 0 && (
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: (
-                    index === 0 ? typedLine + cursor : lines[0]
-                  ).replace(
-                    "shared",
-                    `<span class='text-[#ff914d]'>shared</span>`
-                  ),
-                }}
-              />
-            )}
+            <FormattedMessage
+              id="distinctly.line1"
+              values={{ shared: highlightValue("distinctly.shared") }}
+            />
           </p>
 
-          {/* Line 2 */}
           <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
-            {index >= 1 && (
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: (
-                    index === 1 ? typedLine + cursor : lines[1]
-                  ).replace(
-                    "repeated",
-                    `<span class='text-[#ff914d]'>repeated</span>`
-                  ),
-                }}
-              />
-            )}
+            <FormattedMessage
+              id="distinctly.line2"
+              values={{ repeated: highlightValue("distinctly.repeated") }}
+            />
           </p>
 
-          {/* Line 3 */}
           <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
-            {index >= 2 && (index === 2 ? typedLine + cursor : lines[2])}
+            <FormattedMessage id="distinctly.line3" />
           </p>
 
-          {/* Line 4 */}
           <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', letterSpacing: '0em' }}>
-            {index >= 3 && (
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: (
-                    index === 3 ? typedLine + cursor : lines[3]
-                  ).replace(
-                    "DISTINCTLY YOURS",
-                    `<span class='text-[#ff914d]'>DISTINCTLY YOURS</span>`
-                  ),
-                }}
-              />
-            )}
+            <FormattedMessage
+              id="distinctly.line4"
+              values={{ distinctly: highlightValue("distinctly.distinctly") }}
+            />
           </p>
 
-          {/* CTA LAST */}
           <p className="mt-8 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light" style={{ fontSize: 'clamp(20px, 2.5vw, 24px)' }}>
-            {index >= 4 && (
-              <a
-                href="/personalised-report"
-                className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
-                  text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
-                style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}
-                dangerouslySetInnerHTML={{
-                  __html: index === 4 ? typedLine + cursor : lines[4],
-                }}
-              />
-            )}
+            <a
+              href="/personalised-report"
+              className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
+                text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
+              style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}
+            >
+              <FormattedMessage id="distinctly.line5" />
+            </a>
           </p>
         </div>
 
