@@ -486,18 +486,80 @@ const [otpVerified, setOtpVerified] = useState(false);
     if (currentStep === 0) return;
     setCurrentStep((s) => s - 1);
   };
+// States mein ye add karein
+const [showError, setShowError] = useState(false);
+const [errorMsg, setErrorMsg] = useState("");
 
+// Error Overlay Design
+const errorOverlay = showError ? (
+  <div
+    style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0,0,0,0.85)',
+      zIndex: 999999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    onClick={() => setShowError(false)}
+  >
+    <div
+      style={{
+        animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        background: '#000',
+        border: '2px solid #ff914d', 
+        borderRadius: '16px',
+        padding: '32px 28px',
+        width: '90%',
+        maxWidth: '420px',
+        textAlign: 'center',
+        position: 'relative'
+      }}
+      onClick={e => e.stopPropagation()}
+    >
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
+        <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
+        <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      
+      <h2 style={{color: '#fff', fontSize: '22px', marginBottom: '10px'}}>Missing Information</h2>
+      <p style={{color: '#ccc', fontSize: '16px', lineHeight: '1.5'}}>{errorMsg}</p>
+      
+      <button
+        style={{
+          marginTop: '20px',
+          background: '#ff914d',
+          color: '#fff',
+          border: 'none',
+          padding: '10px 25px',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontWeight: 'bold'
+        }}
+        onClick={() => setShowError(false)}
+      >
+        Got it
+      </button>
+    </div>
+  </div>
+) : null;
   const handleProceed = async () => {
-  const err = validateStep(currentForm);
-  if (err) {
-    Swal.fire("Missing Information", err, "warning");
-    return;
+  // 1. Sabhi steps ka validation check karein
+  for (let i = 0; i < effectiveSteps.length; i++) {
+    const err = validateStep(effectiveSteps[i]);
+    if (err) {
+      setErrorMsg(err);
+      setShowError(true);
+      return; // Validation fail, aage nahi badhega
+    }
   }
 
-  if (currentStep !== effectiveSteps.length - 1) return;
-
+  // Agar validation pass ho gayi, tab Razorpay logic chalega
   try {
-    // 🌟 1️⃣ CREATE ORDER (NO Razorpay IDs yet)
     const createRes = await fetch(`${API_BASE}/api/pay/create-consultation-order`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -505,10 +567,8 @@ const [otpVerified, setOtpVerified] = useState(false);
         formData,
         planName: selectedPlan?.title || currentForm.title,
         price: Number((selectedPlan?.price || currentForm.price).replace(/[^\d]/g, ""))
-
       }),
     });
-
     const createData = await createRes.json();
 
     if (!createData.ok) {
@@ -570,7 +630,6 @@ const [otpVerified, setOtpVerified] = useState(false);
 
     new window.Razorpay(options).open();
   } catch (err) {
-    console.error(err);
     Swal.fire("Network Error", "Something went wrong.", "error");
   }
 };
@@ -1720,25 +1779,39 @@ const [otpVerified, setOtpVerified] = useState(false);
               >
                 {selectedPlan?.price ?? currentForm.price}
               </button>
-              <button
-                className="proceed-btn"
-                style={{
-                  flex: inModal ? undefined : 1,
-                  padding: inModal ? "0.75rem 1rem" : undefined,
-                  fontSize: inModal ? "1rem" : undefined,
-                  height: inModal ? 48 : undefined,
-                  opacity:
-                    currentStep === effectiveSteps.length - 1 ? 1 : 0.6,
-                  cursor:
-                    currentStep === effectiveSteps.length - 1
-                      ? "pointer"
-                      : "not-allowed",
-                }}
-                disabled={currentStep !== effectiveSteps.length - 1}
-                onClick={handleProceed}
-              >
-                Proceed
-              </button>
+              return (
+  <div className={outerClass}>
+    {/* Portals */}
+    {typeof document !== 'undefined' && ReactDOM.createPortal(successOverlay, document.body)}
+    {typeof document !== 'undefined' && ReactDOM.createPortal(errorOverlay, document.body)}
+
+    {/* ... baaki form code ... */}
+
+    <div className="modal-footer">
+      <button className="price-btn">
+        {selectedPlan?.price ?? currentForm.price}
+      </button>
+      <button
+        className="proceed-btn"
+        // Button hamesha enabled rahega agar user aakhiri step par hai
+        style={{
+          flex: inModal ? undefined : 1,
+          padding: inModal ? "0.75rem 1rem" : undefined,
+          fontSize: inModal ? "1rem" : undefined,
+          height: inModal ? 48 : undefined,
+          // Hamesha enabled look
+          opacity: 1,
+          cursor: "pointer",
+          backgroundColor: "#ff914d", // Active color
+          color: "#000"
+        }}
+        onClick={handleProceed}
+      >
+        Proceed
+      </button>
+    </div>
+  </div>
+);
             </div>
         </div>
       </div>

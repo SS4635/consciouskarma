@@ -584,28 +584,89 @@ const ConsciousKarmaPage = () => {
 
     new window.Razorpay(options).open();
   };
+// States mein ye add karein
+const [errorMsg, setErrorMsg] = useState("");
+const [showError, setShowError] = useState(false);
 
+// Error Overlay Design (Success ki tarah)
+const errorOverlay = showError ? (
+  <div
+    style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0,0,0,0.85)',
+      zIndex: 999999,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+    onClick={() => setShowError(false)}
+  >
+    <div
+      style={{
+        animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        background: '#000',
+        border: '2px solid #ff914d', // Red border for error
+        borderRadius: '16px',
+        padding: '32px 28px',
+        width: '90%',
+        maxWidth: '420px',
+        textAlign: 'center',
+        position: 'relative'
+      }}
+      onClick={e => e.stopPropagation()}
+    >
+      {/* Error Icon (Cross) */}
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
+        <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
+        <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      
+      <h2 style={{color: '#fff', fontSize: '22px', marginBottom: '10px'}}>Missing Information</h2>
+      <p style={{color: '#ccc', fontSize: '16px', lineHeight: '1.5'}}>{errorMsg}</p>
+      
+      <button
+        style={{
+          marginTop: '20px',
+          background: '#ff914d',
+          color: '#fff',
+          border: 'none',
+          padding: '10px 25px',
+          borderRadius: '8px',
+          cursor: 'pointer',
+          fontWeight: 'bold'
+        }}
+        onClick={() => setShowError(false)}
+      >
+        Got it
+      </button>
+    </div>
+  </div>
+) : null;
   const handleProceed = async () => {
     let err = null;
 
-    err = validateGeneralInfo();
-    if (err) return Swal.fire("Missing Information", err, "warning");
-
-    err = validatePrimary();
-    if (err) return Swal.fire("Missing Information", err, "warning");
-
-    err = validateParallels();
-    if (err) return Swal.fire("Missing Information", err, "warning");
-
-    err = validatePreviousNumbers();
-    if (err) return Swal.fire("Missing Information", err, "warning");
-
-    if (!allOtpsVerified) {
-      return Swal.fire("OTP pending", "Please verify all OTPs before proceeding to payment.", "warning");
+    // Validation checks
+    err = validateGeneralInfo() || validatePrimary() || validateParallels() || validatePreviousNumbers();
+    
+    if (err) {
+        setErrorMsg(err);
+        setShowError(true);
+        return; // Aage nahi badhne dega
     }
 
-    // Set loading (disables button)
+    if (!allOtpsVerified) {
+        setErrorMsg("Please verify all OTPs before proceeding to payment.");
+        setShowError(true);
+        return;
+    }
+
+    // Agar yahan tak code aaya, matlab sab sahi hai - Proceed with API/Razorpay
     setIsGeneratingReport(true);
+    // ... rest of your existing API logic
 
     try {
       const createRes = await fetch(`${API_BASE}/api/pay/create-order`, {
@@ -1073,13 +1134,17 @@ const ConsciousKarmaPage = () => {
                 <div className="ck-form-footer">
                   <div className="ck-price-pill">{priceText}</div>
 
-                  <button
-                    className={"ck-proceed-btn" + (proceedEnabled ? " ck-proceed-btn-ready" : "")}
-                    onClick={handleProceed}
-                    disabled={!proceedEnabled}
-                  >
-                    {isGeneratingReport ? "Processing..." : "Proceed"}
-                  </button>
+                  {/* // Button JSX update */}
+<button
+  className="ck-proceed-btn ck-proceed-btn-ready" // Hamesha ready class
+  onClick={handleProceed}
+  disabled={isGeneratingReport} // Sirf loading ke waqt disable
+>
+  {isGeneratingReport ? "Processing..." : "Proceed"}
+</button>
+
+{/* // Render mein portal add karein */}
+{typeof document !== 'undefined' && ReactDOM.createPortal(errorOverlay, document.body)}
                 </div>
               </div>
             </div>

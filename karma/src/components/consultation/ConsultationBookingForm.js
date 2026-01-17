@@ -505,85 +505,190 @@ export default function ConsultationBookingForm({
     if (currentStep === 0) return;
     setCurrentStep((s) => s - 1);
   };
+// --- Naye States add karein ---
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
+  // --- Error Overlay Design ---
+  const errorOverlay = showError ? (
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.9)',
+        zIndex: 999999,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+      onClick={() => setShowError(false)}
+    >
+      <div
+        style={{
+          animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          position: 'relative',
+          background: '#000',
+          border: '2px solid #ff914d', // Error ke liye Red color use kiya hai
+          borderRadius: '16px',
+          padding: '32px 28px',
+          width: '90%',
+          maxWidth: '420px',
+          textAlign: 'center',
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Error (Cross) Icon */}
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
+          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
+          <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+        <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold'}}>Missing Information</h2>
+        <p style={{color: '#ccc', fontSize: '16px', marginTop: '10px', fontFamily: 'Arsenal, sans-serif'}}>{errorMsg}</p>
+        <button
+          style={{
+            marginTop: '20px',
+            background: '#ff914d',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '10px 25px',
+            fontSize: '16px',
+            cursor: 'pointer',
+            fontWeight: 'bold',
+          }}
+          onClick={() => setShowError(false)}
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  ) : null;
   const handleProceed = async () => {
-    if (currentStep !== effectiveSteps.length - 1 || isPaying) return;
-    setIsPaying(true); 
+    if (isPaying) return; 
 
+    // 1. Sabhi steps ka validation loop (Ye hamesha Step 1 se check karega)
     for (let i = 0; i < effectiveSteps.length; i++) {
       const err = validateStep(effectiveSteps[i]);
       if (err) {
-        setIsPaying(false);
-        Swal.fire("Missing Information", err, "warning");
-        return;
+        setErrorMsg(err);
+        setShowError(true);
+        
+        // Galti wale page par automatic move ho jayega
+        setCurrentStep(i); 
+        
+        setIsPaying(false); 
+        return; 
       }
     }
+    // 3. DATA PREPARATION (Agar validation pass ho gayi)
+    setIsPaying(true); 
 
     const finalFormData = JSON.parse(JSON.stringify(formData));
+    // Default values for missing optional fields
     if (!finalFormData[1]) finalFormData[1] = {};
     if (!finalFormData[1]["Time of Birth"]) finalFormData[1]["Time of Birth"] = "00:00";
+    
     const finalPrice = getNumericPrice(selectedPlan?.price || currentForm.price);
 
     try {
+      // 4. CREATE ORDER API CALL
       const createRes = await fetch(`${API_BASE}/api/pay/create-consultation-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ formData: finalFormData, planName: selectedPlan?.title || currentForm.title, price: finalPrice }),
+        body: JSON.stringify({ 
+          formData: finalFormData, 
+          planName: selectedPlan?.title || currentForm.title, 
+          price: finalPrice 
+        }),
       });
+      
       const createData = await createRes.json();
+      
       if (!createData.ok) {
         setIsPaying(false);
-        Swal.fire("Error", createData.message || "Order creation failed", "error");
+        setErrorMsg(createData.message || "Order creation failed. Please try again.");
+        setShowError(true);
         return;
       }
 
+      // 5. RAZORPAY CONFIGURATION
       const options = {
         key: createData.keyId,
         amount: createData.amount,
         currency: "INR",
         name: "Conscious Karma",
+        description: "Consultation Booking",
         order_id: createData.orderId,
+        
         handler: async function (rzpRes) {
-          setIsPaying(true);
+          // Jab payment gateway success response de
+          setIsPaying(true); 
           try {
+            // VERIFY PAYMENT API CALL
             const verifyRes = await fetch(`${API_BASE}/api/pay/verify-consultation`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...rzpRes, formData, planName: selectedPlan?.title || currentForm.title, price: finalPrice }),
+              body: JSON.stringify({ 
+                ...rzpRes, 
+                formData: finalFormData, 
+                planName: selectedPlan?.title || currentForm.title, 
+                price: finalPrice 
+              }),
             });
+            
             const verifyData = await verifyRes.json();
             setIsPaying(false); 
-            if (verifyData.ok) setShowSuccess(true);
-            else throw new Error(verifyData.message);
+            
+            if (verifyData.ok) {
+              // Success Popup trigger
+              setShowSuccess(true);
+            } else {
+              throw new Error(verifyData.message || "Payment verification failed");
+            }
           } catch (err) {
             setIsPaying(false);
-            Swal.fire("Error", err.message, "error");
+            Swal.fire("Payment Verification Failed", err.message, "error");
           }
         },
-        modal: { ondismiss: () => setIsPaying(false) },
-        prefill: {
-          name: formData[1]?.["Name"],
-          email: formData[1]?.["Email-id"],
-          contact: `${formData[2]?.["Mobile Number"]?.isd}${formData[2]?.["Mobile Number"]?.mobile}`,
+        
+        modal: { 
+          ondismiss: () => setIsPaying(false) 
         },
+        
+        prefill: {
+          name: finalFormData[1]?.["Name"],
+          email: finalFormData[1]?.["Email-id"],
+          contact: `${finalFormData[2]?.["Mobile Number"]?.isd}${finalFormData[2]?.["Mobile Number"]?.mobile}`,
+        },
+        
         theme: { color: "#ff914d" },
       };
+
+      // 6. OPEN RAZORPAY
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", () => setIsPaying(false));
+      rzp.on("payment.failed", () => {
+        setIsPaying(false);
+        Swal.fire("Payment Failed", "Transaction could not be completed.", "error");
+      });
       rzp.open();
+
     } catch (err) {
       setIsPaying(false);
-      Swal.fire("Network Error", "Something went wrong.", "error");
+      setErrorMsg("Network Error: Could not connect to the server.");
+      setShowError(true);
     }
   };
-
   const outerClass = inModal ? "bg-black text-white h-100" : "min-vh-100 bg-black text-white d-flex align-items-center py-5";
 
   return (
     <div className={`${outerClass} font-arsenal`}>
       {paymentLoaderPortal}
       {typeof document !== 'undefined' ? ReactDOM.createPortal(successOverlay, document.body) : successOverlay}
-      
+      {typeof document !== 'undefined' && ReactDOM.createPortal(errorOverlay, document.body)}
       <style>{`
         .container{
           padding: 0;
@@ -774,24 +879,24 @@ export default function ConsultationBookingForm({
 
   {/* Footer (fixed) */}
   <div className="modal-footer">
-    <div className="price-btn">₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}</div>
+        <div className="price-btn">₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}</div>
 
-    <button
-      className="proceed-btn"
-      disabled={!canSubmit || isPaying}
-      onClick={handleProceed}
-      style={{
-        backgroundColor: canSubmit ? "#ff914d" : "transparent",
-        color: canSubmit ? "#000" : "#9CA3AF",
-        cursor: canSubmit ? "pointer" : "not-allowed",
-        fontWeight: canSubmit ? 600 : 400,
-      }}
-    >
-      {isPaying ? "Processing..." : "Proceed"}
-    </button>
-  </div>
-</div>
-
+        <button
+          className="proceed-btn"
+          // Sirf isPaying par disable hoga, validation par nahi
+          disabled={isPaying} 
+          onClick={handleProceed}
+          style={{
+            backgroundColor: "#ff914d", 
+      color: "#000",
+      cursor: "pointer",
+      fontWeight: 600,
+      opacity: 1,          }}
+        >
+          {isPaying ? "Processing..." : "Proceed"}
+        </button>
+      </div>
+    </div>
         </div>
       </div>
     </div>
