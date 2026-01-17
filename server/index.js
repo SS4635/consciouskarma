@@ -7,10 +7,12 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
+// import dotenv from "dotenv";
+// dotenv.config({
+//   path: "/var/www/.env",
+// });
 import dotenv from "dotenv";
-dotenv.config({
-  path: "/var/www/.env",
-});
+dotenv.config();
 
 
 import { connectMongo } from "./lib/mongo.js";
@@ -19,6 +21,7 @@ import User from "./models/User.js";
 import Consultation from "./models/Consultation.js";
 import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
 import { sendScoreMail } from "./lib/sendScoreMail.js";
+import ContactMessage from "./models/ContactMessage.js";
 
 console.log({
   SMTP_USER: process.env.SMTP_USER,
@@ -1354,6 +1357,63 @@ app.post("/api/auth/change-password", async (req, res) => {
   }
 });
 // After other APIs, before /api/health
+app.post("/api/contact", async (req, res) => {
+  try {
+    const { firstName, lastName, email, phone, message, page } = req.body || {};
+
+    if (!firstName || !email || !message) {
+      return res.status(400).json({
+        ok: false,
+        message: "Missing required fields",
+      });
+    }
+
+    // 1️⃣ SAVE TO DB
+    const contact = await ContactMessage.create({
+      firstName,
+      lastName,
+      email,
+      phone,
+      message,
+      page: page || "Contact Us",
+      ip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
+    });
+
+    // 2️⃣ ADMIN EMAIL
+    const adminHtml = `
+      <h2>New Contact Form Submission</h2>
+      <p><strong>Name:</strong> ${firstName} ${lastName || ""}</p>
+      <p><strong>Email:</strong> ${email}</p>
+      <p><strong>Phone:</strong> ${phone || "-"}</p>
+      <p><strong>Page:</strong> ${page || "Contact Us"}</p>
+
+      <h3>Message</h3>
+      <pre style="white-space:pre-wrap;">${message}</pre>
+
+      <hr/>
+      <p><strong>ID:</strong> ${contact._id}</p>
+      <p><strong>Time:</strong> ${new Date().toLocaleString()}</p>
+    `;
+
+    // non-blocking mail
+    sendEmail({
+      to: "hello@consciouskarma.co",
+      subject: "New Contact Message – Conscious Karma",
+      html: adminHtml,
+    }).catch(err =>
+      console.error("Contact mail failed:", err.message)
+    );
+
+    return res.json({ ok: true });
+  } catch (err) {
+    console.error("Contact API error:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Server error",
+    });
+  }
+});
+
 
 app.get("/api/user-activity", async (req, res) => {
   try {

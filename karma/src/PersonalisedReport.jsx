@@ -872,6 +872,59 @@ const errorOverlay = showError ? (
           box-shadow: 0 0 0 2px #ff914d55 !important;
         }
         .swal2-container { z-index: 9999 !important; }
+
+        .ck-proceed-btn {
+  background-color: #000;          /* black bg */
+  color: #fff;                  /* orange text */
+  font-size: 25px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+/* Hover (only when enabled) */
+.ck-proceed-btn:hover:not(:disabled) {
+  background-color: #ff914d;       /* orange bg */
+  color: #000;                     /* black text */
+}
+
+/* Disabled state */
+.ck-proceed-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Card layout */
+.ck-form-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden; /* 🔥 border ke upar scrollbar nahi aayega */
+}
+
+/* Actual scroll starts AFTER heading */
+.ck-form-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* Smooth scrollbar */
+.ck-form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ck-form-scroll::-webkit-scrollbar-thumb {
+  background: #ff914d;
+  border-radius: 10px;
+}
+
+.ck-form-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
       `}</style>
 
       <CKNavbar
@@ -885,6 +938,7 @@ const errorOverlay = showError ? (
           {/* ... Rest of your render logic remains exactly the same ... */}
           <div className="ck-form-layout">
             {/* LEFT HERO */}
+            <br />
             <div className="ck-hero mt-4 md:mt-0">
               <p className="ck-hero-text text-[23px] md:text-[24px]">
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
@@ -940,10 +994,16 @@ const errorOverlay = showError ? (
   }}>  Book Personalized Report</div>
 
               <div className="ck-form-card">
-                <div className="scroll-area">
-                  <div className="ck-form-slider">
-                    <div className="ck-form-track" style={{ transform: `translateX(-${step * 100}%)` }}>
-                      {/* Slide 0 */}
+
+  {/* 👇 ONLY THIS PART SCROLLS */}
+  <div className="ck-form-scroll">
+    <div className="ck-form-slider">
+      <div
+        className="ck-form-track"
+        style={{ transform: `translateX(-${step * 100}%)` }}
+      >
+        {/* ALL SLIDES SAME AS BEFORE */}
+        {/* Slide 0 */}
                       <div className="ck-form-slide">
                         <div className="ck-form-inner">
                           <GeneralInformationForm
@@ -1136,9 +1196,9 @@ const errorOverlay = showError ? (
 
                   {/* // Button JSX update */}
 <button
-  className="ck-proceed-btn ck-proceed-btn-ready" // Hamesha ready class
+  className="ck-proceed-btn"
   onClick={handleProceed}
-  disabled={isGeneratingReport} // Sirf loading ke waqt disable
+  disabled={isGeneratingReport}
 >
   {isGeneratingReport ? "Processing..." : "Proceed"}
 </button>

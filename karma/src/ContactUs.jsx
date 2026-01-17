@@ -4,6 +4,8 @@ import CKNavbar from "./components/CKNavbar";
 
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
+import axios from "axios";
+const API = process.env.REACT_APP_API_URL;
 
 export default function ContactUs() {
   const [firstName, setFirstName] = useState("");
@@ -20,16 +22,42 @@ export default function ContactUs() {
   const CONTACT_EMAIL = "hello@consciouskarma.co";
   const WHATSAPP = "+91 8094289536";
 
-  const onSubmit = (e) => {
-    e.preventDefault();
-    const fullName = `${firstName} ${lastName}`.trim();
-    const subject = encodeURIComponent("New contact from consciouskarma.co");
-    const body = encodeURIComponent(
-      `Name: ${fullName}\nEmail: ${email}\nWhatsApp/Phone: ${phone}\n\nMessage:\n${message}`
-    );
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
-  };
+  // const onSubmit = (e) => {
+  //   e.preventDefault();
+  //   const fullName = `${firstName} ${lastName}`.trim();
+  //   const subject = encodeURIComponent("New contact from consciouskarma.co");
+  //   const body = encodeURIComponent(
+  //     `Name: ${fullName}\nEmail: ${email}\nWhatsApp/Phone: ${phone}\n\nMessage:\n${message}`
+  //   );
+  //   window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+  // };
 
+  const onSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    await axios.post(`${API}/api/contact`, {
+      firstName,
+      lastName,
+      email,
+      phone,
+      message,
+      page: "Contact Us",
+    });
+
+    alert("Thank you! We’ll get back to you shortly.");
+
+    // reset (optional)
+    setFirstName("");
+    setLastName("");
+    setEmail("");
+    setPhone("");
+    setMessage("");
+
+  } catch (err) {
+    alert("Something went wrong. Please try again.");
+  }
+};
   const waHref = () => {
     const fullName = `${firstName} ${lastName}`.trim();
     const text = encodeURIComponent(

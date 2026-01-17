@@ -777,7 +777,7 @@ export default function ConsultationBookingForm({
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  font-size: 17px;
+  font-size: 25px;
 }
 
 .modal-footer .price-btn {
@@ -788,6 +788,27 @@ export default function ConsultationBookingForm({
 .modal-footer .proceed-btn {
   border: none;
 }
+
+.proceed-btn {
+  background-color: #000;      /* black bg */
+  color: #fff;              /* orange text */
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 25px;
+  border: 2px solid #ff914d;
+  transition: all 0.25s ease;
+}
+
+.proceed-btn:hover:not(:disabled) {
+  background-color: #ff914d;   /* orange bg on hover */
+  color: #000;                 /* black text on hover */
+}
+
+.proceed-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 
       `}</style>
 
@@ -880,21 +901,14 @@ export default function ConsultationBookingForm({
   {/* Footer (fixed) */}
   <div className="modal-footer">
         <div className="price-btn">₹ {getNumericPrice(selectedPlan?.price || currentForm.price)}</div>
+<button
+  className="proceed-btn"
+  disabled={isPaying}
+  onClick={handleProceed}
+>
+  {isPaying ? "Processing..." : "Proceed"}
+</button>
 
-        <button
-          className="proceed-btn"
-          // Sirf isPaying par disable hoga, validation par nahi
-          disabled={isPaying} 
-          onClick={handleProceed}
-          style={{
-            backgroundColor: "#ff914d", 
-      color: "#000",
-      cursor: "pointer",
-      fontWeight: 600,
-      opacity: 1,          }}
-        >
-          {isPaying ? "Processing..." : "Proceed"}
-        </button>
       </div>
     </div>
         </div>
