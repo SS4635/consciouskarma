@@ -133,15 +133,15 @@ export default function InlineInstantReportForm({
         />
       </div>
 
-      <div className="flex flex-row items-center justify-evenly w-full" style={{ marginTop: '-12px',marginLeft:'0px',gap:'12px' }}>
+      <div className="action-row" >
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
-      ₹ {price/100}
+      ₹ {price/100}55
         </span>
 
         <div className="flex flex-col gap-1" style={{ marginRight: '28px' }}>
           <button
             type="submit"
-            className="relative overflow-hidden rounded-md text-white font-balgin font-bold animated-border-btn"
+            className="relative overflow-hidden rounded-md text-white font-balgin font-bold animated-border-btn butt"
             style={{ padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 40px)', fontSize: 'clamp(13px, 2vw, 16px)' }}
           >
             <span className="relative z-10 whitespace-nowrap">{ctaLabel}</span>
@@ -201,8 +201,8 @@ export default function InlineInstantReportForm({
             href={sampleReportPdf}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-balgin no-underline hover:no-underline transition-colors"
-            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#ff914d',marginLeft:'20px',marginTop:'-16px' }}
+            className="font-balgin no-underline hover:no-underline transition-colors sample-rep"
+            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#ff914d' }}
           >
             sample report
           </a>
