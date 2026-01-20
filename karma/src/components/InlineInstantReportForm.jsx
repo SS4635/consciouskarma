@@ -133,7 +133,7 @@ export default function InlineInstantReportForm({
         />
       </div>
 
-      <div className="flex flex-row items-center justify-evenly w-full" style={{ marginTop: '-12px',marginLeft:'12px',gap:'12px' }}>
+      <div className="flex flex-row items-center justify-evenly w-full" style={{ marginTop: '-12px',marginLeft:'0px',gap:'12px' }}>
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
       ₹ {price/100}
         </span>
@@ -202,7 +202,7 @@ export default function InlineInstantReportForm({
             target="_blank"
             rel="noopener noreferrer"
             className="font-balgin no-underline hover:no-underline transition-colors"
-            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#ff914d',marginLeft:'12px',marginTop:'-16px' }}
+            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#ff914d',marginLeft:'20px',marginTop:'-16px' }}
           >
             sample report
           </a>
