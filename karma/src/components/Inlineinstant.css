@@ -1,0 +1,37 @@
+
+.acti {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+
+  margin-top: -12px;   /* desktop default */
+  margin-left: 12px;
+  margin-right: 13px;
+  gap: 12px;
+}
+
+.sample-rp{
+  margin-left:12px;
+  margin-top:-16px;
+}
+
+.buttt{
+  margin-left: 0px;
+}
+
+/* 🔥 MOBILE VIEW ONLY */
+@media (max-width: 768px) {
+  .acti {
+    margin-top: -12px;   /* sirf mobile pe change */
+    gap: 12px;
+    margin-left: -24px;          /* optional */
+  }
+  .sample-rp{
+  margin-left:-29px;
+  margin-top:-16px;
+}
+.buttt{margin-left: -25px;}
+}
+

@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
 import InstantReportForm from "./InstantReportForm.jsx";
 import InlineInstantReportForm from "./components/InlineInstantReportForm.jsx";
+import InlineInstantReportForm1 from "./components/InlineInstantReportForm1.jsx";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 // import TypingText from "./components/ui/shadcn-io/typing-text.jsx";
@@ -902,7 +903,7 @@ const [showLogin, setShowLogin] = useState(false);
 
           {/* Form Section */}
           <div className="w-[300px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center justify-center">
-            <InlineInstantReportForm
+            <InlineInstantReportForm1
               ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
               onSubmit={openPrefilledModal}
             />
