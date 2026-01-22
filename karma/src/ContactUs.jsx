@@ -20,7 +20,7 @@ export default function ContactUs() {
 
   const ADDRESS = "B1/H3, mohan estate, New delhi - 110044";
   const CONTACT_EMAIL = "hello@consciouskarma.co";
-  const WHATSAPP = "+91 8094289536";
+  const WHATSAPP = "+91 9355392465";
 
   // const onSubmit = (e) => {
   //   e.preventDefault();
@@ -63,7 +63,7 @@ export default function ContactUs() {
     const text = encodeURIComponent(
       `Hi, this is ${fullName || ''}. ${message || ''}`
     );
-    const number = "918094289536"; 
+    const number = "919355392465"; 
     return `https://wa.me/${number}?text=${text}`;
   };
 
