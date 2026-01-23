@@ -1,4 +1,4 @@
-// import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
+import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 
 import express from "express";
 import cors from "cors";
@@ -8,11 +8,11 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
-dotenv.config({
-  path: "/var/www/.env",
-});
+// dotenv.config({
+//   path: "/var/www/.env",
+// });
 // import dotenv from "dotenv";
-// dotenv.config();
+dotenv.config();
 
 
 import { connectMongo } from "./lib/mongo.js";
@@ -1082,7 +1082,7 @@ async function processInstantReport(order) {
       (freshOrder.email ? freshOrder.email.split("@")[0] : "User");
 
     const primary = fd.primary || {};
-    const userPhone = `${primary.isd || ""}${primary.number || ""}`;
+    const userPhone = `${primary.number || ""}`;
 
     // 3️⃣ ईमेल भेजते समय userName पास करें
    await sendEmail({
@@ -1110,28 +1110,105 @@ async function processInstantReport(order) {
   `,
 });
 
+console.log("✅ Instant report email sent to:");
     // 4️⃣ Internal security check
     if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
       throw new Error("Security misconfigured");
     }
 
+console.log("🔐 Internal security check passed");
+
     // 5️⃣ Generate score
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_SCORE_API}/score`,
-      { mobile_number: userPhone },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
-        },
-        timeout: 15000,
-      }
+    // const { data } = await axios.post(
+    //   `${process.env.REACT_APP_SCORE_API}/score`,
+    //   { mobile_number: userPhone },
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+    //     },
+    //     timeout: 15000,
+    //   }
+    // );
+
+    // const scoreData = data.score || data;
+
+
+    let scoreData;
+
+try {
+  console.log("📡 [SCORE] Calling score API...");
+  const startTime = Date.now();
+
+  const response = await axios.post(
+    `${process.env.REACT_APP_SCORE_API}/score`,
+    { mobile_number: userPhone },
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+      },
+      timeout: 15000,
+    }
+  );
+
+  console.log(
+    "✅ [SCORE] API success in",
+    Date.now() - startTime,
+    "ms"
+  );
+
+  const { data } = response;
+
+  if (!data) {
+    throw new Error("Empty response from score API");
+  }
+
+  scoreData = data.score || data;
+
+  if (!scoreData || typeof scoreData !== "object") {
+    throw new Error("Invalid score data structure");
+  }
+
+  console.log(
+    "📊 [SCORE] Parsed score data:\n",
+    JSON.stringify(scoreData, null, 2)
+  );
+
+} catch (err) {
+  console.error("❌ [SCORE] API failed");
+
+  if (err.response) {
+    console.error("➡️ Status:", err.response.status);
+    console.error(
+      "➡️ Response:",
+      JSON.stringify(err.response.data, null, 2)
     );
+  } else if (err.request) {
+    console.error("➡️ No response received:", err.message);
+  } else {
+    console.error("➡️ Internal error:", err.message);
+  }
 
-    const scoreData = data.score || data;
+  // rethrow or return early depending on your flow
+  throw err;
+}
 
+
+    console.log("[SCORE] Generated score for:", scoreData);
     // 6️⃣ Send score email
-    await sendScoreMail(freshOrder.email, scoreData, userPhone, userName);
+   try {
+    console.log("✉️ Sending score email...");
+    await sendScoreMail(
+      freshOrder.email,
+      scoreData,
+      userPhone,
+      userName
+    );
+    console.log("✅ Score email sent");
+  } catch (mailErr) {
+    console.error("⚠️ Email failed (PDF generated):", mailErr.message);
+  }
 
     // ...
   } catch (err) {
