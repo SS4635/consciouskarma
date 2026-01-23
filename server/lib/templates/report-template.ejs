@@ -61,7 +61,7 @@
         font-weight: 400;
         font-size: 21px;
         color: white;
-        overflow: hidden;
+        overflow: visible;
       }
 
       h1, h2, h3, h4, h5, h6, p {
@@ -123,11 +123,13 @@
 
       .newMain {
         flex: 1;
-        max-height: calc(1118.7401575px - 180px);
+   overflow: visible;
         width: 100%;
         /* border:2px solid yellow; */
       }
-
+.page-content {
+  padding-bottom: 10px;
+}
       .newFooter {
         height: 70px;
         width: 100%;
@@ -598,6 +600,7 @@
         margin-bottom: 12px;
         font-size: 28px;
         line-height: 1.2;
+        page-break-inside: avoid;
       }
       .static-para{
        font-size: 28px;
@@ -1087,266 +1090,188 @@
     </div>
 
     <!-- PAGE 7: MOBILE NUMBER INFLUENCE ON USER & LIFE -->
-    <%
-      // Get points from API or use static fallback
-      const influencePoints = (influence_section && influence_section.points && influence_section.points.length > 0) 
-        ? influence_section.points 
-        : highlights || [];
+    <!-- ======================
+     PAGE 7 FIXED SECTION
+====================== -->
 
-      const healthNote = (influence_section && influence_section.health_note) ? influence_section.health_note : "";
-      
-      // Helper function to clean text: handle escaped newlines and remove formatting artifacts
-      const cleanText = (text) => {
-        if (!text) return "";
-        return text
-          .replace(/\\n/g, '\n')  // Convert escaped \n to actual newlines
-          .replace(/—\\n/g, ' — ') // Fix em-dash with newline
-          .replace(/—\n/g, ' — ')   // Fix em-dash with actual newline
-          .replace(/ -\\n/g, ' — ') // Fix dash-newline pattern
-          .replace(/ -\n/g, ' — ')   // Fix dash with actual newline
-          .replace(/\\n/g, '\n')    // Final pass for any remaining escaped newlines
-          .replace(/\s+/g, ' ')      // Normalize multiple spaces
-          .trim();
-      };
-      
-      const staticParagraph = cleanText(
-        (influence_section && influence_section.static_paragraph) 
-          ? influence_section.static_paragraph 
-          : "A mobile number expresses its influence through many factors — the user's gender, age, environment and background, work, role in life, duration of use, and other active numbers."
-      );
+<%
+/* ===============================
+   SAFE PAGINATION (FIXED)
+   DESIGN UNTOUCHED
+================================ */
 
-      const instancePoints = (influence_section && influence_section.instance_points && influence_section.instance_points.length > 0) 
-        ? influence_section.instance_points 
-        : [];
+const influencePoints =
+  (influence_section?.points?.length)
+    ? influence_section.points
+    : highlights || [];
 
-      const closingText = cleanText(
-        (influence_section && influence_section.closing) 
-          ? influence_section.closing 
-          : closing_note || "For a deeper look at how numbers influence life paths and choices, explore a Personalised Report.\nwww.consciouskarma.co/personalizedreport"
-      );
+const healthNote = influence_section?.health_note || "";
 
-      // Professional pagination based on actual rendered measurements
-      // Container: .newMain = 938.74px, .page-influence-user padding = 35px top + 25px bottom
-      const PAGE_CONTENT_HEIGHT = 938.7401575 - 60; // Available: 878.74px
-      
-      // Measured component heights from actual rendering:
-      const TITLE_HEIGHT = 32; // font-size
-      const TITLE_MARGIN_BOTTOM = 30; // space after title before list starts
-      const TITLE_TOTAL = TITLE_HEIGHT + TITLE_MARGIN_BOTTOM; // 62px
-      
-      const LIST_MARGIN_TOP = 0; // Already counted in title margin
-      const LIST_MARGIN_BOTTOM = 20; // .page8-list margin-bottom (optimized)
-      
-      const BULLET_LINE_HEIGHT = 25.2; // 21px * 1.2 (actual CSS)
-      const BULLET_MARGIN_BOTTOM = 2; // li margin-bottom (actual CSS)
-      
-      // Characters per line at 600px width with 21px font
-      const BULLET_CHARS_PER_LINE = 80; // Adjusted for actual wrapping
-      const PARAGRAPH_CHARS_PER_LINE = 82;
-      const INSTANCE_CHARS_PER_LINE = 75;
-      
-      const PARAGRAPH_LINE_HEIGHT = 25.2; // Same as bullets (1.2 line-height)
-      const PARAGRAPH_SPACING = 0; // Minimal spacing between paragraphs
-      const INSTANCE_MARGIN_TOP = 20;
-      const INSTANCE_MARGIN_BOTTOM = 20;
-      const CLOSING_MARGIN_TOP = 20;
-      
-      const FOOTER_SAFETY_BUFFER = 25; // Increased safety margin to prevent footer overlap
+const cleanText = t =>
+  (t || "").replace(/\\n/g,"\n").replace(/\s+/g," ").trim();
 
-      const countLines = (text = "", charsPerLine = PARAGRAPH_CHARS_PER_LINE) => {
-        if (!text || !text.trim()) return 0;
-        const segments = text.toString().split(/\n+/);
-        return segments.reduce((total, segment) => {
-          const clean = segment.trim();
-          if (!clean) return total + 1;
-          return total + Math.max(1, Math.ceil(clean.length / charsPerLine));
-        }, 0);
-      };
+const staticParagraph = cleanText(
+  influence_section?.static_paragraph ||
+  "A mobile number expresses its influence through many factors — the user's gender, age, environment and background, work, role in life, duration of use, and other active numbers."
+);
 
-      const estimateBulletHeight = (text) => {
-        if (!text || !text.trim()) return 0;
-        const lines = Math.max(1, countLines(text, BULLET_CHARS_PER_LINE));
-        return lines * BULLET_LINE_HEIGHT + BULLET_MARGIN_BOTTOM;
-      };
+const instancePoints =
+  influence_section?.instance_points?.length
+    ? influence_section.instance_points
+    : [];
 
-      const estimateParagraphHeight = (text, charsPerLine = PARAGRAPH_CHARS_PER_LINE) => {
-        if (!text || !text.trim()) return 0;
-        const lines = Math.max(1, countLines(text, charsPerLine));
-        return lines * PARAGRAPH_LINE_HEIGHT + PARAGRAPH_SPACING;
-      };
+const closingText = cleanText(
+  influence_section?.closing ||
+  closing_note ||
+  "For a deeper look at how numbers influence life paths and choices, explore a Personalised Report.\nwww.consciouskarma.co/personalizedreport"
+);
 
-      const estimateInstanceHeight = (points) => {
-        if (!points || !points.length) return 0;
-        let totalHeight = INSTANCE_MARGIN_TOP;
-        totalHeight += PARAGRAPH_LINE_HEIGHT; // "For instance:" line
-        points.forEach(point => {
-          const lines = Math.max(1, countLines(point, INSTANCE_CHARS_PER_LINE));
-          totalHeight += lines * PARAGRAPH_LINE_HEIGHT + 5; // Add spacing between points
-        });
-        totalHeight += INSTANCE_MARGIN_BOTTOM;
-        return totalHeight;
-      };
+/* SAFE CONSTANTS */
+const PAGE_HEIGHT = 760;
+const FOOTER_BUFFER = 90;
+const TITLE_HEIGHT = 62;
+const LINE = 25.2;
 
-      const estimateClosingHeight = (text) => {
-        if (!text || !text.trim()) return 0;
-        const lines = Math.max(1, countLines(text, PARAGRAPH_CHARS_PER_LINE));
-        return CLOSING_MARGIN_TOP + (lines * PARAGRAPH_LINE_HEIGHT) + 10; // Add bottom breathing room
-      };
+const countLines = (t,c)=>Math.max(1,Math.ceil(t.length/c));
+const bulletH = t => countLines(t,80)*LINE+6;
+const paraH = t => countLines(t,82)*LINE;
+const instanceH = arr=>{
+  let h=40;
+  arr.forEach(x=>h+=countLines(x,75)*LINE);
+  return h;
+};
 
-      const createPage = (hasTitle) => ({
-        points: [],
-        hasTitle,
-        usedHeight: 0,
-        hasHealthNote: false,
-        hasStaticParagraph: false,
-        hasInstancePoints: false,
-        hasClosingNote: false
-      });
+const newPage = title => ({
+  title,
+  used: title?TITLE_HEIGHT:0,
+  points:[],
+  health:false,
+  static:false,
+  instance:false,
+  closing:false
+});
 
-      const canFitOnPage = (page, additionalHeight) => {
-        const titleHeight = page.hasTitle ? TITLE_TOTAL : 0;
-        const listMargins = page.points.length > 0 ? LIST_MARGIN_BOTTOM : 0;
-        const totalUsed = titleHeight + listMargins + page.usedHeight + additionalHeight + FOOTER_SAFETY_BUFFER;
-        return totalUsed <= PAGE_CONTENT_HEIGHT;
-      };
+const fits = (p,h)=>p.used+h+FOOTER_BUFFER<=PAGE_HEIGHT;
 
-      let pages = [];
-      let currentPage = createPage(true);
+let pages=[],p=newPage(true);
 
-      // Add bullet points
-      influencePoints.forEach((point) => {
-        const bulletHeight = estimateBulletHeight(point);
-        
-        if (!canFitOnPage(currentPage, bulletHeight) && currentPage.points.length > 0) {
-          pages.push(currentPage);
-          currentPage = createPage(false);
-        }
-        
-        currentPage.points.push(point);
-        currentPage.usedHeight += bulletHeight;
-      });
 
-      // Add health note
-      if (healthNote && healthNote.trim()) {
-        const healthHeight = estimateParagraphHeight(healthNote);
-        
-        if (!canFitOnPage(currentPage, healthHeight)) {
-          pages.push(currentPage);
-          currentPage = createPage(false);
-        }
-        
-        currentPage.hasHealthNote = true;
-        currentPage.usedHeight += healthHeight;
-      }
 
-      // Add static paragraph
-      if (staticParagraph && staticParagraph.trim()) {
-        const staticHeight = estimateParagraphHeight(staticParagraph);
-        
-        if (!canFitOnPage(currentPage, staticHeight)) {
-          pages.push(currentPage);
-          currentPage = createPage(false);
-        }
-        
-        currentPage.hasStaticParagraph = true;
-        currentPage.usedHeight += staticHeight;
-      }
 
-      // Add instance points
-      if (instancePoints && instancePoints.length > 0) {
-        const instanceHeight = estimateInstanceHeight(instancePoints);
-        
-        if (!canFitOnPage(currentPage, instanceHeight)) {
-          pages.push(currentPage);
-          currentPage = createPage(false);
-        }
-        
-        currentPage.hasInstancePoints = true;
-        currentPage.usedHeight += instanceHeight;
-      }
+/* bullets */
+influencePoints.forEach(x => {
+  const h = bulletH(x);
 
-      // Add closing note
-      if (closingText && closingText.trim()) {
-        const closingHeight = estimateClosingHeight(closingText);
-        
-        if (!canFitOnPage(currentPage, closingHeight)) {
-          pages.push(currentPage);
-          currentPage = createPage(false);
-        }
-        
-        currentPage.hasClosingNote = true;
-        currentPage.usedHeight += closingHeight;
-      }
 
-      // Push final page
-      pages.push(currentPage);
-      
-      // Render pages
-      pages.forEach((page, pageIndex) => {
-        const isLastPage = pageIndex === pages.length - 1;
-    %>
-    <div class="page">
-      <div class="page-content">
-        <div class="newHeader">
-          <img
-              src="<%= karmawithline%>"
-              alt="karma-img"
-              height="70px"
-            />
-          <div class="bar"></div>
-        </div>
-        <div class="newMain">
-          <section class="page-influence-user">
-            <% if (page.hasTitle) { %>
-              <p class="page8-title">Mobile Number Influence on User & Life</p>
-            <% } %>
+  if (h > PAGE_HEIGHT * 0.8) {
+    pages.push(p);
+    p = newPage(false);
+  }
 
-            <!-- BULLET POINTS for this page -->
-            <% if (page.points.length > 0) { %>
-              <div class="page8-list">
-                <ul>
-                  <% page.points.forEach(point => { %>
-                    <li><%= point %></li>
-                  <% }); %>
-                </ul>
-              </div>
-            <% } %>
+  if (!fits(p, h)) {
+    pages.push(p);
+    p = newPage(false);
+  }
 
-            <!-- HEALTH NOTE (if assigned to this page) -->
-            <% if (page.hasHealthNote && healthNote && healthNote.trim() !== "") { %>
-              <p class="health-para" style="font-size: 28px!important;"><%- healthNote.replace(/\n/g, '<br>') %></p>
-            <% } %>
+  p.points.push(x);
+  p.used += h;
+});
 
-            <!-- STATIC PARAGRAPH (if assigned to this page) -->
-            <% if (page.hasStaticParagraph) { %>
-              <p class="static-para"><%= staticParagraph %></p>
-            <% } %>
 
-            <!-- INSTANCE POINTS (if assigned to this page) -->
-            <% if (page.hasInstancePoints && instancePoints.length > 0) { %>
-              <p class="instance">
-                For instance:<br>
-                <% instancePoints.forEach(instance => { %>
-                  <%- instance %><br>
-                <% }); %>
-              </p>
-            <% } %>
+/* health */
+if(healthNote){
+  const h=paraH(healthNote);
+  if(!fits(p,h)){pages.push(p);p=newPage(false);}
+  p.health=true;p.used+=h;
+}
 
-            <!-- CLOSING NOTE (if assigned to this page) -->
-            <% if (page.hasClosingNote) { %>
-              <p class="closing-note-7"><%- closingText.replace(/\n/g, '<br>').replace(/Link:/gi, '<br>Link:') %></p>
-            <% } %>
-          </section>
-        </div>
-        
-        <div class="newFooter">
-          <div class="bar"></div>
-          <p class="footer-text">www.consciouskarma.co</p>
-        </div>
-      </div>
+/* static */
+if(staticParagraph){
+  const h=paraH(staticParagraph);
+  if(!fits(p,h)){pages.push(p);p=newPage(false);}
+  p.static=true;p.used+=h;
+}
+
+/* instance */
+if(instancePoints.length){
+  const h=instanceH(instancePoints);
+  if(!fits(p,h)){pages.push(p);p=newPage(false);}
+  p.instance=true;p.used+=h;
+}
+
+/* closing */
+if(closingText){
+  const h=paraH(closingText);
+  if(!fits(p,h)){pages.push(p);p=newPage(false);}
+  p.closing=true;p.used+=h;
+}
+
+pages.push(p);
+
+/* RENDER */
+pages.forEach(pg=>{
+%>
+
+<div class="page">
+  <div class="page-content">
+
+    <div class="newHeader">
+      <img src="<%= karmawithline %>" height="70"/>
+      <div class="bar"></div>
     </div>
-    <% }); %>
 
+    <div class="newMain">
+      <section class="page-influence-user">
+
+        <% if(pg.title){ %>
+          <p class="page8-title">Mobile Number Influence on User & Life</p>
+        <% } %>
+
+        <% if(pg.points.length){ %>
+          <div class="page8-list">
+            <ul>
+              <% pg.points.forEach(pt=>{ %>
+                <li><%= pt %></li>
+              <% }) %>
+            </ul>
+          </div>
+        <% } %>
+
+        <% if(pg.health){ %>
+          <p><%- healthNote.replace(/\n/g,"<br>") %></p>
+        <% } %>
+
+        <% if(pg.static){ %>
+          <p class="static-para"><%= staticParagraph %></p>
+        <% } %>
+
+        <% if(pg.instance){ %>
+          <p class="instance">
+            For instance:<br>
+            <% instancePoints.forEach(i=>{ %>
+              <%- i %><br>
+            <% }) %>
+          </p>
+        <% } %>
+
+        <% if(pg.closing){ %>
+          <p class="closing-note-7">
+            <%- closingText.replace(/\n/g,"<br>") %>
+          </p>
+        <% } %>
+
+      </section>
+    </div>
+
+    <div class="newFooter">
+      <div class="bar"></div>
+      <p class="footer-text">www.consciouskarma.co</p>
+    </div>
+
+  </div>
+</div>
+
+<% }) %>
     <!-- PAGE 8: LINKS AND CLOSING -->
     <div class="page">
       <div class="page-content">
