@@ -135,7 +135,7 @@ export default function InlineInstantReportForm({
 
       <div className="action-row" >
         <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
-      ₹ {price/100}55
+      ₹ {price/100}
         </span>
 
         <div className="flex flex-col gap-1" style={{ marginRight: '28px' }}>
