@@ -7,7 +7,7 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-// import dotenv from "dotenv";
+import dotenv from "dotenv";
 dotenv.config({
   path: "/var/www/.env",
 });
