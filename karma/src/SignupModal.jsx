@@ -10,60 +10,78 @@ export default function SignupModal({ onClose, onSwitch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-
-  async function handleSignup() {
+const [successShown, setSuccessShown] = useState(false);
+async function handleSignup() {
   try {
     setLoading(true);
     setError("");
 
     if (!email.includes("@")) {
       setError("Please enter a valid email with @");
+      setLoading(false);
       return;
     }
 
     if (!/^[A-Za-z0-9]{6,}$/.test(password)) {
       setError("Password must be at least 6 alphanumeric characters");
+      setLoading(false);
       return;
     }
 
     const res = await axios.post(
-      "https://server.consciouskarma.co/api/auth/register",
-      {
-        name,
-        email,
-        password,
-      }
+      "http://localhost:4000/api/auth/register",
+      { name, email, password },
+      { timeout: 10000 } // ✅ CRITICAL
     );
 
-    if (!res.data.ok) throw new Error(res.data.message);
+    if (!res.data?.ok) {
+      throw new Error(res.data?.message || "Signup failed");
+    }
+console.log("Signup successful:", res);
+Swal.fire({
+  icon: "success",
+  title: "Signup Successful",
+  text: "Your account has been created successfully!",
+  confirmButtonText: "Continue",
+  background: "#000",
+  color: "#fff",
+  confirmButtonColor: "#ff914d",
+  allowOutsideClick: false,
+  allowEscapeKey: false,
 
-    setUser({ name, email });
+  didOpen: () => {
+    const popup = Swal.getPopup();
+    popup.style.border = "1.5px solid #ff914d";
+    popup.style.borderRadius = "14px";
+    popup.style.boxShadow = "0 0 25px rgba(255,145,77,0.35)";
+  }
+});
 
-    // Success Alert with Animation
-    await Swal.fire({
-      icon: "success",
-      title: "Signup Successful",
-      text: "Your account has been created successfully!",
-      confirmButtonColor: "#ff914d",
-      timer: 1800,
-      showConfirmButton: false,
-    });
 
-    // Reset fields
-    setName("");
-    setEmail("");
-    setPassword("");
+  
 
     onClose();
+
   } catch (err) {
-    setError(err?.response?.data?.message || "Signup failed");
+    if (err.code === "ECONNABORTED") {
+      setError("Server is not responding. Please try again.");
+    } else {
+      setError(err?.response?.data?.message || "Signup failed");
+    }
   } finally {
     setLoading(false);
   }
 }
 
+
   return (
-    <div className="ck-modal-backdrop" onClick={onClose}>
+  <div
+  className="ck-modal-backdrop"
+  onClick={() => {
+    if (!loading && !successShown) onClose();
+  }}
+>
+
       <div className="ck-modal" onClick={(e) => e.stopPropagation()}>
         <div className="ck-modal-header" style={{
   display: "flex",
@@ -148,3 +166,5 @@ export default function SignupModal({ onClose, onSwitch }) {
     </div>
   );
 }
+
+

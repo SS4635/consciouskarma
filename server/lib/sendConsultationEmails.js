@@ -20,7 +20,7 @@ export async function sendConsultationEmails({ formData, docId }) {
 
   /* ================= USER MAIL (UNCHANGED) ================= */
   const userHTML = `
-<div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
+<div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
   <p>Dear <strong>${name}</strong>,</p>
 
   <p>

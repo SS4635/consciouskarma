@@ -113,7 +113,7 @@ const ConsciousKarmaPage = () => {
   // ----- PRICE -----
   const paidCount = 1 + parallels.length; // primary + each parallel
   const totalPrice = BASE_PRICE * paidCount;
-  const priceText = `₹ ${BASE_PRICE} x ${paidCount} = ₹ ${totalPrice}`;
+  const priceText = `₹${BASE_PRICE} x ${paidCount} = ₹${totalPrice}`;
 
   // ----- STEP NAV -----
   const goNext = () => setStep((s) => (s < 4 ? s + 1 : s));

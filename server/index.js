@@ -7,7 +7,7 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 dotenv.config({
   path: "/var/www/.env",
 });
@@ -126,7 +126,7 @@ const rp = new Razorpay({
 
 async function sendSignupEmails({ email, name }) {
   const userHtml = `
-    <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
+    <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
       <p>Dear <strong>${name || "User"}</strong>,</p>
 
       <p>Your account has been created successfully.</p>
@@ -163,7 +163,7 @@ async function sendSignupEmails({ email, name }) {
 
   // ADMIN MAIL (unchanged)
   await sendEmail({
-    to: "fan818199@gmail.com",
+    to: "no-reply@consciouskarma.co",
     subject: "New User Registration",
     html: adminHtml,
   });
@@ -172,7 +172,7 @@ async function sendSignupEmails({ email, name }) {
 app.post("/api/auth/register", async (req, res) => {
   try {
     console.log("Received tu call registration request:", req.body);
-    const { email, password } = req.body;
+    const {name, email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -203,7 +203,7 @@ app.post("/api/auth/register", async (req, res) => {
     // Only send email AFTER successful DB save
     try {
       console.log("Sending signup emails...");
-      await sendSignupEmails({ email, name: email.split("@")[0] });
+      await sendSignupEmails({ email, name});
       console.log("Signup emails sent successfully");
     } catch (emailErr) {
       console.error("Signup email error:", emailErr);
@@ -1584,7 +1584,7 @@ app.post("/api/report/submit", async (req, res) => {
     `;
 
     await sendEmail({
-      to: "fan818199@gmail.com",
+      to: "no-reply@consciouskarma.co",
       subject: "New Conscious Karma Report Request (Payment Successful)",
       html: adminHtml,
     });
