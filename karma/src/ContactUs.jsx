@@ -85,7 +85,10 @@ export default function ContactUs() {
 
           {/* ---------------- CONTACT PAGE CONTENT ---------------- */}
           <div className="w-full max-w-5xl mx-auto">
-            <h1 className="font-balgin text-2xl sm:text-3xl md:text-4xl mb-6">Contact Us</h1>
+          <h1 className="font-balgin text-2xl sm:text-3xl md:text-4xl mb-8 text-center">
+  Contact Us
+</h1>
+
 
             <div className="flex flex-col md:flex-col gap-8 mb-8 items-center">
               {/* RIGHT FORM */}
@@ -165,13 +168,13 @@ export default function ContactUs() {
                     </div>
                     <div>
                       <div className="text-orange-400 font-semibold mb-1">Email</div>
-                      <a href={`mailto:${CONTACT_EMAIL}`} className="text-gray-200 text-sm sm:text-base underline break-all">
+                      <a href={`mailto:${CONTACT_EMAIL}`} className="text-gray-200 text-sm sm:text-base underline break-all" style={{"textDecoration":"none"}}>
                         {CONTACT_EMAIL}
                       </a>
                     </div>
                     <div>
                       <div className="text-orange-400 font-semibold mb-1">WhatsApp</div>
-                      <a href={waHref()} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-gray-200 text-sm sm:text-base underline">
+                      <a href={waHref()} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-gray-200 text-sm sm:text-base underline" style={{"textDecoration":"none"}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 48 48" fill="none">
                           <circle cx="24" cy="24" r="24" fill="#25D366" />
                           <path d="M34.5 29.5c-.5-.2-2.9-1.4-3.3-1.6-.4-.2-.7-.2-1 .2-.3.4-1.1 1.3-1.4 1.6-.3.3-.5.3-1 .1-.5-.2-2.1-.8-4-2.5-1.5-1.3-2.5-2.9-2.8-3.4-.3-.5-.1-.8.1-1.1.2-.2.4-.5.6-.8.2-.3.3-.5.5-.8.2-.3.1-.6 0-.8-.1-.2-1.1-2.7-1.5-3.7-.4-1-.8-.8-1.1-.8-.3 0-.6 0-.9 0-.3 0-.8.1-1.2.5-.4.4-1.5 1.5-1.5 3.6 0 2.1 1.5 4.1 1.7 4.4.2.3 3.2 5.1 7.8 6.7 4.6 1.6 5.5 1.1 6.5 1.1.9 0 2.9-1.2 3.3-2.3.4-1.1.4-2 .3-2.2-.1-.2-.4-.3-.9-.5z" fill="#fff" />

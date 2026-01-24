@@ -1592,7 +1592,7 @@ app.post("/api/report/submit", async (req, res) => {
     /* ----- User email ----- */
     /* ----- User email (REPORT IN PROGRESS) ----- */
 const userHtml = `
-  <div style="font-family:Arial,sans-serif;max-width:640px;margin:auto;line-height:1.6;color:#222;">
+  <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
     <p>Dear <strong>${general.name || "User"}</strong>,</p>
 
     <p>

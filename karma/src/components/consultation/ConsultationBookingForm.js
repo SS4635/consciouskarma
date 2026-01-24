@@ -158,7 +158,7 @@ export default function ConsultationBookingForm({
           <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
-        <p style={{color: '#fff', fontSize: '16px', marginTop: '10px'}}>Your consultation is booked. We will be in touch soon.</p>
+        <p style={{color: '#fff', fontSize: '16px', marginTop: '10px'}}>Your consultation is booked. <br/> We will be in touch soon.</p>
         <button
           style={{
             position: 'absolute',

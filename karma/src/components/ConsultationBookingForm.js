@@ -611,11 +611,17 @@ const errorOverlay = showError ? (
           return;
         }
 
-        Swal.fire(
-          "Success",
-          "Success! Your consultation is booked. We will be in touch soon.",
-          "success"
-        );
+      Swal.fire({
+  title: "Success",
+  html: `
+    <div>
+      <strong>Your consultation is booked.</strong><br>
+      <span>We will be in touch soon.</span>
+    </div>
+  `,
+  icon: "success",
+});
+
       },
 
       prefill: {

@@ -803,7 +803,8 @@ const errorOverlay = showError ? (
           <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
           <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
-        <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
+        <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success! <br/>Your consultation is booked.<br/>
+We will be in touch soon.</h2>
         <button
           style={{
             position: 'absolute',
