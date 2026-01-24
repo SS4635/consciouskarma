@@ -29,7 +29,7 @@ async function handleSignup() {
     }
 
     const res = await axios.post(
-      "http://localhost:4000/api/auth/register",
+      "https://server.consciouskarma.co/api/auth/register",
       { name, email, password },
       { timeout: 10000 } // ✅ CRITICAL
     );
