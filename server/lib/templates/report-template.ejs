@@ -558,6 +558,11 @@
         align-items: center;
         z-index: 2;
       }
+      .underline-link {
+  text-decoration: underline !important;
+  color: white;
+}
+
 
       /* ====================================
          PAGE 7 - INFLUENCE ON USER & LIFE
@@ -595,7 +600,7 @@
       .page8-list li {
         margin-bottom: 12px;
         font-size: 24px;
-        line-height: 1.2;
+        line-height: 1.4;  
       }
       /* .static-para{
         margin-top:10px;
@@ -605,6 +610,7 @@
         text-align: start;
         font-size: 24px;
         margin: 20px 0px;
+        line-height: 1.45;    
       }
 
       .closing-note-7 {
@@ -1105,21 +1111,28 @@ const healthNote = influence_section?.health_note || "";
 const cleanText = t =>
   (t || "").replace(/\\n/g,"\n").replace(/\s+/g," ").trim();
 
-const staticParagraph = cleanText(
+const staticParagraph =
   influence_section?.static_paragraph ||
-  "A mobile number expresses its influence through many factors — the user's gender, age, environment and background, work, role in life, duration of use, and other active numbers."
-);
+  "A mobile number expresses its influence through many factors — the user's gender, age, environment and background, work, role in life, duration of use, and other active numbers.";
+
 
 const instancePoints =
   influence_section?.instance_points?.length
     ? influence_section.instance_points
     : [];
 
-const closingText = cleanText(
-  influence_section?.closing ||
-  closing_note ||
-  "For a deeper look at how numbers influence life paths and choices, explore a Personalised Report.\nwww.consciouskarma.co/personalizedreport"
-);
+    const userPoints =
+  influence_section?.user_points?.length
+    ? influence_section.user_points
+    : [];
+
+
+
+const closingText =
+  "For a deeper look at how numbers influence life paths and choices, explore a Personalised Report.\n" +
+  "<a href='https://consciouskarma.co/personalised-report' style='color:white; text-decoration:underline;'>www.consciouskarma.co/personalisedreport</a>";
+
+
 
 /* SAFE CONSTANTS */
 const PAGE_HEIGHT = 760;
@@ -1135,22 +1148,31 @@ const instanceH = arr=>{
   arr.forEach(x=>h+=countLines(x,75)*LINE);
   return h;
 };
+const userPointsH = arr=>{
+  let h = 40;
+  arr.forEach(x => h += countLines(x,75) * LINE);
+  return h;
+};
 
 const newPage = title => ({
   title,
-  used: title?TITLE_HEIGHT:0,
-  points:[],
-  health:false,
-  static:false,
-  instance:false,
-  closing:false
+  used: title ? TITLE_HEIGHT : 0,
+  points: [],
+  userPts: [],          
+    showUserIntro: false,
+  health: false,
+  static: false,
+  instance: false,
+  closing: false
 });
+
 
 const fits = (p, h) => p.used + h + FOOTER_BUFFER <= PAGE_HEIGHT;
 
 
 let pages=[],p=newPage(true);
 
+const userPointsIntro = "For Instance:";
 
 
 
@@ -1194,6 +1216,39 @@ if(instancePoints.length){
   if(!fits(p,h)){pages.push(p);p=newPage(false);}
   p.instance=true;p.used+=h;
 }
+
+if (userPoints.length) {
+
+  let introAdded = false;
+
+  userPoints.forEach((up) => {
+
+    const isHeading = up.trim().endsWith(':');
+    const h =
+      (isHeading ? LINE * 1.2 : 0) +
+      countLines(up, 75) * LINE;
+
+    if (!fits(p, h)) {
+      pages.push(p);
+      p = newPage(false);
+    }
+
+    if (!introAdded) {
+      p.showUserIntro = true;
+      introAdded = true;
+    }
+
+    p.userPts.push({
+      text: up,
+      heading: isHeading
+    });
+
+    p.used += h;
+  });
+}
+
+
+
 
 /* closing */
 if(closingText){
@@ -1241,14 +1296,37 @@ pages.forEach(pg=>{
           <p class="static-para"><%= staticParagraph %></p>
         <% } %>
 
-        <% if(pg.instance){ %>
-          <p class="instance">
-            For instance:<br>
-            <% instancePoints.forEach(i=>{ %>
-              <%- i %><br>
-            <% }) %>
-          </p>
-        <% } %>
+<% if (pg.userPts && pg.userPts.length) { %>
+ <% if (pg.showUserIntro) { %>
+  <p class="instance" style="font-weight:400;">
+    <%= userPointsIntro %>
+  </p>
+<% } %>
+  <p class="instance">
+    
+    <% pg.userPts.forEach((item, i) => { %>
+
+      <% if(item.heading && i !== 0){ %>
+        <br>
+      <% } %>
+
+      <%= item.text %><br>
+
+    <% }) %>
+  </p>
+
+<% } %>
+
+     <% if(pg.instancePts && pg.instancePts.length){ %>
+  <div class="instance">
+   
+    <% pg.instancePts.forEach(i=>{ %>
+      <span><%- i %></span><br>
+    <% }) %>
+  </div>
+<% } %>
+
+
 
         <% if(pg.closing){ %>
           <p class="closing-note-7">
