@@ -575,7 +575,8 @@
         justify-content: start;
         align-items: start;
         font-size: 24px;
-        padding: 35px 0px 25px 0px;
+      padding: 35px 0px 90px 0px;
+
       }
 
       .page8-title {
@@ -1139,6 +1140,7 @@ const PAGE_HEIGHT = 760;
 const FOOTER_BUFFER = 240;
 const TITLE_HEIGHT = 62;
 const LINE = 25.2;
+const FOOTER_BUFFER_PAGE7 = 210;
 
 const countLines = (t,c)=>Math.max(1,Math.ceil(t.length/c));
 const bulletH = t => countLines(t,80)*LINE+6;
@@ -1166,8 +1168,9 @@ const newPage = title => ({
   closing: false
 });
 
+const fits = (p, h) =>
+  p.used + h + (p.title ? FOOTER_BUFFER_PAGE7 : FOOTER_BUFFER) <= PAGE_HEIGHT;
 
-const fits = (p, h) => p.used + h + FOOTER_BUFFER <= PAGE_HEIGHT;
 
 
 let pages=[],p=newPage(true);
@@ -1204,11 +1207,7 @@ if(healthNote){
 }
 
 /* static */
-if(staticParagraph){
-  const h=paraH(staticParagraph);
-  if(!fits(p,h)){pages.push(p);p=newPage(false);}
-  p.static=true;p.used+=h;
-}
+
 
 /* instance */
 if(instancePoints.length){
@@ -1217,35 +1216,39 @@ if(instancePoints.length){
   p.instance=true;p.used+=h;
 }
 
+
+if(staticParagraph){
+  const h=paraH(staticParagraph);
+  if(!fits(p,h)){pages.push(p);p=newPage(false);}
+  p.static=true;p.used+=h;
+}
+
 if (userPoints.length) {
 
-  let introAdded = false;
+  const headingHeight = LINE * 1.2;
 
-  userPoints.forEach((up) => {
+  if (!fits(p, headingHeight)) {
+    pages.push(p);
+    p = newPage(false);
+  }
 
-    const isHeading = up.trim().endsWith(':');
-    const h =
-      (isHeading ? LINE * 1.2 : 0) +
-      countLines(up, 75) * LINE;
+  p.points.push("__USER_INTRO__");
+  p.used += headingHeight;
+
+  userPoints.forEach(up => {
+    const h = bulletH(up);
 
     if (!fits(p, h)) {
       pages.push(p);
       p = newPage(false);
     }
 
-    if (!introAdded) {
-      p.showUserIntro = true;
-      introAdded = true;
-    }
-
-    p.userPts.push({
-      text: up,
-      heading: isHeading
-    });
-
+    p.points.push(up);
     p.used += h;
   });
 }
+
+p.used += 30;
 
 
 
@@ -1278,23 +1281,55 @@ pages.forEach(pg=>{
           <p class="page8-title">Mobile Number Influence on User & Life</p>
         <% } %>
 
-        <% if(pg.points.length){ %>
-          <div class="page8-list">
-            <ul>
-              <% pg.points.forEach(pt=>{ %>
-                <li><%= pt %></li>
-              <% }) %>
-            </ul>
-          </div>
-        <% } %>
+       <% if(pg.points.length){ %>
+  <div class="page8-list">
+ <ul>
+  <% let staticRendered = false; %>
+
+<% pg.points.forEach(pt => { %>
+
+  <% if (pt === "__USER_INTRO__") { %>
+
+    <% if (pg.static && !staticRendered) { %>
+      </ul>
+      <p class="static-para"><%= staticParagraph %></p>
+      <ul>
+      <% staticRendered = true; %>
+    <% } %>
+
+    </ul>
+    <p class="instance" style="font-weight:400; margin-top:20px;">
+      <%= userPointsIntro %>
+    </p>
+    <ul>
+
+  <% } else { %>
+
+    <% const isHeading = pt.trim().endsWith(':') || pt.trim().startsWith('IF A'); %>
+
+    <% if (isHeading) { %>
+      </ul>
+      <p class="instance" style="font-weight:400; margin:16px 0 6px 0;">
+        <%= pt.replace(':','') %>
+      </p>
+      <ul>
+    <% } else { %>
+      <li><%= pt %></li>
+    <% } %>
+
+  <% } %>
+
+<% }) %>
+</ul>
+
+  </div>
+<% } %>
 
         <% if(pg.health){ %>
           <p><%- healthNote.replace(/\n/g,"<br>") %></p>
         <% } %>
 
-        <% if(pg.static){ %>
-          <p class="static-para"><%= staticParagraph %></p>
-        <% } %>
+       
 
 <% if (pg.userPts && pg.userPts.length) { %>
  <% if (pg.showUserIntro) { %>
