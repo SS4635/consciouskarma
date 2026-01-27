@@ -1174,8 +1174,8 @@ const fits = (p, h) =>
 
 
 let pages=[],p=newPage(true);
-
-const userPointsIntro = "For Instance:";
+const userPointsIntro =
+  userPoints.length > 0 ? "For Instance:" : null;
 
 
 
@@ -1281,49 +1281,54 @@ pages.forEach(pg=>{
           <p class="page8-title">Mobile Number Influence on User & Life</p>
         <% } %>
 
-       <% if(pg.points.length){ %>
+     <% 
+  const hasUserSection = userPoints && userPoints.length > 0;
+  const hasPoints = pg.points.some(p => p !== "__USER_INTRO__");
+%>
+
+<% if (hasPoints || hasUserSection) { %>
   <div class="page8-list">
- <ul>
-  <% let staticRendered = false; %>
-
-<% pg.points.forEach(pt => { %>
-
-  <% if (pt === "__USER_INTRO__") { %>
-
-    <% if (pg.static && !staticRendered) { %>
-      </ul>
-      <p class="static-para"><%= staticParagraph %></p>
-      <ul>
-      <% staticRendered = true; %>
-    <% } %>
-
-    </ul>
-    <p class="instance" style="font-weight:400; margin-top:20px;">
-      <%= userPointsIntro %>
-    </p>
     <ul>
+      <% let staticRendered = false; %>
 
-  <% } else { %>
+      <% pg.points.forEach(pt => { %>
 
-    <% const isHeading = pt.trim().endsWith(':') || pt.trim().startsWith('IF A'); %>
+        <% if (pt === "__USER_INTRO__") { %>
 
-    <% if (isHeading) { %>
-      </ul>
-      <p class="instance" style="font-weight:400; margin:16px 0 6px 0;">
-        <%= pt.replace(':','') %>
-      </p>
-      <ul>
-    <% } else { %>
-      <li><%= pt %></li>
-    <% } %>
+          <% if (pg.static && !staticRendered) { %>
+            </ul>
+            <p class="static-para"><%= staticParagraph %></p>
+            <ul>
+            <% staticRendered = true; %>
+          <% } %>
 
-  <% } %>
+          </ul>
+          <p class="instance" style="font-weight:400; margin-top:20px;">
+            <%= userPointsIntro %>
+          </p>
+          <ul>
 
-<% }) %>
-</ul>
+        <% } else { %>
 
+          <% const isHeading = pt.trim().endsWith(':') || pt.trim().startsWith('IF A'); %>
+
+          <% if (isHeading) { %>
+            </ul>
+            <p class="instance" style="font-weight:400; margin:16px 0 6px 0;">
+              <%= pt.replace(':','') %>
+            </p>
+            <ul>
+          <% } else { %>
+            <li><%= pt %></li>
+          <% } %>
+
+        <% } %>
+
+      <% }) %>
+    </ul>
   </div>
 <% } %>
+
 
         <% if(pg.health){ %>
           <p><%- healthNote.replace(/\n/g,"<br>") %></p>

@@ -266,6 +266,29 @@ const ConsciousKarmaPage = () => {
     }, 1000);
   };
 
+
+
+
+  const NotPayableNote = () => (
+  <div
+    style={{
+      marginTop: "16px",
+      fontSize: "14px",
+      color: "#ff3b3b",
+      display: "flex",
+      alignItems: "center",
+      gap: "6px",
+      fontWeight: 500,
+    }}
+  >
+    
+    <span>* Every parallel number is charged at the same rate of primary number.</span>
+  </div>
+);
+
+
+
+
   // ========== OTP API CALLS ==========
   const sendOtpPrimary = async () => {
     if (!validatePhoneNumber(primary.isd, primary.number)) {
@@ -1007,6 +1030,7 @@ We will be in touch soon.</h2>
         {/* Slide 0 */}
                       <div className="ck-form-slide">
                         <div className="ck-form-inner">
+                          
                           <GeneralInformationForm
                             data={getGeneralFormData()}
                             onChange={handleGeneralFormChange}
@@ -1037,6 +1061,7 @@ We will be in touch soon.</h2>
                             maxNumbers={MAX_PARALLEL_NUMBERS}
                             showTitle={true}
                           />
+                          <NotPayableNote />
                         </div>
                       </div>
 
