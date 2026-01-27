@@ -271,18 +271,10 @@ const ConsciousKarmaPage = () => {
 
   const NotPayableNote = () => (
   <div
-    style={{
-      marginTop: "16px",
-      fontSize: "14px",
-      color: "#ff3b3b",
-      display: "flex",
-      alignItems: "center",
-      gap: "6px",
-      fontWeight: 500,
-    }}
+   className="notpayble" style={{ marginTop: '16px', fontSize: '14px', color: '#ff914d', display: 'flex', alignItems: 'center', gap: '6px', }}
   >
     
-    <span>* Every parallel number is charged at the same rate of primary number.</span>
+    <span className="notpayble">* Every parallel number is charged at the same rate of primary number.</span>
   </div>
 );
 

@@ -125,6 +125,15 @@
   gap: 12px;
   margin-bottom: 35px;
 }
+.notPayble {
+  margin-top: 16px !important;
+  font-size: 14px !important;
+  color: #ff914d !important ;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  font-weight: 500;
+}
 
 .ck-tags-row {
   display: flex;
