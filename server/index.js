@@ -7,15 +7,15 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-// import dotenv from "dotenv";
-
-// dotenv.config({
-//   path: "/var/www/.env",
-// });
-
 import dotenv from "dotenv";
-dotenv.config();
-//channges
+
+dotenv.config({
+  path: "/var/www/.env",
+});
+
+// import dotenv from "dotenv";
+// dotenv.config();
+// //channges
 
 
 import { connectMongo } from "./lib/mongo.js";
