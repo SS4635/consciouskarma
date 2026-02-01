@@ -7,14 +7,14 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-import dotenv from "dotenv";
-
-dotenv.config({
-  path: "/var/www/.env",
-});
-
 // import dotenv from "dotenv";
-// dotenv.config();
+
+// dotenv.config({
+//   path: "/var/www/.env",
+// });
+
+import dotenv from "dotenv";
+dotenv.config();
 // //channges
 
 
@@ -1230,57 +1230,44 @@ const linkLimiter = rateLimit({
 
 app.post("/link", linkLimiter, async (req, res) => {
   try {
-    console.log("🔥 /link HIT", req.body);
-
-    // 1️⃣ Trust only frontend
-    if (req.headers["x-from-link-page"] !== "1") {
-      return res.status(403).json({
-        ok: false,
-        code: "INVALID_SOURCE",
-      });
-    }
-
-    // 2️⃣ Key validation
     const { key } = req.body;
+    console.log("--- LINK DEBUG START ---");
+    console.log("Received Key:", key);
+
     if (!key) {
-      return res.status(400).json({
-        ok: false,
-        code: "MISSING_KEY",
-      });
+      return res.status(400).json({ ok: false, code: "MISSING_KEY" });
     }
 
+    // 1. Check if key exists in the allowed list (Case Insensitive)
     const allowed = (process.env.LINK_ALLOWED_KEYS || "")
       .split(",")
-      .map(k => k.trim());
+      .map(k => k.trim().toLowerCase());
 
-    if (!allowed.includes(key)) {
-      return res.status(400).json({
-        ok: false,
-        code: "INVALID_KEY",
-      });
+    if (!allowed.includes(key.toLowerCase())) {
+      console.log("Access Denied: Key not in allowed list.");
+      return res.status(401).json({ ok: false, code: "INVALID_KEY" });
     }
 
-    // 3️⃣ Map key → route
-    const apiPath = process.env[`LINK_${key}_API`];
+    // 2. Map Key -> Route (Try both uppercase and lowercase)
+    // If key is "abc", looks for LINK_ABC_API or LINK_abc_API
+    const apiPath = process.env[`LINK_${key.toUpperCase()}_API`] || process.env[`LINK_${key.toLowerCase()}_API`];
+
     if (!apiPath) {
-      return res.status(500).json({
+      console.error(`CONFIG ERROR: Variable LINK_${key.toUpperCase()}_API is missing in .env`);
+      // Return 404 instead of 500 so it's easier to debug
+      return res.status(404).json({
         ok: false,
         code: "API_NOT_MAPPED",
+        details: `Missing environment variable for: ${key}`
       });
     }
 
-    // ✅ 4️⃣ Send route to frontend
-    return res.json({
-      ok: true,
-      route: apiPath, // 👈 /a1, /a2, etc
-    });
+    console.log("Success! Routing to:", apiPath);
+    return res.json({ ok: true, route: apiPath });
 
   } catch (err) {
-    console.error("❌ LINK ERROR:", err.message);
-    return res.status(500).json({
-      ok: false,
-      code: "INTERNAL_ERROR",
-    });
+    console.error("CRITICAL LINK ERROR:", err.message);
+    return res.status(500).json({ ok: false, code: "SERVER_ERROR" });
   }
 });
 
