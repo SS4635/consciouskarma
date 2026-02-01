@@ -34,8 +34,10 @@ const emailOtps = new Map();
 const app = express();
 app.use(
   cors({
-    origin: "https://consciouskarma.co",
-    credentials: true,
+    origin: true, // This reflects the request origin, essentially allowing any domain
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-from-link-page"],
+    credentials: true, // Required since you are using cookies/sessions
   })
 );
 
