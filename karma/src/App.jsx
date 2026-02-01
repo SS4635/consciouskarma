@@ -16,6 +16,9 @@ import ContactUs from './ContactUs.jsx';
 import Blog from './Blog.jsx';
 import HowToReadMobileNumberBlog from './HowToReadMobileNumberBlog.jsx';
 import HowToChooseMobileNumberBlog from './HowToChooseMobileNumberBlog.jsx';
+import LinkGuard from "./LinkGuard";
+import LinkPage from "./LinkPage";
+import NotFound from "./NotFound";
 
 // ✅ Import your translations
 import {IntlProvider} from "./i18n/IntlProvider.jsx";  // 👈 yahan se saari text aayegi
@@ -30,6 +33,17 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/signup" element={<SignupModal />} />
+          <Route
+  path="/link"
+  element={
+    <LinkGuard>
+      <LinkPage />
+    </LinkGuard>
+  }
+/>
+          <Route path="/404" element={<NotFound />} />
+<Route path="*" element={<NotFound />} />
+
 
           <Route path="/login" element={<LoginModal />} />
           
