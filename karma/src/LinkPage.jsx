@@ -65,7 +65,6 @@ useEffect(() => {
       "X-FROM-LINK-PAGE": "1",
     },
     body: JSON.stringify({ key }),
-    credentials: "include",
   })
     .then(async (res) => {
       const data = await res.json();
