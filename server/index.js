@@ -32,7 +32,13 @@ const emailOtps = new Map();
 
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://consciouskarma.co",
+    credentials: true,
+  })
+);
+
 app.use(express.json({ limit: "50mb" })); // Increased limit for safety
 
 // --- 🔍 DEBUG: Start-up Check ---
@@ -1216,6 +1222,81 @@ try {
   }
 }
 
+import rateLimit from "express-rate-limit";
+const linkLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 20,                 // per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.post("/link", linkLimiter, async (req, res) => {
+  try {
+    console.log("🔥 /link HIT", req.body);
+
+    // 1️⃣ Trust only frontend
+    if (req.headers["x-from-link-page"] !== "1") {
+      return res.status(403).json({
+        ok: false,
+        code: "INVALID_SOURCE",
+      });
+    }
+
+    // 2️⃣ Key validation
+    const { key } = req.body;
+    if (!key) {
+      return res.status(400).json({
+        ok: false,
+        code: "MISSING_KEY",
+      });
+    }
+
+    const allowed = (process.env.LINK_ALLOWED_KEYS || "")
+      .split(",")
+      .map(k => k.trim());
+
+    if (!allowed.includes(key)) {
+      return res.status(400).json({
+        ok: false,
+        code: "INVALID_KEY",
+      });
+    }
+
+    // 3️⃣ Map key → route
+    const apiPath = process.env[`LINK_${key}_API`];
+    if (!apiPath) {
+      return res.status(500).json({
+        ok: false,
+        code: "API_NOT_MAPPED",
+      });
+    }
+
+    // ✅ 4️⃣ Send route to frontend
+    return res.json({
+      ok: true,
+      route: apiPath, // 👈 /a1, /a2, etc
+    });
+
+  } catch (err) {
+    console.error("❌ LINK ERROR:", err.message);
+    return res.status(500).json({
+      ok: false,
+      code: "INTERNAL_ERROR",
+    });
+  }
+});
+
+app.get("/api/link/check", (req, res) => {
+  const { key } = req.query;
+
+  if (!key) return res.json({ valid: false });
+
+  const allowed = (process.env.LINK_ALLOWED_KEYS || "")
+    .split(",")
+    .map(k => k.trim());
+
+  res.json({ valid: allowed.includes(key) });
+});
 
 
 
@@ -1303,7 +1384,7 @@ app.get("/api/config/personalizereportprice", (req, res) => {
 app.get("/test-mail", async (req, res) => {
   try {
     await sendEmail({
-      to: "fan818199@gmail.com",
+      to: "ahanaoberoi2001@gmail.com",
       subject: "Test Hostinger Email",
       html: "<h2>Hello! Hostinger SMTP working!</h2>",
     });
