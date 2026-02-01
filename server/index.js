@@ -8,11 +8,14 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
+
 dotenv.config({
   path: "/var/www/.env",
 });
+
 // import dotenv from "dotenv";
 // dotenv.config();
+//channges
 
 
 import { connectMongo } from "./lib/mongo.js";
@@ -32,14 +35,7 @@ const emailOtps = new Map();
 
 
 const app = express();
-app.use(
-  cors({
-    origin: true, // This reflects the request origin, essentially allowing any domain
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-from-link-page"],
-    credentials: true, // Required since you are using cookies/sessions
-  })
-);
+app.use(cors());
 
 app.use(express.json({ limit: "50mb" })); // Increased limit for safety
 
