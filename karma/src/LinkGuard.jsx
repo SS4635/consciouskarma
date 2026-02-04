@@ -1,4 +1,3 @@
-// src/LinkGuard.jsx
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import NotFound from "./NotFound";
@@ -22,11 +21,9 @@ export default function LinkGuard({ children }) {
     }
 
     // ✅ backend simple check API
-    fetch(
-      `${process.env.REACT_APP_API_URL}/api/link/check?key=${key}`
-    )
-      .then(res => res.json())
-      .then(data => {
+    fetch(`${process.env.REACT_APP_API_URL}/api/link/check?key=${key}`)
+      .then((res) => res.json())
+      .then((data) => {
         setAllowed(data.valid === true);
       })
       .catch(() => {
@@ -37,8 +34,18 @@ export default function LinkGuard({ children }) {
   // ⏳ while checking
   if (allowed === null) {
     return (
-      <div style={{ color: "white", textAlign: "center", marginTop: 100 }}>
-        Checking link…
+      <div style={styles.loaderContainer}>
+        {/* Injecting keyframes directly so you don't need a CSS file */}
+        <style>
+          {`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}
+        </style>
+        <div style={styles.spinner}></div>
+        
       </div>
     );
   }
@@ -51,3 +58,22 @@ export default function LinkGuard({ children }) {
   // ✅ valid
   return children;
 }
+
+// Internal styles object to fix the 'styles is not defined' error
+const styles = {
+  loaderContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: "100px",
+  },
+  spinner: {
+    width: "40px",
+    height: "40px",
+    border: "14px solid rgba(255, 255, 255, 0.1)",
+    borderTop: "14px solid #FFA500", // Orange color
+    borderRadius: "50%",
+    animation: "spin 1s linear infinite",
+  },
+};
