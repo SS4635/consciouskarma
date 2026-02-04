@@ -111,7 +111,7 @@ export default function FirstSection({ resolvedRoute }) {
                     </span>
                     
                     {/* Arrow */}
-                    <div className="absolute left-[90px] top-[20px] md:left-[140px] md:top-[25px]">
+                    <div className="absolute left-[90px] top-[30px] md:left-[140px] md:top-[25px]">
                         <svg 
                             className="w-8 h-8 md:w-12 md:h-12 text-gray-200 opacity-100 transform rotate-[10deg]" 
                             viewBox="0 0 100 100" 
@@ -127,7 +127,7 @@ export default function FirstSection({ resolvedRoute }) {
             </div>
 
             {/* 2. OTP INPUT GRID */}
-            <div
+            {/* <div
                 className="relative flex gap-5 md:gap-20 w-full justify-center cursor-text h-24 md:h-32 items-center"
                 onClick={() => inputRef.current?.focus()}
             >
@@ -170,7 +170,53 @@ export default function FirstSection({ resolvedRoute }) {
                 className="absolute inset-0 w-full h-full opacity-0"
                 autoComplete="off"
                 />
-            </div>
+            </div> */}
+
+{/* 2. OTP INPUT GRID */}
+<div
+  // CORRECT WAY:
+  // gap-[2px] -> Mobile ke liye (Jo aapne manga)
+  // md:gap-12 -> Desktop ke liye (Bada gap)
+  className="relative flex gap-[10px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center"
+  onClick={() => inputRef.current?.focus()}
+>
+  {Array.from({ length: 10 }).map((_, i) => {
+    const isActive = i === inputValue.length;
+    const char = inputValue[i] || "";
+
+    return (
+      <div
+        key={i}
+        // shrink-0 zaroor lagana, warna gap-12 aate hi dabbe wapas pichak jayenge
+        className={`flex items-center justify-center shrink-0
+          h-10 w-7 md:h-20 md:w-16
+          text-xl md:text-4xl font-mono
+          border-[1.5px] rounded-md md:rounded-lg
+          transition-all duration-300
+          border-[#ff914d]
+          ${isActive ? "animate-bounce bg-[#ff914d]/10" : ""}
+        `}
+        style={{ color: "white" }}
+      >
+        {char}
+        {isActive && (
+          <div className="absolute h-1/2 w-[2px] bg-[#ff914d]" />
+        )}
+      </div>
+    );
+  })}
+
+  <input
+    ref={inputRef}
+    type="tel"
+    inputMode="numeric"
+    maxLength={10}
+    value={inputValue}
+    onChange={handleChange}
+    className="absolute inset-0 w-full h-full opacity-0"
+    autoComplete="off"
+  />
+</div>
 
             {/* 3. BUTTON */}
             {/* GAP REDUCED: Changed mt-5 to mt-2 */}
