@@ -20,6 +20,17 @@ export default function FirstSection({ resolvedRoute }) {
     }
   }, []);
 
+  // ✅ AUTO-HIDE LOGIC: 4 second baad message gayab
+  useEffect(() => {
+    let timer;
+    if (showInfo) {
+      timer = setTimeout(() => {
+        setShowInfo(false);
+      }, 4000);
+    }
+    return () => clearTimeout(timer);
+  }, [showInfo]);
+
   // Handle typing in individual boxes
   const handleChange = (element, index) => {
     const val = element.value;
@@ -34,29 +45,25 @@ export default function FirstSection({ resolvedRoute }) {
     if (val && index < 9) {
       inputRefs.current[index + 1].focus();
     }
-    
   };
 
-  // Handle Backspace
+  // Handle Backspace (Smooth & Continuous Delete)
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
-      const target = e.target;
-      // Check karein ki user ne text select kiya hai ya nahi
-      const isSelected = target.selectionStart !== target.selectionEnd;
+      e.preventDefault(); // Browser ka default behavior roko (Zaroori hai)
 
       if (otp[index]) {
-        // Case 1: Box BHARA hua hai
-        if (!isSelected) {
-           // Agar user ne select NAHI kiya hai, toh delete mat hone do
-           e.preventDefault();
-        } 
-        // Else: Agar select kiya hai, toh browser ka default delete chalne do
-      } else {
-        // Case 2: Box KHALI hai -> Piche jao
-        if (index > 0) {
-          e.preventDefault();
-          inputRefs.current[index - 1].focus();
-        }
+        // Case 1: Agar current box mein number hai -> Sirf usko clear karo
+        const newOtp = [...otp];
+        newOtp[index] = "";
+        setOtp(newOtp);
+      } else if (index > 0) {
+        // Case 2: Agar current box khali hai -> Piche focus karo AUR piche wala bhi delete karo
+        inputRefs.current[index - 1].focus();
+
+        const newOtp = [...otp];
+        newOtp[index - 1] = ""; // Piche wala box turant clear karo
+        setOtp(newOtp);
       }
     }
   };
@@ -66,13 +73,13 @@ export default function FirstSection({ resolvedRoute }) {
     e.preventDefault();
     const val = e.clipboardData.getData("text").slice(0, 10);
     if (/^[0-9]+$/.test(val)) {
-        const newOtp = val.split("");
-        // Fill remaining with empty if pasted length < 10
-        while (newOtp.length < 10) newOtp.push(""); 
-        setOtp(newOtp);
-        // Focus last filled index
-        const focusIndex = val.length < 10 ? val.length : 9;
-        inputRefs.current[focusIndex].focus();
+      const newOtp = val.split("");
+      // Fill remaining with empty if pasted length < 10
+      while (newOtp.length < 10) newOtp.push("");
+      setOtp(newOtp);
+      // Focus last filled index
+      const focusIndex = val.length < 10 ? val.length : 9;
+      inputRefs.current[focusIndex].focus();
     }
   };
 
@@ -106,57 +113,23 @@ export default function FirstSection({ resolvedRoute }) {
   };
 
   const handleScrollNext = () => {
-    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+    window.scrollBy({ top: window.innerHeight, behavior: "smooth" });
   };
 
   // ✅ HELPER: Get Heading & Icon based on Route
-  // const getRouteDetails = (route) => {
-  //   const r = route?.replace(/\/$/, "") || "";
-
-  //   // Common Icon Definition (Bar Chart)
-  //   const commonIcon = (
-  //     <svg 
-  //       xmlns="http://www.w3.org/2000/svg" 
-  //       viewBox="0 0 24 24" 
-  //       fill="none" 
-  //       stroke="currentColor" 
-  //       strokeWidth="2" 
-  //       strokeLinecap="round" 
-  //       strokeLinejoin="round" 
-  //       className="w-6 h-6 md:w-10 md:h-10"
-  //       style={{color:"#bobobo"}}
-  //     >
-  //       <line x1="18" y1="20" x2="18" y2="10"></line>
-  //       <line x1="12" y1="20" x2="12" y2="4"></line>
-  //       <line x1="6" y1="20" x2="6" y2="14"></line>
-  //     </svg>
-  //   );
-
-  //   // Agar special route hai toh title change hoga, par icon abhi sabme dikhega
-  //   if (r.endsWith("a1")) return { title: "abc", icon: commonIcon };
-  //   if (r.endsWith("a2")) return { title: "ggg", icon: commonIcon };
-  //   if (r.endsWith("a3")) return { title: "aaa", icon: commonIcon };
-
-  //   // Default Fallback
-  //   return { 
-  //     title: "Result", 
-  //     icon: commonIcon
-  //   };
-  // };
-// ✅ HELPER: Get Heading & Icon based on Route
   const getRouteDetails = (route) => {
     const r = route?.replace(/\/$/, "") || "";
 
     // Common Icon Definition (Bar Chart with Grey Color)
     const commonIcon = (
-      <svg 
-        xmlns="http://www.w3.org/2000/svg" 
-        viewBox="0 0 24 24" 
-        fill="none" 
-        stroke="currentColor" 
-        strokeWidth="2" 
-        strokeLinecap="round" 
-        strokeLinejoin="round" 
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
         className="w-6 h-6 md:w-10 md:h-10"
         style={{ color: "#b0b0b0" }} // Yahan color set kar diya
       >
@@ -172,254 +145,304 @@ export default function FirstSection({ resolvedRoute }) {
     if (r.endsWith("a3")) return { title: "aaa", icon: commonIcon };
 
     // Default Fallback
-    return { 
-      title: "Result", 
-      icon: commonIcon
+    return {
+      title: "Result",
+      icon: commonIcon,
     };
   };
   const routeDetails = getRouteDetails(resolvedRoute);
-  
+
   // Parse Score
   let numericScore = 0;
   if (apiData?.score) {
-    numericScore = parseInt(apiData.score); 
+    numericScore = parseInt(apiData.score);
     if (isNaN(numericScore)) numericScore = 0;
   }
-  
+
+  // ✅ LOGIC CHANGE: Check if we have results to toggle layout
+  const hasResults = !!apiData;
 
   return (
-    
-    <section className="bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden pt-24 md:pt-10 pb-10">
+    <section
+      // Change the className logic to this:
+className={`
+  bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden
+  transition-all duration-700 ease-in-out
+  ${
+    hasResults
+      ? "justify-start pt-24 md:pt-10 pb-10" // Result Mode: Top alignment
+      : "justify-center pt-16 md:pt-20"      // Input Mode: Center + Header Offset (Ye hai asli center!)
+  }
+`}
+    >
       <main className="flex flex-col items-center w-full max-w-[95rem] transition-all duration-500 ease-in-out">
-        
         <div className="w-full p-4 flex flex-col items-center">
-            
-            <form className="flex flex-col items-center w-full" onSubmit={(e) => e.preventDefault()}>
-            
+          <form
+            className="flex flex-col items-center w-full"
+            onSubmit={(e) => e.preventDefault()}
+          >
             {/* 1. LABEL & ARROW - CENTERED */}
             <div className="w-full flex justify-center mb-4">
-                <div className="relative text-center w-full max-w-[360px] md:max-w-[1100px] flex justify-center"> 
-                    <div className="relative">
-                        <span className="block text-gray-300 text-xl md:text-lg tracking-wider font-light mb-1">
-                            Enter Mobile Number
-                        </span>
-                        {/* Arrow Adjustments */}
-                        {/* You can re-enable the arrow here if needed */}
-                    </div>
+              <div className="relative text-center w-full max-w-[360px] md:max-w-[1100px] flex justify-center">
+                <div className="relative">
+                  <span className="block text-gray-300 text-xl md:text-lg tracking-wider font-light mb-1">
+                    Enter Mobile Number
+                  </span>
                 </div>
+              </div>
             </div>
 
             {/* 2. OTP INPUT GRID (Individual Inputs) */}
             <div className="relative flex gap-[8px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center">
-                {/* {otp.map((data, index) => {
-                    const isActive = index === otp.findIndex(val => val === "") || (isComplete && index === 9);
-                    
+              {otp.map((data, index) => {
+                // Logic: Pehla khaali box dhoondo
+                const firstEmptyIndex = otp.findIndex((val) => val === "");
 
-                    return (
-                        <input
-                            key={index}
-                            ref={el => inputRefs.current[index] = el}
-                            type="text"
-                            inputMode="numeric"
-                            maxLength={1}
-                            value={data}
-                            onChange={e => handleChange(e.target, index)}
-                            onKeyDown={e => handleKeyDown(e, index)}
-                            onPaste={handlePaste}
-                            className={`flex items-center justify-center text-center shrink-0
-                                h-10 w-7 md:h-20 md:w-16
-                                text-xl md:text-3xl font-mono
-                                border-[1.5px] rounded-md md:rounded-lg
-                                transition-all duration-300 outline-none
-                                bg-transparent
-                                border-[#ff914d]
-                                text-white caret-transparent selection:bg-transparent
-                                `}
-                        />
-                    );
-                })} */}
-                {otp.map((data, index) => {
-    // Logic: Pehla khaali box dhoondo
-    const firstEmptyIndex = otp.findIndex((val) => val === "");
-    
-    // Sirf wahi box bounce karega jo 'firstEmptyIndex' hai. 
-    // Agar sab bhar gaye hain (firstEmptyIndex -1 hoga), toh koi bounce nahi karega.
-    const shouldBounce = index === firstEmptyIndex;
+                // Sirf wahi box bounce karega jo 'firstEmptyIndex' hai.
+                const shouldBounce = index === firstEmptyIndex;
 
-    return (
-        <input
-            key={index}
-            ref={el => inputRefs.current[index] = el}
-            type="text"
-            inputMode="numeric"
-            maxLength={1}
-            value={data}
-            onClick={(e) => e.target.select()}
-            onChange={e => handleChange(e.target, index)}
-            onKeyDown={e => handleKeyDown(e, index)}
-            onPaste={handlePaste}
-            className={`flex items-center justify-center text-center shrink-0
-                h-10 w-7 md:h-20 md:w-16
-                text-xl md:text-3xl font-mono
-                border-[1.5px] rounded-md md:rounded-lg
-                transition-all duration-300 outline-none
-                bg-transparent
-                border-[#ff914d]
-                text-white caret-transparent selection:bg-transparent
-                focus:bg-[#ff914d]/10
-                ${shouldBounce ? "animate-bounce" : ""} 
-            `}
-        />
-    );
-})}
+                return (
+                  <input
+                    key={index}
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type="text"
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={data}
+                    onClick={(e) => e.target.select()}
+                    onChange={(e) => handleChange(e.target, index)}
+                    onKeyDown={(e) => handleKeyDown(e, index)}
+                    onPaste={handlePaste}
+                    className={`flex items-center justify-center text-center shrink-0
+                            h-10 w-7 md:h-20 md:w-16
+                            text-xl md:text-3xl font-mono
+                            border-[1.5px] rounded-md md:rounded-lg
+                            transition-all duration-300 outline-none
+                            bg-transparent
+                            border-[#ff914d]
+                            text-white caret-transparent selection:bg-transparent
+                            focus:bg-[#ff914d]/10
+                            ${shouldBounce ? "animate-bounce" : ""} 
+                        `}
+                  />
+                );
+              })}
             </div>
 
-            {/* 3. BUTTON */}
-            {/* 3. BUTTONS SECTION (Energy Button + Info Icon) */}
-<div className="flex items-center gap-4 mt-2">
-    
-    {/* Ye apka purana button hai, same rahega bas is div ke andar aa gya */}
-    <button
-        type="button"
-        onClick={handleFetch}
-        disabled={!isComplete}
-        className={"ck-btn1"}
-    >
-        get number energy
-    </button>
+            {/* 3. BUTTONS & ICON SECTION */}
+            <div className="flex items-center justify-center gap-4 mt-6 w-full relative">
+              {/* Main Button */}
+              {/* Main Button */}
+<button
+    type="button"
+    onClick={handleFetch}
+    disabled={!isComplete}
+    className={`
+        mt-3 px-8 py-2 rounded-lg text-xl font-medium transition-all duration-300 border-1 border-[#ff914d]
+        ${!isComplete 
+            ? "bg-black text-[#ff914d] cursor-not-allowed"   // ❌ Jab 10 digit nahi hai: Black BG, Orange Text
+            : "bg-[#ff914d] text-white cursor-pointer hover:bg-[#ff914d] " // ✅ Jab 10 digit hain: Orange BG, White Text
+        }
+    `}
+>
+    get number energy
+</button>
 
-    {/* ✅ YE NEW "i" BUTTON HAI */}
-    <button 
-        type="button"
-        onClick={() => setShowInfo(true)}
-        className="group relative flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 hover:border-[#ff914d] transition-colors duration-300 bg-white/5 hover:bg-[#ff914d]/10"
-        aria-label="How to enter number"
-    >
-        <span className="text-gray-400 group-hover:text-[#ff914d] font-serif italic text-lg font-bold transition-colors">i</span>
-    </button>
-</div>
+              {/* 'i' Icon (No Circle, Centered) */}
+              <button
+                type="button"
+                onClick={() => setShowInfo(true)}
+                className="flex items-center justify-center text-gray-500 hover:text-[#ff914d] transition-colors duration-300 p-2"
+                aria-label="View Instructions"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-7 h-7"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
+                  />
+                </svg>
+              </button>
+            </div>
 
-            </form>
-
-            {/* RESPONSE AREA */}
-            <div className="w-full mt-6 min-h-[150px] flex flex-col items-center">
-            {loading && (
-                <div className="text-[#ff914d] animate-pulse text-lg text-center tracking-widest">
-                ANALYZING ENERGY...
+            {/* ✅ NEW: FLASH MESSAGE BAR (Modal ki jagah ye aayega) */}
+            {showInfo && (
+              <div className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full max-w-md">
+                <div className="bg-[#111] border border-[#ff914d] text-gray-200 px-6 py-3 rounded-lg text-center text-sm tracking-wide shadow-[0_0_15px_rgba(255,145,77,0.2)]">
+                  Add leading <strong>0</strong>s if less than 10 digits. Enter
+                  first 10 if more.
                 </div>
+              </div>
+            )}
+          </form>
+
+          {/* RESPONSE AREA */}
+          <div className="w-full mt-6 min-h-[150px] flex flex-col items-center">
+            {loading && (
+              <div className="text-[#ff914d] animate-pulse text-lg text-center tracking-widest">
+                ANALYZING ENERGY...
+              </div>
             )}
 
             {error && (
-                <div className="text-red-400 border border-red-900 p-4 rounded bg-red-900/10 text-center">
+              <div className="text-red-400 border border-red-900 p-4 rounded bg-red-900/10 text-center">
                 {error}
-                </div>
+              </div>
             )}
 
             {apiData && !loading && (
-                <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700 flex flex-col items-center">
-                    <h2 className="text-2xl md:text-3xl font-light text-center mb-6 capitalize tracking-widest text-white">
-                        {routeDetails.title}
-                    </h2>
+              <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700 flex flex-col items-center">
+                <h2 className="text-2xl md:text-3xl font-light text-center mb-6 capitalize tracking-widest text-white">
+                  {routeDetails.title}
+                </h2>
 
-                    {/* CHART SECTION */}
-                    <div className="relative flex items-center justify-center w-full mb-6 px-0 max-w-5xl">
-                        {/* Left Bars */}
-                        <div className="flex flex-1 justify-end gap-1">
-                            {[-5, -4, -3, -2, -1].map((val, index) => {
-                            const isActive = numericScore < 0 && numericScore <= val;
-                            const roundedClass = index === 0 ? "rounded-l-full" : "rounded-none";
-                            return (
-                                <div key={val} className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${isActive ? "bg-[#B23A41]" : "bg-[#b0b0b0]"}`} />
-                            );
-                            })}
-                        </div>
-                        
-                        {/* Center Circle with Icon */}
-                        <div className="relative z-20 flex-shrink-0 -mx-4 md:-mx-6">
-                            <div 
-                                className="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-black shadow-2xl" 
-                                style={{border:"3px solid #b0b0b0"}} // Using your grey border color
-                            >
-                                {routeDetails.icon}
-                            </div>
-                        </div>
-                        
-                        {/* Right Bars */}
-                        <div className="flex flex-1 justify-start gap-1">
-                            {[1, 2, 3, 4, 5].map((val, index) => {
-                            const isActive = numericScore > 0 && numericScore >= val;
-                            const roundedClass = index === 4 ? "rounded-r-full" : "rounded-none";
-                            return (
-                                <div key={val} className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${isActive ? "bg-[#15803d]" : "bg-[#b0b0b0]"}`} />
-                            );
-                            })}
-                        </div>
-                    </div>
+                {/* CHART SECTION */}
+                <div className="relative flex items-center justify-center w-full mb-6 px-0 max-w-5xl">
+                  {/* Left Bars */}
+                  <div className="flex flex-1 justify-end gap-1">
+                    {[-5, -4, -3, -2, -1].map((val, index) => {
+                      const isActive = numericScore < 0 && numericScore <= val;
+                      const roundedClass =
+                        index === 0 ? "rounded-l-full" : "rounded-none";
+                      return (
+                        <div
+                          key={val}
+                          className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
+                            isActive ? "bg-[#B23A41]" : "bg-[#b0b0b0]"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
 
-                    {/* INSIGHT TEXT */}
-                    <div className="text-center px-4 md:px-12 max-w-4xl">
-                        <p className="text-white text-[10px] uppercase mb-4 tracking-[0.2em]">INSIGHT</p>
-                        <p className="text-lg md:text-2xl font-light leading-relaxed text-gray-200">"{apiData.point}"</p>
+                  {/* Center Circle with Icon */}
+                  <div className="relative z-20 flex-shrink-0 -mx-4 md:-mx-6">
+                    <div
+                      className="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-black shadow-2xl"
+                      style={{ border: "3px solid #b0b0b0" }} // Using your grey border color
+                    >
+                      {routeDetails.icon}
                     </div>
+                  </div>
 
-                    {/* EXPLORE BUTTON */}
-                    <div className="mt-6 mb-4 animate-in fade-in duration-1000 delay-500">
-                        <button onClick={handleScrollNext} className="flex flex-col items-center justify-center group cursor-pointer">
-                            <span className="text-[12px] uppercase tracking-[0.2em] mb-2 text-[#ff914d] group-hover:text-white transition-colors bg-black/80 px-3 py-1 rounded-full backdrop-blur-sm border border-[#ff914d]/30">Explore More</span>
-                            <div className="animate-bounce text-[#ff914d] group-hover:text-white transition-colors text-2xl drop-shadow-md">↓</div>
-                        </button>
-                    </div>
+                  {/* Right Bars */}
+                  <div className="flex flex-1 justify-start gap-1">
+                    {[1, 2, 3, 4, 5].map((val, index) => {
+                      const isActive = numericScore > 0 && numericScore >= val;
+                      const roundedClass =
+                        index === 4 ? "rounded-r-full" : "rounded-none";
+                      return (
+                        <div
+                          key={val}
+                          className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
+                            isActive ? "bg-[#15803d]" : "bg-[#b0b0b0]"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
                 </div>
+
+                {/* INSIGHT TEXT */}
+                <div className="text-center px-4 md:px-12 max-w-4xl">
+                  <p className="text-white text-[10px] uppercase mb-4 tracking-[0.2em]">
+                    INSIGHT
+                  </p>
+                  <p className="text-lg md:text-2xl font-light leading-relaxed text-gray-200">
+                    "{apiData.point}"
+                  </p>
+                </div>
+
+                {/* EXPLORE BUTTON */}
+                <div className="mt-6 mb-4 animate-in fade-in duration-1000 delay-500">
+                  <button
+                    onClick={handleScrollNext}
+                    className="flex flex-col items-center justify-center group cursor-pointer"
+                  >
+                    <span className="text-[12px] uppercase tracking-[0.2em] mb-2 text-[#ff914d] group-hover:text-white transition-colors bg-black/80 px-3 py-1 rounded-full backdrop-blur-sm border border-[#ff914d]/30">
+                      Explore More
+                    </span>
+                    <div className="animate-bounce text-[#ff914d] group-hover:text-white transition-colors text-2xl drop-shadow-md">
+                      ↓
+                    </div>
+                  </button>
+                </div>
+              </div>
             )}
-            </div>
-            
+          </div>
         </div>
         {/* ✅ BEAUTIFUL INFO MODAL */}
-{showInfo && (
-    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-in fade-in duration-300">
-        {/* Background Blur */}
-        <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setShowInfo(false)}
-        />
+        {showInfo && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-in fade-in duration-300">
+            {/* Background Blur */}
+            <div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={() => setShowInfo(false)}
+            />
 
-        {/* Modal Box */}
-        <div className="relative bg-[#111] border border-[#ff914d]/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-[0_0_30px_rgba(255,145,77,0.15)] flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
-            
-            {/* Icon */}
-            <div className="w-12 h-12 rounded-full bg-[#ff914d]/10 flex items-center justify-center mb-4 text-[#ff914d]">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0-4.5h.007v.008H12v-.008ZM11.25 10.5h1.5m-7.5 9.75h12a2.25 2.25 0 0 0 2.25-2.25v-12a2.25 2.25 0 0 0-2.25-2.25h-12a2.25 2.25 0 0 0-2.25 2.25v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+            {/* Modal Box */}
+            <div className="relative bg-[#111] border border-[#ff914d]/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-[0_0_30px_rgba(255,145,77,0.15)] flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+              {/* Icon */}
+              <div className="w-12 h-12 rounded-full bg-[#ff914d]/10 flex items-center justify-center mb-4 text-[#ff914d]">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 18v-5.25m0-4.5h.007v.008H12v-.008ZM11.25 10.5h1.5m-7.5 9.75h12a2.25 2.25 0 0 0 2.25-2.25v-12a2.25 2.25 0 0 0-2.25-2.25h-12a2.25 2.25 0 0 0-2.25 2.25v12a2.25 2.25 0 0 0 2.25 2.25Z"
+                  />
                 </svg>
-            </div>
+              </div>
 
-            <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
+              <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
                 Entry Instructions
-            </h3>
-            
-            <div className="w-12 h-[1px] bg-[#ff914d] mb-6"></div>
+              </h3>
 
-            <div className="space-y-4 text-gray-300 text-sm md:text-base font-light leading-relaxed">
-                <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-                    <p className="text-white mb-1 font-medium">Fewer than 10 digits?</p>
-                    <p className="opacity-80">Add leading <span className="text-[#ff914d] font-bold">0</span>s to fill the empty boxes.</p>
-                </div>
-                
-                <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-                    <p className="text-white mb-1 font-medium">More than 10 digits?</p>
-                    <p className="opacity-80">Enter as many digits as possible (first 10).</p>
-                </div>
-            </div>
+              <div className="w-12 h-[1px] bg-[#ff914d] mb-6"></div>
 
-            <button 
+              <div className="space-y-4 text-gray-300 text-sm md:text-base font-light leading-relaxed">
+                <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                  <p className="text-white mb-1 font-medium">
+                    Fewer than 10 digits?
+                  </p>
+                  <p className="opacity-80">
+                    Add leading <span className="text-[#ff914d] font-bold">0</span>s
+                    to fill the empty boxes.
+                  </p>
+                </div>
+
+                <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                  <p className="text-white mb-1 font-medium">
+                    More than 10 digits?
+                  </p>
+                  <p className="opacity-80">
+                    Enter as many digits as possible (first 10).
+                  </p>
+                </div>
+              </div>
+
+              <button
                 onClick={() => setShowInfo(false)}
                 className="mt-8 px-8 py-2 bg-[#ff914d] hover:bg-[#ff8033] text-black font-semibold rounded-full text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#ff914d]/20"
-            >
+              >
                 Got it
-            </button>
-        </div>
-    </div>
-)}
+              </button>
+            </div>
+          </div>
+        )}
       </main>
     </section>
   );
