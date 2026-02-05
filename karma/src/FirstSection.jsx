@@ -10,7 +10,7 @@ export default function FirstSection({ resolvedRoute }) {
   // Refs for each input to manage focus
   const inputRefs = useRef([]);
 
-  const API_BASE = "https://api.consciouskarma.co/micro";
+  const API_BASE = `${process.env.REACT_APP_API_URL}/api/get-energy`;
 
   useEffect(() => {
     // Focus first input on load
@@ -34,7 +34,6 @@ export default function FirstSection({ resolvedRoute }) {
       inputRefs.current[index + 1].focus();
     }
     
-    if (apiData) setApiData(null);
   };
 
   // Handle Backspace
@@ -196,10 +195,10 @@ export default function FirstSection({ resolvedRoute }) {
             </div>
 
             {/* 2. OTP INPUT GRID (Individual Inputs) */}
-            <div className="relative flex gap-[10px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center">
-                {otp.map((data, index) => {
+            <div className="relative flex gap-[8px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center">
+                {/* {otp.map((data, index) => {
                     const isActive = index === otp.findIndex(val => val === "") || (isComplete && index === 9);
-                    const shouldBounce = (isComplete && index === 9); 
+                    
 
                     return (
                         <input
@@ -220,12 +219,43 @@ export default function FirstSection({ resolvedRoute }) {
                                 bg-transparent
                                 border-[#ff914d]
                                 text-white caret-transparent selection:bg-transparent
-                                ${shouldBounce ? "animate-bounce" : ""}
-                                focus:bg-[#ff914d]/10 focus:animate-bounce
-                            `}
+                                `}
                         />
                     );
-                })}
+                })} */}
+                {otp.map((data, index) => {
+    // Logic: Pehla khaali box dhoondo
+    const firstEmptyIndex = otp.findIndex((val) => val === "");
+    
+    // Sirf wahi box bounce karega jo 'firstEmptyIndex' hai. 
+    // Agar sab bhar gaye hain (firstEmptyIndex -1 hoga), toh koi bounce nahi karega.
+    const shouldBounce = index === firstEmptyIndex;
+
+    return (
+        <input
+            key={index}
+            ref={el => inputRefs.current[index] = el}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={data}
+            onChange={e => handleChange(e.target, index)}
+            onKeyDown={e => handleKeyDown(e, index)}
+            onPaste={handlePaste}
+            className={`flex items-center justify-center text-center shrink-0
+                h-10 w-7 md:h-20 md:w-16
+                text-xl md:text-3xl font-mono
+                border-[1.5px] rounded-md md:rounded-lg
+                transition-all duration-300 outline-none
+                bg-transparent
+                border-[#ff914d]
+                text-white caret-transparent selection:bg-transparent
+                focus:bg-[#ff914d]/10
+                ${shouldBounce ? "animate-bounce" : ""} 
+            `}
+        />
+    );
+})}
             </div>
 
             {/* 3. BUTTON */}
@@ -233,11 +263,11 @@ export default function FirstSection({ resolvedRoute }) {
                 type="button"
                 onClick={handleFetch}
                 disabled={!isComplete}
-                className={`text-xl md:text-2xl mt-2 px-6 py-1 rounded-full border border-[#ff914d] transition-all duration-300 ease-in-out font-normal tracking-wider ${
-                    isComplete 
-                    ? "bg-[#ff914d] text-white cursor-pointer hover:scale-105 opacity-100" 
-                    : "bg-transparent text-white cursor-default opacity-80" 
-                }`}
+                className={`text-xl md:text-2xl mt-4 px-8 py-2 rounded-lg transition-all duration-300 ease-in-out font-normal tracking-wider ${
+    isComplete 
+    ? "bg-[#ff914d] text-white cursor-pointer hover:scale-105 border-none" 
+    : "bg-black text-[#ff914d] border border-white cursor-default opacity-80" 
+}`}
                 >
                 get number energy
             </button>
