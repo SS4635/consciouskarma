@@ -6,6 +6,7 @@ export default function FirstSection({ resolvedRoute }) {
   const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
 
   // Refs for each input to manage focus
   const inputRefs = useRef([]);
@@ -184,8 +185,10 @@ export default function FirstSection({ resolvedRoute }) {
     numericScore = parseInt(apiData.score); 
     if (isNaN(numericScore)) numericScore = 0;
   }
+  
 
   return (
+    
     <section className="bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden pt-24 md:pt-10 pb-10">
       <main className="flex flex-col items-center w-full max-w-[95rem] transition-all duration-500 ease-in-out">
         
@@ -272,13 +275,29 @@ export default function FirstSection({ resolvedRoute }) {
             </div>
 
             {/* 3. BUTTON */}
-            <button
-                type="button"
-                onClick={handleFetch}
-                disabled={!isComplete}
-                className={"ck-btn1"}                >
-                get number energy
-            </button>
+            {/* 3. BUTTONS SECTION (Energy Button + Info Icon) */}
+<div className="flex items-center gap-4 mt-2">
+    
+    {/* Ye apka purana button hai, same rahega bas is div ke andar aa gya */}
+    <button
+        type="button"
+        onClick={handleFetch}
+        disabled={!isComplete}
+        className={"ck-btn1"}
+    >
+        get number energy
+    </button>
+
+    {/* ✅ YE NEW "i" BUTTON HAI */}
+    <button 
+        type="button"
+        onClick={() => setShowInfo(true)}
+        className="group relative flex items-center justify-center w-10 h-10 rounded-full border border-gray-600 hover:border-[#ff914d] transition-colors duration-300 bg-white/5 hover:bg-[#ff914d]/10"
+        aria-label="How to enter number"
+    >
+        <span className="text-gray-400 group-hover:text-[#ff914d] font-serif italic text-lg font-bold transition-colors">i</span>
+    </button>
+</div>
 
             </form>
 
@@ -355,6 +374,52 @@ export default function FirstSection({ resolvedRoute }) {
             </div>
             
         </div>
+        {/* ✅ BEAUTIFUL INFO MODAL */}
+{showInfo && (
+    <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-in fade-in duration-300">
+        {/* Background Blur */}
+        <div 
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            onClick={() => setShowInfo(false)}
+        />
+
+        {/* Modal Box */}
+        <div className="relative bg-[#111] border border-[#ff914d]/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-[0_0_30px_rgba(255,145,77,0.15)] flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+            
+            {/* Icon */}
+            <div className="w-12 h-12 rounded-full bg-[#ff914d]/10 flex items-center justify-center mb-4 text-[#ff914d]">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 18v-5.25m0-4.5h.007v.008H12v-.008ZM11.25 10.5h1.5m-7.5 9.75h12a2.25 2.25 0 0 0 2.25-2.25v-12a2.25 2.25 0 0 0-2.25-2.25h-12a2.25 2.25 0 0 0-2.25 2.25v12a2.25 2.25 0 0 0 2.25 2.25Z" />
+                </svg>
+            </div>
+
+            <h3 className="text-xl md:text-2xl font-light text-white mb-2 tracking-wide">
+                Entry Instructions
+            </h3>
+            
+            <div className="w-12 h-[1px] bg-[#ff914d] mb-6"></div>
+
+            <div className="space-y-4 text-gray-300 text-sm md:text-base font-light leading-relaxed">
+                <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                    <p className="text-white mb-1 font-medium">Fewer than 10 digits?</p>
+                    <p className="opacity-80">Add leading <span className="text-[#ff914d] font-bold">0</span>s to fill the empty boxes.</p>
+                </div>
+                
+                <div className="bg-white/5 p-3 rounded-lg border border-white/10">
+                    <p className="text-white mb-1 font-medium">More than 10 digits?</p>
+                    <p className="opacity-80">Enter as many digits as possible (first 10).</p>
+                </div>
+            </div>
+
+            <button 
+                onClick={() => setShowInfo(false)}
+                className="mt-8 px-8 py-2 bg-[#ff914d] hover:bg-[#ff8033] text-black font-semibold rounded-full text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#ff914d]/20"
+            >
+                Got it
+            </button>
+        </div>
+    </div>
+)}
       </main>
     </section>
   );
