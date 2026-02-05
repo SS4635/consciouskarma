@@ -16,6 +16,8 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 // //channges
+import EnergyLog from "./models/EnergyLog.js";
+import { protectAndLog } from "./middleware/security.js"; // Path check kar lena
 
 
 import { connectMongo } from "./lib/mongo.js";
@@ -404,6 +406,55 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
     return res.json({ ok: false, message: "Failed creating consultation order" });
   }
 });
+
+// ✅ MICRO ROUTE: Protected & Logged
+app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
+  try {
+    const { mobile_number } = req.body;
+    
+    // URL se dynamic part nikal liya (e.g. 'a1' or 'a2')
+    const { routeId } = req.params; 
+
+    // 1️⃣ STEP 1: DB SAVE (Logging)
+    // Hum routeHit mein 'a1'/'a2' save kar rahe hain taaki pata chale user ne kya check kiya
+    await EnergyLog.create({
+      mobileNumber: mobile_number,
+      routeHit: routeId, 
+      ipAddress: req.userIP, 
+      userAgent: req.headers["user-agent"],
+    });
+
+    console.log(`[GLOBAL PROXY] Processing route: ${routeId}`);
+
+    // 2️⃣ STEP 2: EXTERNAL API CALL
+    // Jo routeId frontend se aaya, wahi humne external API ke aage chipka diya
+    const CLIENT_API_URL = `https://api.consciouskarma.co/micro/${routeId}`;
+
+    const externalResponse = await axios.post(
+      CLIENT_API_URL,
+      { mobile_number }, 
+      {
+        headers: {
+          "Content-Type": "application/json",
+          "X-API-Key": "CK_Score_2365abhnf895asfw", // Key ab safe hai backend pe
+        },
+      }
+    );
+
+    // 3️⃣ STEP 3: RETURN RESULT
+    return res.json(externalResponse.data);
+
+  } catch (err) {
+    console.error(`Error in route ${req.params.routeId}:`, err.message);
+    
+    // Agar external API fail ho, toh wahi error frontend ko dikhao
+    if (err.response) {
+        return res.status(err.response.status).json(err.response.data);
+    }
+    return res.status(500).json({ ok: false, message: "External API Failed" });
+  }
+});
+
 app.post("/api/pay/verify-consultation", async (req, res) => {
   try {
     const {
