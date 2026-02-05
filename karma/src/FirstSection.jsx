@@ -1,28 +1,74 @@
 import React, { useState, useRef, useEffect } from "react";
 
 export default function FirstSection({ resolvedRoute }) {
-  const [inputValue, setInputValue] = useState("");
+  // Array of 10 strings for individual inputs
+  const [otp, setOtp] = useState(new Array(10).fill(""));
   const [apiData, setApiData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const inputRef = useRef(null);
+  // Refs for each input to manage focus
+  const inputRefs = useRef([]);
+
   const API_BASE = "https://api.consciouskarma.co/micro";
 
   useEffect(() => {
-    inputRef.current?.focus();
+    // Focus first input on load
+    if (inputRefs.current[0]) {
+      inputRefs.current[0].focus();
+    }
   }, []);
 
-  const handleChange = (e) => {
-    const val = e.target.value;
-    if (/^[0-9]*$/.test(val) && val.length <= 10) {
-      setInputValue(val);
-      if (apiData) setApiData(null);
+  // Handle typing in individual boxes
+  const handleChange = (element, index) => {
+    const val = element.value;
+    if (isNaN(val)) return; // Only numbers
+
+    const newOtp = [...otp];
+    // Allow only last entered character (agar user purane par type kare)
+    newOtp[index] = val.substring(val.length - 1);
+    setOtp(newOtp);
+
+    // Agar value enter hui hai aur ye last box nahi hai, toh next pe jump karo
+    if (val && index < 9) {
+      inputRefs.current[index + 1].focus();
+    }
+    
+    if (apiData) setApiData(null);
+  };
+
+  // Handle Backspace
+  const handleKeyDown = (e, index) => {
+    if (e.key === "Backspace") {
+        if (!otp[index] && index > 0) {
+            // Agar khali hai aur backspace dabaya, piche jao
+            inputRefs.current[index - 1].focus();
+        } else {
+             // Agar bhara hai, toh clear karo (change handler sambhal lega)
+        }
     }
   };
 
+  // Handle Paste (Pura number ek saath paste karne ke liye)
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const val = e.clipboardData.getData("text").slice(0, 10);
+    if (/^[0-9]+$/.test(val)) {
+        const newOtp = val.split("");
+        // Fill remaining with empty if pasted length < 10
+        while (newOtp.length < 10) newOtp.push(""); 
+        setOtp(newOtp);
+        // Focus last filled index
+        const focusIndex = val.length < 10 ? val.length : 9;
+        inputRefs.current[focusIndex].focus();
+    }
+  };
+
+  const inputValue = otp.join(""); // Combine array to string for API
+  const isComplete = inputValue.length === 10;
+
   const handleFetch = async () => {
-    if (inputValue.length !== 10) return;
+    if (!isComplete) return;
     setLoading(true);
     setError(null);
     setApiData(null);
@@ -48,39 +94,79 @@ export default function FirstSection({ resolvedRoute }) {
   };
 
   const handleScrollNext = () => {
-    window.scrollBy({
-      top: window.innerHeight,
-      behavior: 'smooth'
-    });
+    window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
   };
 
   // ✅ HELPER: Get Heading & Icon based on Route
+  // const getRouteDetails = (route) => {
+  //   const r = route?.replace(/\/$/, "") || "";
+
+  //   // Common Icon Definition (Bar Chart)
+  //   const commonIcon = (
+  //     <svg 
+  //       xmlns="http://www.w3.org/2000/svg" 
+  //       viewBox="0 0 24 24" 
+  //       fill="none" 
+  //       stroke="currentColor" 
+  //       strokeWidth="2" 
+  //       strokeLinecap="round" 
+  //       strokeLinejoin="round" 
+  //       className="w-6 h-6 md:w-10 md:h-10"
+  //       style={{color:"#bobobo"}}
+  //     >
+  //       <line x1="18" y1="20" x2="18" y2="10"></line>
+  //       <line x1="12" y1="20" x2="12" y2="4"></line>
+  //       <line x1="6" y1="20" x2="6" y2="14"></line>
+  //     </svg>
+  //   );
+
+  //   // Agar special route hai toh title change hoga, par icon abhi sabme dikhega
+  //   if (r.endsWith("a1")) return { title: "abc", icon: commonIcon };
+  //   if (r.endsWith("a2")) return { title: "ggg", icon: commonIcon };
+  //   if (r.endsWith("a3")) return { title: "aaa", icon: commonIcon };
+
+  //   // Default Fallback
+  //   return { 
+  //     title: "Result", 
+  //     icon: commonIcon
+  //   };
+  // };
+// ✅ HELPER: Get Heading & Icon based on Route
   const getRouteDetails = (route) => {
     const r = route?.replace(/\/$/, "") || "";
 
-    if (r.endsWith("a1")) return { title: "abc", icon: null };
-    if (r.endsWith("a2")) return { title: "ggg", icon: null };
-    if (r.endsWith("a3")) return { title: "aaa", icon: null };
+    // Common Icon Definition (Bar Chart with Grey Color)
+    const commonIcon = (
+      <svg 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 24 24" 
+        fill="none" 
+        stroke="currentColor" 
+        strokeWidth="2" 
+        strokeLinecap="round" 
+        strokeLinejoin="round" 
+        className="w-6 h-6 md:w-10 md:h-10"
+        style={{ color: "#b0b0b0" }} // Yahan color set kar diya
+      >
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+    );
+
+    // Agar special route hai toh title change hoga
+    if (r.endsWith("a1")) return { title: "abc", icon: commonIcon };
+    if (r.endsWith("a2")) return { title: "ggg", icon: commonIcon };
+    if (r.endsWith("a3")) return { title: "aaa", icon: commonIcon };
 
     // Default Fallback
     return { 
       title: "Result", 
-      icon: (
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8 text-white">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 18l6-6" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 20h18" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 20V16" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20V12" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 20V8" />
-        </svg>
-      ) 
+      icon: commonIcon
     };
   };
-
-  const isComplete = inputValue.length === 10;
   const routeDetails = getRouteDetails(resolvedRoute);
-
+  
   // Parse Score
   let numericScore = 0;
   if (apiData?.score) {
@@ -89,148 +175,71 @@ export default function FirstSection({ resolvedRoute }) {
   }
 
   return (
-    // FIXED ALIGNMENT:
-    // Removed 'justify-center'. Used 'pt-24 md:pt-32' to pin content to the top.
-    // This prevents the "Enter Mobile Number" section from moving up when results appear.
     <section className="bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden pt-24 md:pt-10 pb-10">
-      
       <main className="flex flex-col items-center w-full max-w-[95rem] transition-all duration-500 ease-in-out">
         
         <div className="w-full p-4 flex flex-col items-center">
             
-            <form
-            className="flex flex-col items-center w-full"
-            onSubmit={(e) => e.preventDefault()}
-            >
+            <form className="flex flex-col items-center w-full" onSubmit={(e) => e.preventDefault()}>
             
-            {/* 1. LABEL & ARROW */}
+            {/* 1. LABEL & ARROW - CENTERED */}
             <div className="w-full flex justify-center mb-4">
-                <div className="relative w-full max-w-[360px] md:max-w-[1100px]"> 
-                    <span className="block text-left text-gray-300 text-xl md:text-lg tracking-wider font-light mb-1 ml-1">
-                        Enter Mobile Number
-                    </span>
-                    
-                    {/* Arrow */}
-                    <div className="absolute left-[90px] top-[30px] md:left-[140px] md:top-[25px]">
-                        <svg 
-                            className="w-8 h-8 md:w-12 md:h-12 text-gray-200 opacity-100 transform rotate-[10deg]" 
-                            viewBox="0 0 100 100" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            strokeWidth="2" 
-                        >
-                            <path d="M 0 0 Q 30 10 20 60" strokeLinecap="round" />
-                            <path d="M 10 50 L 20 60 L 35 50" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
+                <div className="relative text-center w-full max-w-[360px] md:max-w-[1100px] flex justify-center"> 
+                    <div className="relative">
+                        <span className="block text-gray-300 text-xl md:text-lg tracking-wider font-light mb-1">
+                            Enter Mobile Number
+                        </span>
+                        {/* Arrow Adjustments */}
+                        {/* You can re-enable the arrow here if needed */}
                     </div>
                 </div>
             </div>
 
-            {/* 2. OTP INPUT GRID */}
-            {/* <div
-                className="relative flex gap-5 md:gap-20 w-full justify-center cursor-text h-24 md:h-32 items-center"
-                onClick={() => inputRef.current?.focus()}
-            >
-                {Array.from({ length: 10 }).map((_, i) => {
-                const isActive = i === inputValue.length;
-                const char = inputValue[i] || "";
+            {/* 2. OTP INPUT GRID (Individual Inputs) */}
+            <div className="relative flex gap-[10px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center">
+                {otp.map((data, index) => {
+                    const isActive = index === otp.findIndex(val => val === "") || (isComplete && index === 9);
+                    const shouldBounce = (isComplete && index === 9); 
 
-                return (
-                    <div
-                    key={i}
-                    className={`flex items-center justify-center
-                        h-10 w-8 md:h-20 md:w-16
-                        text-xl md:text-4xl font-mono
-                        border-[1.5px] rounded-md md:rounded-lg
-                        transition-all duration-300
-                        border-[#ff914d]
-                        ${isActive ? "animate-bounce bg-[#ff914d]/10" : ""}
-                    `}
-                    style={{
-                        color: "white",
-                    }}
-                    >
-                    {char}
-                    {isActive && (
-                        <div 
-                        className="absolute h-1/2 w-[2px] bg-[#ff914d]"
+                    return (
+                        <input
+                            key={index}
+                            ref={el => inputRefs.current[index] = el}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={data}
+                            onChange={e => handleChange(e.target, index)}
+                            onKeyDown={e => handleKeyDown(e, index)}
+                            onPaste={handlePaste}
+                            className={`flex items-center justify-center text-center shrink-0
+                                h-10 w-7 md:h-20 md:w-16
+                                text-xl md:text-3xl font-mono
+                                border-[1.5px] rounded-md md:rounded-lg
+                                transition-all duration-300 outline-none
+                                bg-transparent
+                                border-[#ff914d]
+                                text-white caret-transparent selection:bg-transparent
+                                ${shouldBounce ? "animate-bounce" : ""}
+                                focus:bg-[#ff914d]/10 focus:animate-bounce
+                            `}
                         />
-                    )}
-                    </div>
-                );
+                    );
                 })}
-
-                <input
-                ref={inputRef}
-                type="tel"
-                inputMode="numeric"
-                maxLength={10}
-                value={inputValue}
-                onChange={handleChange}
-                className="absolute inset-0 w-full h-full opacity-0"
-                autoComplete="off"
-                />
-            </div> */}
-
-{/* 2. OTP INPUT GRID */}
-<div
-  // CORRECT WAY:
-  // gap-[2px] -> Mobile ke liye (Jo aapne manga)
-  // md:gap-12 -> Desktop ke liye (Bada gap)
-  className="relative flex gap-[10px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center"
-  onClick={() => inputRef.current?.focus()}
->
-  {Array.from({ length: 10 }).map((_, i) => {
-    const isActive = i === inputValue.length;
-    const char = inputValue[i] || "";
-
-    return (
-      <div
-        key={i}
-        // shrink-0 zaroor lagana, warna gap-12 aate hi dabbe wapas pichak jayenge
-        className={`flex items-center justify-center shrink-0
-          h-10 w-7 md:h-20 md:w-16
-          text-xl md:text-4xl font-mono
-          border-[1.5px] rounded-md md:rounded-lg
-          transition-all duration-300
-          border-[#ff914d]
-          ${isActive ? "animate-bounce bg-[#ff914d]/10" : ""}
-        `}
-        style={{ color: "white" }}
-      >
-        {char}
-        {isActive && (
-          <div className="absolute h-1/2 w-[2px] bg-[#ff914d]" />
-        )}
-      </div>
-    );
-  })}
-
-  <input
-    ref={inputRef}
-    type="tel"
-    inputMode="numeric"
-    maxLength={10}
-    value={inputValue}
-    onChange={handleChange}
-    className="absolute inset-0 w-full h-full opacity-0"
-    autoComplete="off"
-  />
-</div>
+            </div>
 
             {/* 3. BUTTON */}
-            {/* GAP REDUCED: Changed mt-5 to mt-2 */}
             <button
                 type="button"
                 onClick={handleFetch}
                 disabled={!isComplete}
-                className={`text-xl md:text-2xl mt-2 transition-colors duration-300 ease-in-out font-normal tracking-wider ${
+                className={`text-xl md:text-2xl mt-2 px-6 py-1 rounded-full border border-[#ff914d] transition-all duration-300 ease-in-out font-normal tracking-wider ${
                     isComplete 
-                    ? "text-[#ff914d] cursor-pointer hover:scale-105 opacity-100" 
-                    : "text-white cursor-default opacity-80" 
+                    ? "bg-[#ff914d] text-white cursor-pointer hover:scale-105 opacity-100" 
+                    : "bg-transparent text-white cursor-default opacity-80" 
                 }`}
                 >
-                number energy
+                get number energy
             </button>
 
             </form>
@@ -251,90 +260,64 @@ export default function FirstSection({ resolvedRoute }) {
 
             {apiData && !loading && (
                 <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700 flex flex-col items-center">
-                
-                {/* Result Heading */}
-                <h2 className="text-2xl md:text-3xl font-light text-center mb-6 capitalize tracking-widest text-white">
-                    {routeDetails.title}
-                </h2>
+                    <h2 className="text-2xl md:text-3xl font-light text-center mb-6 capitalize tracking-widest text-white">
+                        {routeDetails.title}
+                    </h2>
 
-                {/* CHART SECTION */}
-                <div className="relative flex items-center justify-center w-full mb-6 px-0 max-w-5xl">
-
-                    {/* Left Side Bars (Negative) */}
-                    <div className="flex flex-1 justify-end gap-1">
-                        {[-5, -4, -3, -2, -1].map((val, index) => {
-                        const isActive = numericScore < 0 && numericScore <= val;
-                        const roundedClass = index === 0 ? "rounded-l-full" : "rounded-none";
+                    {/* CHART SECTION */}
+                    <div className="relative flex items-center justify-center w-full mb-6 px-0 max-w-5xl">
+                        {/* Left Bars */}
+                        <div className="flex flex-1 justify-end gap-1">
+                            {[-5, -4, -3, -2, -1].map((val, index) => {
+                            const isActive = numericScore < 0 && numericScore <= val;
+                            const roundedClass = index === 0 ? "rounded-l-full" : "rounded-none";
+                            return (
+                                <div key={val} className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${isActive ? "bg-[#B23A41]" : "bg-[#b0b0b0]"}`} />
+                            );
+                            })}
+                        </div>
                         
-                        return (
-                            <div
-                            key={val}
-                            className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
-                                isActive ? "bg-[#B23A41]" : "bg-[#b0b0b0]"
-                            }`}
-                            />
-                        );
-                        })}
-                    </div>
-
-                    {/* CENTER CIRCLE */}
-                    <div className="relative z-20 flex-shrink-0 -mx-4 md:-mx-6">
-                        <div className="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full border-[3px] border-white bg-black shadow-2xl">
-                            {routeDetails.icon}
+                        {/* Center Circle with Icon */}
+                        <div className="relative z-20 flex-shrink-0 -mx-4 md:-mx-6">
+                            <div 
+                                className="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-black shadow-2xl" 
+                                style={{border:"3px solid #b0b0b0"}} // Using your grey border color
+                            >
+                                {routeDetails.icon}
+                            </div>
+                        </div>
+                        
+                        {/* Right Bars */}
+                        <div className="flex flex-1 justify-start gap-1">
+                            {[1, 2, 3, 4, 5].map((val, index) => {
+                            const isActive = numericScore > 0 && numericScore >= val;
+                            const roundedClass = index === 4 ? "rounded-r-full" : "rounded-none";
+                            return (
+                                <div key={val} className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${isActive ? "bg-[#15803d]" : "bg-[#b0b0b0]"}`} />
+                            );
+                            })}
                         </div>
                     </div>
 
-                    {/* Right Side Bars (Positive) */}
-                    <div className="flex flex-1 justify-start gap-1">
-                        {[1, 2, 3, 4, 5].map((val, index) => {
-                        const isActive = numericScore > 0 && numericScore >= val;
-                        const roundedClass = index === 4 ? "rounded-r-full" : "rounded-none";
-                        
-                        return (
-                            <div
-                            key={val}
-                            className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
-                                isActive ? "bg-[#15803d]" : "bg-[#b0b0b0]"
-                            }`}
-                            />
-                        );
-                        })}
+                    {/* INSIGHT TEXT */}
+                    <div className="text-center px-4 md:px-12 max-w-4xl">
+                        <p className="text-white text-[10px] uppercase mb-4 tracking-[0.2em]">INSIGHT</p>
+                        <p className="text-lg md:text-2xl font-light leading-relaxed text-gray-200">"{apiData.point}"</p>
                     </div>
 
-                </div>
-
-                {/* INSIGHT TEXT */}
-                <div className="text-center px-4 md:px-12 max-w-4xl">
-                    <p className="text-white text-[10px] uppercase mb-4 tracking-[0.2em]">
-                    INSIGHT
-                    </p>
-                    <p className="text-lg md:text-2xl font-light leading-relaxed text-gray-200">
-                    "{apiData.point}"
-                    </p>
-                </div>
-
-                {/* EXPLORE MORE BUTTON */}
-                <div className="mt-6 mb-4 animate-in fade-in duration-1000 delay-500">
-                    <button 
-                        onClick={handleScrollNext}
-                        className="flex flex-col items-center justify-center group cursor-pointer"
-                    >
-                        <span className="text-[12px] uppercase tracking-[0.2em] mb-2 text-[#ff914d] group-hover:text-white transition-colors bg-black/80 px-3 py-1 rounded-full backdrop-blur-sm border border-[#ff914d]/30">
-                            Explore More
-                        </span>
-                        <div className="animate-bounce text-[#ff914d] group-hover:text-white transition-colors text-2xl drop-shadow-md">
-                            ↓
-                        </div>
-                    </button>
-                </div>
-
+                    {/* EXPLORE BUTTON */}
+                    <div className="mt-6 mb-4 animate-in fade-in duration-1000 delay-500">
+                        <button onClick={handleScrollNext} className="flex flex-col items-center justify-center group cursor-pointer">
+                            <span className="text-[12px] uppercase tracking-[0.2em] mb-2 text-[#ff914d] group-hover:text-white transition-colors bg-black/80 px-3 py-1 rounded-full backdrop-blur-sm border border-[#ff914d]/30">Explore More</span>
+                            <div className="animate-bounce text-[#ff914d] group-hover:text-white transition-colors text-2xl drop-shadow-md">↓</div>
+                        </button>
+                    </div>
                 </div>
             )}
             </div>
             
         </div>
       </main>
-
     </section>
   );
 }
