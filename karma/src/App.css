@@ -158,6 +158,25 @@
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.ck-btn1 {
+  padding: 12px 0;
+  background: transparent;
+  color: #ff914d;
+  border: 2px solid #ff914d;
+  border-radius: 8px;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 20px;
+}
+
+.ck-btn1:hover:not(:disabled) {
+  background: #ff914d;
+  color: #111;
+}
+
 .ck-btn:hover:not(:disabled) {
   background: #ff914d;
   color: #111;

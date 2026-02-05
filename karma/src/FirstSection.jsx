@@ -39,12 +39,24 @@ export default function FirstSection({ resolvedRoute }) {
   // Handle Backspace
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
-        if (!otp[index] && index > 0) {
-            // Agar khali hai aur backspace dabaya, piche jao
-            inputRefs.current[index - 1].focus();
-        } else {
-             // Agar bhara hai, toh clear karo (change handler sambhal lega)
+      const target = e.target;
+      // Check karein ki user ne text select kiya hai ya nahi
+      const isSelected = target.selectionStart !== target.selectionEnd;
+
+      if (otp[index]) {
+        // Case 1: Box BHARA hua hai
+        if (!isSelected) {
+           // Agar user ne select NAHI kiya hai, toh delete mat hone do
+           e.preventDefault();
+        } 
+        // Else: Agar select kiya hai, toh browser ka default delete chalne do
+      } else {
+        // Case 2: Box KHALI hai -> Piche jao
+        if (index > 0) {
+          e.preventDefault();
+          inputRefs.current[index - 1].focus();
         }
+      }
     }
   };
 
@@ -239,6 +251,7 @@ export default function FirstSection({ resolvedRoute }) {
             inputMode="numeric"
             maxLength={1}
             value={data}
+            onClick={(e) => e.target.select()}
             onChange={e => handleChange(e.target, index)}
             onKeyDown={e => handleKeyDown(e, index)}
             onPaste={handlePaste}
@@ -263,12 +276,7 @@ export default function FirstSection({ resolvedRoute }) {
                 type="button"
                 onClick={handleFetch}
                 disabled={!isComplete}
-                className={`text-xl md:text-2xl mt-4 px-8 py-2 rounded-lg transition-all duration-300 ease-in-out font-normal tracking-wider ${
-    isComplete 
-    ? "bg-[#ff914d] text-white cursor-pointer hover:scale-105 border-none" 
-    : "bg-black text-[#ff914d] border border-white cursor-default opacity-80" 
-}`}
-                >
+                className={"ck-btn1"}                >
                 get number energy
             </button>
 
