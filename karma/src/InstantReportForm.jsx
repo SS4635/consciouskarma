@@ -164,6 +164,37 @@ const canApplyCoupon =
     return Object.keys(e).length === 0;
   };
 
+//  const applyCoupon = async (ev) => {
+//   ev.preventDefault();
+//   if (!coupon) return;
+
+//   setApplying(true);
+//   try {
+//     const { data } = await axios.post(`${API}/api/coupon/validate`, {
+//       code: coupon,
+//       price: PRICE,
+//       mobile: phone,
+//       email,
+//       name
+//     });
+   
+  
+//     if (!data.valid) throw new Error(data.message || "Invalid coupon");
+
+   
+//     setShowCouponSuccess(true);
+
+//   } catch (err) {
+
+    
+//     alert(err?.response?.data?.message || err.message || "Coupon error");
+//   } finally {
+//     setApplying(false);
+//   }
+// };
+
+
+  // --- HANDLE SUBMISSION ---
  const applyCoupon = async (ev) => {
   ev.preventDefault();
   if (!coupon) return;
@@ -177,24 +208,30 @@ const canApplyCoupon =
       email,
       name
     });
-   
-  
-    if (!data.valid) throw new Error(data.message || "Invalid coupon");
 
-   
-    setShowCouponSuccess(true);
+    if (data.valid) {
+      // Price ko zero karo aur info save karo
+      setCouponInfo(data);
+      setPRICE(0); 
 
+      // Coupon Success Popup dikhao
+      setShowCouponSuccess(true);
+
+      // 2 second ka wait taaki backend process karle, phir redirect
+      setTimeout(() => {
+        setGeneratingReport(true);
+        setShowSuccess(true);
+      }, 2000);
+    } else {
+      alert(data.message || "Invalid coupon");
+    }
   } catch (err) {
-
-    
-    alert(err?.response?.data?.message || err.message || "Coupon error");
+    alert("Coupon error: " + (err.response?.data?.message || err.message));
   } finally {
     setApplying(false);
   }
 };
-
-
-  // --- HANDLE SUBMISSION ---
+ 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
     if (!validate()) return;

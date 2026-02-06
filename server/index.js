@@ -573,39 +573,39 @@ const isAllowlisted = (c = "") => allowlist.has(String(c).toUpperCase());
 
 /* ---------- Partner redeem ---------- */
 
-async function redeemCoupon(code, mobile) {
-  if (!code) return null;
+// async function redeemCoupon(code, mobile) {
+//   if (!code) return null;
 
-  const url = process.env.CK_COUPON_API_URL;
-  const apiKey = process.env.CK_COUPON_API_KEY;
+//   const url = process.env.CK_COUPON_API_URL;
+//   const apiKey = process.env.CK_COUPON_API_KEY;
 
-  if (!url || !apiKey) {
-    throw new Error("Coupon API env not configured");
-  }
+//   if (!url || !apiKey) {
+//     throw new Error("Coupon API env not configured");
+//   }
 
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-API-Key": apiKey,
-    },
-    body: JSON.stringify({
-      coupon: code,
-      mobile_number: mobile,
-    }),
-  });
+//   const response = await fetch(url, {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//       "X-API-Key": apiKey,
+//     },
+//     body: JSON.stringify({
+//       coupon: code,
+//       mobile_number: mobile,
+//     }),
+//   });
 
-  if (!response.ok) {
-    const text = await response.text();
-    console.error("Coupon API HTTP Error:", response.status, text);
-    throw new Error(`Coupon API failed with status ${response.status}`);
-  }
+//   if (!response.ok) {
+//     const text = await response.text();
+//     console.error("Coupon API HTTP Error:", response.status, text);
+//     throw new Error(`Coupon API failed with status ${response.status}`);
+//   }
 
-  const data = await response.json();
-  console.log("Redeem coupon response:", data);
+//   const data = await response.json();
+//   console.log("Redeem coupon response:", data);
 
-  return data;
-}
+//   return data;
+// }
 
 // app.post("/api/coupon/validate", async (req, res) => {
 //   try {
@@ -659,68 +659,172 @@ async function redeemCoupon(code, mobile) {
 //   }
 // });
 
+// app.post("/api/coupon/validate", async (req, res) => {
+//   try {
+//     const { code, price, mobile, email, name } = req.body || {};
+
+//     const baseAmount = Number(price || 0);
+
+//     const result = await redeemCoupon(code, mobile);
+
+//     console.log("Coupon validate result:", result);
+
+//     // ✅ SEND RESPONSE FIRST (FAST)
+//     res.json({
+//       valid: true,
+//       finalAmount: 0,
+//       couponApplied: true,
+//       coupon: code,
+//     });
+
+//     // 🔥 BACKGROUND TASK (DO NOT AWAIT)
+//     if (result.status === "success") {
+//       (async () => {
+//         try {
+//           const phone = mobile;
+
+//           console.log("[SCORE] Background score generation:", phone, email);
+
+//           const { data: scoreResponse } = await axios.post(
+//             `${process.env.REACT_APP_SCORE_API}/score`,
+//             { mobile_number: phone },
+//             {
+//               headers: {
+//                 "Content-Type": "application/json",
+//                 "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
+//               },
+//               timeout: 15000, // ⏱ safety
+//             }
+//           );
+
+//           const scoreData = scoreResponse.score || scoreResponse;
+// const userName =
+//   name ||
+//   email?.split("@")[0] ||
+//   "User";
+
+// await sendScoreMail(email, scoreData, phone, userName);
+
+//           console.log("[SCORE] Background score + mail done");
+//         } catch (err) {
+//           console.error(
+//             "[SCORE] Background failed:",
+//             err.response?.data || err.message
+//           );
+//         }
+//       })();
+//     }
+//   } catch (err) {
+//     console.error("Coupon validate error:", err.message);
+//     return res.json({
+//       valid: false,
+//       finalAmount: Number(req.body?.price || 0),
+//       message: "Coupon validation failed",
+//     });
+//   }
+// });
+// ✅ Final Redeem Function (Using New Key)
+async function redeemCoupon(code, mobile) {
+  const url = process.env.CK_COUPON_API_URL;
+  const apiKey = process.env.CK_COUPON_API_KEY; // Nayi key use hogi yahan
+
+  try {
+    const response = await axios.post(url, 
+      { coupon: code, mobile_number: mobile },
+      { headers: { "X-API-Key": apiKey } }
+    );
+    return response.data;
+  } catch (err) {
+    console.error("Coupon API Error:", err.response?.data || err.message);
+    throw new Error(err.response?.data?.detail || "Invalid coupon");
+  }
+}
+
+// ✅ Final Validate Route
+app.post("/api/coupon/validate", async (req, res) => {
+  try {
+    const { code, price, mobile, email, name } = req.body;
+    
+    // Partner API se check karo
+    const result = await redeemCoupon(code, mobile);
+
+    if (result.status === "success") {
+      // 1. Database mein entry (Taaki mail engine trigger ho)
+      const order = await Order.create({
+        name: name || email.split("@")[0],
+        email: email,
+        phone: mobile,
+        amount: 0,
+        status: "free",
+        couponCode: String(code).toUpperCase(),
+        formData: {
+          general: { name, email },
+          primary: { isd: "+91", number: mobile },
+          totalPrice: Number(price) / 100,
+          parallels: [],
+          previousNumbers: []
+        }
+      });
+
+      // 2. Client ko Response
+      res.json({ valid: true, finalAmount: 0, orderId: order._id });
+
+      // 3. Background Process (Email + Score)
+      processInstantReport(order).catch(console.error);
+    }
+  } catch (err) {
+    res.status(400).json({ valid: false, message: err.message });
+  }
+});
+
 app.post("/api/coupon/validate", async (req, res) => {
   try {
     const { code, price, mobile, email, name } = req.body || {};
-
-    const baseAmount = Number(price || 0);
-
+    
+    // 1. Coupon check karo
     const result = await redeemCoupon(code, mobile);
 
-    console.log("Coupon validate result:", result);
-
-    // ✅ SEND RESPONSE FIRST (FAST)
-    res.json({
-      valid: true,
-      finalAmount: 0,
-      couponApplied: true,
-      coupon: code,
-    });
-
-    // 🔥 BACKGROUND TASK (DO NOT AWAIT)
     if (result.status === "success") {
-      (async () => {
-        try {
-          const phone = mobile;
-
-          console.log("[SCORE] Background score generation:", phone, email);
-
-          const { data: scoreResponse } = await axios.post(
-            `${process.env.REACT_APP_SCORE_API}/score`,
-            { mobile_number: phone },
-            {
-              headers: {
-                "Content-Type": "application/json",
-                "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
-              },
-              timeout: 15000, // ⏱ safety
-            }
-          );
-
-          const scoreData = scoreResponse.score || scoreResponse;
-const userName =
-  name ||
-  email?.split("@")[0] ||
-  "User";
-
-await sendScoreMail(email, scoreData, phone, userName);
-
-          console.log("[SCORE] Background score + mail done");
-        } catch (err) {
-          console.error(
-            "[SCORE] Background failed:",
-            err.response?.data || err.message
-          );
+      // ✅ Sabse pehle Order create karo (Isi ki wajah se mail nahi ja rahi thi)
+      const order = await Order.create({
+        name: name || email.split("@")[0],
+        email: email,
+        phone: mobile,
+        amount: 0,
+        currency: "INR",
+        status: "free",
+        couponCode: code.toUpperCase(),
+        instantEmailSent: "processing", // Lock lagao
+        formData: {
+          general: { name, email },
+          primary: { isd: "+91", number: mobile },
+          parallels: [],
+          previousNumbers: [],
+          totalPrice: Number(price) / 100
         }
-      })();
+      });
+
+      // ✅ Response bhejo taaki Frontend success dikhaye
+      res.json({
+        valid: true,
+        finalAmount: 0,
+        couponApplied: true,
+        coupon: code,
+        orderId: order._id
+      });
+
+      // ✅ Background mein Report aur Mail trigger karo
+      // Hum wahi function use karenge jo paid flow mein use hota hai
+      processInstantReport(order).catch(err => 
+        console.error("Coupon Mail Error:", err.message)
+      );
+
+    } else {
+      return res.json({ valid: false, message: result.message || "Invalid coupon" });
     }
   } catch (err) {
     console.error("Coupon validate error:", err.message);
-    return res.json({
-      valid: false,
-      finalAmount: Number(req.body?.price || 0),
-      message: "Coupon validation failed",
-    });
+    return res.status(500).json({ valid: false, message: "Server error during validation" });
   }
 });
 
@@ -1195,17 +1299,19 @@ try {
   console.log("📡 [SCORE] Calling score API...");
   const startTime = Date.now();
 
-  const response = await axios.post(
-    `${process.env.REACT_APP_SCORE_API}/score`,
-    { mobile_number: userPhone },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "X-API-Key": process.env.REACT_APP_SCORE_API_KEY,
-      },
-      timeout: 15000,
-    }
-  );
+  // Generate score logic inside processInstantReport
+const response = await axios.post(
+  `${process.env.REACT_APP_SCORE_API}/score`,
+  { mobile_number: userPhone },
+  {
+    headers: {
+      "Content-Type": "application/json",
+      // ✅ Yahan confirm karein ki hum vahi key bhej rahe hain jo client ne di hai
+      "X-API-Key": process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw", 
+    },
+    timeout: 15000,
+  }
+);
 
   console.log(
     "✅ [SCORE] API success in",
