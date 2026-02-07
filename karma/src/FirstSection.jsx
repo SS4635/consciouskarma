@@ -7,11 +7,17 @@ export default function FirstSection({ resolvedRoute }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  
+  // ✅ NEW STATE: Tracks if user ever hit 10 digits
+  const [hasVisitedTen, setHasVisitedTen] = useState(false);
 
   // Refs for each input to manage focus
   const inputRefs = useRef([]);
 
   const API_BASE = `${process.env.REACT_APP_API_URL}/api/get-energy`;
+
+  const inputValue = otp.join(""); // Combine array to string for API
+  const isComplete = inputValue.length === 10;
 
   useEffect(() => {
     // Focus first input on load
@@ -19,6 +25,13 @@ export default function FirstSection({ resolvedRoute }) {
       inputRefs.current[0].focus();
     }
   }, []);
+
+  // ✅ LOGIC: Once isComplete becomes true, lock hasVisitedTen to true
+  useEffect(() => {
+    if (isComplete) {
+      setHasVisitedTen(true);
+    }
+  }, [isComplete]);
 
   // ✅ AUTO-HIDE LOGIC: 4 second baad message gayab
   useEffect(() => {
@@ -37,54 +50,45 @@ export default function FirstSection({ resolvedRoute }) {
     if (isNaN(val)) return; // Only numbers
 
     const newOtp = [...otp];
-    // Allow only last entered character (agar user purane par type kare)
+    // Allow only last entered character
     newOtp[index] = val.substring(val.length - 1);
     setOtp(newOtp);
 
-    // Agar value enter hui hai aur ye last box nahi hai, toh next pe jump karo
+    // Jump to next
     if (val && index < 9) {
       inputRefs.current[index + 1].focus();
     }
   };
 
-  // Handle Backspace (Smooth & Continuous Delete)
+  // Handle Backspace
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
-      e.preventDefault(); // Browser ka default behavior roko (Zaroori hai)
-
+      e.preventDefault();
       if (otp[index]) {
-        // Case 1: Agar current box mein number hai -> Sirf usko clear karo
         const newOtp = [...otp];
         newOtp[index] = "";
         setOtp(newOtp);
       } else if (index > 0) {
-        // Case 2: Agar current box khali hai -> Piche focus karo AUR piche wala bhi delete karo
         inputRefs.current[index - 1].focus();
-
         const newOtp = [...otp];
-        newOtp[index - 1] = ""; // Piche wala box turant clear karo
+        newOtp[index - 1] = ""; 
         setOtp(newOtp);
       }
     }
   };
 
-  // Handle Paste (Pura number ek saath paste karne ke liye)
+  // Handle Paste
   const handlePaste = (e) => {
     e.preventDefault();
     const val = e.clipboardData.getData("text").slice(0, 10);
     if (/^[0-9]+$/.test(val)) {
       const newOtp = val.split("");
-      // Fill remaining with empty if pasted length < 10
       while (newOtp.length < 10) newOtp.push("");
       setOtp(newOtp);
-      // Focus last filled index
       const focusIndex = val.length < 10 ? val.length : 9;
       inputRefs.current[focusIndex].focus();
     }
   };
-
-  const inputValue = otp.join(""); // Combine array to string for API
-  const isComplete = inputValue.length === 10;
 
   const handleFetch = async () => {
     if (!isComplete) return;
@@ -119,8 +123,6 @@ export default function FirstSection({ resolvedRoute }) {
   // ✅ HELPER: Get Heading & Icon based on Route
   const getRouteDetails = (route) => {
     const r = route?.replace(/\/$/, "") || "";
-
-    // Common Icon Definition (Bar Chart with Grey Color)
     const commonIcon = (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +133,7 @@ export default function FirstSection({ resolvedRoute }) {
         strokeLinecap="round"
         strokeLinejoin="round"
         className="w-6 h-6 md:w-10 md:h-10"
-        style={{ color: "#b0b0b0" }} // Yahan color set kar diya
+        style={{ color: "#b0b0b0" }} 
       >
         <line x1="18" y1="20" x2="18" y2="10"></line>
         <line x1="12" y1="20" x2="12" y2="4"></line>
@@ -139,38 +141,31 @@ export default function FirstSection({ resolvedRoute }) {
       </svg>
     );
 
-    // Agar special route hai toh title change hoga
     if (r.endsWith("a1")) return { title: "abc", icon: commonIcon };
     if (r.endsWith("a2")) return { title: "ggg", icon: commonIcon };
     if (r.endsWith("a3")) return { title: "aaa", icon: commonIcon };
 
-    // Default Fallback
-    return {
-      title: "Result",
-      icon: commonIcon,
-    };
+    return { title: "Result", icon: commonIcon };
   };
   const routeDetails = getRouteDetails(resolvedRoute);
 
-  // Parse Score
   let numericScore = 0;
   if (apiData?.score) {
     numericScore = parseInt(apiData.score);
     if (isNaN(numericScore)) numericScore = 0;
   }
 
-  // ✅ LOGIC CHANGE: Check if we have results to toggle layout
   const hasResults = !!apiData;
 
   return (
     <section
       className={`
-  bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden
+  bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden font-arsenal
   transition-all duration-700 ease-in-out
   ${
     hasResults
-      ? "justify-start pt-24 md:pt-10 pb-10" // Result Mode: Top alignment
-      : "justify-center pt-16 md:pt-20"      // Input Mode: Center
+      ? "justify-start pt-24 md:pt-10 pb-10" 
+      : "justify-center pt-16 md:pt-20"      
   }
 `}
     >
@@ -180,14 +175,10 @@ export default function FirstSection({ resolvedRoute }) {
             className="flex flex-col items-center w-full"
             onSubmit={(e) => e.preventDefault()}
           >
-
-            {/* 2. OTP INPUT GRID (Individual Inputs) */}
+            {/* 2. OTP INPUT GRID */}
             <div className="relative flex gap-[8px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center z-10">
               {otp.map((data, index) => {
-                // Logic: Pehla khaali box dhoondo
                 const firstEmptyIndex = otp.findIndex((val) => val === "");
-
-                // Sirf wahi box bounce karega jo 'firstEmptyIndex' hai.
                 const shouldBounce = index === firstEmptyIndex;
 
                 return (
@@ -202,9 +193,10 @@ export default function FirstSection({ resolvedRoute }) {
                     onChange={(e) => handleChange(e.target, index)}
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     onPaste={handlePaste}
+                    style={{ fontSize: 'clamp(20px, 4vw, 36px)' }}
                     className={`flex items-center justify-center text-center shrink-0
                             h-10 w-8 md:h-[75px] md:w-16
-                            text-2xl md:text-3xl font-mono
+                            font-mono
                             border-[1.5px] rounded-md md:rounded-lg
                             transition-all duration-300 outline-none
                             bg-transparent
@@ -221,64 +213,86 @@ export default function FirstSection({ resolvedRoute }) {
             {/* 3. SWITCHING LOGIC: Text/Icon vs Button */}
             <div className="flex items-center justify-center w-full min-h-[100px] mt-6 relative">
               
-              {!isComplete ? (
-                /* CASE A: Number Incomplete -> Stack Layout (Column) */
+              {/* LOGIC: 
+                  Display "Enter Mobile Number" ONLY if user has NEVER reached 10 digits.
+                  Otherwise, display "Get Number Energy" (active or inactive state).
+              */}
+              {!hasVisitedTen ? (
+                /* CASE A: Never reached 10 digits yet -> Show Arrow & Text */
                 <div className="flex flex-col items-center animate-in fade-in duration-300">
                   
-                  {/* Row 1: ARROW IMAGE (Pointing Up) */}
-                  <div className="">
+                  {/* Row 1: ARROW IMAGE */}
+                  <div className="relative">
                     <img 
                       src="/arroww.png" 
                       alt="Pointing to input"
                       className="
                         rotate-[-155deg]  
-                        bottom-[120%]     /* Angle */
                         opacity-90 
                         pointer-events-none
-                        mr-5rem 
                         ml-[-350px]
                         mt-[-30px]
-                        h-[4px] md:h-[30px]    /* ✅ Height: Jitna lamba chahiye yahan badha */
-    w-[300px] md:w-[624px]      /* ✅ Width: Jitna mota chahiye yahan set kar */
-    object-fill
-                        
+                        h-[4px] md:h-[30px]
+                        w-[300px] md:w-[624px]
+                        object-fill
                       "
                     />
                   </div>
 
-                  {/* Row 2: TEXT + ICON (Side by Side) */}
-                  <div className="flex items-center gap-3 mt-3">
+                  {/* Row 2: TEXT + SUPERSCRIPT ICON */}
+                  {/* Change 1: items-start use kiya taaki icon upar (top) align ho */}
+                  <div className="flex items-start mt-3">
                     <span 
-                      className="text-#E5E7EB tracking-widest font-thin text-gray-200 leading-tight" style={{ fontSize: 'clamp(22px, 3.5vw, 32px)', lineHeight: '1.3' }} 
+                      className="text-[#E5E7EB] font-thin text-gray-200 leading-none" 
+                      style={{ fontSize: 'clamp(22px, 3.5vw, 32px)' }} 
                     >
                       Enter Mobile Number
                     </span>
                     
-                    {/* 'i' Icon */}
+                    {/* 'i' Icon acting as Power/Superscript */}
                     <button
                       type="button"
                       onClick={() => setShowInfo(true)}
-                      className="flex items-center justify-center text-[#ff914d] hover:text-white transition-colors duration-300 p-1"
+                      // Change 2: -mt-1 (negative margin) se upar uthaya, ml-1 se thoda gap diya
+                      className="text-[#ff914d] hover:text-white transition-colors duration-300 ml-1 -mt-1"
                     >
-                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                       <svg 
+                         xmlns="http://www.w3.org/2000/svg" 
+                         fill="none" 
+                         viewBox="0 0 24 24" 
+                         strokeWidth={2.5} 
+                         stroke="currentColor" 
+                         // Change 3: Icon ka size chhota kiya (w-4 h-4)
+                         className="w-4 h-4 md:w-5 md:h-5"
+                       >
                         <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                       </svg>
                     </button>
                   </div>
                 </div>
               ) : (
-                /* CASE B: Number Complete (Show GET ENERGY Button) */
+                /* CASE B: Visited 10 digits at least once -> Show Button Logic */
                 <button
                   type="button"
                   onClick={handleFetch}
-                  className="px-8 py-3 bg-[#ff914d] text-white rounded-lg text-lg md:text-xl font-medium tracking-wide shadow-[0_0_20px_rgba(255,145,77,0.5)] hover:bg-[#ff8033] transition-all duration-300 animate-in zoom-in-90 mt-8"
+                  disabled={!isComplete} // Disable click if digits removed
+                  style={{ fontSize: 'clamp(16px, 4vw, 20px)' }}
+                  className={`
+                    px-6 py-2 md:px-8 md:py-3 
+                    rounded-lg font-medium tracking-wide 
+                    transition-all duration-300 animate-in zoom-in-90 mt-8 border-1
+                    ${isComplete 
+                        ? "border-[#ff914d] bg-black text-[#ff914d] cursor-pointer" 
+                        : "border-transparent bg-transparent text-[#ff914d] opacity-80 cursor-default"
+                    }
+                  `}
                 >
                   Get Number Energy
                 </button>
               )}
             </div>
 
-            {/* ✅ FLASH MESSAGE BAR */}
+            {/* FLASH MESSAGE BAR */}
             {showInfo && (
               <div className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full max-w-md">
                 <div className="bg-[#111] border border-[#ff914d] text-gray-200 px-6 py-3 rounded-lg text-center text-sm tracking-wide shadow-[0_0_15px_rgba(255,145,77,0.2)]">
@@ -305,7 +319,11 @@ export default function FirstSection({ resolvedRoute }) {
 
             {apiData && !loading && (
               <div className="w-full animate-in fade-in slide-in-from-bottom-8 duration-700 flex flex-col items-center">
-                <h2 className="text-2xl md:text-3xl font-light text-center mb-6 capitalize tracking-widest text-white">
+                
+                <h2 
+                    className="font-light text-center mb-6 capitalize tracking-widest text-white"
+                    style={{ fontSize: 'clamp(24px, 5vw, 36px)' }}
+                >
                   {routeDetails.title}
                 </h2>
 
@@ -332,7 +350,7 @@ export default function FirstSection({ resolvedRoute }) {
                   <div className="relative z-20 flex-shrink-0 -mx-4 md:-mx-6">
                     <div
                       className="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-black shadow-2xl"
-                      style={{ border: "3px solid #b0b0b0" }} // Using your grey border color
+                      style={{ border: "3px solid #b0b0b0" }}
                     >
                       {routeDetails.icon}
                     </div>
@@ -361,7 +379,11 @@ export default function FirstSection({ resolvedRoute }) {
                   <p className="text-white text-[10px] uppercase mb-4 tracking-[0.2em]">
                     INSIGHT
                   </p>
-                  <p className="text-lg md:text-2xl font-light leading-relaxed text-gray-200">
+                  
+                  <p 
+                    className="font-light leading-relaxed text-gray-200"
+                    style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}
+                  >
                     "{apiData.point}"
                   </p>
                 </div>
@@ -384,7 +406,8 @@ export default function FirstSection({ resolvedRoute }) {
             )}
           </div>
         </div>
-        {/* ✅ BEAUTIFUL INFO MODAL */}
+
+        {/* BEAUTIFUL INFO MODAL */}
         {showInfo && (
           <div className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-in fade-in duration-300">
             {/* Background Blur */}
