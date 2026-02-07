@@ -164,14 +164,13 @@ export default function FirstSection({ resolvedRoute }) {
 
   return (
     <section
-      // Change the className logic to this:
-className={`
+      className={`
   bg-black text-white min-h-screen flex flex-col items-center relative overflow-hidden
   transition-all duration-700 ease-in-out
   ${
     hasResults
       ? "justify-start pt-24 md:pt-10 pb-10" // Result Mode: Top alignment
-      : "justify-center pt-16 md:pt-20"      // Input Mode: Center + Header Offset (Ye hai asli center!)
+      : "justify-center pt-16 md:pt-20"      // Input Mode: Center
   }
 `}
     >
@@ -181,19 +180,9 @@ className={`
             className="flex flex-col items-center w-full"
             onSubmit={(e) => e.preventDefault()}
           >
-            {/* 1. LABEL & ARROW - CENTERED */}
-            <div className="w-full flex justify-center mb-4">
-              <div className="relative text-center w-full max-w-[360px] md:max-w-[1100px] flex justify-center">
-                <div className="relative">
-                  <span className="block text-gray-300 text-xl md:text-lg tracking-wider font-light mb-1">
-                    Enter Mobile Number
-                  </span>
-                </div>
-              </div>
-            </div>
 
             {/* 2. OTP INPUT GRID (Individual Inputs) */}
-            <div className="relative flex gap-[8px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center">
+            <div className="relative flex gap-[8px] md:gap-12 w-full justify-center cursor-text h-24 md:h-32 items-center z-10">
               {otp.map((data, index) => {
                 // Logic: Pehla khaali box dhoondo
                 const firstEmptyIndex = otp.findIndex((val) => val === "");
@@ -214,8 +203,8 @@ className={`
                     onKeyDown={(e) => handleKeyDown(e, index)}
                     onPaste={handlePaste}
                     className={`flex items-center justify-center text-center shrink-0
-                            h-10 w-7 md:h-20 md:w-16
-                            text-xl md:text-3xl font-mono
+                            h-10 w-8 md:h-[75px] md:w-16
+                            text-2xl md:text-3xl font-mono
                             border-[1.5px] rounded-md md:rounded-lg
                             transition-all duration-300 outline-none
                             bg-transparent
@@ -229,50 +218,67 @@ className={`
               })}
             </div>
 
-            {/* 3. BUTTONS & ICON SECTION */}
-            <div className="flex items-center justify-center gap-4 mt-6 w-full relative">
-              {/* Main Button */}
-              {/* Main Button */}
-<button
-    type="button"
-    onClick={handleFetch}
-    disabled={!isComplete}
-    className={`
-        mt-3 px-8 py-2 rounded-lg text-xl font-medium transition-all duration-300 border-1 border-[#ff914d]
-        ${!isComplete 
-            ? "bg-black text-[#ff914d] cursor-not-allowed"   // ❌ Jab 10 digit nahi hai: Black BG, Orange Text
-            : "bg-[#ff914d] text-white cursor-pointer hover:bg-[#ff914d] " // ✅ Jab 10 digit hain: Orange BG, White Text
-        }
-    `}
->
-    get number energy
-</button>
+            {/* 3. SWITCHING LOGIC: Text/Icon vs Button */}
+            <div className="flex items-center justify-center w-full min-h-[100px] mt-6 relative">
+              
+              {!isComplete ? (
+                /* CASE A: Number Incomplete -> Stack Layout (Column) */
+                <div className="flex flex-col items-center animate-in fade-in duration-300">
+                  
+                  {/* Row 1: ARROW IMAGE (Pointing Up) */}
+                  <div className="">
+                    <img 
+                      src="/arroww.png" 
+                      alt="Pointing to input"
+                      className="
+                        rotate-[-155deg]  
+                        bottom-[120%]     /* Angle */
+                        opacity-90 
+                        pointer-events-none
+                        mr-5rem 
+                        ml-[-350px]
+                        mt-[-30px]
+                        h-[4px] md:h-[30px]    /* ✅ Height: Jitna lamba chahiye yahan badha */
+    w-[300px] md:w-[624px]      /* ✅ Width: Jitna mota chahiye yahan set kar */
+    object-fill
+                        
+                      "
+                    />
+                  </div>
 
-              {/* 'i' Icon (No Circle, Centered) */}
-              <button
-                type="button"
-                onClick={() => setShowInfo(true)}
-                className="flex items-center justify-center text-gray-500 hover:text-[#ff914d] transition-colors duration-300 p-2"
-                aria-label="View Instructions"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={2}
-                  stroke="currentColor"
-                  className="w-7 h-7"
+                  {/* Row 2: TEXT + ICON (Side by Side) */}
+                  <div className="flex items-center gap-3 mt-3">
+                    <span 
+                      className="text-#E5E7EB tracking-widest font-thin text-gray-200 leading-tight" style={{ fontSize: 'clamp(22px, 3.5vw, 32px)', lineHeight: '1.3' }} 
+                    >
+                      Enter Mobile Number
+                    </span>
+                    
+                    {/* 'i' Icon */}
+                    <button
+                      type="button"
+                      onClick={() => setShowInfo(true)}
+                      className="flex items-center justify-center text-[#ff914d] hover:text-white transition-colors duration-300 p-1"
+                    >
+                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                /* CASE B: Number Complete (Show GET ENERGY Button) */
+                <button
+                  type="button"
+                  onClick={handleFetch}
+                  className="px-8 py-3 bg-[#ff914d] text-white rounded-lg text-lg md:text-xl font-medium tracking-wide shadow-[0_0_20px_rgba(255,145,77,0.5)] hover:bg-[#ff8033] transition-all duration-300 animate-in zoom-in-90 mt-8"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z"
-                  />
-                </svg>
-              </button>
+                  Get Number Energy
+                </button>
+              )}
             </div>
 
-            {/* ✅ NEW: FLASH MESSAGE BAR (Modal ki jagah ye aayega) */}
+            {/* ✅ FLASH MESSAGE BAR */}
             {showInfo && (
               <div className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full max-w-md">
                 <div className="bg-[#111] border border-[#ff914d] text-gray-200 px-6 py-3 rounded-lg text-center text-sm tracking-wide shadow-[0_0_15px_rgba(255,145,77,0.2)]">
