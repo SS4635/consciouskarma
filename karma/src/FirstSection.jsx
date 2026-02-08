@@ -283,7 +283,7 @@ export default function FirstSection({ resolvedRoute }) {
                     transition-all duration-300 animate-in zoom-in-90 mt-8 border-1
                     ${isComplete 
                         ? "border-[#ff914d] bg-black text-[#ff914d] cursor-pointer" 
-                        : "border-transparent bg-transparent text-[#ff914d] opacity-80 cursor-default"
+                        : "border-white bg-transparent text-[#ff914d] opacity-80 cursor-default"
                     }
                   `}
                 >

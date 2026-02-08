@@ -466,6 +466,15 @@ border-top: 2px solid #ff914d;
   text-align: left;
 }
 
+@media (max-width: 500px) {
+  .ck-price-pill {
+    font-size: 16px;
+  }
+  .ck-proceed-btn {
+    font-size: 20px;
+  }
+}
+
 .ck-faq-item:hover {
   border-color: #ff914d;
 }
