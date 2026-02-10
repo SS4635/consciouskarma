@@ -224,24 +224,35 @@ export default function FirstSection({ resolvedRoute }) {
                   {/* Row 1: ARROW IMAGE */}
                   <div className="relative">
                     <img 
-                      src="/arrowc.png" 
-                      alt="Pointing to input"
-                      className="
-                        opacity-90 
-                        pointer-events-none
-                        bottom-[-120%]
-                        ml-[-400px]
-                        mt-[-20px]
-                        h-[4px] md:h-[30px]
-                        w-[300px] md:w-[924px]
-                        object-fill
-                      "
-                    />
+  src="/aw.png" 
+  alt="Pointing to input"
+  className="
+    /* --- MOBILE (Default) --- */
+    /* Image ko upar overlap karwane ke liye */
+    h-[70px] w-[250px] 
+    rotate-[30deg] 
+    ml-[-145px] 
+    mt-[-90px]      /* Overlap badhane ke liye -60 se -110 kiya */
+    relative z-50    /* Content ke upar dikhne ke liye */
+    opacity-90 
+    pointer-events-none 
+    object-fill
+    
+    /* --- LAPTOP (Strictly Maintained) --- */
+    md:rotate-[-355deg]
+    md:ml-[-350px]
+    md:mt-[-20px]
+    md:h-[180px]
+    md:w-[694px]
+    md:z-10          /* Laptop par normal layer */
+  "
+  style={{ backgroundPosition: '-120%' }} /* background-[-120%] style tag mein safe rehta hai */
+/>
                   </div>
 
                   {/* Row 2: TEXT + SUPERSCRIPT ICON */}
                   {/* Change 1: items-start use kiya taaki icon upar (top) align ho */}
-                  <div className="flex items-start mt-3">
+                  <div className="flex items-start -mt-[49px] md:-mt-[89px] md:-ml-[80px]">
                     <span 
                       className="text-[#E5E7EB] font-thin text-gray-200 leading-none" 
                       style={{ fontSize: 'clamp(22px, 3.5vw, 32px)' }} 
@@ -283,7 +294,7 @@ export default function FirstSection({ resolvedRoute }) {
                     transition-all duration-300 animate-in zoom-in-90 mt-8 border-1
                     ${isComplete 
                         ? "border-[#ff914d] bg-black text-[#ff914d] cursor-pointer" 
-                        : "border-white bg-transparent text-[#fff] opacity-80 cursor-default"
+                        : "border-white bg-transparent text-[white] opacity-80 cursor-default"
                     }
                   `}
                 >
