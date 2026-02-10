@@ -227,11 +227,11 @@ export default function FirstSection({ resolvedRoute }) {
                       src="/arrowc.png" 
                       alt="Pointing to input"
                       className="
-                        // rotate-[-155deg]  
                         opacity-90 
                         pointer-events-none
+                        bottom-[-120%]
                         ml-[-400px]
-                        mt-[-30px]
+                        mt-[-20px]
                         h-[4px] md:h-[30px]
                         w-[300px] md:w-[924px]
                         object-fill
