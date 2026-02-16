@@ -18,11 +18,11 @@ import FadeInOnScroll from "./components/FadeInOnScroll.jsx";
 import CKNavbar from "./components/CKNavbar";
 
 /* === Images (your filenames) === */
-import loveImg from "./Love.jpg";
-import financeImg from "./Finance.jpg";
-import fortuneImg from "./Fortune.png";
-import intelligenceImg from "./Intelligence.jpg";
-import intuitionImg from "./Intuition.jpg";
+import loveImg from "./4.png";
+import financeImg from "./2.png";
+import fortuneImg from "./3.png";
+import intelligenceImg from "./1.png";
+import intuitionImg from "./5.png";
 import earthGif from "./Earth Gif.gif";
 import zeroPng from "./zero.png";
 import karmaTransparent from "./ruondimgg.jpg";
