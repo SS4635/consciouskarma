@@ -35,7 +35,7 @@ import blankStarImg from "./blank-star.jpg";
 import mobileEnergyFlow from "./mobile number energy flow.png";
 import SignupModal from "./SignupModal.jsx";
 import LoginModal from "./LoginModal.jsx";
-import FirstSection from "./FirstSection";
+import FirstSection from "./FirstSection.jsx";
 /* ===================== MAIN PAGE ===================== */
 
 export default function ConsciousKarmaSections() {

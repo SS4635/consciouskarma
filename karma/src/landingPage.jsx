@@ -13,14 +13,14 @@ import TypingParagraphs from "./components/ui/shadcn-io/TypingParagraphs.jsx";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 // import DecryptedText from "./components/DecryptedText.jsx";
 import FadeInOnScroll from "./components/FadeInOnScroll.jsx";
-import CKNavbar from "./components/CKNavbar";
+import CKNavbar from "./components/CKNavbar.jsx";
 
 /* === Images (your filenames) === */
-import loveImg from "./Love.jpg";
-import financeImg from "./Finance.jpg";
-import fortuneImg from "./Fortune.png";
-import intelligenceImg from "./Intelligence.jpg";
-import intuitionImg from "./Intuition.jpg";
+import loveImg from "./4.png";
+import financeImg from "./2.png";
+import fortuneImg from "./3.png";
+import intelligenceImg from "./1.png";
+import intuitionImg from "./5.png";
 import earthGif from "./Earth Gif.gif";
 import zeroPng from "./zero.png";
 import karmaTransparent from "./ruondimgg.jpg";
@@ -241,148 +241,147 @@ const [showLogin, setShowLogin] = useState(false);
         .text-fluid-18-30{font-size:clamp(18px,4vw,30px)}
         .text-fluid-24-30{font-size:clamp(24px,3.2vw,30px)}
       `}</style>
+      <div className="absolute top-0 left-0 w-full z-50">
+         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
+      </div>
 
-      {/* HERO */}
-      <section className="relative min-h-screen bg-black flex flex-col pt-2 sm:pt-6 md:pt-4 lg:pt-2">
-        <div className="container mx-auto px-1 sm:px-6 flex-1 flex flex-col justify-center lg:justify-start lg:pt-4">
-          {/* Header */}
-          <div className="bg-black ">
-            {/* SAME HEADER AS PERSONALIZED REPORT PAGE */}
-            <header className="ck-header-bar  pb-3 md:pt-1 md:pb-0">
-              <div className="ck-header-inner">
-                <a
-                  href="/"
-                  className="ck-header-logo-link"
-                  aria-label={intl.formatMessage({ id: "app.aria.home" })}
-                >
-                  <img
-                    src="/Logomy-cropped.svg"
-                    alt={intl.formatMessage({ id: "app.title" })}
-                    className="ck-header-logo mt-4 "
-                    draggable={false}
-                  />
-                </a>
+      {/* Mobile Menu Overlay */}
+      {menuOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
+      )}
 
-                <button
-                  className={
-                    "ck-hamburger" + (menuOpen ? " ck-hamburger-open" : "")
-                  }
-                  onClick={() => setMenuOpen((v) => !v)}
-                  aria-label={intl.formatMessage({ id: "app.aria.toggleMenu" })}
-                >
-                  <span />
-                  <span />
-                  <span />
-                </button>
-              </div>
-            </header>
 
-            {/* Drawer/Menu */}
+      {/* HERO SECTION */}
+      <section className="relative min-h-screen bg-black flex flex-col pt-0 overflow-x-hidden">
+        
+        {/* BACKGROUND GRADIENT LINE (Bottom) */}
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
+
+        {/* MAIN CONTENT AREA */}
+        <div className="flex-1 flex flex-col justify-center items-center w-full relative z-10 pt-20 md:pt-12 pb-10">
           
+          {/* 1. HERO TEXT SECTION */}
+<div className="text-center w-full px-4 mb-10 md:mb-14">
+  
+  {/* FONT SIZE: Mobile ke liye 28px (Bada), Desktop ke liye 54px (Same as before) */}
+  <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.3] tracking-wide text-white text-center"
+      style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
+
+    {/* LINE 1: YOUR MOBILE NUMBER */}
+    <span className="block mb-1">
+      <FormattedMessage id="hero.title.line1" defaultMessage="YOUR MOBILE NUMBER" />
+    </span>
+
+    {/* LINE 2 (Desktop): IS THE KEY TO ACHIEVING */}
+    {/* MOBILE: Break ho jayega */}
+    <span className="block md:inline">
+      
+      {/* Mobile Row 2: IS THE KEY */}
+      <span className="block md:inline mt-1 md:mt-2">
+        <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
+        <span className="text-[#ff914d] font-normal">
+          {" "}
+          <FormattedMessage id="hero.title.key" defaultMessage="KEY" />
+          {" "}
+        </span>
+      </span>
+
+      {/* Mobile Row 3: TO ACHIEVING YOUR */}
+      {/* Desktop: Yahan "YOUR" chup jayega, sirf "TO ACHIEVING" dikhega */}
+      <span className="block md:inline mt-1 md:mt-0">
+        <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
+        
+        {/* MOBILE ONLY "YOUR" */}
+        <span className="md:hidden">
+           {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
+        </span>
+      </span>
+
+    </span>
+
+    {/* LINE 3 (Desktop): YOUR DREAMS */}
+    {/* Mobile Row 4: DREAMS ("Your" upar shift ho gaya mobile me) */}
+    <span className="block mt-1 md:mt-2">
+      
+      {/* DESKTOP ONLY "YOUR" */}
+      <span className="hidden md:inline">
+        <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
+      </span>
+
+      <span className="text-[#ff914d] font-normal">
+        <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
+      </span>
+    </span>
+
+  </h1>
+
+  {/* Subtitles (No Changes) */}
+  <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
+    <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
+    <p style={{ fontSize: 'clamp(16px, 1.5vw, 22px)' }}>
+      Discover How a Mobile Number <br className="block sm:hidden" />
+      Shapes Life’s Key Areas
+    </p>
+  </div>
+</div>
+
+          {/* 2. ICONS SECTION */}
+          <div className="w-full flex justify-center md:mb-16 mt-[-15px] md:mt-[-30px]">
+            
+            {/* Container */}
+            <div className="
+                grid grid-cols-[60px_1fr] gap-y-3 gap-x-4 items-center w-fit
+                md:flex md:flex-row md:gap-12 lg:gap-20 md:w-auto 
+            ">
+              {[
+                [financeImg, "Finance & Work"],
+                [fortuneImg, "Fortune"],
+                [loveImg, "Charm & Love"],
+                [intuitionImg, "Intuition"],
+                [intelligenceImg, "Intelligence"],
+              ].map(([src, label], i) => (
+                <React.Fragment key={i}>
+                  {/* Wrapper */}
+                  <div className="contents md:flex md:flex-col md:items-center md:gap-4">
+                    
+                    {/* Icon */}
+                    <div className="flex items-center justify-center">
+                      {/* FIX 3: Increased Icon Sizes (w-14 mobile, w-20 desktop) */}
+                      <img 
+                        src={src} 
+                        alt={label} 
+                        className="w-14 h-14 md:w-20 md:h-20 object-contain" 
+                      />
+                    </div>
+
+                    {/* Text */}
+                    <span className="text-white font-light text-left md:text-center text-[18px] md:text-[18px] whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight">
+                      {label}
+                    </span>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
           </div>
 
-          {/* Main Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr] items-center gap-8 sm:gap-10 lg:gap-6 flex-1 justify-end mt-16 sm:mt-0">
-            {/* LEFT — Hero Heading */}
-            <div className="flex flex-col items-center mt-11 sm:mt-8 md:mt-4 lg:mt-0 sm:items-start justify-center lg:justify-end">
-              <p
-                className="font-balgin mb-8 sm:mb-12 md:mb-16 lg:mb-[60px]
-                  font-extralight uppercase
-                  text-[clamp(14px,4vw,14px)]
-                  sm:text-[clamp(8px,4vw,54px)]
-                  leading-[1.1] sm:leading-[1.02]
-                  tracking-[0.02em]
-                  text-center sm:text-left
-                  w-full transform
-                  sm:-translate-x-2 md:-translate-x-6 lg:-translate-x-10 xl:-translate-x-14 2xl:-translate-x-16
-                  sm:-translate-y-1 md:-translate-y-2 lg:-translate-y-3"
-              >
-                <span className="block mb-1 sm:mb-2 whitespace-nowrap mt-[30px] sm:mt-[110px]" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <FormattedMessage id="hero.title.line1" />
-                </span>
-                <span className="block mb-1 sm:mb-2 text-center sm:text-left whitespace-nowrap" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <FormattedMessage id="hero.title.line2" /> <span className="text-[#ff914d]"><FormattedMessage id="hero.title.key" /></span>
-                </span>
-                <span className="block mb-1 sm:mb-2 text-center sm:text-left whitespace-nowrap" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <span className="text-[#ff914d]"><FormattedMessage id="hero.title.line3" /></span> <FormattedMessage id="hero.title.line3b" />
-                </span>
-                <span className="block mb-1 sm:mb-2 text-center sm:text-left whitespace-nowrap" style={{ "fontSize": 'clamp(24px, 6vw, 54px)' }}>
-                  <span className="text-[#ff914d]"><FormattedMessage id="hero.title.dreams" /></span>
-                </span>
-              </p>
-            </div>
-
-            {/* RIGHT — Info + Form */}
-            <div className="flex flex-col items-center justify-start text-center gap-2  pt-[2px]">
-              {/* Heading */}
-              <div style={{ marginTop: 'clamp(20px, 4vw, 32px)' }}>
-                <h2 className="font-thin text-gray-200 leading-tight" style={{ fontSize: 'clamp(22px, 3.5vw, 32px)', lineHeight: '1.3' }}>
-                  <span className="block" style={{ marginBottom: 'clamp(2px, 0.5vw, 4px)' }}>
-                    <FormattedMessage id="hero.subtitle" />
-                  </span>
-                  <span className="block">
-                    <FormattedMessage id="hero.subtitleKey" />
-                  </span>
-                </h2>
-              </div>
-
-              {/* Icon + Label Grid */}
-              <div className="flex justify-center items-center ms-[5em] mt-2 mb-3 sm:mb-4">
-                <div className="grid grid-cols-[56px_1fr] sm:grid-cols-[64px_1fr] md:grid-cols-[86px_1fr] items-center gap-x-2 gap-y-3 sm:gap-y-4 md:gap-y-5 w-[260px] sm:w-[300px] md:w-[340px]">
-                  {[
-                    [financeImg, intl.formatMessage({ id: "lifeAreas.finance" })],
-                    [fortuneImg, intl.formatMessage({ id: "lifeAreas.fortune" })],
-                    [loveImg, intl.formatMessage({ id: "lifeAreas.love" })],
-                    [intuitionImg, intl.formatMessage({ id: "lifeAreas.sense" })],
-                    [intelligenceImg, intl.formatMessage({ id: "lifeAreas.intelligence" })],
-                  ].map(([src, label], i) => (
-                    <React.Fragment key={i}>
-                      <div className="flex items-center justify-center">
-                        <img
-                          src={src}
-                          alt={label}
-                          className="w-14 h-14 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
-                        />
-                      </div>
-                      <div className="text-left whitespace-nowrap" style={{ fontSize: 'clamp(18px, 2.8vw, 24px)' }}>
-                        {label}
-                      </div>
-                    </React.Fragment>
-                  ))}
-                </div>
-              </div>
-
-              {/* Price + Inputs */}
-              <div className="w-[260px] sm:w-[300px] md:w-[340px] flex flex-col items-center px-0 py-0" style={{ "paddingTop": "0px" }}>
-                <div className="w-full">
-                  <InlineInstantReportForm
-                    ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
-                    onSubmit={openPrefilledModal}
-                  />
-                </div>
-              </div>
-            </div>
+          {/* 3. FORM SECTION */}
+          <div className="w-full max-w-[340px] md:max-w-[420px] px-4 mt-10 md:mt-3">
+            <InlineInstantReportForm
+              ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
+              onSubmit={openPrefilledModal}
+            />
           </div>
+
         </div>
 
-        {
-          menuOpen && (
-            <div
-              className="fixed inset-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-[2px] z-20"
-              onClick={() => setMenuOpen(false)}
-            />
-          )
-        }
-<CKNavbar
-  menuOpen={menuOpen}
-  setMenuOpen={setMenuOpen}
-  setShowSignup={setShowSignup}
-/>
+        {/* ... (Navbar logic remains) ... */}
+        {menuOpen && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
+        )}
+        <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
 
+      </section>
 
-
-        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
-      </section >
 
       {/* WHAT IS THIS */}
       < section className="relative min-h-screen bg-black flex items-center justify-center pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] px-4 sm:px-6" >

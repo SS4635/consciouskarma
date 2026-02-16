@@ -5,9 +5,9 @@ import ConsultationPlans from './components/consultation/ConsultationPlans.js';
 import Home from './components/Home.js';
 import FaqAccordion from './components/FaqAccordion.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import CKNavbar from "./components/CKNavbar";
-import SignupModal from "./SignupModal";
-import LoginModal from "./LoginModal";
+import CKNavbar from "./components/CKNavbar.jsx";
+import SignupModal from "./SignupModal.jsx";
+import LoginModal from "./LoginModal.jsx";
 
 
 export default function Consult() {

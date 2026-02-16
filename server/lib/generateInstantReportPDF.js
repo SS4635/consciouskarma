@@ -230,11 +230,11 @@ const finalMobileNumber = formatMobileNumber(rawMobileNumber);
     const blankStar = loadImageAsBase64("blank-star.jpg");
 
     // Load bar icons as base64
-    const financeIcon = loadImageAsBase64("Finance.jpg");
-    const fortuneIcon = loadImageAsBase64("Fortune.png");
-    const loveIcon = loadImageAsBase64("Love.jpg");
-    const intuitionIcon = loadImageAsBase64("Intuition.jpg");
-    const intelligenceIcon = loadImageAsBase64("Intelligence.jpg");
+    const financeIcon = loadImageAsBase64("2.jpg");
+    const fortuneIcon = loadImageAsBase64("3.jpg");
+    const loveIcon = loadImageAsBase64("4.jpg");
+    const intuitionIcon = loadImageAsBase64("5.jpg");
+    const intelligenceIcon = loadImageAsBase64("1.jpg");
 
     // Load Arsenal font files as base64
     const arsenalRegular = loadImageAsBase64(

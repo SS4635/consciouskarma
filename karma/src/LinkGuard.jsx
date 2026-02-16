@@ -33,21 +33,7 @@ export default function LinkGuard({ children }) {
 
   // ⏳ while checking
   if (allowed === null) {
-    return (
-      <div style={styles.loaderContainer}>
-        {/* Injecting keyframes directly so you don't need a CSS file */}
-        <style>
-          {`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}
-        </style>
-        <div style={styles.spinner}></div>
-        
-      </div>
-    );
+    return null;
   }
 
   // ❌ invalid

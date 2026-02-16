@@ -32,12 +32,12 @@
 }
 
 .sample-rep{
-  margin-left:12px;
+  margin-left:123px;
   margin-top:-16px;
 }
 
 .butt{
-  margin-left: 0px;
+  margin-left: 16px;
 }
 
 /* 🔥 MOBILE VIEW ONLY */
@@ -48,9 +48,9 @@
     margin-left: -2px;          /* optional */
   }
   .sample-rep{
-  margin-left:13px;
+  margin-left:95px;
   margin-top:-16px;
 }
-.butt{margin-left: -20px;}
+.butt{margin-left: -15px;}
 }
 

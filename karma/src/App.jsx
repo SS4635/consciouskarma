@@ -16,9 +16,9 @@ import ContactUs from './ContactUs.jsx';
 import Blog from './Blog.jsx';
 import HowToReadMobileNumberBlog from './HowToReadMobileNumberBlog.jsx';
 import HowToChooseMobileNumberBlog from './HowToChooseMobileNumberBlog.jsx';
-import LinkGuard from "./LinkGuard";
-import LinkPage from "./LinkPage";
-import NotFound from "./NotFound";
+import LinkGuard from "./LinkGuard.jsx";
+import LinkPage from "./LinkPage.jsx";
+import NotFound from "./NotFound.jsx";
 
 // ✅ Import your translations
 import {IntlProvider} from "./i18n/IntlProvider.jsx";  // 👈 yahan se saari text aayegi

@@ -240,7 +240,7 @@ export default function FirstSection({ resolvedRoute }) {
     
     /* --- LAPTOP (Strictly Maintained) --- */
     md:rotate-[-355deg]
-    md:ml-[-350px]
+    md:ml-[-330px]
     md:mt-[-20px]
     md:h-[180px]
     md:w-[694px]
@@ -252,7 +252,7 @@ export default function FirstSection({ resolvedRoute }) {
 
                   {/* Row 2: TEXT + SUPERSCRIPT ICON */}
                   {/* Change 1: items-start use kiya taaki icon upar (top) align ho */}
-                  <div className="flex items-start -mt-[49px] md:-mt-[89px] md:-ml-[80px]">
+                  <div className="flex items-start md:items-center -mt-[49px] md:-mt-[89px]">
                     <span 
                       className="text-[#E5E7EB] font-thin text-gray-200 leading-none" 
                       style={{ fontSize: 'clamp(22px, 3.5vw, 32px)' }} 
@@ -291,7 +291,7 @@ export default function FirstSection({ resolvedRoute }) {
                   className={`
                     px-6 py-2 md:px-8 md:py-3 
                     rounded-lg font-medium tracking-wide 
-                    transition-all duration-300 animate-in zoom-in-90 mt-8 border-1
+                    transition-all duration-300 animate-in zoom-in-90 mt-1 border-1
                     ${isComplete 
                         ? "border-[#ff914d] bg-black text-[#ff914d] cursor-pointer" 
                         : "border-white bg-transparent text-[white] opacity-80 cursor-default"

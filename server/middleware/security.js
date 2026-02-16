@@ -2,7 +2,7 @@ export const protectAndLog = (req, res, next) => {
   // 1. Define Origins based on Environment
   let allowedOrigins = [
     "https://consciouskarma.co",
-    "https://www.consciouskarma.co"
+    "https://www.consciouskarma.co",
   ];
 
   // Sirf tab localhost allow karo jab hum development mode mein hon

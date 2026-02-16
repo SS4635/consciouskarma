@@ -1096,295 +1096,122 @@
 
     <!-- PAGE 7: MOBILE NUMBER INFLUENCE ON USER & LIFE -->
    
-<%
-/* ===============================
-   SAFE PAGINATION (FIXED)
-   DESIGN UNTOUCHED
-================================ */
+<% 
+      // 1. DATA NIKALNA (Sirf as_text se)
+      let rawText = influence_section?.as_text || "";
+
+      //rawText = rawText + "\n\n" + rawText + "\n\n" + rawText;
+      
+      // 2. LINE BY LINE TODNA
+      // Har nayi line ko alag array item bana rahe hain
+      const allLines = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+
+      // 3. PAGINATION SETTINGS
+      const PAGE_HEIGHT = 750;  // Page ki safe height
+      const LINE_HEIGHT = 30;   // Ek line ki height ka andaza
+      
+      let currentPage = { items: [], height: 0 };
+      const pages = [currentPage];
+
+      function addToPage(type, content) {
+        // Height calculate karna (agar line lambi hai to zyada jagah legi)
+        const charCount = content.length;
+        const linesNeeded = Math.ceil(charCount / 65); // Approx 65 chars per line
+        const itemHeight = (linesNeeded * LINE_HEIGHT) + 15; // 15px padding
+
+        // Agar page bhar gaya to naya page banao
+        if (currentPage.height + itemHeight > PAGE_HEIGHT) {
+          currentPage = { items: [], height: 0 };
+          pages.push(currentPage);
+        }
+        
+        currentPage.items.push({ type, content });
+        currentPage.height += itemHeight;
+      }
+
+      // 4. CONTENT KO CATEGORIZE KARNA
+      allLines.forEach((line, index) => {
+        const lowerLine = line.toLowerCase();
+
+        // Agar pehli line Title jaisi lag rahi hai
+        if (index === 0 && lowerLine.includes('influence')) {
+           addToPage('title', line);
+        }
+        // Agar Bullet point hai (• ya - se shuru ho raha hai)
+        else if (line.startsWith('•') || line.startsWith('-')) {
+           const cleanPoint = line.replace(/^[•-]\s*/, ''); // Bullet hata kar text lo
+           addToPage('point', cleanPoint);
+        }
+        // Agar Link ya Closing note hai
+        else if (lowerLine.includes('http') || lowerLine.includes('consciouskarma.co')) {
+           addToPage('closing', line);
+        }
+        // Baaki sab Paragraph hain
+        else {
+           addToPage('para', line);
+        }
+      });
+    %>
+    <% pages.forEach((page, index) => { %>
+      <div class="page">
+        <div class="page-content">
+          
+          <div class="newHeader">
+            <img src="<%= karmawithline %>" height="70"/>
+            <div class="bar"></div>
+          </div>
+
+          <div class="newMain">
+            <section class="page-influence-user">
+              
+              <div class="page8-list">
+                <% page.items.forEach(item => { %>
+                  
+                  <% if (item.type === 'title') { %>
+                    <p class="page8-title" style="margin-bottom:20px;"><%= item.content %></p>
+                  <% } %>
+
+                  <% if (item.type === 'point') { %>
+                    <ul><li><%= item.content %></li></ul>
+                  <% } %>
+
+                  <% if (item.type === 'para') { %>
+                    <p class="instance" style="margin: 15px 0;"><%= item.content %></p>
+                  <% } %>
+
+                  <% if (item.type === 'closing') { %>
+                     <% if (item.content.includes('http')) { 
+                          // Link ko clickable banana
+                          const parts = item.content.split(/(https?:\/\/[^\s]+)/g);
+                     %>
+                        <p class="closing-note-7">
+                          <% parts.forEach(part => { %>
+                            <% if (part.match(/^http/)) { %>
+                              <a href="<%= part %>" style="color:white; text-decoration:underline;"><%= part %></a>
+                            <% } else { %>
+                              <%= part %>
+                            <% } %>
+                          <% }) %>
+                        </p>
+                     <% } else { %>
+                        <p class="closing-note-7"><%= item.content %></p>
+                     <% } %>
+                  <% } %>
 
-const influencePoints =
-  (influence_section?.points?.length)
-    ? influence_section.points
-    : highlights || [];
+                <% }) %>
+              </div>
 
-const healthNote = influence_section?.health_note || "";
+            </section>
+          </div>
 
-const cleanText = t =>
-  (t || "").replace(/\\n/g,"\n").replace(/\s+/g," ").trim();
+          <div class="newFooter">
+            <div class="bar"></div>
+            <p class="footer-text">www.consciouskarma.co</p>
+          </div>
 
-const staticParagraph =
-  influence_section?.static_paragraph ||
-  "A mobile number expresses its influence through many factors — the user's gender, age, environment and background, work, role in life, duration of use, and other active numbers.";
-
-
-const instancePoints =
-  influence_section?.instance_points?.length
-    ? influence_section.instance_points
-    : [];
-
-    const userPoints =
-  influence_section?.user_points?.length
-    ? influence_section.user_points
-    : [];
-
-
-
-const closingText =
-  "For a deeper look at how numbers influence life paths and choices, explore a Personalised Report.\n" +
-  "<a href='https://consciouskarma.co/personalised-report' style='color:white; text-decoration:underline;'>www.consciouskarma.co/personalisedreport</a>";
-
-
-
-/* SAFE CONSTANTS */
-const PAGE_HEIGHT = 760;
-const FOOTER_BUFFER = 240;
-const TITLE_HEIGHT = 62;
-const LINE = 25.2;
-const FOOTER_BUFFER_PAGE7 = 210;
-
-const countLines = (t,c)=>Math.max(1,Math.ceil(t.length/c));
-const bulletH = t => countLines(t,80)*LINE+6;
-const paraH = t => countLines(t,82)*LINE;
-const instanceH = arr=>{
-  let h=40;
-  arr.forEach(x=>h+=countLines(x,75)*LINE);
-  return h;
-};
-const userPointsH = arr=>{
-  let h = 40;
-  arr.forEach(x => h += countLines(x,75) * LINE);
-  return h;
-};
-
-const newPage = title => ({
-  title,
-  used: title ? TITLE_HEIGHT : 0,
-  points: [],
-  userPts: [],          
-    showUserIntro: false,
-  health: false,
-  static: false,
-  instance: false,
-  closing: false
-});
-
-const fits = (p, h) =>
-  p.used + h + (p.title ? FOOTER_BUFFER_PAGE7 : FOOTER_BUFFER) <= PAGE_HEIGHT;
-
-
-
-let pages=[],p=newPage(true);
-const userPointsIntro =
-  userPoints.length > 0 ? "For Instance:" : null;
-
-
-
-/* bullets */
-influencePoints.forEach(x => {
-  const h = bulletH(x);
-
-
-  if (h > PAGE_HEIGHT * 0.8) {
-    pages.push(p);
-    p = newPage(false);
-  }
-
-  if (!fits(p, h)) {
-    pages.push(p);
-    p = newPage(false);
-  }
-
-  p.points.push(x);
-  p.used += h;
-});
-
-
-/* health */
-if(healthNote){
-  const h=paraH(healthNote);
-  if(!fits(p,h)){pages.push(p);p=newPage(false);}
-  p.health=true;p.used+=h;
-}
-
-/* static */
-
-
-/* instance */
-if(instancePoints.length){
-  const h=instanceH(instancePoints);
-  if(!fits(p,h)){pages.push(p);p=newPage(false);}
-  p.instance=true;p.used+=h;
-}
-
-
-if(staticParagraph){
-  const h=paraH(staticParagraph);
-  if(!fits(p,h)){pages.push(p);p=newPage(false);}
-  p.static=true;p.used+=h;
-}
-
-if (userPoints.length) {
-
-  const headingHeight = LINE * 1.2;
-
-  if (!fits(p, headingHeight)) {
-    pages.push(p);
-    p = newPage(false);
-  }
-
-  p.points.push("__USER_INTRO__");
-  p.used += headingHeight;
-
-  userPoints.forEach(up => {
-    const h = bulletH(up);
-
-    if (!fits(p, h)) {
-      pages.push(p);
-      p = newPage(false);
-    }
-
-    p.points.push(up);
-    p.used += h;
-  });
-}
-
-p.used += 30;
-
-
-
-
-/* closing */
-if(closingText){
-  const h=paraH(closingText);
-  if(!fits(p,h)){pages.push(p);p=newPage(false);}
-  p.closing=true;p.used+=h;
-}
-
-pages.push(p);
-
-/* RENDER */
-pages.forEach(pg=>{
-%>
-
-<div class="page">
-  <div class="page-content">
-
-    <div class="newHeader">
-      <img src="<%= karmawithline %>" height="70"/>
-      <div class="bar"></div>
-    </div>
-
-    <div class="newMain">
-      <section class="page-influence-user">
-
-        <% if(pg.title){ %>
-          <p class="page8-title">Mobile Number Influence on User & Life</p>
-        <% } %>
-
-     <% 
-  const hasUserSection = userPoints && userPoints.length > 0;
-  const hasPoints = pg.points.some(p => p !== "__USER_INTRO__");
-%>
-
-<% if (hasPoints || hasUserSection) { %>
-  <div class="page8-list">
-    <ul>
-      <% let staticRendered = false; %>
-
-      <% pg.points.forEach(pt => { %>
-
-        <% if (pt === "__USER_INTRO__") { %>
-
-          <% if (pg.static && !staticRendered) { %>
-            </ul>
-            <p class="static-para"><%= staticParagraph %></p>
-            <ul>
-            <% staticRendered = true; %>
-          <% } %>
-
-          </ul>
-          <p class="instance" style="font-weight:400; margin-top:20px;">
-            <%= userPointsIntro %>
-          </p>
-          <ul>
-
-        <% } else { %>
-
-          <% const isHeading = pt.trim().endsWith(':') || pt.trim().startsWith('IF A'); %>
-
-          <% if (isHeading) { %>
-            </ul>
-            <p class="instance" style="font-weight:400; margin:16px 0 6px 0;">
-              <%= pt.replace(':','') %>
-            </p>
-            <ul>
-          <% } else { %>
-            <li><%= pt %></li>
-          <% } %>
-
-        <% } %>
-
-      <% }) %>
-    </ul>
-  </div>
-<% } %>
-
-
-        <% if(pg.health){ %>
-          <p><%- healthNote.replace(/\n/g,"<br>") %></p>
-        <% } %>
-
-       
-
-<% if (pg.userPts && pg.userPts.length) { %>
- <% if (pg.showUserIntro) { %>
-  <p class="instance" style="font-weight:400;">
-    <%= userPointsIntro %>
-  </p>
-<% } %>
-  <p class="instance">
-    
-    <% pg.userPts.forEach((item, i) => { %>
-
-      <% if(item.heading && i !== 0){ %>
-        <br>
-      <% } %>
-
-      <%= item.text %><br>
-
+        </div>
+      </div>
     <% }) %>
-  </p>
-
-<% } %>
-
-     <% if(pg.instancePts && pg.instancePts.length){ %>
-  <div class="instance">
-   
-    <% pg.instancePts.forEach(i=>{ %>
-      <span><%- i %></span><br>
-    <% }) %>
-  </div>
-<% } %>
-
-
-
-        <% if(pg.closing){ %>
-          <p class="closing-note-7">
-            <%- closingText.replace(/\n/g,"<br>") %>
-          </p>
-        <% } %>
-
-      </section>
-    </div>
-
-    <div class="newFooter">
-      <div class="bar"></div>
-      <p class="footer-text">www.consciouskarma.co</p>
-    </div>
-
-  </div>
-</div>
-<% }) %>
     <!-- PAGE 8: LINKS AND CLOSING -->
     <div class="page">
       <div class="page-content">

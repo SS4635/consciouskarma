@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Inlineinstant.css";
 import { useIntl, FormattedMessage } from "react-intl";
-import { COUNTRY_CODES } from "../components/constants/countryCodes";
+import { COUNTRY_CODES } from "./constants/countryCodes";
 import sampleReportPdf from "../instant_report.pdf";
 import axios from "axios";
 const API = process.env.REACT_APP_API_URL;
