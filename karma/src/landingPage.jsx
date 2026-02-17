@@ -261,23 +261,21 @@ const [showLogin, setShowLogin] = useState(false);
         <div className="flex-1 flex flex-col justify-center items-center w-full relative z-10 pt-20 md:pt-12 pb-10">
           
           {/* 1. HERO TEXT SECTION */}
-<div className="text-center w-full px-4 mb-10 md:mb-14">
+<div className="text-center w-full px-4 mb-10 md:mb-14 md:mt-2">
   
   {/* FONT SIZE: Mobile ke liye 28px (Bada), Desktop ke liye 54px (Same as before) */}
-  <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.3] tracking-wide text-white text-center"
-      style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
+  <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
+    style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
 
-    {/* LINE 1: YOUR MOBILE NUMBER */}
+    {/* LINE 1 */}
     <span className="block mb-1">
       <FormattedMessage id="hero.title.line1" defaultMessage="YOUR MOBILE NUMBER" />
     </span>
 
-    {/* LINE 2 (Desktop): IS THE KEY TO ACHIEVING */}
-    {/* MOBILE: Break ho jayega */}
+    {/* LINE 2 */}
     <span className="block md:inline">
-      
-      {/* Mobile Row 2: IS THE KEY */}
-      <span className="block md:inline mt-1 md:mt-2">
+      {/* Mobile Row 2 - Desktop gap reduced via md:mt-0 */}
+      <span className="block md:inline mt-1 md:mt-0"> 
         <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
         <span className="text-[#ff914d] font-normal">
           {" "}
@@ -286,34 +284,26 @@ const [showLogin, setShowLogin] = useState(false);
         </span>
       </span>
 
-      {/* Mobile Row 3: TO ACHIEVING YOUR */}
-      {/* Desktop: Yahan "YOUR" chup jayega, sirf "TO ACHIEVING" dikhega */}
+      {/* Mobile Row 3 */}
       <span className="block md:inline mt-1 md:mt-0">
         <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
-        
-        {/* MOBILE ONLY "YOUR" */}
         <span className="md:hidden">
            {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
         </span>
       </span>
-
     </span>
 
-    {/* LINE 3 (Desktop): YOUR DREAMS */}
-    {/* Mobile Row 4: DREAMS ("Your" upar shift ho gaya mobile me) */}
-    <span className="block mt-1 md:mt-2">
-      
-      {/* DESKTOP ONLY "YOUR" */}
+    {/* LINE 3 - Desktop gap reduced via md:mt-0 */}
+    <span className="block mt-1 md:mt-0"> 
       <span className="hidden md:inline">
         <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
       </span>
-
       <span className="text-[#ff914d] font-normal">
         <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
       </span>
     </span>
 
-  </h1>
+</h1>
 
   {/* Subtitles (No Changes) */}
   <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
@@ -379,7 +369,7 @@ const [showLogin, setShowLogin] = useState(false);
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
         )}
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
-
+<div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
       </section>
 
 
@@ -418,12 +408,11 @@ const [showLogin, setShowLogin] = useState(false);
                     energy: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
                   }}
                 />
-                <br />
+                
                 <FormattedMessage id="whatIsThis.universe.line2" />
-                <br />
+                
                 <FormattedMessage id="whatIsThis.universe.line3" />
-                <br />
-                <FormattedMessage id="whatIsThis.universe.line4" />
+                
               </p>
             </div>
 
@@ -448,11 +437,9 @@ const [showLogin, setShowLogin] = useState(false);
                     symbols: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
                   }}
                 />
-                <br /> <FormattedMessage id="whatIsThis.numbers.line2" />
-                <br />
+                <FormattedMessage id="whatIsThis.numbers.line2" />
+                
                 <FormattedMessage id="whatIsThis.numbers.line3" />
-                <br />
-                <FormattedMessage id="whatIsThis.numbers.line4" />
               </p>
             </div>
 
@@ -486,7 +473,7 @@ const [showLogin, setShowLogin] = useState(false);
                 <br />
                 <FormattedMessage id="whatIsThis.karma.line3" />
                 <br />
-                <FormattedMessage id="whatIsThis.karma.line4" />
+                <FormattedMessage id="whatIsThis.karma.line4" style="color: black" />
               </p>
             </div>
           </div>
@@ -509,50 +496,30 @@ const [showLogin, setShowLogin] = useState(false);
           {/* TOP TEXT */}
           <motion.div variants={item}>
             <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
-              <p className="m-0 leading-[1.7] text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
-                <span className="block text-[#ff914d] ">
-                  <FormattedMessage id="mobileEnergy.line1" />
-                  <br />
-                </span>
-                <span className="block text-white">
-                  <FormattedMessage id="mobileEnergy.line2" />
-                </span>
-              </p>
-            </div>
-          </motion.div>
-
-          {/* MIDDLE TEXT */}
-          <motion.div variants={item}>
-            <div className="mb-10 sm:mb-12 md:mb-14 lg:mb-12">
-              {/* Mobile: 2 visual lines (line3) + (line4+line5) */}
               <p
-                className="m-0 leading-[1.55] text-gray-200 font-thin w-full px-0 sm:hidden"
-                style={{ fontSize: 'clamp(16px, 4vw, 16px)' }}
-              >
-                <span className="block mb-1">
-                  <FormattedMessage id="mobileEnergy.line3" />
-                </span>
-                <span className="block">
-                  <FormattedMessage id="mobileEnergy.line4" />{' '}
-                  <FormattedMessage id="mobileEnergy.line5" />
-                </span>
-              </p>
+  className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+  style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}
+>
+  <span className="block text-white mb-3">
+    <FormattedMessage id="mobileEnergy.line1" />
+  </span>
+
+  <span className="block text-white mb-3">
+    <FormattedMessage id="mobileEnergy.line2" />
+  </span>
+
+  <span className="block mb-3">
+    <FormattedMessage id="mobileEnergy.line3" />
+  </span>
+
+  <span className="block">
+    <FormattedMessage id="mobileEnergy.line4" />
+  </span>
+</p>
+
 
               {/* Desktop/tablet (sm+): keep current 3-line layout */}
-              <p
-                className="m-0 leading-[1.7] text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line hidden sm:inline-block"
-                style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}
-              >
-                <span className="block mb-1">
-                  <FormattedMessage id="mobileEnergy.line3" />
-                  <br />
-                </span>
-                <span className="block mb-1">
-                  <FormattedMessage id="mobileEnergy.line4" />
-                  <br />
-                </span>
-                <span className="block"><FormattedMessage id="mobileEnergy.line5" /></span>
-              </p>
+              
             </div>
           </motion.div>
 
@@ -634,10 +601,9 @@ const [showLogin, setShowLogin] = useState(false);
             <br />
             <FormattedMessage id="woven.line3" />
           </p>
-          <p className="text-[#ff914d]" style={{ fontSize: 'clamp(18px, 2.2vw, 20px)' }}>
+          <p className="" style={{ fontSize: 'clamp(18px, 2.2vw, 20px)' }}>
             <FormattedMessage id="woven.line4" />
-            <br />
-            <FormattedMessage id="woven.line5" />
+            
           </p>
         </motion.div>
 
@@ -668,16 +634,16 @@ const [showLogin, setShowLogin] = useState(false);
 
           {/* TYPING EFFECT 4-LINES */}
           <div className="mb-10 space-y-1">
-            <p className="text-[#ff914d] font-light leading-none mb-0" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-light leading-none mb-0" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
               {journeyLines[0]}
             </p>
-            <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
               {journeyLines[1]}
             </p>
-            <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
               {journeyLines[2]}
             </p>
-            <p className="text-[#ff914d] font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
               {journeyLines[3]}
             </p>
           </div>
