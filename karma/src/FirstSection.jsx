@@ -291,7 +291,11 @@ export default function FirstSection({ resolvedRoute }) {
                   className={`
                     px-6 py-2 md:px-8 md:py-3 
                     rounded-lg font-medium tracking-wide 
-                    transition-all duration-300 animate-in zoom-in-90 mt-1 border-1
+                    transition-all duration-300 animate-in zoom-in-90
+relative z-40
+-translate-y-10 md:translate-y-0
+border-1
+
                     ${isComplete 
                         ? "border-[#ff914d] bg-black text-[#ff914d] cursor-pointer" 
                         : "border-white bg-transparent text-[white] opacity-80 cursor-default"
@@ -315,7 +319,7 @@ export default function FirstSection({ resolvedRoute }) {
           </form>
 
           {/* RESPONSE AREA */}
-          <div className="w-full mt-6 min-h-[150px] flex flex-col items-center">
+          <div className="w-full mt-3 min-h-[150px] flex flex-col items-center">
             {loading && (
               <div className="text-[#ff914d] animate-pulse text-lg text-center tracking-widest">
                 ANALYZING ENERGY...
@@ -349,7 +353,7 @@ export default function FirstSection({ resolvedRoute }) {
                       return (
                         <div
                           key={val}
-                          className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
+                          className={`h-4 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
                             isActive ? "bg-[#B23A41]" : "bg-[#b0b0b0]"
                           }`}
                         />
@@ -358,9 +362,9 @@ export default function FirstSection({ resolvedRoute }) {
                   </div>
 
                   {/* Center Circle with Icon */}
-                  <div className="relative z-20 flex-shrink-0 -mx-4 md:-mx-6">
+                  <div className="relative z-20 flex-shrink-0 -mx-1 md:-mx-6">
                     <div
-                      className="flex items-center justify-center w-14 h-14 md:w-20 md:h-20 rounded-full bg-black shadow-2xl"
+                      className="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded-full bg-black shadow-2xl"
                       style={{ border: "3px solid #b0b0b0" }}
                     >
                       {routeDetails.icon}
@@ -376,7 +380,7 @@ export default function FirstSection({ resolvedRoute }) {
                       return (
                         <div
                           key={val}
-                          className={`h-6 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
+                          className={`h-4 md:h-8 w-full max-w-[100px] transition-all duration-500 ${roundedClass} ${
                             isActive ? "bg-[#15803d]" : "bg-[#b0b0b0]"
                           }`}
                         />
