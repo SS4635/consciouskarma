@@ -498,7 +498,7 @@ const [showLogin, setShowLogin] = useState(false);
             <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
               <p
   className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-  style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}
+  style={{ fontSize: 'clamp(14px, 4vw, 18px)' }}
 >
   <span className="block text-white mb-3">
     <FormattedMessage id="mobileEnergy.line1" />
@@ -594,14 +594,13 @@ const [showLogin, setShowLogin] = useState(false);
           variants={item}
           className="max-w-3xl mx-auto mb-8 relative"
         >
-          <p className="mb-1 text-gray-200" style={{ fontSize: 'clamp(18px, 2.2vw, 20px)' }}>
+          <p className="mb-1 text-gray-200" style={{ fontSize: 'clamp(14px, 4vw, 20px)' }}>
             <FormattedMessage id="woven.line1" />
             <br />
             <FormattedMessage id="woven.line2" />
             <br />
             <FormattedMessage id="woven.line3" />
-          </p>
-          <p className="" style={{ fontSize: 'clamp(18px, 2.2vw, 20px)' }}>
+            <br />
             <FormattedMessage id="woven.line4" />
             
           </p>
