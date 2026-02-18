@@ -1,4 +1,3 @@
-
 // src/ConsciousKarmaSections.jsx
 import React, { useEffect, useState, useRef } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
@@ -33,6 +32,15 @@ import blankStarImg from "./blank-star.jpg";
 import mobileEnergyFlow from "./mobile number energy flow.png";
 import SignupModal from "./SignupModal.jsx";
 import LoginModal from "./LoginModal.jsx";
+
+/* ===================== CONFIG: COMMON TEXT STYLE ===================== */
+// Isse sabhi sections mein font size aur spacing same rahegi
+const commonTextStyle = {
+  fontSize: 'clamp(12px, 2.5vw, 19px)',
+  lineHeight: '1.4',
+  marginBottom: '0' // thoda gap maintain karne ke liye
+};
+
 /* ===================== MAIN PAGE ===================== */
 
 export default function ConsciousKarmaSections() {
@@ -45,7 +53,7 @@ export default function ConsciousKarmaSections() {
   const [prefillMobile, setPrefillMobile] = useState("");
   const [expandedBlog, setExpandedBlog] = useState(null);
   const [showSignup, setShowSignup] = useState(false);
-const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const distinctlyRef = useRef(null);
   const progress = useMotionValue(0);
@@ -227,8 +235,7 @@ const [showLogin, setShowLogin] = useState(false);
   return (
     <div className="min-h-screen flex flex-col bg-black text-gray-50 font-arsenal overflow-x-hidden px-1 sm:px-6 md:px-8 lg:px-12 pt-2 sm:pt-6 md:pt-8 lg:pt-12 pb-0 ">
       {/* Animated rotating border button styles (applies to all CTA buttons) */}
-     
-
+      
       <style>{`
         .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #ff914d;border-radius:10px;overflow:hidden}
         .rotating-border-btn::before{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;background:conic-gradient(from 0deg, rgba(255,145,77,0.95), rgba(255,145,77,0.2) 18%, transparent 30%, transparent 70%, rgba(255,145,77,0.2) 82%, rgba(255,145,77,0.95));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ckSpin 3.2s linear infinite;pointer-events:none}
@@ -261,59 +268,59 @@ const [showLogin, setShowLogin] = useState(false);
         <div className="flex-1 flex flex-col justify-center items-center w-full relative z-10 pt-20 md:pt-12 pb-10">
           
           {/* 1. HERO TEXT SECTION */}
-<div className="text-center w-full px-4 mb-10 md:mb-14 md:mt-2">
-  
-  {/* FONT SIZE: Mobile ke liye 28px (Bada), Desktop ke liye 54px (Same as before) */}
-  <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
-    style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
+          <div className="text-center w-full px-4 mb-10 md:mb-14 md:mt-2">
+            
+            {/* FONT SIZE: Mobile ke liye 28px (Bada), Desktop ke liye 54px (Same as before) */}
+            <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
+              style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
 
-    {/* LINE 1 */}
-    <span className="block mb-1">
-      <FormattedMessage id="hero.title.line1" defaultMessage="YOUR MOBILE NUMBER" />
-    </span>
+              {/* LINE 1 */}
+              <span className="block mb-1">
+                <FormattedMessage id="hero.title.line1" defaultMessage="YOUR MOBILE NUMBER" />
+              </span>
 
-    {/* LINE 2 */}
-    <span className="block md:inline">
-      {/* Mobile Row 2 - Desktop gap reduced via md:mt-0 */}
-      <span className="block md:inline mt-1 md:mt-0"> 
-        <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
-        <span className="text-[#ff914d] font-normal">
-          {" "}
-          <FormattedMessage id="hero.title.key" defaultMessage="KEY" />
-          {" "}
-        </span>
-      </span>
+              {/* LINE 2 */}
+              <span className="block md:inline">
+                {/* Mobile Row 2 - Desktop gap reduced via md:mt-0 */}
+                <span className="block md:inline mt-1 md:mt-0"> 
+                  <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
+                  <span className="text-[#ff914d] font-normal">
+                    {" "}
+                    <FormattedMessage id="hero.title.key" defaultMessage="KEY" />
+                    {" "}
+                  </span>
+                </span>
 
-      {/* Mobile Row 3 */}
-      <span className="block md:inline mt-1 md:mt-0">
-        <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
-        <span className="md:hidden">
-           {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
-        </span>
-      </span>
-    </span>
+                {/* Mobile Row 3 */}
+                <span className="block md:inline mt-1 md:mt-0">
+                  <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
+                  <span className="md:hidden">
+                      {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
+                  </span>
+                </span>
+              </span>
 
-    {/* LINE 3 - Desktop gap reduced via md:mt-0 */}
-    <span className="block mt-1 md:mt-0"> 
-      <span className="hidden md:inline">
-        <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
-      </span>
-      <span className="text-[#ff914d] font-normal">
-        <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
-      </span>
-    </span>
+              {/* LINE 3 - Desktop gap reduced via md:mt-0 */}
+              <span className="block mt-1 md:mt-0"> 
+                <span className="hidden md:inline">
+                  <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
+                </span>
+                <span className="text-[#ff914d] font-normal">
+                  <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
+                </span>
+              </span>
 
-</h1>
+            </h1>
 
-  {/* Subtitles (No Changes) */}
-  <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
-    <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
-    <p style={{ fontSize: 'clamp(16px, 1.5vw, 22px)' }}>
-      Discover How a Mobile Number <br className="block sm:hidden" />
-      Shapes Life’s Key Areas
-    </p>
-  </div>
-</div>
+            {/* Subtitles (No Changes) */}
+            <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
+              <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
+              <p style={{ fontSize: 'clamp(16px, 1.5vw, 22px)' }}>
+                Discover How a Mobile Number <br className="block sm:hidden" />
+                Shapes Life’s Key Areas
+              </p>
+            </div>
+          </div>
 
           {/* 2. ICONS SECTION */}
           <div className="w-full flex justify-center md:mb-16 mt-[-15px] md:mt-[-30px]">
@@ -345,7 +352,7 @@ const [showLogin, setShowLogin] = useState(false);
                     </div>
 
                     {/* Text */}
-                    <span className="text-white font-light text-left md:text-center text-[18px] md:text-[18px] whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight">
+                    <span className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight" style={{ fontSize: 'clamp(12px, 2.5vw, 20px)' }}>
                       {label}
                     </span>
                   </div>
@@ -369,12 +376,12 @@ const [showLogin, setShowLogin] = useState(false);
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
         )}
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
-<div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
       </section>
 
 
       {/* WHAT IS THIS */}
-      < section className="relative min-h-screen bg-black flex items-center justify-center pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] px-4 sm:px-6" >
+      <section className="relative min-h-screen bg-black flex items-center justify-center pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] px-4 sm:px-6">
         <div className="container mx-auto max-w-full text-center flex flex-col justify-center">
           <h2 className="font-balgin leading-[1.05] mb-8 sm:mb-10 md:mb-12 lg:mb-16 font-bold tracking-[0.02em] text-white" style={{ fontSize: 'clamp(20px, 2.8vw, 25px)' }}>
             <FormattedMessage id="whatIsThis.title" />
@@ -391,15 +398,8 @@ const [showLogin, setShowLogin] = useState(false);
                 />
               </div>
               <p
-                className="
-                  m-0 leading-[1.7] 
-                  text-[16px]
-                  sm:text-[17px]
-                  md:text-[18px]
-                  text-gray-200 font-thin 
-                  w-full px-2 sm:px-0 
-                  whitespace-pre-line inline-block
-                "
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                style={commonTextStyle}
               >
                 <FormattedMessage
                   id="whatIsThis.universe.line1"
@@ -408,11 +408,8 @@ const [showLogin, setShowLogin] = useState(false);
                     energy: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
                   }}
                 />
-                
                 <FormattedMessage id="whatIsThis.universe.line2" />
-                
                 <FormattedMessage id="whatIsThis.universe.line3" />
-                
               </p>
             </div>
 
@@ -427,8 +424,8 @@ const [showLogin, setShowLogin] = useState(false);
               </div>
 
               <p
-                className="m-0 leading-[1.7] text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-                style={{ fontSize: 'clamp(16px, 1.8vw, 18px)' }}
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                style={commonTextStyle}
               >
                 <FormattedMessage
                   id="whatIsThis.numbers.line1"
@@ -438,7 +435,6 @@ const [showLogin, setShowLogin] = useState(false);
                   }}
                 />
                 <FormattedMessage id="whatIsThis.numbers.line2" />
-                
                 <FormattedMessage id="whatIsThis.numbers.line3" />
               </p>
             </div>
@@ -455,8 +451,8 @@ const [showLogin, setShowLogin] = useState(false);
               </div>
 
               <p
-                className="m-0 leading-[1.7] text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-                style={{ fontSize: 'clamp(16px, 1.8vw, 18px)' }}
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                style={commonTextStyle}
               >
                 <FormattedMessage
                   id="whatIsThis.karma.line1"
@@ -484,105 +480,85 @@ const [showLogin, setShowLogin] = useState(false);
       </section >
 
       {/* MOBILE NUMBER ENERGY FLOW SECTION */}
-      < motion.section
-        className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-2 sm:px-6"
-        variants={parent}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }
-        }
-      >
-        <div className="container mx-auto text-center max-w-5xl">
-          {/* TOP TEXT */}
-          <motion.div variants={item}>
-            <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
-              <p
-  className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-  style={{ fontSize: 'clamp(14px, 4vw, 18px)' }}
+      {/* MOBILE NUMBER ENERGY FLOW SECTION */}
+<motion.section
+  className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-2 sm:px-6"
+  variants={parent}
+  initial="hidden"
+  whileInView="visible"
+  viewport={{ once: true, amount: 0.25 }}
 >
-  <span className="block text-white mb-3">
-    <FormattedMessage id="mobileEnergy.line1" />
-  </span>
+  <div className="container mx-auto text-center max-w-5xl">
+    <motion.div variants={item}>
+      <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
+        {/* YAHAN CHANGE HAI: Ek single <p> tag use karo */}
+        <p className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block" style={commonTextStyle}>
+          <span className="text-white">
+            <FormattedMessage id="mobileEnergy.line1" />
+          </span>
+          <br />
+          <span className="text-white">
+            <FormattedMessage id="mobileEnergy.line2" />
+          </span>
+          <br />
+          <FormattedMessage id="mobileEnergy.line3" />
+          <br />
+          <FormattedMessage id="mobileEnergy.line4" />
+        </p>
+      </div>
+    </motion.div>
 
-  <span className="block text-white mb-3">
-    <FormattedMessage id="mobileEnergy.line2" />
-  </span>
-
-  <span className="block mb-3">
-    <FormattedMessage id="mobileEnergy.line3" />
-  </span>
-
-  <span className="block">
-    <FormattedMessage id="mobileEnergy.line4" />
-  </span>
-</p>
-
-
-              {/* Desktop/tablet (sm+): keep current 3-line layout */}
-              
-            </div>
-          </motion.div>
-
-          {/* IMAGE */}
-          <motion.div variants={item}>
-            <div className="w-full flex justify-center px-1 sm:px-0">
-              <img
-                src={mobileEnergyFlow}
-                alt={intl.formatMessage({ id: "mobileEnergy.altImage" })}
-                className="w-full sm:w-[365px] max-w-2xl h-auto"
-              />
-            </div>
-          </motion.div>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 opacity-40" />
-      </motion.section >
+    {/* Image wala part same rahega... */}
+    <motion.div variants={item}>
+      <div className="w-full flex justify-center px-1 sm:px-0">
+        <img src={mobileEnergyFlow} alt={intl.formatMessage({ id: "mobileEnergy.altImage" })} className="w-full sm:w-[365px] max-w-2xl h-auto" />
+      </div>
+    </motion.div>
+  </div>
+  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 opacity-40" />
+</motion.section>
 
       {/* DISTINCTLY YOURS */}
-      < section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6" >
-        <div className="container mx-auto space-y-1 sm:space-y-1 md:space-y-1.5">
-          <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
-            <FormattedMessage
-              id="distinctly.line1"
-              values={{ shared: highlightValue("distinctly.shared") }}
-            />
-          </p>
+      {/* DISTINCTLY YOURS */}
+<section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6">
+  <div className="container mx-auto">
+    
+    {/* YAHAN CHANGE HAI: Saare alag <p> hata kar ek single <p> mein daal diya */}
+    <p className="text-gray-200 font-thin" style={commonTextStyle}>
+      <FormattedMessage
+        id="distinctly.line1"
+        values={{ shared: highlightValue("distinctly.shared") }}
+      />
+      <br />
+      <FormattedMessage
+        id="distinctly.line2"
+        values={{ repeated: highlightValue("distinctly.repeated") }}
+      />
+      <br />
+      <FormattedMessage id="distinctly.line3" />
+      <br />
+      <FormattedMessage
+        id="distinctly.line4"
+        values={{ distinctly: highlightValue("distinctly.distinctly") }}
+      />
+    </p>
 
-          <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
-            <FormattedMessage
-              id="distinctly.line2"
-              values={{ repeated: highlightValue("distinctly.repeated") }}
-            />
-          </p>
-
-          <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', marginBottom: '0em' }}>
-            <FormattedMessage id="distinctly.line3" />
-          </p>
-
-          <p className="text-gray-200 font-thin" style={{ fontSize: 'clamp(22px, 2.8vw, 24px)', lineHeight: '1', letterSpacing: '0em' }}>
-            <FormattedMessage
-              id="distinctly.line4"
-              values={{ distinctly: highlightValue("distinctly.distinctly") }}
-            />
-          </p>
-
-          <p className="mt-8 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light" style={{ fontSize: 'clamp(20px, 2.5vw, 24px)' }}>
-            <a
-              href="/personalised-report"
-              className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
-                text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
-              style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}
-            >
-              <FormattedMessage id="distinctly.line5" />
-            </a>
-          </p>
-        </div>
-
-        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
-      </section >
+    <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light" style={commonTextStyle}>
+      <a
+        href="/personalised-report"
+        className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
+          text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
+        style={commonTextStyle}
+      >
+        <FormattedMessage id="distinctly.line5" />
+      </a>
+    </p>
+  </div>
+  <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+</section>
 
       {/* WOVEN / EARTH CONNECTIONS SECTION */}
-      < motion.section
+      <motion.section
         className="relative bg-black flex flex-col items-center justify-center py-10 px-4 sm:px-6 text-center min-h-screen"
         variants={parent}
         initial="hidden"
@@ -590,11 +566,11 @@ const [showLogin, setShowLogin] = useState(false);
         viewport={{ once: true, amount: 0.25 }}
       >
         {/* Static Typography with line breaks */}
-        < motion.div
+        <motion.div
           variants={item}
           className="max-w-3xl mx-auto mb-8 relative"
         >
-          <p className="mb-1 text-gray-200" style={{ fontSize: 'clamp(14px, 4vw, 20px)' }}>
+          <p className="mb-1 text-gray-200 font-thin" style={commonTextStyle}>
             <FormattedMessage id="woven.line1" />
             <br />
             <FormattedMessage id="woven.line2" />
@@ -620,36 +596,36 @@ const [showLogin, setShowLogin] = useState(false);
       </motion.section >
 
       {/* DIGITAL AGE YANTRA + TYPING EFFECT INSTEAD OF DECRYPT */}
-      < section
+      <section
         className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center px-4"
       >
         <div className="container mx-auto max-w-[760px] text-center">
 
           {/* TOP HEADING */}
-          <p className="text-gray-200 leading-relaxed font-thin mb-10" style={{ fontSize: 'clamp(18px, 2vw, 20px)' }}>
+          <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
             <FormattedMessage id="digitalYantra.line1" /><br />
             <FormattedMessage id="digitalYantra.line2" />
           </p>
 
           {/* TYPING EFFECT 4-LINES */}
           <div className="mb-10 space-y-1">
-            <p className="text-white font-light leading-none mb-0" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-thin mb-0" style={commonTextStyle}>
               {journeyLines[0]}
             </p>
-            <p className="text-white font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-thin" style={commonTextStyle}>
               {journeyLines[1]}
             </p>
-            <p className="text-white font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-thin" style={commonTextStyle}>
               {journeyLines[2]}
             </p>
-            <p className="text-white font-light leading-none" style={{ fontSize: 'clamp(18px, 2vw, 18px)' }}>
+            <p className="text-white font-thin" style={commonTextStyle}>
               {journeyLines[3]}
             </p>
           </div>
 
 
           {/* MIDDLE SECTION */}
-          <p className="text-gray-200 leading-relaxed font-thin mb-10" style={{ fontSize: 'clamp(18px, 2vw, 20px)' }}>
+          <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
             <FormattedMessage id="digitalYantra.line3" /><br />
             <FormattedMessage id="digitalYantra.line4" />
           </p>
@@ -657,8 +633,8 @@ const [showLogin, setShowLogin] = useState(false);
           {/* CTA */}
           <a
             href="/consult"
-            className="text-[#ff914d] font-light no-underline hover:opacity-80"
-            style={{ fontSize: 'clamp(18px, 2vw, 20px)' }}
+            className="text-[#ff914d] font-thin no-underline hover:opacity-80"
+            style={commonTextStyle}
           >
             <FormattedMessage id="digitalYantra.cta" />
           </a>
@@ -667,8 +643,8 @@ const [showLogin, setShowLogin] = useState(false);
       </section >
 
       {/* BLOGS */}
-    {/* BLOGS */}
-    <section
+      {/* BLOGS */}
+      <section
           id="blogs"
           className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6 mt-0"
          >
@@ -841,7 +817,7 @@ const [showLogin, setShowLogin] = useState(false);
           <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
         </section >
       {/* FINAL CTA */}
-      < section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
+      <section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
         <div className="container mx-auto flex flex-col items-center text-center space-y-6 sm:space-y-7 md:space-y-8 mb-8 sm:mb-12">
 
           <p className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', lineHeight: '1' }}>
@@ -876,7 +852,7 @@ const [showLogin, setShowLogin] = useState(false);
       </section >
 
       {/* Global Footer */}
-      < footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
+      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
