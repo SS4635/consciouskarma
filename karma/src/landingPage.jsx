@@ -36,7 +36,7 @@ import LoginModal from "./LoginModal.jsx";
 /* ===================== CONFIG: COMMON TEXT STYLE ===================== */
 // Isse sabhi sections mein font size aur spacing same rahegi
 const commonTextStyle = {
-  fontSize: 'clamp(12px, 2.5vw, 19px)',
+  fontSize: 'clamp(15px, 2.5vw, 19px)',
   lineHeight: '1.4',
   marginBottom: '0' // thoda gap maintain karne ke liye
 };
@@ -331,7 +331,7 @@ export default function ConsciousKarmaSections() {
                 md:flex md:flex-row md:gap-12 lg:gap-20 md:w-auto 
             ">
               {[
-                [financeImg, "Finance & Work"],
+                [financeImg, "Money & Work"],
                 [fortuneImg, "Fortune"],
                 [loveImg, "Charm & Love"],
                 [intuitionImg, "Intuition"],
@@ -352,7 +352,7 @@ export default function ConsciousKarmaSections() {
                     </div>
 
                     {/* Text */}
-                    <span className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight" style={{ fontSize: 'clamp(12px, 2.5vw, 20px)' }}>
+                    <span className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight" style={{ fontSize: 'clamp(15px, 2.5vw, 20px)' }}>
                       {label}
                     </span>
                   </div>
@@ -524,7 +524,7 @@ export default function ConsciousKarmaSections() {
   <div className="container mx-auto">
     
     {/* YAHAN CHANGE HAI: Saare alag <p> hata kar ek single <p> mein daal diya */}
-    <p className="text-gray-200 font-thin" style={commonTextStyle}>
+    <p className="text-gray-200 font-thin text-[20px] md:text-[30px]" >
       <FormattedMessage
         id="distinctly.line1"
         values={{ shared: highlightValue("distinctly.shared") }}
@@ -543,12 +543,12 @@ export default function ConsciousKarmaSections() {
       />
     </p>
 
-    <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light" style={commonTextStyle}>
+    <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light text-[20px] md:text-[30px]">
       <a
         href="/personalised-report"
         className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
           text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
-        style={commonTextStyle}
+      
       >
         <FormattedMessage id="distinctly.line5" />
       </a>
@@ -606,9 +606,10 @@ export default function ConsciousKarmaSections() {
             <FormattedMessage id="digitalYantra.line1" /><br />
             <FormattedMessage id="digitalYantra.line2" />
           </p>
+          <br />
 
           {/* TYPING EFFECT 4-LINES */}
-          <div className="mb-10 space-y-1">
+          <div className="mb-10">
             <p className="text-white font-thin mb-0" style={commonTextStyle}>
               {journeyLines[0]}
             </p>
@@ -621,16 +622,12 @@ export default function ConsciousKarmaSections() {
             <p className="text-white font-thin" style={commonTextStyle}>
               {journeyLines[3]}
             </p>
-          </div>
-
-
-          {/* MIDDLE SECTION */}
-          <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
+            <br />
+            <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
             <FormattedMessage id="digitalYantra.line3" /><br />
             <FormattedMessage id="digitalYantra.line4" />
           </p>
-
-          {/* CTA */}
+          <br />
           <a
             href="/consult"
             className="text-[#ff914d] font-thin no-underline hover:opacity-80"
@@ -638,6 +635,14 @@ export default function ConsciousKarmaSections() {
           >
             <FormattedMessage id="digitalYantra.cta" />
           </a>
+
+          </div>
+
+
+          {/* MIDDLE SECTION */}
+          
+
+          
 
         </div>
       </section >
