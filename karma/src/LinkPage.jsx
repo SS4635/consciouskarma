@@ -303,752 +303,761 @@ export default function ConsciousKarmaSections() {
 
 
       {/* HERO SECTION */}
-      <section className="relative min-h-screen bg-black flex flex-col pt-0 overflow-x-hidden">
-
-        {/* BACKGROUND GRADIENT LINE (Bottom) */}
-        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
-
-        {/* MAIN CONTENT AREA */}
-        <div className="flex-1 flex flex-col justify-center items-center w-full relative z-10 pt-20 md:pt-12 pb-10">
-
-          {/* 1. HERO TEXT SECTION */}
-          <div className="text-center w-full px-4 mb-10 md:mb-14">
-
-            {/* FONT SIZE: Mobile ke liye 28px (Bada), Desktop ke liye 54px (Same as before) */}
-            <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.3] tracking-wide text-white text-center"
-              style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
-
-              {/* LINE 1: YOUR MOBILE NUMBER */}
-              <span className="block mb-1">
-                <FormattedMessage id="hero.title.line1" defaultMessage="YOUR MOBILE NUMBER" />
-              </span>
-
-              {/* LINE 2 (Desktop): IS THE KEY TO ACHIEVING */}
-              <span className="block md:inline">
-
-                {/* Mobile Row 2: IS THE KEY */}
-                <span className="block md:inline mt-1 md:mt-2">
-                  <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
-                  <span className="text-[#ff914d] font-normal">
-                    {" "}
-                    <FormattedMessage id="hero.title.key" defaultMessage="KEY" />
-                    {" "}
-                  </span>
-                </span>
-
-                {/* Mobile Row 3: TO ACHIEVING YOUR */}
-                <span className="block md:inline mt-1 md:mt-0">
-                  <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
-
-                  {/* MOBILE ONLY "YOUR" */}
-                  <span className="md:hidden">
-                    {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
-                  </span>
-                </span>
-
-              </span>
-
-              {/* LINE 3 (Desktop): YOUR DREAMS */}
-              <span className="block mt-1 md:mt-2">
-
-                {/* DESKTOP ONLY "YOUR" */}
-                <span className="hidden md:inline">
-                  <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
-                </span>
-
-                <span className="text-[#ff914d] font-normal">
-                  <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
-                </span>
-              </span>
-
-            </h1>
-
-            {/* Subtitles (No Changes) */}
-            <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
-              <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
-              <p style={{ fontSize: 'clamp(20px, 1.5vw, 22px)' }}>
-                Discover How a Mobile Number <br className="block sm:hidden" />
-                Shapes Life’s Key Areas
-              </p>
-            </div>
-          </div>
-
-          {/* 2. ICONS SECTION */}
-          <div className="w-full flex justify-center md:mb-16 mt-[-15px] md:mt-[-30px]">
-
-            {/* Container */}
-            <div className="
-                grid grid-cols-[60px_1fr] gap-y-3 gap-x-4 items-center w-fit
-                md:flex md:flex-row md:gap-12 lg:gap-20 md:w-auto 
-            ">
-              {[
-                [financeImg, "Money & Work"],
-                [fortuneImg, "Fortune"],
-                [loveImg, "Charm & Love"],
-                [intuitionImg, "Intuition"],
-                [intelligenceImg, "Intelligence"],
-              ].map(([src, label], i) => (
-                <React.Fragment key={i}>
-                  {/* Wrapper */}
-                  <div className="contents md:flex md:flex-col md:items-center md:gap-4">
-
-                    {/* Icon */}
-                    <div className="flex items-center justify-center">
+            <section className="relative min-h-screen bg-black flex flex-col pt-0 overflow-x-hidden">
+              
+              {/* BACKGROUND GRADIENT LINE (Bottom) */}
+              <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
+      
+              {/* MAIN CONTENT AREA */}
+              <div className="flex-1 flex flex-col justify-center items-center w-full relative z-10 pt-20 md:pt-12 pb-10">
+                
+                {/* 1. HERO TEXT SECTION */}
+                <div className="text-center w-full px-4 mb-10 md:mb-14 md:mt-2">
+                  
+                  {/* FONT SIZE: Mobile ke liye 28px (Bada), Desktop ke liye 54px (Same as before) */}
+                  <h1 className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
+                    style={{ fontSize: 'clamp(28px, 5vw, 54px)' }}>
+      
+                    {/* LINE 1 */}
+                    <span className="block mb-1">
+                      <FormattedMessage id="hero.title.line1" defaultMessage="YOUR MOBILE NUMBER" />
+                    </span>
+      
+                    {/* LINE 2 */}
+                    <span className="block md:inline">
+                      {/* Mobile Row 2 - Desktop gap reduced via md:mt-0 */}
+                      <span className="block md:inline mt-1 md:mt-0"> 
+                        <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
+                        <span className="text-[#ff914d] font-normal">
+                          {" "}
+                          <FormattedMessage id="hero.title.key" defaultMessage="KEY" />
+                          {" "}
+                        </span>
+                      </span>
+      
+                      {/* Mobile Row 3 */}
+                      <span className="block md:inline mt-1 md:mt-0">
+                        <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
+                        <span className="md:hidden">
+                            {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
+                        </span>
+                      </span>
+                    </span>
+      
+                    {/* LINE 3 - Desktop gap reduced via md:mt-0 */}
+                    <span className="block mt-1 md:mt-0"> 
+                      <span className="hidden md:inline">
+                        <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
+                      </span>
+                      <span className="text-[#ff914d] font-normal">
+                        <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
+                      </span>
+                    </span>
+      
+                  </h1>
+      
+                  {/* Subtitles (No Changes) */}
+                  <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
+                    <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
+                    <p style={{ fontSize: 'clamp(16px, 1.5vw, 22px)' }}>
+                      Discover How a Mobile Number <br className="block sm:hidden" />
+                      Shapes Life’s Key Areas
+                    </p>
+                  </div>
+                </div>
+      
+                {/* 2. ICONS SECTION */}
+                <div className="w-full flex justify-center md:mb-16 mt-[-15px] md:mt-[-30px]">
+                  
+                  {/* Container */}
+                  <div className="
+                      grid grid-cols-[60px_1fr] gap-y-3 gap-x-4 items-center w-fit
+                      md:flex md:flex-row md:gap-12 lg:gap-20 md:w-auto 
+                  ">
+                    {[
+                      [financeImg, "Money & Work"],
+                      [fortuneImg, "Fortune"],
+                      [loveImg, "Charm & Love"],
+                      [intuitionImg, "Intuition"],
+                      [intelligenceImg, "Intelligence"],
+                    ].map(([src, label], i) => (
+                      <React.Fragment key={i}>
+                        {/* Wrapper */}
+                        <div className="contents md:flex md:flex-col md:items-center md:gap-4">
+                          
+                          {/* Icon */}
+                          <div className="flex items-center justify-center">
+                            {/* FIX 3: Increased Icon Sizes (w-14 mobile, w-20 desktop) */}
+                            <img 
+                              src={src} 
+                              alt={label} 
+                              className="w-14 h-14 md:w-20 md:h-20 object-contain" 
+                            />
+                          </div>
+      
+                          {/* Text */}
+                          <span className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight" style={{ fontSize: 'clamp(18px, 2.5vw, 20px)' }}>
+                            {label}
+                          </span>
+                        </div>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+      
+                {/* 3. FORM SECTION */}
+                <div className="w-full max-w-[340px] md:max-w-[420px] px-4 mt-10 md:mt-3">
+                  <InlineInstantReportForm
+                    ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
+                    onSubmit={openPrefilledModal}
+                  />
+                </div>
+      
+              </div>
+      
+              {/* ... (Navbar logic remains) ... */}
+              {menuOpen && (
+                <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
+              )}
+              <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
+              <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+            </section>
+      
+      
+            {/* WHAT IS THIS */}
+            <section className="relative min-h-screen bg-black flex items-center justify-center pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] px-4 sm:px-6">
+              <div className="container mx-auto max-w-full text-center flex flex-col justify-center">
+                <h2 className="font-balgin leading-[1.05] mb-8 sm:mb-10 md:mb-12 lg:mb-16 font-bold tracking-[0.02em] text-white" style={{ fontSize: 'clamp(20px, 2.8vw, 25px)' }}>
+                  <FormattedMessage id="whatIsThis.title" />
+                </h2>
+      
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12 lg:gap-[44px] items-center justify-items-center">
+                  {/* Earth section */}
+                  <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px]">
+                    <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
                       <img
-                        src={src}
-                        alt={label}
-                        className="w-14 h-14 md:w-20 md:h-20 object-contain"
+                        src={earthGif}
+                        alt={intl.formatMessage({ id: "alt.earthRotating" })}
+                        className="w-full h-full object-cover"
                       />
                     </div>
-
-                    {/* Text */}
-                    <span className="text-white font-light text-left md:text-center text-[15px] md:text-[19px] whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight">
-                      {label}
-                    </span>
+                    <p
+                      className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                      style={commonTextStyle}
+                    >
+                      <FormattedMessage
+                        id="whatIsThis.universe.line1"
+                        values={{
+                          universe: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.universe" })}</span>,
+                          energy: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
+                        }}
+                      />
+                      <FormattedMessage id="whatIsThis.universe.line2" />
+                      <FormattedMessage id="whatIsThis.universe.line3" />
+                    </p>
                   </div>
-                </React.Fragment>
-              ))}
+      
+                  {/* Zero section */}
+                  <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px]">
+                    <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
+                      <img
+                        src={zeroPng}
+                        alt={intl.formatMessage({ id: "alt.zeroSymbol" })}
+                        className="w-full h-85 mr-6  object-cover scale-[1.02]"
+                      />
+                    </div>
+      
+                    <p
+                      className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                      style={commonTextStyle}
+                    >
+                      <FormattedMessage
+                        id="whatIsThis.numbers.line1"
+                        values={{
+                          numbers: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.numbers" })}</span>,
+                          symbols: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
+                        }}
+                      />
+                      <FormattedMessage id="whatIsThis.numbers.line2" />
+                      <FormattedMessage id="whatIsThis.numbers.line3" />
+                    </p>
+                  </div>
+      
+                  {/* Karma section */}
+                  <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px] md:col-span-2 lg:col-span-1">
+                    <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
+                      <img
+                        src={karmaTransparent}
+                        alt={intl.formatMessage({ id: "alt.karmaSymbol" })}
+                        className="w-70 h-81 mr-8 object-contain scale-[1.5]"
+                        style={{ width: "14rem", marginLeft: "30px" }}
+                      />
+                    </div>
+      
+                    <p
+                      className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                      style={commonTextStyle}
+                    >
+                      <FormattedMessage
+                        id="whatIsThis.karma.line1"
+                        values={{
+                          choices: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.choices" })}</span>
+                        }}
+                      />
+                      <br /> <FormattedMessage
+                        id="whatIsThis.karma.line2"
+                        values={{
+                          destiny: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
+                        }}
+                      />
+                      <br />
+                      <FormattedMessage id="whatIsThis.karma.line3" />
+                      <br />
+                      <FormattedMessage id="whatIsThis.karma.line4" style="color: black" />
+                    </p>
+                  </div>
+                </div>
+              </div>
+      
+              {/* Gradient line at bottom */}
+              <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+            </section >
+      
+            {/* MOBILE NUMBER ENERGY FLOW SECTION */}
+            {/* MOBILE NUMBER ENERGY FLOW SECTION */}
+      <motion.section
+        className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-2 sm:px-6"
+        variants={parent}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.25 }}
+      >
+        <div className="container mx-auto text-center max-w-5xl">
+          <motion.div variants={item}>
+            <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
+              {/* YAHAN CHANGE HAI: Ek single <p> tag use karo */}
+              {/* Yahan update karein */}
+      <p className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0" style={commonTextStyle}>
+        <span className="text-white inline md:block">
+          <FormattedMessage id="mobileEnergy.line1" />
+        </span>
+        {" "}
+        <span className="text-white inline md:block">
+          <FormattedMessage id="mobileEnergy.line2" />
+        </span>
+        {" "}
+        <span className="inline md:block">
+          <FormattedMessage id="mobileEnergy.line3" />
+        </span>
+        {" "}
+        <span className="inline md:block">
+          <FormattedMessage id="mobileEnergy.line4" />
+        </span>
+      </p>
             </div>
-          </div>
-
-          {/* 3. FORM SECTION */}
-          <div className="w-full max-w-[340px] md:max-w-[420px] px-4 mt-10 md:mt-3">
-            <InlineInstantReportForm
-              ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
-              onSubmit={openPrefilledModal}
-            />
-          </div>
-
+          </motion.div>
+      
+          {/* Image wala part same rahega... */}
+          <motion.div variants={item}>
+            <div className="w-full flex justify-center px-1 sm:px-0">
+              <img src={mobileEnergyFlow} alt={intl.formatMessage({ id: "mobileEnergy.altImage" })} className="w-full sm:w-[365px] max-w-2xl h-auto" />
+            </div>
+          </motion.div>
         </div>
-
-        {/* ... (Navbar logic remains) ... */}
-        {menuOpen && (
-          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
-        )}
-        <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
-
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 opacity-40" />
+      </motion.section>
+      
+            {/* DISTINCTLY YOURS */}
+            {/* DISTINCTLY YOURS */}
+      <section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6">
+        <div className="container mx-auto">
+          
+          {/* YAHAN CHANGE HAI: Saare alag <p> hata kar ek single <p> mein daal diya */}
+          <p className="text-gray-200 font-thin text-[20px] md:text-[30px]" >
+            <FormattedMessage
+              id="distinctly.line1"
+              values={{ shared: highlightValue("distinctly.shared") }}
+            />
+            <br />
+            <FormattedMessage
+              id="distinctly.line2"
+              values={{ repeated: highlightValue("distinctly.repeated") }}
+            />
+            <br />
+            <FormattedMessage id="distinctly.line3" />
+            <br />
+            <FormattedMessage
+              id="distinctly.line4"
+              values={{ distinctly: highlightValue("distinctly.distinctly") }}
+            />
+          </p>
+      
+          <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light text-[20px] md:text-[30px]">
+            <a
+              href="/personalised-report"
+              className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
+                text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
+            
+            >
+              <FormattedMessage id="distinctly.line5" />
+            </a>
+          </p>
+        </div>
+        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
       </section>
-
-
-      {/* WHAT IS THIS */}
-     
-           {/* WHAT IS THIS */}
-           <section className="relative min-h-screen bg-black flex items-center justify-center pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] px-4 sm:px-6">
-             <div className="container mx-auto max-w-full text-center flex flex-col justify-center">
-               <h2 className="font-balgin leading-[1.05] mb-8 sm:mb-10 md:mb-12 lg:mb-16 font-bold tracking-[0.02em] text-white" style={{ fontSize: 'clamp(20px, 2.8vw, 25px)' }}>
-                 <FormattedMessage id="whatIsThis.title" />
-               </h2>
-     
-               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 md:gap-12 lg:gap-[44px] items-center justify-items-center">
-                 {/* Earth section */}
-                 <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px]">
-                   <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
-                     <img
-                       src={earthGif}
-                       alt={intl.formatMessage({ id: "alt.earthRotating" })}
-                       className="w-full h-full object-cover"
-                     />
-                   </div>
-                   <p
-                     className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-                     style={commonTextStyle}
-                   >
-                     <FormattedMessage
-                       id="whatIsThis.universe.line1"
-                       values={{
-                         universe: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.universe" })}</span>,
-                         energy: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
-                       }}
-                     />
-                     <FormattedMessage id="whatIsThis.universe.line2" />
-                     <FormattedMessage id="whatIsThis.universe.line3" />
-                   </p>
-                 </div>
-     
-                 {/* Zero section */}
-                 <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px]">
-                   <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
-                     <img
-                       src={zeroPng}
-                       alt={intl.formatMessage({ id: "alt.zeroSymbol" })}
-                       className="w-full h-85 mr-6  object-cover scale-[1.02]"
-                     />
-                   </div>
-     
-                   <p
-                     className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-                     style={commonTextStyle}
-                   >
-                     <FormattedMessage
-                       id="whatIsThis.numbers.line1"
-                       values={{
-                         numbers: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.numbers" })}</span>,
-                         symbols: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
-                       }}
-                     />
-                     <FormattedMessage id="whatIsThis.numbers.line2" />
-                     <FormattedMessage id="whatIsThis.numbers.line3" />
-                   </p>
-                 </div>
-     
-                 {/* Karma section */}
-                 <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px] md:col-span-2 lg:col-span-1">
-                   <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
-                     <img
-                       src={karmaTransparent}
-                       alt={intl.formatMessage({ id: "alt.karmaSymbol" })}
-                       className="w-70 h-81 mr-8 object-contain scale-[1.5]"
-                       style={{ width: "14rem", marginLeft: "30px" }}
-                     />
-                   </div>
-     
-                   <p
-                     className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
-                     style={commonTextStyle}
-                   >
-                     <FormattedMessage
-                       id="whatIsThis.karma.line1"
-                       values={{
-                         choices: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.choices" })}</span>
-                       }}
-                     />
-                     <br /> <FormattedMessage
-                       id="whatIsThis.karma.line2"
-                       values={{
-                         destiny: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
-                       }}
-                     />
-                     <br />
-                     <FormattedMessage id="whatIsThis.karma.line3" />
-                     <br />
-                     <FormattedMessage id="whatIsThis.karma.line4" style="color: black" />
-                   </p>
-                 </div>
-               </div>
-             </div>
-     
-             {/* Gradient line at bottom */}
-             <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
-           </section >
-     
-           {/* MOBILE NUMBER ENERGY FLOW SECTION */}
-           {/* MOBILE NUMBER ENERGY FLOW SECTION */}
-     <motion.section
-       className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-2 sm:px-6"
-       variants={parent}
-       initial="hidden"
-       whileInView="visible"
-       viewport={{ once: true, amount: 0.25 }}
-     >
-       <div className="container mx-auto text-center max-w-5xl">
-         <motion.div variants={item}>
-           <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
-             {/* YAHAN CHANGE HAI: Ek single <p> tag use karo */}
-             <p className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block" style={commonTextStyle}>
-               <span className="text-white">
-                 <FormattedMessage id="mobileEnergy.line1" />
-               </span>
-               <br />
-               <span className="text-white">
-                 <FormattedMessage id="mobileEnergy.line2" />
-               </span>
-               <br />
-               <FormattedMessage id="mobileEnergy.line3" />
-               <br />
-               <FormattedMessage id="mobileEnergy.line4" />
-             </p>
-           </div>
-         </motion.div>
-     
-         {/* Image wala part same rahega... */}
-         <motion.div variants={item}>
-           <div className="w-full flex justify-center px-1 sm:px-0">
-             <img src={mobileEnergyFlow} alt={intl.formatMessage({ id: "mobileEnergy.altImage" })} className="w-full sm:w-[365px] max-w-2xl h-auto" />
-           </div>
-         </motion.div>
-       </div>
-       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 opacity-40" />
-     </motion.section>
-     
-           {/* DISTINCTLY YOURS */}
-           {/* DISTINCTLY YOURS */}
-     <section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6">
-       <div className="container mx-auto">
-         
-         {/* YAHAN CHANGE HAI: Saare alag <p> hata kar ek single <p> mein daal diya */}
-         <p className="text-gray-200 font-thin text-[20px] md:text-[30px]" >
-           <FormattedMessage
-             id="distinctly.line1"
-             values={{ shared: highlightValue("distinctly.shared") }}
-           />
-           <br />
-           <FormattedMessage
-             id="distinctly.line2"
-             values={{ repeated: highlightValue("distinctly.repeated") }}
-           />
-           <br />
-           <FormattedMessage id="distinctly.line3" />
-           <br />
-           <FormattedMessage
-             id="distinctly.line4"
-             values={{ distinctly: highlightValue("distinctly.distinctly") }}
-           />
-         </p>
-     
-         <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light text-[20px] md:text-[30px]">
-           <a
-             href="/personalised-report"
-             className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
-               text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
-           
-           >
-             <FormattedMessage id="distinctly.line5" />
-           </a>
-         </p>
-       </div>
-       <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
-     </section>
-     
-           {/* WOVEN / EARTH CONNECTIONS SECTION */}
-           <motion.section
-             className="relative bg-black flex flex-col items-center justify-center py-10 px-4 sm:px-6 text-center min-h-screen"
-             variants={parent}
-             initial="hidden"
-             whileInView="visible"
-             viewport={{ once: true, amount: 0.25 }}
-           >
-             {/* Static Typography with line breaks */}
-             <motion.div
-               variants={item}
-               className="max-w-3xl mx-auto mb-8 relative"
-             >
-               <p className="mb-1 text-gray-200 font-thin" style={commonTextStyle}>
-                 <FormattedMessage id="woven.line1" />
-                 <br />
-                 <FormattedMessage id="woven.line2" />
-                 <br />
-                 <FormattedMessage id="woven.line3" />
-                 <br />
-                 <FormattedMessage id="woven.line4" />
-                 
-               </p>
-             </motion.div>
-     
-             {/* Image */}
-             <motion.div variants={item} className="mt-8">
-               <img
-                 src={earthConnections}
-                 alt={intl.formatMessage({ id: "woven.altImage" })}
-                 className="w-[260px] sm:w-[320px] md:w-[380px] lg:w-[350px] mx-auto"
-               />
-             </motion.div>
-     
-             {/* Bottom gradient line */}
-             <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
-           </motion.section >
-     
-           {/* DIGITAL AGE YANTRA + TYPING EFFECT INSTEAD OF DECRYPT */}
-           <section
-             className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center px-4"
-           >
-             <div className="container mx-auto max-w-[760px] text-center">
-     
-               {/* TOP HEADING */}
-               <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
-                 <FormattedMessage id="digitalYantra.line1" /><br />
-                 <FormattedMessage id="digitalYantra.line2" />
-               </p>
-               <br />
-     
-               {/* TYPING EFFECT 4-LINES */}
-               <div className="mb-10">
-                 <p className="text-white font-thin mb-0" style={commonTextStyle}>
-                   {journeyLines[0]}
-                 </p>
-                 <p className="text-white font-thin" style={commonTextStyle}>
-                   {journeyLines[1]}
-                 </p>
-                 <p className="text-white font-thin" style={commonTextStyle}>
-                   {journeyLines[2]}
-                 </p>
-                 <p className="text-white font-thin" style={commonTextStyle}>
-                   {journeyLines[3]}
-                 </p>
-                 <br />
-                 <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
-                 <FormattedMessage id="digitalYantra.line3" /><br />
-                 <FormattedMessage id="digitalYantra.line4" />
-               </p>
-               <br />
-               <a
-                 href="/consult"
-                 className="text-[#ff914d] font-thin no-underline hover:opacity-80"
-                 style={commonTextStyle}
-               >
-                 <FormattedMessage id="digitalYantra.cta" />
-               </a>
-     
-               </div>
-     
-     
-               {/* MIDDLE SECTION */}
-               
-     
-               
-     
-             </div>
-           </section >
-     
-           {/* BLOGS */}
-           {/* BLOGS */}
-           <section
-               id="blogs"
-               className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6 mt-0"
+      
+            {/* WOVEN / EARTH CONNECTIONS SECTION */}
+            <motion.section
+              className="relative bg-black flex flex-col items-center justify-center py-10 px-4 sm:px-6 text-center min-h-screen"
+              variants={parent}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.25 }}
+            >
+              {/* Static Typography with line breaks */}
+              <motion.div
+                variants={item}
+                className="max-w-3xl mx-auto mb-8 relative"
               >
-               <div className="container mx-auto text-center w-full">
-                 {/* Heading */}
-                 <h2 className="font-balgin text-white mb-8 sm:mb-10 md:mb-12 lg:mb-[40px]" style={{ fontSize: 'clamp(22px, 3vw, 28px)' }}>
-                   <FormattedMessage id="blogs.title" />
-                 </h2>
-       
-                 {/* Blog Cards */}
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-[24px] justify-items-center max-w-[1200px] mx-auto">
-                   {blogItems.map((b, i) => (
-                     i === 0 ? (
-                       <a
-                         key={i}
-                         href="/blogs"
-                         className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
-                         style={{ textDecoration: 'none' }}
-                       >
-                         <div className="aspect-square bg-black flex items-center justify-center">
-                           {b.img ? (
-                             <img
-                               src={b.img}
-                               alt={b.title}
-                               className="w-full h-400 object-cover"
-                             />
-                           ) : (
-                             <div className="text-5xl sm:text-6xl">✦</div>
-                           )}
-                         </div>
-                         <div className="p-4 sm:p-5 md:p-6 text-left">
-                           <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
-                             {b.title}
-                           </h3>
-                           <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
-                             {b.excerpt}
-                           </p>
-                           <div className="mt-2">
-                             <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
-                               <FormattedMessage id="blogs.readMore" />
-                             </span>
-                           </div>
-                         </div>
-                       </a>
-                     ) : i === 1 ? (
-                       <a
-                         key={i}
-                         href="/blog/how-to-read-mobile-number"
-                         className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
-                         style={{ textDecoration: 'none' }}
-                       >
-                         <div className="aspect-square bg-black flex items-center justify-center">
-                           {b.img ? (
-                             <img
-                               src={b.img}
-                               alt={b.title}
-                               className="w-full h-400 object-cover"
-                             />
-                           ) : (
-                             <div className="text-5xl sm:text-6xl">✦</div>
-                           )}
-                         </div>
-                         <div className="p-4 sm:p-5 md:p-6 text-left">
-                           <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
-                             {b.title}
-                           </h3>
-                           <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
-                             {b.excerpt}
-                           </p>
-                           <div className="mt-2">
-                             <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
-                               <FormattedMessage id="blogs.readMore" />
-                             </span>
-                           </div>
-                         </div>
-                       </a>
-                     ) : i === 2 ? (
-                       <a
-                         key={i}
-                         href="/blog/how-to-choose-mobile-number"
-                         className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
-                         style={{ textDecoration: 'none' }}
-                       >
-                         <div className="aspect-square bg-black flex items-center justify-center">
-                           {b.img ? (
-                             <img
-                               src={b.img}
-                               alt={b.title}
-                               className="w-full h-400 object-cover"
-                             />
-                           ) : (
-                             <div className="text-5xl sm:text-6xl">✦</div>
-                           )}
-                         </div>
-                         <div className="p-4 sm:p-5 md:p-6 text-left">
-                           <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
-                             {b.title}
-                           </h3>
-                           <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
-                             {b.excerpt}
-                           </p>
-                           <div className="mt-2">
-                             <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
-                               <FormattedMessage id="blogs.readMore" />
-                             </span>
-                           </div>
-                         </div>
-                       </a>
-                     ) : (
-                       <div
-                         key={i}
-                         className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all"
-                       >
-                         <div className="aspect-square bg-black flex items-center justify-center">
-                           {b.img ? (
-                             <img
-                               src={b.img}
-                               alt={b.title}
-                               className="w-full h-400 object-cover"
-                             />
-                           ) : (
-                             <div className="text-5xl sm:text-6xl">✦</div>
-                           )}
-                         </div>
-                         <div className="p-4 sm:p-5 md:p-6 text-left">
-                           <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-white">
-                             {b.title}
-                           </h3>
-                           <p className="text-gray-300 text-sm mb-3 sm:mb-4">
-                             {b.excerpt}
-                           </p>
-       
-                           {expandedBlog === i ? (
-                             <div className="mt-2 text-sm text-gray-200">
-                               <p className="mb-3">{b.content}</p>
-                               <button
-                                 className="btn text-sm px-3 py-2"
-                                 onClick={() => setExpandedBlog(null)}
-                                 aria-expanded={true}
-                               >
-                                 <FormattedMessage id="blogs.readLess" />
-                               </button>
-                             </div>
-                           ) : (
-                             <div className="mt-2">
-                               <button
-                                 className="text-[#ff914d] font-semibold text-sm hover:text-orange-300"
-                                 onClick={() => setExpandedBlog(i)}
-                                 aria-expanded={false}
-                               >
-                                 <FormattedMessage id="blogs.readMore" />
-                               </button>
-                             </div>
-                           )}
-                         </div>
-                       </div>
-                     )
-                   ))}
-                 </div>
-       
-                 {/* Bottom "more >>>" */}
-                 <div className="mt-[20px] text-right w-full max-w-[960px] mx-72">
-                   {/* <a href="/blogs" className="text-white font-light" style={{ fontSize: 'clamp(18px, 2.2vw, 20px)' }}>
-                     <FormattedMessage id="blogs.more" />
-                   </a> */}
-                 </div>
-               </div>
-       
-               {/* Bottom gradient line */}
-               <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
-             </section >
-           {/* FINAL CTA */}
-           <section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
-             <div className="container mx-auto flex flex-col items-center text-center space-y-6 sm:space-y-7 md:space-y-8 mb-8 sm:mb-12">
-     
-               <p className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', lineHeight: '1' }}>
-                 <span className="block whitespace-nowrap sm:whitespace-normal" style={{ marginBottom: 'clamp(4px, 0.5vw, 8px)' }}>
-                   <FormattedMessage id="finalCta.line1" />
-                 </span>
-                 <span className="block"><FormattedMessage id="finalCta.line2" /></span>
-               </p>
-     
-               {/* Icon Row */}
-               <div className="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full overflow-x-auto px-4 scrollbar-hide mb-3 md:mb-0 mt-4 md:mt-0" style={{ marginTop: '0rem !important', marginBottom: '0rem !important' }}>
-                 {[financeImg, fortuneImg, loveImg, intuitionImg, intelligenceImg].map(
-                   (src, i) => (
-                     <img
-                       key={i}
-                       src={src}
-                       alt=""
-                       className="w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex-shrink-0 object-contain"
-                     />
-                   )
-                 )}
-               </div>
-     
-               {/* Form Section */}
-               <div className="w-[300px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center justify-center">
-                 <InlineInstantReportForm1
-                   ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
-                   onSubmit={openPrefilledModal}
-                 />
-               </div>
-             </div>
-           </section >
-     
-           {/* Global Footer */}
-           <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
-             <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
-     
-               <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
-                 <a
-                   href="/termsandconditions"
-                   className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
-                 >
-                   <FormattedMessage id="footer.termsConditions" />
-                 </a>
-                 <hr
-                   style={{
-                     border: "none",
-                     background: "white",
-                     width: "1px",
-                     height: "15px",
-                     opacity: "1",
-                     margin: "0",
-                   }}
-                 />
-     
-                 <a
-                   href="/privacy-policy"
-                   className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
-                 >
-                   <FormattedMessage id="footer.privacyPolicy" />
-                 </a>
-                 <hr
-                   style={{
-                     border: "none",
-                     background: "white",
-                     width: "1px",
-                     height: "15px",
-                     opacity: "1",
-                     margin: "0",
-                   }}
-                 />
-     
-                 <a
-                   href="/refund-policy"
-                   className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
-                 >
-                   <FormattedMessage id="footer.refundPolicy" />
-                 </a>
-                 <hr
-                   style={{
-                     border: "none",
-                     background: "white",
-                     width: "1px",
-                     height: "15px",
-                     opacity: "1",
-                     margin: "0",
-                   }}
-                 />
-     
-                 <a
-                   href="/shipping-policy"
-                   className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
-                 >
-                   <FormattedMessage id="footer.shippingDelivery" />
-                 </a>
-                 <hr
-                   style={{
-                     border: "none",
-                     background: "white",
-                     width: "1px",
-                     height: "15px",
-                     opacity: "1",
-                     margin: "0",
-                   }}
-                 />
-     
-                 <a
-                   href="/contact-us"
-                   className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
-                 >
-                   <FormattedMessage id="footer.contactUs" />
-                 </a>
-               </div>
-             </div>
-             
-           </footer >
-     {showForm && (
-       <div 
-         className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm z-50 flex items-center justify-center p-4"
-         onClick={() => setShowForm(false)}
-       >
-         <div 
-           className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
-           onClick={(e) => e.stopPropagation()}
-         >
-     
-             <div className="" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px", flexShrink: 0 }}>
-               <p  style={{fontSize:"28px",fontWeight:"300",marginBottom:"2rem"}}>Instant Report</p>
-             </div>
-     
-           {/* Form */}
-           <InstantReportForm
-             ctaLabel="Proceed"
-             initialIsd={prefillIsd}
-             initialMobile={prefillMobile}
-             onSubmit={(data) => {
-               console.log("Submitted:", data);
-               alert(`Generating and sending report for ${data.full}...`);
-               setShowForm(false);
-             }}
-           />
-     
-         </div>
-       </div>
-     )}
-     
-     {/* === GLOBAL SIGNUP + LOGIN MODALS === */}
-     {/* === GLOBAL SIGNUP + LOGIN MODALS === */}
-     {(showSignup || showLogin) && (
-       <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-         
-         {showSignup && (
-           <SignupModal
-             onClose={() => setShowSignup(false)}
-             onSwitch={() => {
-               setShowSignup(false);
-               setShowLogin(true);
-             }}
-           />
-         )}
-     
-         {showLogin && (
-           <LoginModal
-             onClose={() => setShowLogin(false)}
-             onSwitch={() => {
-               setShowLogin(false);
-               setShowSignup(true);
-             }}
-           />
-         )}
-     
-       </div>
-     )}
-     
-         </div>
-       );
-     }
+                <p className="mb-1 text-gray-200 font-thin" style={commonTextStyle}>
+        <span className="inline md:block">
+          <FormattedMessage id="woven.line1" />
+        </span>
+        {" "}
+        <span className="inline md:block">
+          <FormattedMessage id="woven.line2" />
+        </span>
+        {" "}
+        <span className="inline md:block">
+          <FormattedMessage id="woven.line3" />
+        </span>
+        {" "}
+        <span className="inline md:block">
+          <FormattedMessage id="woven.line4" />
+        </span>
+      </p>
+              </motion.div>
+      
+              {/* Image */}
+              <motion.div variants={item} className="mt-8">
+                <img
+                  src={earthConnections}
+                  alt={intl.formatMessage({ id: "woven.altImage" })}
+                  className="w-[260px] sm:w-[320px] md:w-[380px] lg:w-[350px] mx-auto"
+                />
+              </motion.div>
+      
+              {/* Bottom gradient line */}
+              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+            </motion.section >
+      
+            {/* DIGITAL AGE YANTRA + TYPING EFFECT INSTEAD OF DECRYPT */}
+            <section
+              className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center px-4"
+            >
+              <div className="container mx-auto max-w-[760px] text-center">
+      
+                {/* TOP HEADING */}
+                <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
+        <span className="inline md:block">
+          <FormattedMessage id="digitalYantra.line1" />
+        </span>
+        {" "}
+        <span className="inline md:block">
+          <FormattedMessage id="digitalYantra.line2" />
+        </span>
+      </p>
+                <br />
+      
+                {/* TYPING EFFECT 4-LINES */}
+                <div className="mb-10">
+                  <p className="text-white font-thin mb-0" style={commonTextStyle}>
+                    {journeyLines[0]}
+                  </p>
+                  <p className="text-white font-thin" style={commonTextStyle}>
+                    {journeyLines[1]}
+                  </p>
+                  <p className="text-white font-thin" style={commonTextStyle}>
+                    {journeyLines[2]}
+                  </p>
+                  <p className="text-white font-thin" style={commonTextStyle}>
+                    {journeyLines[3]}
+                  </p>
+                  <br />
+                  <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
+                  <FormattedMessage id="digitalYantra.line3" /><br />
+                  <FormattedMessage id="digitalYantra.line4" />
+                </p>
+                <br />
+                <a
+                  href="/consult"
+                  className="text-[#ff914d] font-thin no-underline hover:opacity-80"
+                  style={commonTextStyle}
+                >
+                  <FormattedMessage id="digitalYantra.cta" />
+                </a>
+      
+                </div>
+      
+      
+                {/* MIDDLE SECTION */}
+                
+      
+                
+      
+              </div>
+            </section >
+      
+            {/* BLOGS */}
+            {/* BLOGS */}
+            <section
+                id="blogs"
+                className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6 mt-0"
+               >
+                <div className="container mx-auto text-center w-full">
+                  {/* Heading */}
+                  <h2 className="font-balgin text-white mb-8 sm:mb-10 md:mb-12 lg:mb-[40px]" style={{ fontSize: 'clamp(22px, 3vw, 28px)' }}>
+                    <FormattedMessage id="blogs.title" />
+                  </h2>
+        
+                  {/* Blog Cards */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 lg:gap-[24px] justify-items-center max-w-[1200px] mx-auto">
+                    {blogItems.map((b, i) => (
+                      i === 0 ? (
+                        <a
+                          key={i}
+                          href="/blogs"
+                          className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <div className="aspect-square bg-black flex items-center justify-center">
+                            {b.img ? (
+                              <img
+                                src={b.img}
+                                alt={b.title}
+                                className="w-full h-400 object-cover"
+                              />
+                            ) : (
+                              <div className="text-5xl sm:text-6xl">✦</div>
+                            )}
+                          </div>
+                          <div className="p-4 sm:p-5 md:p-6 text-left">
+                            <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
+                              {b.title}
+                            </h3>
+                            <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
+                              {b.excerpt}
+                            </p>
+                            <div className="mt-2">
+                              <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+                                <FormattedMessage id="blogs.readMore" />
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      ) : i === 1 ? (
+                        <a
+                          key={i}
+                          href="/blog/how-to-read-mobile-number"
+                          className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <div className="aspect-square bg-black flex items-center justify-center">
+                            {b.img ? (
+                              <img
+                                src={b.img}
+                                alt={b.title}
+                                className="w-full h-400 object-cover"
+                              />
+                            ) : (
+                              <div className="text-5xl sm:text-6xl">✦</div>
+                            )}
+                          </div>
+                          <div className="p-4 sm:p-5 md:p-6 text-left">
+                            <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
+                              {b.title}
+                            </h3>
+                            <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
+                              {b.excerpt}
+                            </p>
+                            <div className="mt-2">
+                              <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+                                <FormattedMessage id="blogs.readMore" />
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      ) : i === 2 ? (
+                        <a
+                          key={i}
+                          href="/blog/how-to-choose-mobile-number"
+                          className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          <div className="aspect-square bg-black flex items-center justify-center">
+                            {b.img ? (
+                              <img
+                                src={b.img}
+                                alt={b.title}
+                                className="w-full h-400 object-cover"
+                              />
+                            ) : (
+                              <div className="text-5xl sm:text-6xl">✦</div>
+                            )}
+                          </div>
+                          <div className="p-4 sm:p-5 md:p-6 text-left">
+                            <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
+                              {b.title}
+                            </h3>
+                            <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
+                              {b.excerpt}
+                            </p>
+                            <div className="mt-2">
+                              <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+                                <FormattedMessage id="blogs.readMore" />
+                              </span>
+                            </div>
+                          </div>
+                        </a>
+                      ) : (
+                        <div
+                          key={i}
+                          className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all"
+                        >
+                          <div className="aspect-square bg-black flex items-center justify-center">
+                            {b.img ? (
+                              <img
+                                src={b.img}
+                                alt={b.title}
+                                className="w-full h-400 object-cover"
+                              />
+                            ) : (
+                              <div className="text-5xl sm:text-6xl">✦</div>
+                            )}
+                          </div>
+                          <div className="p-4 sm:p-5 md:p-6 text-left">
+                            <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-white">
+                              {b.title}
+                            </h3>
+                            <p className="text-gray-300 text-sm mb-3 sm:mb-4">
+                              {b.excerpt}
+                            </p>
+        
+                            {expandedBlog === i ? (
+                              <div className="mt-2 text-sm text-gray-200">
+                                <p className="mb-3">{b.content}</p>
+                                <button
+                                  className="btn text-sm px-3 py-2"
+                                  onClick={() => setExpandedBlog(null)}
+                                  aria-expanded={true}
+                                >
+                                  <FormattedMessage id="blogs.readLess" />
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="mt-2">
+                                <button
+                                  className="text-[#ff914d] font-semibold text-sm hover:text-orange-300"
+                                  onClick={() => setExpandedBlog(i)}
+                                  aria-expanded={false}
+                                >
+                                  <FormattedMessage id="blogs.readMore" />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )
+                    ))}
+                  </div>
+        
+                  {/* Bottom "more >>>" */}
+                  <div className="mt-[20px] text-right w-full max-w-[960px] mx-72">
+                    {/* <a href="/blogs" className="text-white font-light" style={{ fontSize: 'clamp(18px, 2.2vw, 20px)' }}>
+                      <FormattedMessage id="blogs.more" />
+                    </a> */}
+                  </div>
+                </div>
+        
+                {/* Bottom gradient line */}
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+              </section >
+            {/* FINAL CTA */}
+            <section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
+              <div className="container mx-auto flex flex-col items-center text-center space-y-6 sm:space-y-7 md:space-y-8 mb-8 sm:mb-12">
+      
+                <p className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto mb-[8px] sm:mb-8" style={{ fontSize: 'clamp(22px, 2.5vw, 30px)', lineHeight: '1' }}>
+                  <span className="block whitespace-nowrap sm:whitespace-normal" style={{ marginBottom: 'clamp(4px, 0.5vw, 8px)' }}>
+                    <FormattedMessage id="finalCta.line1" />
+                  </span>
+                  <span className="block"><FormattedMessage id="finalCta.line2" /></span>
+                </p>
+      
+                {/* Icon Row */}
+                <div className="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full overflow-x-auto px-4 scrollbar-hide mb-3 md:mb-0 mt-4 md:mt-0" style={{ marginTop: '0rem !important', marginBottom: '0rem !important' }}>
+                  {[financeImg, fortuneImg, loveImg, intuitionImg, intelligenceImg].map(
+                    (src, i) => (
+                      <img
+                        key={i}
+                        src={src}
+                        alt=""
+                        className="w-12 h-12 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 flex-shrink-0 object-contain"
+                      />
+                    )
+                  )}
+                </div>
+      
+                {/* Form Section */}
+                <div className="w-[300px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center justify-center">
+                  <InlineInstantReportForm1
+                    ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
+                    onSubmit={openPrefilledModal}
+                  />
+                </div>
+              </div>
+            </section >
+      
+            {/* Global Footer */}
+            <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
+              <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
+      
+                <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+                  <a
+                    href="/termsandconditions"
+                    className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+                  >
+                    <FormattedMessage id="footer.termsConditions" />
+                  </a>
+                  <hr
+                    style={{
+                      border: "none",
+                      background: "white",
+                      width: "1px",
+                      height: "15px",
+                      opacity: "1",
+                      margin: "0",
+                    }}
+                  />
+      
+                  <a
+                    href="/privacy-policy"
+                    className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+                  >
+                    <FormattedMessage id="footer.privacyPolicy" />
+                  </a>
+                  <hr
+                    style={{
+                      border: "none",
+                      background: "white",
+                      width: "1px",
+                      height: "15px",
+                      opacity: "1",
+                      margin: "0",
+                    }}
+                  />
+      
+                  <a
+                    href="/refund-policy"
+                    className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+                  >
+                    <FormattedMessage id="footer.refundPolicy" />
+                  </a>
+                  <hr
+                    style={{
+                      border: "none",
+                      background: "white",
+                      width: "1px",
+                      height: "15px",
+                      opacity: "1",
+                      margin: "0",
+                    }}
+                  />
+      
+                  <a
+                    href="/shipping-policy"
+                    className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+                  >
+                    <FormattedMessage id="footer.shippingDelivery" />
+                  </a>
+                  <hr
+                    style={{
+                      border: "none",
+                      background: "white",
+                      width: "1px",
+                      height: "15px",
+                      opacity: "1",
+                      margin: "0",
+                    }}
+                  />
+      
+                  <a
+                    href="/contact-us"
+                    className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+                  >
+                    <FormattedMessage id="footer.contactUs" />
+                  </a>
+                </div>
+              </div>
+              
+            </footer >
+      {showForm && (
+        <div 
+          className="fixed inset-0 bg-[rgba(0,0,0,0.8)] backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={() => setShowForm(false)}
+        >
+          <div 
+            className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+      
+              <div className="" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginTop: "16px", marginLeft: "16px", marginRight: "16px", fontSize: "20px", fontWeight: "700",paddingTop:"5px", flexShrink: 0 }}>
+                <p  style={{fontSize:"28px",fontWeight:"300",marginBottom:"2rem"}}>Instant Report</p>
+              </div>
+      
+            {/* Form */}
+            <InstantReportForm
+              ctaLabel="Proceed"
+              initialIsd={prefillIsd}
+              initialMobile={prefillMobile}
+              onSubmit={(data) => {
+                console.log("Submitted:", data);
+                alert(`Generating and sending report for ${data.full}...`);
+                setShowForm(false);
+              }}
+            />
+      
+          </div>
+        </div>
+      )}
+      
+      {/* === GLOBAL SIGNUP + LOGIN MODALS === */}
+      {/* === GLOBAL SIGNUP + LOGIN MODALS === */}
+      {(showSignup || showLogin) && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          
+          {showSignup && (
+            <SignupModal
+              onClose={() => setShowSignup(false)}
+              onSwitch={() => {
+                setShowSignup(false);
+                setShowLogin(true);
+              }}
+            />
+          )}
+      
+          {showLogin && (
+            <LoginModal
+              onClose={() => setShowLogin(false)}
+              onSwitch={() => {
+                setShowLogin(false);
+                setShowSignup(true);
+              }}
+            />
+          )}
+      
+        </div>
+      )}
+      
+          </div>
+        );
+      }

@@ -314,8 +314,8 @@ export default function ConsciousKarmaSections() {
 
             {/* Subtitles (No Changes) */}
             <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
-              <p className="mb-4 text-[24px] md:text-[30px]">Every number carries a pattern</p>
-              <p style={{ fontSize: 'clamp(20px, 1.5vw, 22px)' }}>
+              <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
+              <p style={{ fontSize: 'clamp(16px, 1.5vw, 22px)' }}>
                 Discover How a Mobile Number <br className="block sm:hidden" />
                 Shapes Life’s Key Areas
               </p>
@@ -352,7 +352,7 @@ export default function ConsciousKarmaSections() {
                     </div>
 
                     {/* Text */}
-                    <span className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight" style={{ fontSize: 'clamp(20px, 2.5vw, 20px)' }}>
+                    <span className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight" style={{ fontSize: 'clamp(18px, 2.5vw, 20px)' }}>
                       {label}
                     </span>
                   </div>
@@ -492,19 +492,24 @@ export default function ConsciousKarmaSections() {
     <motion.div variants={item}>
       <div className="mb-8 sm:mb-10 md:mb-12 lg:mb-12">
         {/* YAHAN CHANGE HAI: Ek single <p> tag use karo */}
-        <p className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block" style={commonTextStyle}>
-          <span className="text-white">
-            <FormattedMessage id="mobileEnergy.line1" />
-          </span>
-          <br />
-          <span className="text-white">
-            <FormattedMessage id="mobileEnergy.line2" />
-          </span>
-          <br />
-          <FormattedMessage id="mobileEnergy.line3" />
-          <br />
-          <FormattedMessage id="mobileEnergy.line4" />
-        </p>
+        {/* Yahan update karein */}
+<p className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0" style={commonTextStyle}>
+  <span className="text-white inline md:block">
+    <FormattedMessage id="mobileEnergy.line1" />
+  </span>
+  {" "}
+  <span className="text-white inline md:block">
+    <FormattedMessage id="mobileEnergy.line2" />
+  </span>
+  {" "}
+  <span className="inline md:block">
+    <FormattedMessage id="mobileEnergy.line3" />
+  </span>
+  {" "}
+  <span className="inline md:block">
+    <FormattedMessage id="mobileEnergy.line4" />
+  </span>
+</p>
       </div>
     </motion.div>
 
@@ -571,15 +576,22 @@ export default function ConsciousKarmaSections() {
           className="max-w-3xl mx-auto mb-8 relative"
         >
           <p className="mb-1 text-gray-200 font-thin" style={commonTextStyle}>
-            <FormattedMessage id="woven.line1" />
-            <br />
-            <FormattedMessage id="woven.line2" />
-            <br />
-            <FormattedMessage id="woven.line3" />
-            <br />
-            <FormattedMessage id="woven.line4" />
-            
-          </p>
+  <span className="inline md:block">
+    <FormattedMessage id="woven.line1" />
+  </span>
+  {" "}
+  <span className="inline md:block">
+    <FormattedMessage id="woven.line2" />
+  </span>
+  {" "}
+  <span className="inline md:block">
+    <FormattedMessage id="woven.line3" />
+  </span>
+  {" "}
+  <span className="inline md:block">
+    <FormattedMessage id="woven.line4" />
+  </span>
+</p>
         </motion.div>
 
         {/* Image */}
@@ -603,9 +615,14 @@ export default function ConsciousKarmaSections() {
 
           {/* TOP HEADING */}
           <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
-            <FormattedMessage id="digitalYantra.line1" /><br />
-            <FormattedMessage id="digitalYantra.line2" />
-          </p>
+  <span className="inline md:block">
+    <FormattedMessage id="digitalYantra.line1" />
+  </span>
+  {" "}
+  <span className="inline md:block">
+    <FormattedMessage id="digitalYantra.line2" />
+  </span>
+</p>
           <br />
 
           {/* TYPING EFFECT 4-LINES */}
