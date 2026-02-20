@@ -36,7 +36,7 @@ import LoginModal from "./LoginModal.jsx";
 /* ===================== CONFIG: COMMON TEXT STYLE ===================== */
 // Isse sabhi sections mein font size aur spacing same rahegi
 const commonTextStyle = {
-  fontSize: 'clamp(19px, 2.5vw, 19px)',
+  fontSize: 'clamp(18px, 2.5vw, 19px)',
   lineHeight: '1.4',
   marginBottom: '0' // thoda gap maintain karne ke liye
 };
@@ -315,7 +315,7 @@ export default function ConsciousKarmaSections() {
             {/* Subtitles (No Changes) */}
             <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
               <p className="mb-4 text-[24px] md:text-[30px]">Every number carries a pattern</p>
-              <p style={{ fontSize: 'clamp(19px, 1.5vw, 22px)' }}>
+              <p style={{ fontSize: 'clamp(20px, 1.5vw, 22px)' }}>
                 Discover How a Mobile Number <br className="block sm:hidden" />
                 Shapes Life’s Key Areas
               </p>

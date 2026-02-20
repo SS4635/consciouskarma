@@ -38,7 +38,7 @@ import FirstSection from "./FirstSection.jsx";
 
 /* ===================== CONFIG: COMMON TEXT STYLE ===================== */
 const commonTextStyle = {
-  fontSize: 'clamp(15px, 2.5vw, 19px)',
+  fontSize: 'clamp(18px, 2.5vw, 19px)',
   lineHeight: '1.4',
   marginBottom: '0' // thoda gap maintain karne ke liye
 };
@@ -366,7 +366,7 @@ export default function ConsciousKarmaSections() {
             {/* Subtitles (No Changes) */}
             <div className="mt-6 md:mt-8 space-y-0 text-gray-200 font-thin tracking-wide">
               <p className="mb-4 text-[20px] md:text-[30px]">Every number carries a pattern</p>
-              <p style={{ fontSize: 'clamp(16px, 1.5vw, 22px)' }}>
+              <p style={{ fontSize: 'clamp(20px, 1.5vw, 22px)' }}>
                 Discover How a Mobile Number <br className="block sm:hidden" />
                 Shapes Life’s Key Areas
               </p>
