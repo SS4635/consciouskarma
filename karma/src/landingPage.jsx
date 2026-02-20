@@ -402,12 +402,11 @@ export default function ConsciousKarmaSections() {
                 style={commonTextStyle}
               >
                 <FormattedMessage
-                  id="whatIsThis.universe.line1"
-                  values={{
-                    universe: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.universe" })}</span>,
-                    energy: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.energy" })}</span>
-                  }}
-                />
+  id="whatIsThis.universe.line1"
+  values={{
+    patterns: <span className="text-[#ff914d] font-normal">patterns</span>
+  }}
+/>
                 <FormattedMessage id="whatIsThis.universe.line2" />
                 <FormattedMessage id="whatIsThis.universe.line3" />
               </p>
@@ -434,7 +433,12 @@ export default function ConsciousKarmaSections() {
                     symbols: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
                   }}
                 />
-                <FormattedMessage id="whatIsThis.numbers.line2" />
+                <FormattedMessage
+  id="whatIsThis.numbers.line2"
+  values={{
+    numericalSystems: <span className="text-[#ff914d] font-normal">numerical systems</span>
+  }}
+/>
                 <FormattedMessage id="whatIsThis.numbers.line3" />
               </p>
             </div>
@@ -455,12 +459,12 @@ export default function ConsciousKarmaSections() {
                 style={commonTextStyle}
               >
                 <FormattedMessage
-                  id="whatIsThis.karma.line1"
-                  values={{
-                    choices: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.choices" })}</span>
-                  }}
-                />
-                <br /> <FormattedMessage
+  id="whatIsThis.karma.line1"
+  values={{
+    patternsAligned: <span className="text-[#ff914d] font-normal">patterns we align with </span>
+  }}
+/>
+                <FormattedMessage
                   id="whatIsThis.karma.line2"
                   values={{
                     destiny: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
@@ -503,8 +507,13 @@ export default function ConsciousKarmaSections() {
   </span>
   {" "}
   <span className="inline md:block">
-    <FormattedMessage id="mobileEnergy.line3" />
-  </span>
+  <FormattedMessage 
+    id="mobileEnergy.line3" 
+    values={{
+      distinctPattern: <span className="text-[#ff914d] font-normal">distinct pattern</span>
+    }}
+  />
+</span>
   {" "}
   <span className="inline md:block">
     <FormattedMessage id="mobileEnergy.line4" />
@@ -543,9 +552,11 @@ export default function ConsciousKarmaSections() {
       <FormattedMessage id="distinctly.line3" />
       <br />
       <FormattedMessage
-        id="distinctly.line4"
-        values={{ distinctly: highlightValue("distinctly.distinctly") }}
-      />
+  id="distinctly.line4"
+  values={{ 
+    distinctlyYours: <span className="text-[#ff914d] font-normal">DISTINCTLY YOURS</span> 
+  }}
+/>
     </p>
 
     <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light text-[20px] md:text-[30px]">
@@ -589,8 +600,13 @@ export default function ConsciousKarmaSections() {
   </span>
   {" "}
   <span className="inline md:block">
-    <FormattedMessage id="woven.line4" />
-  </span>
+  <FormattedMessage 
+    id="woven.line4" 
+    values={{
+      shapesYourKarma: <span className="text-[#ff914d] font-normal">shapes your karma</span>
+    }}
+  />
+</span>
 </p>
         </motion.div>
 
@@ -641,8 +657,14 @@ export default function ConsciousKarmaSections() {
             </p>
             <br />
             <p className="text-gray-200 font-thin mb-10" style={commonTextStyle}>
-            <FormattedMessage id="digitalYantra.line3" /><br />
-            <FormattedMessage id="digitalYantra.line4" />
+  <FormattedMessage id="digitalYantra.line3" /><br />
+  <FormattedMessage 
+    id="digitalYantra.line4" 
+    values={{
+      greatestAsset: <span className="text-[#ff914d] font-normal">It is your greatest asset — the code of your journey</span>
+    }}
+  />
+
           </p>
           <br />
           <a

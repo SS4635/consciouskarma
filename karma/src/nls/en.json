@@ -37,7 +37,7 @@
   "form.alert.sendingReport": "Generating and sending report for {number}...",
 
   "whatIsThis.title": "THE LOGIC BEHIND IT",
-  "whatIsThis.universe.line1": "The universe operates through patterns and ",
+  "whatIsThis.universe.line1": "The universe operates through {patterns} and ",
   "whatIsThis.universe.line2": "energy. These structures influence thoughts, ",
   "whatIsThis.universe.line3": "guide actions, and shape experiences.",
   "whatIsThis.universe.line4": "",
@@ -45,14 +45,14 @@
   "whatIsThis.energy": "energy",
 
   "whatIsThis.numbers.line1": "To interpret these patterns, sages developed ",
-  "whatIsThis.numbers.line2": "numerical systems — precise symbols designed to ",
+  "whatIsThis.numbers.line2": "{numericalSystems} — precise symbols designed to ",
   "whatIsThis.numbers.line3": "represent influence in a simple, measurable form.",
   "whatIsThis.numbers.line4": "",
   "whatIsThis.numbers": "numbers",
   "whatIsThis.symbols": "symbols",
 
-  "whatIsThis.karma.line1": "Our choices — and the patterns ",
-  "whatIsThis.karma.line2": "we align with — shape outcomes. ",
+  "whatIsThis.karma.line1": "Our choices — and the {patternsAligned}",
+  "whatIsThis.karma.line2": "— shape outcomes.",
   "whatIsThis.karma.line3": "They direct the path we walk ",
   "whatIsThis.karma.line4": "and the life we build.",
   "whatIsThis.karma.choices": "Our choices",
@@ -60,7 +60,7 @@
 
   "mobileEnergy.line1": "Every mobile number is a unique sequence of digits.",
   "mobileEnergy.line2": "The interaction and position of its digits create a",
-  "mobileEnergy.line3": "distinct pattern — influencing behaviour,",
+  "mobileEnergy.line3": "create a {distinctPattern} — influencing behaviour,",
   "mobileEnergy.line4": "decisions, and life direction.",
   "mobileEnergy.line5": "",
   "mobileEnergy.altImage": "Mobile energy flow diagram showing interconnected digits",
@@ -68,7 +68,7 @@
   "distinctly.line1": "Your DATE of BIRTH can be shared.",
   "distinctly.line2": "Your NAME can be repeated.",
   "distinctly.line3": "Your MOBILE NUMBER",
-  "distinctly.line4": "is DISTINCTLY YOURS.",
+  "distinctly.line4": "is {distinctlyYours}.",
   "distinctly.line5": "Get personalised report >>>",
   "distinctly.shared": "shared",
   "distinctly.repeated": "repeated",
@@ -77,7 +77,7 @@
   "woven.line1": "Just as numbers are woven into the fabric of",
   "woven.line2": "the universe, your mobile number becomes embedded",
   "woven.line3": "in your daily life. Through every call, message,",
-  "woven.line4": "and interaction, it shapes your karma.",
+  "woven.line4": "and interaction, it {shapesYourKarma}.",
   "woven.line5": "",
   "woven.altImage": "Earth connections",
 
@@ -88,7 +88,7 @@
   "digitalYantra.journey3": "support growth,",
   "digitalYantra.journey4": "and improve outcomes.",
   "digitalYantra.line3": "A mobile number is not just utility.",
-  "digitalYantra.line4": "It is an asset – THE CODE OF YOUR JOURNEY",
+  "digitalYantra.line4": "{greatestAsset}",
   "digitalYantra.cta": "Invest in your greatest asset >>>",
 
   "blogs.title": "Blogs",
