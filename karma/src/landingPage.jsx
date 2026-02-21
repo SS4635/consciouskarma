@@ -667,6 +667,8 @@ export default function ConsciousKarmaSections() {
 
           </p>
           <br />
+          <br />
+          <br /><br />
           <a
             href="/consult"
             className="text-[#ff914d] font-thin no-underline hover:opacity-80"
