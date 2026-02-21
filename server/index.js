@@ -28,6 +28,12 @@ import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
 import { sendScoreMail } from "./lib/sendScoreMail.js";
 import ContactMessage from "./models/ContactMessage.js";
 
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { fileURLToPath } from 'url';
+
+
 console.log({
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS_LEN: process.env.SMTP_PASS?.length,
@@ -68,6 +74,51 @@ const transporter = nodemailer.createTransport({
   logger: true,
   debug: true,
 });
+
+// ES Module mein __dirname setup
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// 📁 Uploads folder create karo agar nahi hai
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)){
+    fs.mkdirSync(uploadDir);
+}
+
+// ⚙️ Multer Storage Config
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/') 
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    const ext = path.extname(file.originalname);
+    cb(null, 'blog-img-' + uniqueSuffix + ext)
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+
+// 🌐 Frontend ko images serve karne ke liye static route
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 🚀 Admin Image Upload API
+app.post('/api/admin/upload-image', upload.single('image'), (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ ok: false, message: "No image provided" });
+    
+    // URL return kar rahe hain jo frontend text editor me use karega
+    const imageUrl = `/uploads/${req.file.filename}`;
+    return res.json({ ok: true, imageUrl });
+  } catch (err) {
+    console.error("Image upload error:", err);
+    return res.status(500).json({ ok: false, message: "Failed to upload image" });
+  }
+});
+
 
 function normalizeIndianMobile(num = "") {
   const digits = String(num).replace(/\D/g, ""); // सिर्फ नंबर रखें
@@ -337,33 +388,80 @@ app.post("/api/email/verify-otp", (req, res) => {
 
 
 // User login endpoint
+// app.post("/api/auth/login", async (req, res) => {
+//   try {
+//     const { email, password } = req.body;
+
+//     if (!email || !password) {
+//       return res.status(400).json({ ok: false, message: "Email and password required" });
+//     }
+
+//     // Check if user exists
+//     const user = await User.findOne({ email });
+//     if (!user) {
+//       return res.status(404).json({ ok: false, message: "User not found" });
+//     }
+
+//     // Compare passwords
+//     const match = await bcrypt.compare(password, user.password);
+//     if (!match) {
+//       return res.status(401).json({ ok: false, message: "Incorrect password" });
+//     }
+
+//     // Return user (no JWT in your current setup)
+//     res.json({
+//       ok: true,
+//       message: "Login successful",
+//       user: {
+//         email: user.email,
+//       },
+//     });
+
+//   } catch (err) {
+//     console.error("Login error:", err);
+//     res.status(500).json({ ok: false, message: "Server error" });
+//   }
+// });
+
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log("User:", email, password);
+    console.log("ENV", process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD);
 
     if (!email || !password) {
       return res.status(400).json({ ok: false, message: "Email and password required" });
     }
 
-    // Check if user exists
+    // 👑 1. ADMIN CHECK (Direct from .env)
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+      console.log("🛡️ [AUTH] Admin logged in");
+      
+      // Bina JWT ke return kar rahe hain, frontend isko encrypt karke URL me daalega
+      return res.json({
+        ok: true,
+        role: "admin",
+        message: "Admin login successful",
+        user: { email }, 
+      });
+    }
+
+    // 👤 2. NORMAL USER CHECK (Tera existing flow)
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ ok: false, message: "User not found" });
     }
 
-    // Compare passwords
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ ok: false, message: "Incorrect password" });
     }
 
-    // Return user (no JWT in your current setup)
     res.json({
       ok: true,
+      role: "user",
       message: "Login successful",
-      user: {
-        email: user.email,
-      },
+      user: { email: user.email },
     });
 
   } catch (err) {
@@ -372,6 +470,286 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+// 📊 GET: Admin Dashboard Today's Summary
+// 📊 GET: Admin Dashboard Smart Summary
+app.get("/api/admin/summary", async (req, res) => {
+  try {
+    const { email, range } = req.query;
+    
+    // 🛡️ Admin Security Check
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Chal bhag yahan se! 🔒" });
+    }
+
+    let dateQuery = {};
+    const now = new Date();
+    const startDate = new Date();
+
+    // 🕒 Dynamic Date Range Logic
+    if (range === "today" || !range) {
+      startDate.setHours(0, 0, 0, 0);
+      dateQuery = { createdAt: { $gte: startDate, $lte: now } };
+    } else if (range === "weekly") {
+      startDate.setDate(now.getDate() - 7);
+      dateQuery = { createdAt: { $gte: startDate, $lte: now } };
+    } else if (range === "monthly") {
+      startDate.setDate(now.getDate() - 30);
+      dateQuery = { createdAt: { $gte: startDate, $lte: now } };
+    } else if (range === "quarterly") {
+      startDate.setDate(now.getDate() - 90);
+      dateQuery = { createdAt: { $gte: startDate, $lte: now } };
+    } else if (range === "yearly") {
+      startDate.setDate(now.getDate() - 365);
+      dateQuery = { createdAt: { $gte: startDate, $lte: now } };
+    } else if (range === "all") {
+      dateQuery = {}; // Poori history
+    }
+
+    // ⚡ Parallel DB Calls for Superfast Speed
+    const [instantCount, personalisedCount, consultCount, contactCount] = await Promise.all([
+      Order.countDocuments({ ...dateQuery, "formData.parallels": { $size: 0 } }),
+      Order.countDocuments({ ...dateQuery, "formData.parallels": { $not: { $size: 0 } } }),
+      Consultation.countDocuments(dateQuery),
+      ContactMessage.countDocuments(dateQuery)
+    ]);
+
+    res.json({
+      ok: true,
+      data: {
+        instant: instantCount,
+        personalised: personalisedCount,
+        consult: consultCount,
+        contact: contactCount,
+        total: instantCount + personalisedCount + consultCount + contactCount // Pro-level overall metric
+      }
+    });
+  } catch (err) {
+    console.error("Summary API Error:", err);
+    res.status(500).json({ ok: false, message: "Failed to fetch summary" });
+  }
+});
+
+// 🔒 GET: Admin API - Fetch ALL Blogs (Drafts & Published)
+app.get("/api/admin/blogs", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+    }
+
+    const blogs = await Blog.find().sort({ createdAt: -1 });
+    res.json({ ok: true, data: blogs });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
+// ✏️ PUT: Admin Edit/Update Blog
+app.put("/api/admin/blog/:id", async (req, res) => {
+  try {
+    const { email, title, content, imageUrl, status } = req.body;
+    
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+    }
+
+    // Slug dobara generate karenge incase title change hua ho
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      req.params.id, 
+      { title, slug, content, imageUrl, status },
+      { new: true } // Return updated document
+    );
+
+    if (!updatedBlog) return res.status(404).json({ ok: false, message: "Blog not found" });
+
+    res.json({ ok: true, message: "Blog updated successfully!", blog: updatedBlog });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Failed to update blog" });
+  }
+});
+
+// 🗑️ DELETE: Admin Delete Blog
+app.delete("/api/admin/blog/:id", async (req, res) => {
+  try {
+    const { email } = req.body; // Delete request me body bhejna allowed hai
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+    }
+
+    await Blog.findByIdAndDelete(req.params.id);
+    res.json({ ok: true, message: "Blog deleted successfully!" });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Failed to delete blog" });
+  }
+});
+
+// 🔍 GET: Admin Data with Search & Filters
+app.get("/api/admin/data", async (req, res) => {
+  try {
+    const { email, type, search, filterDate, page = 1, limit = 20 } = req.query;
+
+    // 🛡️ Admin Security Check
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+    }
+
+    let query = {};
+
+    // 📅 1. DATE FILTER LOGIC
+    if (filterDate && filterDate !== "all") {
+      const startDate = new Date();
+      startDate.setHours(0, 0, 0, 0); 
+      
+      if (filterDate === "today") {
+        // Aaj ka set hai
+      } else if (filterDate === "last7") {
+        startDate.setDate(startDate.getDate() - 7);
+      } else if (filterDate === "last30") {
+        startDate.setDate(startDate.getDate() - 30);
+      }
+      query.createdAt = { $gte: startDate };
+    }
+
+    // 🔎 2. SEARCH LOGIC (Regex match on existing fields)
+    if (search && search.trim() !== "") {
+      const searchRegex = new RegExp(search.trim(), "i");
+      
+      // Multiple fields search taaki Order, Consult aur Contact sab cover ho jayein
+      query.$or = [
+        { name: searchRegex },
+        { email: searchRegex },
+        { phone: searchRegex },
+        { "formData.general.name": searchRegex },
+        { "formData.general.email": searchRegex }
+      ];
+    }
+
+    let results = [];
+    let totalCount = 0;
+    
+    const skip = (Number(page) - 1) * Number(limit);
+    const sort = { createdAt: -1 }; 
+
+    // 📂 3. FETCH DATA BASED ON 'TYPE'
+    switch (type) {
+      case "instant":
+        query["formData.parallels"] = { $size: 0 };
+        results = await Order.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        totalCount = await Order.countDocuments(query);
+        break;
+
+      case "personalised":
+        query["formData.parallels"] = { $not: { $size: 0 } };
+        results = await Order.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        totalCount = await Order.countDocuments(query);
+        break;
+
+      case "consult":
+        results = await Consultation.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        totalCount = await Consultation.countDocuments(query);
+        break;
+
+      case "contact":
+        results = await ContactMessage.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        totalCount = await ContactMessage.countDocuments(query);
+        break;
+
+      default:
+        return res.status(400).json({ ok: false, message: "Invalid type parameter" });
+    }
+
+    res.json({ 
+      ok: true, 
+      data: results,
+      pagination: {
+        total: totalCount,
+        page: Number(page),
+        pages: Math.ceil(totalCount / Number(limit))
+      }
+    });
+
+  } catch (err) {
+    console.error("Admin Data API Error:", err);
+    res.status(500).json({ ok: false, message: "Failed to fetch data" });
+  }
+});
+
+import Blog from "./models/Blog.js";
+
+// 📝 POST: Admin Add Blog (Save as Draft or Publish)
+app.post("/api/admin/blog", async (req, res) => {
+  try {
+    // Frontend se email (for security), title, content, image path aur status aayega
+    const { email, title, content, imageUrl, status } = req.body;
+
+    // 🛡️ Admin Security Check
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+    }
+
+    if (!title || !content || !imageUrl) {
+      return res.status(400).json({ ok: false, message: "Title, content and image are required" });
+    }
+
+    // URL friendly slug bana rahe hain (E.g., "My First Blog" -> "my-first-blog")
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+
+    const newBlog = await Blog.create({
+      title,
+      slug,
+      content,
+      imageUrl, // Ye tera local path aayega jaise: "/uploads/blog-img-123.jpg"
+      status: status || "draft", // Agar status nahi aaya toh default 'draft'
+    });
+
+    res.json({ 
+      ok: true, 
+      message: status === "published" ? "Blog published successfully!" : "Blog saved as draft!", 
+      blog: newBlog 
+    });
+
+  } catch (err) {
+    console.error("Blog save error:", err);
+    // Agar same title dobara use kiya toh slug duplicate ka error aayega
+    if (err.code === 11000) {
+      return res.status(400).json({ ok: false, message: "Blog with this title already exists." });
+    }
+    res.status(500).json({ ok: false, message: "Failed to save blog" });
+  }
+});
+
+// 🌐 GET: Public API - Fetch ALL "Published" Blogs (Cards ke liye)
+app.get("/api/blogs", async (req, res) => {
+  try {
+    // Sirf 'published' wale utha rahe hain, aur 'content' skip kar rahe hain taaki API superfast load ho
+    const blogs = await Blog.find({ status: "published" })
+                            .select("title slug imageUrl content createdAt") 
+                            .sort({ createdAt: -1 });
+    
+    res.json({ ok: true, data: blogs });
+  } catch (err) {
+    console.error("Fetch blogs error:", err);
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
+// 📖 GET: Public API - Fetch Single Blog Detail (Read More ke liye)
+app.get("/api/blogs/:slug", async (req, res) => {
+  try {
+    const blog = await Blog.findOne({ slug: req.params.slug, status: "published" });
+    
+    if (!blog) {
+      return res.status(404).json({ ok: false, message: "Blog not found" });
+    }
+
+    res.json({ ok: true, data: blog });
+  } catch (err) {
+    console.error("Fetch single blog error:", err);
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
 
 app.post("/api/pay/create-consultation-order", async (req, res) => {
   try {

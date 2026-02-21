@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import "./loginModal.css";
 
 /* ================= API BASE ================= */
-const API_BASE_URL = "https://server.consciouskarma.co";
+const API_BASE_URL = `${process.env.REACT_APP_API_URL}`;
 /* ============================================ */
 
 export default function LoginModal({ onClose, onSwitch }) {
@@ -58,7 +58,13 @@ export default function LoginModal({ onClose, onSwitch }) {
       setUser(user);
 
       const encrypted = encodeURIComponent(encryptEmail(user.email));
-      navigate(`/dashboard?u=${encrypted}`);
+      
+      // 🔥 YAHAN UPDATE KIYA HAI: Role check for Admin redirect
+      if (res.data.role === "admin") {
+        navigate(`/admin-dashboard?u=${encrypted}`);
+      } else {
+        navigate(`/dashboard?u=${encrypted}`);
+      }
 
       onClose();
     } catch (err) {
