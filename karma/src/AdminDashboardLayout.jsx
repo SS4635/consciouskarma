@@ -3,31 +3,28 @@ import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { decryptEmail } from "./utils/emailCrypto";
 import Swal from "sweetalert2";
-import ReactQuill, { Quill } from "react-quill-new"; // Added Quill for registration
+import ReactQuill, { Quill } from "react-quill-new";
 import "react-quill-new/dist/quill.snow.css"; 
 import "./DashboardLayout.css"; 
 
 const API_BASE_URL = `${process.env.REACT_APP_API_URL}`;
 
-// --- QUILL CUSTOMIZATION START ---
-// 1. Custom Sizes register karein (Pixel based)
 const FontSize = Quill.import("formats/size");
 FontSize.whitelist = ["12px", "14px", "16px", "18px", "20px", "24px", "30px", "36px"];
 Quill.register(FontSize, true);
 
-// 2. Toolbar Configuration
 const modules = {
   toolbar: [
     [{ header: [1, 2, 3, 4, false] }],
-    [{ size: FontSize.whitelist }], // Custom Sizes
+    [{ size: FontSize.whitelist }],
     [{ font: [] }],
     ["bold", "italic", "underline", "strike"],
-    [{ color: [] }, { background: [] }], // Font Color & Background Color
+    [{ color: [] }, { background: [] }], 
     [{ script: "sub" }, { script: "super" }],
     [{ align: [] }],
     [{ list: "ordered" }, { list: "bullet" }],
     ["link", "image", "video"],
-    ["clean"], // Format Reset (TX icon)
+    ["clean"], 
   ],
 };
 
@@ -35,7 +32,6 @@ const formats = [
   "header", "size", "font", "bold", "italic", "underline", "strike",
   "color", "background", "script", "align", "list", "bullet", "link", "image", "video"
 ];
-// --- QUILL CUSTOMIZATION END ---
 
 export default function AdminDashboardLayout() {
   const navigate = useNavigate();
@@ -54,12 +50,21 @@ export default function AdminDashboardLayout() {
   const [activeTab, setActiveTab] = useState("summary"); 
   const [loading, setLoading] = useState(false);
 
-  // Summary State
+  // Core Data States
   const [summaryRange, setSummaryRange] = useState("today"); 
   const [summaryData, setSummaryData] = useState({ instant: 0, personalised: 0, consult: 0, contact: 0, total: 0 });
-
-  // Table States
   const [tableData, setTableData] = useState([]);
+  
+  // Link / Energy Log States
+  const [isLinkOpen, setIsLinkOpen] = useState(false);
+  const [selectedRoute, setSelectedRoute] = useState("");
+  const [availableRoutes, setAvailableRoutes] = useState([]); 
+
+  // Category States
+  const [categories, setCategories] = useState([]);
+  const [newCategory, setNewCategory] = useState("");
+
+  // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [filterDate, setFilterDate] = useState("all"); 
@@ -68,7 +73,7 @@ export default function AdminDashboardLayout() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  // 🔥 BLOG CMS STATES
+  // Blog CMS States
   const [blogView, setBlogView] = useState("list"); 
   const [blogList, setBlogList] = useState([]); 
   const [editBlogId, setEditBlogId] = useState(null); 
@@ -76,11 +81,38 @@ export default function AdminDashboardLayout() {
   const [blogContent, setBlogContent] = useState("");
   const [blogImageFile, setBlogImageFile] = useState(null);
   const [existingImageUrl, setExistingImageUrl] = useState(""); 
+  const [blogCategory, setBlogCategory] = useState("");
+  const [blogKeywords, setBlogKeywords] = useState([]);
+  const [keywordInput, setKeywordInput] = useState("");
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchQuery), 500);
     return () => clearTimeout(timer);
   }, [searchQuery]);
+
+  // Fetch Categories AND Routes Initially
+  useEffect(() => {
+    if(adminEmail) {
+      fetchCategories();
+      fetchAvailableRoutes();
+    }
+  }, [adminEmail]);
+
+  const fetchCategories = async () => {
+    try {
+      const { data } = await axios.get(`${API_BASE_URL}/api/admin/categories`);
+      if (data.ok) setCategories(data.data);
+    } catch (err) {
+      console.error("Failed to fetch categories");
+    }
+  };
+
+  const fetchAvailableRoutes = async () => {
+    try {
+      const { data } = await axios.get(`${API_BASE_URL}/api/admin/available-routes`, { params: { email: adminEmail } });
+      if (data.ok) setAvailableRoutes(data.data);
+    } catch (err) {}
+  };
 
   // Fetch Summary
   useEffect(() => {
@@ -88,9 +120,7 @@ export default function AdminDashboardLayout() {
       const fetchSummary = async () => {
         setLoading(true);
         try {
-          const { data } = await axios.get(`${API_BASE_URL}/api/admin/summary`, {
-            params: { email: adminEmail, range: summaryRange }
-          });
+          const { data } = await axios.get(`${API_BASE_URL}/api/admin/summary`, { params: { email: adminEmail, range: summaryRange } });
           if (data.ok) setSummaryData(data.data);
         } catch (err) {} finally { setLoading(false); }
       };
@@ -98,7 +128,7 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, adminEmail, summaryRange]);
 
-  // Fetch Data Tables
+  // Fetch Core Data Tables
   useEffect(() => {
     const tableTabs = ["instant", "personalised", "consult", "contact"];
     if (tableTabs.includes(activeTab)) {
@@ -107,40 +137,83 @@ export default function AdminDashboardLayout() {
         setLoading(true);
         try {
           const { data } = await axios.get(`${API_BASE_URL}/api/admin/data`, {
-            params: { email: adminEmail, type: activeTab, search: debouncedSearch, filterDate: filterDate, startDate: filterDate === "custom" ? startDate : undefined, endDate: filterDate === "custom" ? endDate : undefined, page: page, limit: 20 }
+            params: { email: adminEmail, type: activeTab, search: debouncedSearch, filterDate, startDate, endDate, page, limit: 20 }
           });
-          if (data.ok) { setTableData(data.data); setTotalPages(data.pagination.pages); }
+          if (data.ok) setTableData(data.data);
         } catch (err) {} finally { setLoading(false); }
       };
       fetchData();
     }
   }, [activeTab, debouncedSearch, filterDate, startDate, endDate, page, adminEmail]);
 
+  // Fetch Energy Logs
+  useEffect(() => {
+    if (activeTab === "energy-logs" && selectedRoute) {
+      const fetchLogs = async () => {
+        setLoading(true);
+        try {
+          const { data } = await axios.get(`${API_BASE_URL}/api/admin/energy-logs`, {
+            params: { email: adminEmail, routeHit: selectedRoute }
+          });
+          if (data.ok) setTableData(data.data);
+        } catch (err) {} finally { setLoading(false); }
+      };
+      fetchLogs();
+    }
+  }, [activeTab, selectedRoute, adminEmail]);
+  
+  // Fetch Blogs
   useEffect(() => {
     if (activeTab === "blog" && blogView === "list") {
       const fetchBlogs = async () => {
         setLoading(true);
         try {
-          const { data } = await axios.get(`${API_BASE_URL}/api/admin/blogs`, {
-            params: { email: adminEmail }
-          });
+          const { data } = await axios.get(`${API_BASE_URL}/api/admin/blogs`, { params: { email: adminEmail } });
           if (data.ok) setBlogList(data.data);
-        } catch (err) {
-          console.error("Failed to fetch blogs", err);
-        } finally {
-          setLoading(false);
-        }
+        } catch (err) {} finally { setLoading(false); }
       };
       fetchBlogs();
     }
   }, [activeTab, blogView, adminEmail]);
 
+  // --- Category Actions (FIXED) ---
+  const handleAddCategory = async () => {
+    if (!newCategory.trim()) {
+      return Swal.fire("Warning", "Category name cannot be empty", "warning");
+    }
+    try {
+      const { data } = await axios.post(`${API_BASE_URL}/api/admin/category`, { email: adminEmail, name: newCategory });
+      if (data.ok) {
+        setCategories([data.category, ...categories]);
+        setNewCategory("");
+        Swal.fire("Added", "Category added successfully", "success");
+      }
+    } catch (err) {
+      const errMsg = err.response?.data?.message || "Failed to add category";
+      Swal.fire("Error", errMsg, "error");
+    }
+  };
+
+  const handleDeleteCategory = async (id) => {
+    try {
+      const { data } = await axios.delete(`${API_BASE_URL}/api/admin/category/${id}`, { data: { email: adminEmail } });
+      if (data.ok) {
+        setCategories(categories.filter(c => c._id !== id));
+      }
+    } catch (err) {
+      Swal.fire("Error", "Failed to delete category", "error");
+    }
+  };
+
+  // --- Blog Actions ---
   const handleEditBlog = (blog) => {
     setEditBlogId(blog._id);
     setBlogTitle(blog.title);
     setBlogContent(blog.content);
     setExistingImageUrl(blog.imageUrl); 
     setBlogImageFile(null); 
+    setBlogCategory(blog.category || "");
+    setBlogKeywords(blog.keywords || []);
     setBlogView("form");
   };
 
@@ -150,26 +223,50 @@ export default function AdminDashboardLayout() {
     setBlogContent("");
     setExistingImageUrl("");
     setBlogImageFile(null);
+    setBlogCategory("");
+    setBlogKeywords([]);
+    setKeywordInput("");
     setBlogView("form");
   };
 
+  const handleKeywordKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      const val = keywordInput.trim();
+      if (val && !blogKeywords.includes(val)) {
+        setBlogKeywords([...blogKeywords, val]);
+      }
+      setKeywordInput("");
+    }
+  };
+
+  const removeKeyword = (kw) => {
+    setBlogKeywords(blogKeywords.filter(k => k !== kw));
+  };
+
   const handleBlogSubmit = async (status) => {
-    if (!blogTitle || !blogContent || (!blogImageFile && !existingImageUrl)) {
-      return Swal.fire("Error", "Title, Content and Image are required!", "error");
+    // 1. Basic Validations (Title, Content, Image)
+    if (!blogTitle.trim()) return Swal.fire("Error", "Blog Title is required!", "error");
+    if (!blogContent || blogContent === "<p><br></p>") return Swal.fire("Error", "Blog Content cannot be empty!", "error");
+    if (!blogImageFile && !existingImageUrl) return Swal.fire("Error", "Please select a Featured Image!", "error");
+
+    // 🔥 2. STRICT PUBLISH VALIDATION (Naya Code)
+    if (status === "published") {
+      if (!blogCategory || blogCategory.trim() === "") {
+        return Swal.fire("Missing Info", "Please select a Category before publishing!", "warning");
+      }
+      if (!blogKeywords || blogKeywords.length === 0) {
+        return Swal.fire("Missing Info", "Please add at least one Meta Keyword before publishing!", "warning");
+      }
     }
 
     setLoading(true);
     try {
       let finalImageUrl = existingImageUrl;
-
-      // 🔄 IMAGE CHANGE LOGIC: Agar naya file select kiya hai toh upload karo
       if (blogImageFile) {
         const formData = new FormData();
         formData.append("image", blogImageFile); 
-
-        const uploadRes = await axios.post(`${API_BASE_URL}/api/admin/upload-image`, formData, {
-          headers: { "Content-Type": "multipart/form-data" }
-        });
+        const uploadRes = await axios.post(`${API_BASE_URL}/api/admin/upload-image`, formData, { headers: { "Content-Type": "multipart/form-data" } });
         if (!uploadRes.data.ok) throw new Error("Image upload failed");
         finalImageUrl = uploadRes.data.imageUrl;
       }
@@ -179,7 +276,9 @@ export default function AdminDashboardLayout() {
         title: blogTitle,
         content: blogContent,
         imageUrl: finalImageUrl, 
-        status: status 
+        status: status,
+        category: blogCategory,
+        keywords: blogKeywords
       };
 
       let blogRes = editBlogId 
@@ -191,40 +290,115 @@ export default function AdminDashboardLayout() {
         setBlogView("list");
       }
     } catch (err) {
-      Swal.fire("Error", err?.response?.data?.message || "Something went wrong", "error");
+      Swal.fire("Error", err?.response?.data?.message || "Failed to save blog.", "error");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteBlog = async (id) => {
-    const confirm = await Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!'
-    });
-
+    const confirm = await Swal.fire({ title: 'Are you sure?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', confirmButtonText: 'Yes, delete it!' });
     if (confirm.isConfirmed) {
       try {
-        const { data } = await axios.delete(`${API_BASE_URL}/api/admin/blog/${id}`, {
-          data: { email: adminEmail } 
-        });
-        if (data.ok) {
-          Swal.fire('Deleted!', 'Blog has been deleted.', 'success');
-          setBlogList(prev => prev.filter(b => b._id !== id)); 
-        }
-      } catch (err) {
-        Swal.fire("Error", "Failed to delete blog", "error");
-      }
+        const { data } = await axios.delete(`${API_BASE_URL}/api/admin/blog/${id}`, { data: { email: adminEmail } });
+        if (data.ok) setBlogList(prev => prev.filter(b => b._id !== id)); 
+      } catch (err) {}
     }
   };
 
-  const handleLogout = () => navigate("/");
   const viewFullMessage = (name, message) => {
     Swal.fire({ title: `Message from ${name}`, text: message, icon: 'info', confirmButtonColor: '#ff914d' });
+  };
+
+  // 🔥 EXPORT EXCEL FUNCTION (UPDATED TO HANDLE LOGS TOO)
+  const exportToExcel = () => {
+    if (!tableData || tableData.length === 0) {
+      return Swal.fire("Empty", "No data available to export.", "info");
+    }
+
+    let csvRows = [];
+
+    // Logics for 'energy-logs' Tab Export
+    if (activeTab === "energy-logs") {
+      const headers = ["Date", "Time", "Mobile Hit", "IP Address"];
+      csvRows.push(headers.join(","));
+
+      tableData.forEach(item => {
+        const d = new Date(item.createdAt);
+        const dateStr = d.toLocaleDateString('en-IN');
+        const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        const mobile = `"${item.mobileNumber || "-"}"`;
+        const ip = `"${item.ipAddress || "-"}"`;
+        csvRows.push([dateStr, timeStr, mobile, ip].join(","));
+      });
+    } 
+    // Logic for other Core Tabs Export
+    else {
+      let headers = ["Date", "Time", "Name", "Email", "Mobile"];
+      if (activeTab === "instant") headers.push("Payment Mode");
+      if (activeTab === "consult") headers.push("Plan Name");
+      if (activeTab !== "contact") headers.push("Report Status");
+      if (activeTab === "contact") headers.push("Message");
+
+      csvRows.push(headers.join(","));
+
+      tableData.forEach(item => {
+        const fd = item.formData || {};
+        
+        let rawName = item.name || item.firstName || fd.general?.name || fd.name || fd.fullName || fd.firstName || "-";
+        let rawEmail = item.email || fd.general?.email || fd.email || fd.emailAddress || "-";
+        
+        let rawPhone = item.phone;
+        if (!rawPhone || rawPhone.trim() === "") {
+           if (fd.primary?.number) {
+               rawPhone = `${fd.primary.isd || ''}${fd.primary.number}`;
+           } else {
+               rawPhone = fd.phone || fd.mobile || fd.mobileNumber || fd.contact || "-";
+           }
+        }
+
+        if (rawName.trim() === "") rawName = "-";
+        if (rawEmail.trim() === "") rawEmail = "-";
+        if (rawPhone.trim() === "") rawPhone = "-";
+
+        const name = `"${rawName.replace(/"/g, '""')}"`;
+        const email = `"${rawEmail}"`;
+        const phone = `"${rawPhone}"`;
+        
+        const d = new Date(item.createdAt);
+        const dateStr = d.toLocaleDateString('en-IN');
+        const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+        let row = [dateStr, timeStr, name, email, phone];
+
+        if (activeTab === "instant") {
+          const isFree = item.amount === 0 || item.price === 0;
+          row.push(isFree ? "Coupon" : "Paid");
+        }
+        if (activeTab === "consult") {
+          row.push(`"${item.planName || item.formData?.planName || "-"}"`);
+        }
+        if (activeTab !== "contact") {
+          const isEmailSent = item.instantEmailSent === true || item.emailSent === true;
+          row.push(isEmailSent ? "True" : "False");
+        }
+        if (activeTab === "contact") {
+          row.push(`"${(item.message || "").replace(/"/g, '""')}"`);
+        }
+
+        csvRows.push(row.join(","));
+      });
+    }
+
+    const blob = new Blob([csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", `CK_Data_${activeTab}_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   };
 
   const darkCardStyle = { padding: "24px", background: "linear-gradient(145deg, #1a1a1a 0%, #111111 100%)", border: "1px solid #333", borderRadius: "16px", color: "white", boxShadow: "0 8px 24px rgba(0,0,0,0.4)", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" };
@@ -242,7 +416,7 @@ export default function AdminDashboardLayout() {
       <div className="dashboard-body">
         <aside className="ck-sidebar" style={{ background: "#111", borderRight: "1px solid #333" }}>
           <nav className="ck-nav">
-            {["summary", "instant", "personalised", "consult", "contact"].map((tab) => (
+            {["summary", "instant", "personalised", "consult"].map((tab) => (
               <button 
                 key={tab}
                 className={`ck-nav-item ${activeTab === tab ? "ck-nav-item--active" : ""}`} 
@@ -252,13 +426,59 @@ export default function AdminDashboardLayout() {
                 {tab === "summary" ? "📊 Dashboard Overview" : tab === "personalised" ? "Personalised Reports" : `${tab} Data`}
               </button>
             ))}
+
+            {/* LINK DROPDOWN (DYNAMIC FROM .ENV) */}
+            <div style={{ marginTop: "5px" }}>
+              <button 
+                className="ck-nav-item" 
+                onClick={() => setIsLinkOpen(!isLinkOpen)}
+                style={{ color: activeTab === "energy-logs" ? "#ff914d" : "#aaa", background: activeTab === "energy-logs" ? "rgba(255, 145, 77, 0.1)" : "transparent", width: "100%", textAlign: "left", display: "flex", justifyContent: "space-between" }}
+              >
+                <span>🔗 Link Actions</span>
+                <span>{isLinkOpen ? "▾" : "▸"}</span>
+              </button>
+              {isLinkOpen && (
+                <div style={{ paddingLeft: "15px", display: "flex", flexDirection: "column", gap: "5px", marginTop: "5px" }}>
+                  {availableRoutes.length > 0 ? (
+                    availableRoutes.map(route => (
+                      <button 
+                        key={route} 
+                        onClick={() => { setActiveTab("energy-logs"); setSelectedRoute(route); }}
+                        style={{ background: selectedRoute === route ? "#ff914d" : "#222", color: selectedRoute === route ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left" }}
+                      >
+                        Route: /{route}
+                      </button>
+                    ))
+                  ) : (
+                    <span style={{ color: "#666", fontSize: "12px", padding: "8px" }}>No routes found in .env</span>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <button 
+              className={`ck-nav-item ${activeTab === "contact" ? "ck-nav-item--active" : ""}`} 
+              onClick={() => { setActiveTab("contact"); setPage(1); }}
+              style={{ color: activeTab === "contact" ? "#ff914d" : "#aaa", background: activeTab === "contact" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}
+            >
+              💬 Contact Data
+            </button>
+
             <hr style={{ margin: "15px 0", borderColor: "#333" }} />
+            
             <button 
               className={`ck-nav-item ${activeTab === "blog" ? "ck-nav-item--active" : ""}`} 
               onClick={() => { setActiveTab("blog"); setBlogView("list"); }}
               style={{ color: activeTab === "blog" ? "#ff914d" : "#aaa", background: activeTab === "blog" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}
             >
               📝 Manage Blogs
+            </button>
+            <button 
+              className={`ck-nav-item ${activeTab === "categories" ? "ck-nav-item--active" : ""}`} 
+              onClick={() => setActiveTab("categories")}
+              style={{ color: activeTab === "categories" ? "#ff914d" : "#aaa", background: activeTab === "categories" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}
+            >
+              🗂️ Manage Categories
             </button>
           </nav>
         </aside>
@@ -296,14 +516,35 @@ export default function AdminDashboardLayout() {
               </section>
             )}
 
+            {/* TABLES FOR INSTANT, PERSONALISED, CONSULT, CONTACT */}
             {["instant", "personalised", "consult", "contact"].includes(activeTab) && (
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
                 <h2 className="ck-panel-title" style={{ textTransform: "capitalize", color: "#fff" }}>{activeTab} Data</h2>
-                <div style={{ display: "flex", gap: "15px", marginBottom: "20px", flexWrap: "wrap", alignItems: "center" }}>
-                  <input type="text" placeholder="Search Name, Email, Phone..." className="ck-input" style={{ flex: 1, minWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }} />
-                  <select className="ck-input" style={{ width: "150px", background: "#222", color: "#fff", border: "1px solid #444" }} value={filterDate} onChange={(e) => { setFilterDate(e.target.value); setPage(1); }}>
-                    <option value="all">All Time</option><option value="today">Today</option><option value="last7">Last 7 Days</option><option value="last30">Last 30 Days</option><option value="custom">Custom Range</option>
-                  </select>
+                
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
+                  <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", alignItems: "center", flex: 1 }}>
+                    <input type="text" placeholder="Search Name, Email, Phone..." className="ck-input" style={{ flex: 1, minWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); setPage(1); }} />
+                    
+                    <select className="ck-input" style={{ width: "150px", background: "#222", color: "#fff", border: "1px solid #444" }} value={filterDate} onChange={(e) => { setFilterDate(e.target.value); setPage(1); }}>
+                      <option value="all">All Time</option>
+                      <option value="today">Today</option>
+                      <option value="last7">Last 7 Days</option>
+                      <option value="last30">Last 30 Days</option>
+                      <option value="custom">Custom Range</option>
+                    </select>
+
+                    {filterDate === "custom" && (
+                      <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                        <input type="date" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={startDate} max={endDate || undefined} onChange={(e) => { setStartDate(e.target.value); setPage(1); }} />
+                        <span style={{color: "#888"}}>to</span>
+                        <input type="date" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={endDate} min={startDate || undefined} onChange={(e) => { setEndDate(e.target.value); setPage(1); }} />
+                      </div>
+                    )}
+                  </div>
+
+                  <button className="ck-btn-sm" style={{ background: "#2ecc71", color: "#000", fontWeight: "bold", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: "6px" }} onClick={exportToExcel}>
+                    📥 Export Excel
+                  </button>
                 </div>
 
                 {loading ? <div className="ck-empty-state" style={{color: "#ff914d"}}>Loading records...</div> : tableData.length === 0 ? (
@@ -311,27 +552,86 @@ export default function AdminDashboardLayout() {
                 ) : (
                   <>
                     <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
-                      <table className="ck-table" style={{ color: "#fff" }}>
+                      <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
                         <thead style={{ background: "#222" }}>
                           <tr>
-                            <th>Date</th><th>Name</th><th>Email</th><th>Phone</th>
-                            {activeTab === "consult" && <th>Plan Name</th>}
-                            {activeTab === "consult" && <th>Price (₹)</th>}
-                            {activeTab === "contact" && <th>Message</th>}
+                            <th style={{padding: "12px"}}>Date</th>
+                            <th style={{padding: "12px"}}>Time</th>
+                            <th style={{padding: "12px"}}>Name</th>
+                            <th style={{padding: "12px"}}>Email</th>
+                            <th style={{padding: "12px"}}>Mobile</th>
+                            
+                            {activeTab === "instant" && <th style={{padding: "12px"}}>Payment Mode</th>}
+                            {activeTab === "consult" && <th style={{padding: "12px"}}>Plan Name</th>}
+                            {activeTab !== "contact" && <th style={{padding: "12px"}}>Report Status</th>}
+                            {activeTab === "contact" && <th style={{padding: "12px"}}>Message</th>}
                           </tr>
                         </thead>
+                        
                         <tbody>
                           {tableData.map((item) => {
-                            const name = item.name || item.firstName || item.formData?.general?.name || "-";
-                            const email = item.email || item.formData?.general?.email || "-";
-                            const phone = item.phone || item.formData?.primary?.number || "-";
+                            const fd = item.formData || {};
+                            
+                            let name = item.name || item.firstName || fd.general?.name || fd.name || fd.fullName || fd.firstName || "-";
+                            let email = item.email || fd.general?.email || fd.email || fd.emailAddress || "-";
+                            
+                            let phone = item.phone;
+                            if (!phone || phone.trim() === "") {
+                               if (fd.primary?.number) {
+                                   phone = `${fd.primary.isd || ''}${fd.primary.number}`;
+                               } else {
+                                   phone = fd.phone || fd.mobile || fd.mobileNumber || fd.contact || "-";
+                               }
+                            }
+
+                            if (name.trim() === "") name = "-";
+                            if (email.trim() === "") email = "-";
+                            if (phone.trim() === "") phone = "-";
+
+                            const planName = item.planName || item.formData?.planName || "-";
+                            
+                            const d = new Date(item.createdAt);
+                            const dateStr = d.toLocaleDateString('en-IN');
+                            const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+                            const isFreeOrCoupon = item.amount === 0 || item.price === 0;
+                            const isEmailSent = item.instantEmailSent === true || item.emailSent === true;
+
                             return (
                               <tr key={item._id} style={{ borderBottom: "1px solid #333" }}>
-                                <td>{new Date(item.createdAt).toLocaleDateString()}</td><td>{name}</td><td>{email}</td><td>{phone}</td>
-                                {activeTab === "consult" && <td>{item.planName || "-"}</td>}
-                                {activeTab === "consult" && <td>{item.price ? `₹${item.price}` : "-"}</td>}
+                                <td style={{padding: "12px"}}>{dateStr}</td>
+                                <td style={{padding: "12px", color: "#aaa"}}>{timeStr}</td>
+                                <td style={{padding: "12px"}}>{name}</td>
+                                <td style={{padding: "12px"}}>{email}</td>
+                                <td style={{padding: "12px"}}>{phone}</td>
+                                
+                                {activeTab === "instant" && (
+                                  <td style={{ padding: "12px", color: isFreeOrCoupon ? "#2ecc71" : "#3498db" }}>
+                                    {isFreeOrCoupon ? "Coupon" : "Paid"}
+                                  </td>
+                                )}
+
+                                {activeTab === "consult" && <td style={{padding: "12px"}}>{planName}</td>}
+
+                                {activeTab !== "contact" && (
+                                  <td style={{padding: "12px"}}>
+                                    <span style={{
+                                      padding: "4px 8px",
+                                      borderRadius: "4px",
+                                      fontSize: "12px",
+                                      background: isEmailSent ? "rgba(46,204,113,0.1)" : "rgba(231,76,60,0.1)",
+                                      color: isEmailSent ? "#2ecc71" : "#e74c3c",
+                                      fontWeight: "bold"
+                                    }}>
+                                      {isEmailSent ? "True" : "False"}
+                                    </span>
+                                  </td>
+                                )}
+
                                 {activeTab === "contact" && (
-                                  <td><button className="ck-btn-sm" style={{background: "#ff914d", border: "none", color: "black", fontWeight: "bold", cursor: "pointer"}} onClick={() => viewFullMessage(name, item.message)}>Read Message</button></td>
+                                  <td style={{padding: "12px"}}>
+                                    <button className="ck-btn-sm" style={{background: "#ff914d", border: "none", color: "black", fontWeight: "bold", cursor: "pointer", padding: "6px 12px", borderRadius: "4px"}} onClick={() => viewFullMessage(name, item.message)}>Read Message</button>
+                                  </td>
                                 )}
                               </tr>
                             );
@@ -344,7 +644,76 @@ export default function AdminDashboardLayout() {
               </section>
             )}
 
-            {/* 🔥 MANAGE BLOGS (CMS) */}
+            {/* 🔥 NEW: ENERGY LOGS VIEW (WITH EXPORT BUTTON) */}
+            {activeTab === "energy-logs" && (
+              <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
+                
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                  <h2 className="ck-panel-title" style={{ color: "#fff", margin: 0 }}>Logs for Route: /{selectedRoute}</h2>
+                  <button className="ck-btn-sm" style={{ background: "#2ecc71", color: "#000", fontWeight: "bold", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: "6px" }} onClick={exportToExcel}>
+                    📥 Export Excel
+                  </button>
+                </div>
+
+                {loading ? <div className="ck-empty-state" style={{color: "#ff914d"}}>Loading logs...</div> : tableData.length === 0 ? (
+                  <div className="ck-empty-state" style={{color: "#888"}}>No hits recorded for this route yet.</div>
+                ) : (
+                  <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
+                    <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
+                      <thead style={{ background: "#222" }}>
+                        <tr><th style={{padding: "12px"}}>Date</th><th style={{padding: "12px"}}>Time</th><th style={{padding: "12px"}}>Mobile Hit</th><th style={{padding: "12px"}}>IP Address</th></tr>
+                      </thead>
+                      <tbody>
+                        {tableData.map(log => {
+                          const d = new Date(log.createdAt);
+                          return (
+                            <tr key={log._id} style={{ borderBottom: "1px solid #333" }}>
+                              <td style={{padding: "12px"}}>{d.toLocaleDateString('en-IN')}</td>
+                              <td style={{padding: "12px", color: "#aaa"}}>{d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</td>
+                              <td style={{padding: "12px", color: "#ff914d", fontWeight: "bold"}}>{log.mobileNumber}</td>
+                              <td style={{padding: "12px"}}>{log.ipAddress}</td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* 🔥 MANAGE CATEGORIES VIEW */}
+            {activeTab === "categories" && (
+              <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
+                <h2 className="ck-panel-title" style={{ color: "#fff" }}>Blog Categories</h2>
+                
+                <div style={{ display: "flex", gap: "10px", marginBottom: "30px" }}>
+                  <input type="text" className="ck-input" placeholder="New Category Name..." value={newCategory} onChange={e => setNewCategory(e.target.value)} style={{ background: "#222", color: "#fff", border: "1px solid #444", padding: "10px", borderRadius: "6px" }}/>
+                  <button onClick={handleAddCategory} style={{ background: "#ff914d", color: "#000", fontWeight: "bold", border: "none", padding: "10px 20px", borderRadius: "6px", cursor: "pointer" }}>Add Category</button>
+                </div>
+
+                <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
+                    <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
+                      <thead style={{ background: "#222" }}>
+                        <tr><th style={{padding: "12px"}}>Category Name</th><th style={{padding: "12px", width: "100px"}}>Action</th></tr>
+                      </thead>
+                      <tbody>
+                        {categories.map(cat => (
+                          <tr key={cat._id} style={{ borderBottom: "1px solid #333" }}>
+                            <td style={{padding: "12px"}}>{cat.name}</td>
+                            <td style={{padding: "12px"}}>
+                              <button onClick={() => handleDeleteCategory(cat._id)} style={{background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer"}}>Delete</button>
+                            </td>
+                          </tr>
+                        ))}
+                        {categories.length === 0 && <tr><td colSpan="2" style={{padding: "12px", textAlign: "center", color: "#888"}}>No categories created yet</td></tr>}
+                      </tbody>
+                    </table>
+                </div>
+              </section>
+            )}
+
+            {/* 🔥 EXISTING BLOGS TAB */}
             {activeTab === "blog" && (
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
@@ -357,19 +726,19 @@ export default function AdminDashboardLayout() {
                 </div>
 
                 {blogView === "list" && (
-                  loading ? <p style={{color: "#ff914d"}}>Loading blogs...</p> : blogList.length === 0 ? <p style={{color: "#888"}}>No blogs found. Create one!</p> : (
+                  loading ? <p style={{color: "#ff914d"}}>Loading blogs...</p> : blogList.length === 0 ? <p style={{color: "#888"}}>No blogs found.</p> : (
                     <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
-                      <table className="ck-table" style={{ color: "#fff" }}>
+                      <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
                         <thead style={{ background: "#222" }}>
-                          <tr><th>Title</th><th>Status</th><th>Date</th><th>Actions</th></tr>
+                          <tr><th style={{padding: "12px"}}>Title</th><th style={{padding: "12px"}}>Category</th><th style={{padding: "12px"}}>Status</th><th style={{padding: "12px"}}>Actions</th></tr>
                         </thead>
                         <tbody>
                           {blogList.map(blog => (
                             <tr key={blog._id} style={{ borderBottom: "1px solid #333" }}>
-                              <td>{blog.title}</td>
-                              <td><span style={{ padding: "4px 8px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold", background: blog.status === "published" ? "rgba(46, 204, 113, 0.2)" : "rgba(241, 196, 15, 0.2)", color: blog.status === "published" ? "#2ecc71" : "#f1c40f" }}>{blog.status.toUpperCase()}</span></td>
-                              <td>{new Date(blog.createdAt).toLocaleDateString()}</td>
-                              <td><div style={{display: "flex", gap: "10px"}}><button onClick={() => handleEditBlog(blog)} style={{background: "transparent", color: "#3498db", border: "none", cursor: "pointer"}}>Edit</button><button onClick={() => handleDeleteBlog(blog._id)} style={{background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer"}}>Delete</button></div></td>
+                              <td style={{padding: "12px"}}>{blog.title}</td>
+                              <td style={{padding: "12px", color: "#aaa"}}>{blog.category || "Uncategorized"}</td>
+                              <td style={{padding: "12px"}}><span style={{ padding: "4px 8px", borderRadius: "4px", fontSize: "12px", fontWeight: "bold", background: blog.status === "published" ? "rgba(46, 204, 113, 0.2)" : "rgba(241, 196, 15, 0.2)", color: blog.status === "published" ? "#2ecc71" : "#f1c40f" }}>{blog.status.toUpperCase()}</span></td>
+                              <td style={{padding: "12px"}}><div style={{display: "flex", gap: "10px"}}><button onClick={() => handleEditBlog(blog)} style={{background: "transparent", color: "#3498db", border: "none", cursor: "pointer"}}>Edit</button><button onClick={() => handleDeleteBlog(blog._id)} style={{background: "transparent", color: "#e74c3c", border: "none", cursor: "pointer"}}>Delete</button></div></td>
                             </tr>
                           ))}
                         </tbody>
@@ -382,53 +751,59 @@ export default function AdminDashboardLayout() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "15px", marginTop: "20px" }}>
                     <div>
                       <label className="ck-label" style={{color: "#aaa"}}>Blog Title</label>
-                      <input type="text" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} placeholder="Enter an SEO friendly title" value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} />
+                      <input type="text" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} />
+                    </div>
+
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+                      <div>
+                        <label className="ck-label" style={{color: "#aaa"}}>Select Category</label>
+                        <select className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444", width: "100%" }} value={blogCategory} onChange={(e) => setBlogCategory(e.target.value)}>
+                          <option value="">-- Choose Category --</option>
+                          {categories.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="ck-label" style={{color: "#aaa"}}>Meta Keywords (Press Enter)</label>
+                        <div style={{ background: "#222", border: "1px solid #444", borderRadius: "6px", padding: "5px", display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center" }}>
+                          {blogKeywords.map(kw => (
+                            <span key={kw} style={{ background: "#ff914d", color: "#000", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", display: "flex", alignItems: "center", gap: "5px", fontWeight: "bold" }}>
+                              {kw} <button type="button" onClick={() => removeKeyword(kw)} style={{ background: "transparent", border: "none", color: "#000", cursor: "pointer", fontSize: "14px", lineHeight: 1 }}>×</button>
+                            </span>
+                          ))}
+                          <input type="text" placeholder="Type and press enter..." value={keywordInput} onChange={(e) => setKeywordInput(e.target.value)} onKeyDown={handleKeywordKeyDown} style={{ background: "transparent", border: "none", color: "#fff", flex: 1, minWidth: "120px", outline: "none", padding: "5px" }} />
+                        </div>
+                      </div>
                     </div>
 
                     <div>
                       <label className="ck-label" style={{color: "#aaa"}}>Featured Image</label>
-                      {/* PREVIEW CURRENT IMAGE */}
-                      {existingImageUrl && (
-                        <div style={{ margin: "10px 0" }}>
-                          <p style={{fontSize: "12px", color: "#ff914d"}}>Current Image Preview:</p>
-                          <img src={existingImageUrl} alt="Current" style={{ width: "150px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "2px solid #333" }} />
-                        </div>
-                      )}
-                      <input id="blogImageInput" type="file" accept="image/*" className="ck-input" style={{ padding: "10px", background: "#222", color: "#fff", border: "1px solid #444" }} onChange={(e) => setBlogImageFile(e.target.files[0])} />
-                      <p style={{fontSize: "11px", color: "#888", marginTop: "5px"}}>* Select a new file to change the existing image.</p>
+                      {existingImageUrl && <img src={existingImageUrl} alt="Current" style={{ display: "block", width: "150px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "2px solid #333", margin: "10px 0" }} />}
+                      <input type="file" accept="image/*" className="ck-input" style={{ padding: "10px", background: "#222", color: "#fff", border: "1px solid #444" }} onChange={(e) => setBlogImageFile(e.target.files[0])} />
                     </div>
 
-<div>
-                      <label className="ck-label" style={{color: "#aaa"}}>Blog Content (Rich Text)</label>
-                      {/* Wrapper background ko #000 (black) aur color ko #fff (white) kar diya hai */}
+                    <div>
+                      <label className="ck-label" style={{color: "#aaa"}}>Blog Content</label>
                       <div style={{ background: "#000", color: "#fff", minHeight: "400px", borderRadius: "8px", overflow: "hidden", marginTop: "10px" }}>
-                        <ReactQuill 
-                          theme="snow" 
-                          value={blogContent} 
-                          onChange={setBlogContent} 
-                          modules={modules} 
-                          formats={formats}
-                          style={{ height: "350px" }} 
-                        />
+                        <ReactQuill theme="snow" value={blogContent} onChange={setBlogContent} modules={modules} formats={formats} style={{ height: "350px" }} />
                       </div>
                     </div>
 
                     <div style={{ display: "flex", gap: "15px", marginTop: "40px" }}>
-                      <button className="ck-btn" style={{ background: "#333", color: "#fff", border: "1px solid #555" }} onClick={() => handleBlogSubmit("draft")} disabled={loading}>{loading ? "Saving..." : "Save as Draft"}</button>
-                      <button className="ck-btn" style={{ background: "#ff914d", color: "#000", fontWeight: "bold" }} onClick={() => handleBlogSubmit("published")} disabled={loading}>{loading ? "Publishing..." : "Publish Now"}</button>
+                      <button className="ck-btn" style={{ background: "#333", color: "#fff", border: "1px solid #555" }} onClick={() => handleBlogSubmit("draft")} disabled={loading}>Save as Draft</button>
+                      <button className="ck-btn" style={{ background: "#ff914d", color: "#000", fontWeight: "bold" }} onClick={() => handleBlogSubmit("published")} disabled={loading}>Publish Now</button>
                     </div>
                   </div>
                 )}
               </section>
             )}
+
           </main>
         </div>
       </div>
-
       <style>{`
         .summary-card-hover:hover { transform: translateY(-5px); border-color: #ff914d !important; box-shadow: 0 10px 30px rgba(255, 145, 77, 0.15) !important; }
         
-        /* Quill Dropdown Fixes */
         .ql-snow .ql-picker.ql-size .ql-picker-label::before,
         .ql-snow .ql-picker.ql-size .ql-picker-item::before { content: attr(data-value) !important; }
         .ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before { content: "16px" !important; }
@@ -436,41 +811,14 @@ export default function AdminDashboardLayout() {
         
         .ql-toolbar.ql-snow { background: #f0f0f0; border-radius: 4px 4px 0 0; }
         .ql-container.ql-snow { border-radius: 0 0 4px 4px; }
-        /* Quill Dropdown Fixes */
-        .ql-snow .ql-picker.ql-size .ql-picker-label::before,
-        .ql-snow .ql-picker.ql-size .ql-picker-item::before { content: attr(data-value) !important; }
-        .ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before { content: "16px" !important; }
-        .ql-snow .ql-picker.ql-size { width: 90px !important; }
         
-        /* 🔥 DARK THEME FOR QUILL EDITOR 🔥 */
-        /* 1. Toolbar Styling */
-        .ql-toolbar.ql-snow { 
-          background-color: #111 !important; 
-          border: 1px solid #fff !important; 
-          border-bottom: 1px solid #444 !important; /* separator */
-          border-radius: 8px 8px 0 0; 
-        }
-
-        /* 2. Editor Body Styling (Jahan text likhte hain) */
-        .ql-container.ql-snow { 
-          background-color: #000 !important; 
-          color: #fff !important; /* Typing text white */
-          border: 1px solid #fff !important; 
-          border-top: none !important; 
-          border-radius: 0 0 8px 8px; 
-        }
-        
-        /* 3. Toolbar ke Icons ko White karna taaki dark background pe dikhein */
+        .ql-toolbar.ql-snow { background-color: #111 !important; border: 1px solid #fff !important; border-bottom: 1px solid #444 !important; border-radius: 8px 8px 0 0; }
+        .ql-container.ql-snow { background-color: #000 !important; color: #fff !important; border: 1px solid #fff !important; border-top: none !important; border-radius: 0 0 8px 8px; }
         .ql-snow .ql-stroke { stroke: #fff !important; }
         .ql-snow .ql-fill { fill: #fff !important; }
         .ql-snow .ql-picker { color: #fff !important; }
-        
-        /* 4. Dropdown menu (Size, Header) ka background dark karna */
-        .ql-snow .ql-picker-options { 
-          background-color: #222 !important; 
-          color: #fff !important; 
-          border: 1px solid #555 !important; 
-        `}</style>
+        .ql-snow .ql-picker-options { background-color: #222 !important; color: #fff !important; border: 1px solid #555 !important; }
+      `}</style>
     </div>
   );
 }

@@ -32,6 +32,27 @@ export default function SingleBlog() {
     fetchBlog();
   }, [slug]);
 
+  // 🔥 SEO FIX: Keywords aur Title ko Page Head mein daalna (User ko nahi dikhega, but SEO rank badhayega)
+  useEffect(() => {
+    if (blog) {
+      // Set Document Title
+      document.title = `${blog.title} | Conscious Karma`;
+
+      // Set Meta Keywords if available
+      if (blog.keywords && blog.keywords.length > 0) {
+        const keywordsString = blog.keywords.join(", ");
+        
+        let meta = document.querySelector('meta[name="keywords"]');
+        if (!meta) {
+          meta = document.createElement('meta');
+          meta.name = "keywords";
+          document.getElementsByTagName('head')[0].appendChild(meta);
+        }
+        meta.content = keywordsString;
+      }
+    }
+  }, [blog]);
+
   useEffect(() => {
     if (showSignup || showLogin || menuOpen) {
       document.body.style.overflow = "hidden";
@@ -102,7 +123,7 @@ export default function SingleBlog() {
 
         {/* RICH CONTENT */}
         <div 
-          className="blog-rich-content text-gray-300 leading-relaxed text-lg md:text-xl w-full"
+          className="blog-rich-content text-gray-300 text-lg md:text-xl w-full"
           dangerouslySetInnerHTML={{ __html: blog.content }} 
         />
       </main>
@@ -145,7 +166,7 @@ export default function SingleBlog() {
         </div>
       )}
 
-      {/* 🔥 CSS FIXES FOR BACKEND CONTENT 🔥 */}
+      {/* 🔥 CSS FIXES FOR BACKEND CONTENT (Extra Tight Spacing) 🔥 */}
       <style>{`
         .blog-rich-content {
           font-family: 'Arsenal', sans-serif;
@@ -153,6 +174,7 @@ export default function SingleBlog() {
           overflow-wrap: break-word; 
           word-wrap: break-word;
           max-width: 100%;
+          line-height: 1.35; /* 🔥 BOHT KAM LINE SPACING */
         }
         
         /* CRITICAL FIX: Forces text to wrap and removes inline widths from backend */
@@ -167,20 +189,20 @@ export default function SingleBlog() {
         /* Heading Styles */
         .blog-rich-content h1, .blog-rich-content h2, .blog-rich-content h3 { 
           color: #ff914d !important; 
-          margin: 60px 0 28px; 
+          margin: 30px 0 15px; /* Margin kam kiya */
           font-family: 'Balgin', sans-serif;
           font-weight: 700;
-          line-height: 1.2;
+          line-height: 1.15; /* Headings aur tight kar di */
           letter-spacing: -0.02em;
         }
 
         .blog-rich-content h2 { font-size: 1.8rem; }
 
-        /* Text Clarity */
+        /* Text Clarity - Aur Tight Spacing */
         .blog-rich-content p { 
-          margin-bottom: 32px; 
+          margin-bottom: 14px; /* 🔥 Pera ke beech ka gap aur kam kiya */
           color: #d1d1d1; 
-          line-height: 1.85;
+          line-height: 1.35; /* 🔥 Line height aur kam kar di */
         }
 
         .blog-rich-content strong, .blog-rich-content b {
@@ -190,30 +212,31 @@ export default function SingleBlog() {
 
         /* Lists & Quotes */
         .blog-rich-content ul, .blog-rich-content ol {
-          margin-bottom: 32px;
+          margin-bottom: 16px;
           padding-left: 20px;
           color: #d1d1d1;
+          line-height: 1.35;
         }
         
         .blog-rich-content li { 
-          margin-bottom: 14px; 
+          margin-bottom: 4px; /* 🔥 List item ka gap aur kam kiya */
         }
 
         .blog-rich-content blockquote {
           border-left: 3px solid #ff914d;
-          padding: 10px 0 10px 30px;
-          margin: 50px 0;
+          padding: 8px 0 8px 30px;
+          margin: 24px 0;
           font-style: italic;
           color: #fff;
-          font-size: 1.4rem;
-          line-height: 1.6;
+          font-size: 1.3rem;
+          line-height: 1.4;
           background: linear-gradient(90deg, rgba(255,145,77,0.05) 0%, transparent 100%) !important;
         }
 
         /* Images inside content */
         .blog-rich-content img {
           border-radius: 12px;
-          margin: 40px 0;
+          margin: 24px 0;
           border: 1px solid rgba(255,255,255,0.1);
           height: auto !important; /* ensures image aspect ratio is maintained */
         }
@@ -222,7 +245,7 @@ export default function SingleBlog() {
         @media (max-width: 768px) {
           .blog-rich-content h2 { font-size: 1.5rem; }
           .blog-rich-content { font-size: 1.1rem; }
-          .blog-rich-content blockquote { font-size: 1.2rem; margin: 30px 0; }
+          .blog-rich-content blockquote { font-size: 1.2rem; margin: 20px 0; }
         }
       `}</style>
     </div>

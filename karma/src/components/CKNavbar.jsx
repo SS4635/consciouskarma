@@ -152,13 +152,13 @@ export default function CKNavbar({
           </a>
 
           {/* 🔥 NAYA BLOGS LINK YAHAN ADD KIYA HAI 🔥 */}
-          <a
+          {/* <a
             href="/blogspage"
             className="menu-link"
             onClick={() => setMenuOpen(false)}
           >
             Blogs
-          </a>
+          </a> */}
 
           <a
             href="/personalised-report"

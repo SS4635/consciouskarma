@@ -567,40 +567,71 @@ export default function ConsultationBookingForm({
       </div>
     </div>
   ) : null;
-  const handleProceed = async () => {
+  
+const handleProceed = async () => {
     if (isPaying) return; 
 
-    // 1. Sabhi steps ka validation loop (Ye hamesha Step 1 se check karega)
+    // 1. Validation loop
     for (let i = 0; i < effectiveSteps.length; i++) {
       const err = validateStep(effectiveSteps[i]);
       if (err) {
         setErrorMsg(err);
         setShowError(true);
-        
-        // Galti wale page par automatic move ho jayega
         setCurrentStep(i); 
-        
         setIsPaying(false); 
         return; 
       }
     }
-    // 3. DATA PREPARATION (Agar validation pass ho gayi)
+    
+    // 3. DATA PREPARATION
     setIsPaying(true); 
 
     const finalFormData = JSON.parse(JSON.stringify(formData));
-    // Default values for missing optional fields
     if (!finalFormData[1]) finalFormData[1] = {};
     if (!finalFormData[1]["Time of Birth"]) finalFormData[1]["Time of Birth"] = "00:00";
     
     const finalPrice = getNumericPrice(selectedPlan?.price || currentForm.price);
 
+    // 🔥 THE FIX: TRANSLATE FORM DATA FOR BACKEND
+    // Map Step 1 to 'general', Step 2 to 'primary', etc.
+    const mappedFormData = {
+      general: {
+        name: finalFormData[1]["Name"] || "",
+        email: finalFormData[1]["Email-id"] || "",
+        gender: finalFormData[1]["Gender"] || "",
+        dob: finalFormData[1]["Date of Birth"] || "",
+        tob: finalFormData[1]["Time of Birth"] || "",
+        pob: finalFormData[1]["Place of Birth"] || ""
+      },
+      primary: {
+        isd: finalFormData[2]?.["Mobile Number"]?.isd || "+91",
+        number: finalFormData[2]?.["Mobile Number"]?.mobile || "",
+        sinceMonth: finalFormData[2]?.["Using this number since"]?.[0] || "",
+        sinceYear: finalFormData[2]?.["Using this number since"]?.[1] || "",
+        usageType: finalFormData[2]?.["Usage type"] || "",
+        lineOfWork: finalFormData[2]?.["Line of Work"] || "",
+        role: finalFormData[2]?.["Role"] || ""
+      },
+      parallels: finalFormData[3]?.dynamicNumbers || [],
+      previousNumbers: finalFormData[4]?.dynamicNumbers || [],
+      compatibility: {
+        primary: {
+          isd: finalFormData[5]?.["Mobile Number"]?.isd || "+91",
+          number: finalFormData[5]?.["Mobile Number"]?.mobile || "",
+          relationship: finalFormData[5]?.["Relationship with the user"] || ""
+        },
+        extra: finalFormData[5]?.dynamicNumbers || []
+      },
+      rawStepData: finalFormData // Keeping original data just in case
+    };
+
     try {
-      // 4. CREATE ORDER API CALL
+      // 4. CREATE ORDER API CALL (Using mapped data)
       const createRes = await fetch(`${API_BASE}/api/pay/create-consultation-order`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ 
-          formData: finalFormData, 
+          formData: mappedFormData, // ✅ Send mapped data
           planName: selectedPlan?.title || currentForm.title, 
           price: finalPrice 
         }),
@@ -625,16 +656,15 @@ export default function ConsultationBookingForm({
         order_id: createData.orderId,
         
         handler: async function (rzpRes) {
-          // Jab payment gateway success response de
           setIsPaying(true); 
           try {
-            // VERIFY PAYMENT API CALL
+            // VERIFY PAYMENT API CALL (Using mapped data)
             const verifyRes = await fetch(`${API_BASE}/api/pay/verify-consultation`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ 
                 ...rzpRes, 
-                formData: finalFormData, 
+                formData: mappedFormData, // ✅ Send mapped data
                 planName: selectedPlan?.title || currentForm.title, 
                 price: finalPrice 
               }),
@@ -644,7 +674,6 @@ export default function ConsultationBookingForm({
             setIsPaying(false); 
             
             if (verifyData.ok) {
-              // Success Popup trigger
               setShowSuccess(true);
             } else {
               throw new Error(verifyData.message || "Payment verification failed");
@@ -660,9 +689,9 @@ export default function ConsultationBookingForm({
         },
         
         prefill: {
-          name: finalFormData[1]?.["Name"],
-          email: finalFormData[1]?.["Email-id"],
-          contact: `${finalFormData[2]?.["Mobile Number"]?.isd}${finalFormData[2]?.["Mobile Number"]?.mobile}`,
+          name: mappedFormData.general.name,
+          email: mappedFormData.general.email,
+          contact: `${mappedFormData.primary.isd}${mappedFormData.primary.number}`,
         },
         
         theme: { color: "#ff914d" },
@@ -682,6 +711,7 @@ export default function ConsultationBookingForm({
       setShowError(true);
     }
   };
+
   const outerClass = inModal ? "bg-black text-white h-100" : "min-vh-100 bg-black text-white d-flex align-items-center py-5";
 
   return (

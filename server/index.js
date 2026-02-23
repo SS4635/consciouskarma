@@ -19,7 +19,6 @@ dotenv.config({
 import EnergyLog from "./models/EnergyLog.js";
 import { protectAndLog } from "./middleware/security.js"; // Path check kar lena
 
-
 import { connectMongo } from "./lib/mongo.js";
 import Order from "./models/Order.js";
 import User from "./models/User.js";
@@ -27,20 +26,19 @@ import Consultation from "./models/Consultation.js";
 import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
 import { sendScoreMail } from "./lib/sendScoreMail.js";
 import ContactMessage from "./models/ContactMessage.js";
+import Category from "./models/Category.js";
 
 import multer from "multer";
 import path from "path";
 import fs from "fs";
-import { fileURLToPath } from 'url';
-
+import { fileURLToPath } from "url";
 
 console.log({
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS_LEN: process.env.SMTP_PASS?.length,
   SMTP_PORT: process.env.SMTP_PORT,
 });
-const emailOtps = new Map(); 
-
+const emailOtps = new Map();
 
 const app = express();
 app.use(cors());
@@ -53,11 +51,17 @@ console.log("Checking Environment Variables...");
 console.log("MONGO_DB:", process.env.MONGODB_DB ? "✅ Loaded" : "❌ Missing");
 console.log("SMTP_HOST:", process.env.SMTP_HOST);
 console.log("SMTP_USER:", process.env.SMTP_USER ? "✅ Loaded" : "❌ Missing");
-console.log("SMTP_PASS:", process.env.SMTP_PASS ? `✅ Loaded (${process.env.SMTP_PASS.length} chars)` : "❌ Missing/Undefined");
-console.log("RAZORPAY_KEY:", process.env.RAZORPAY_KEY_ID ? "✅ Loaded" : "❌ Missing");
+console.log(
+  "SMTP_PASS:",
+  process.env.SMTP_PASS
+    ? `✅ Loaded (${process.env.SMTP_PASS.length} chars)`
+    : "❌ Missing/Undefined",
+);
+console.log(
+  "RAZORPAY_KEY:",
+  process.env.RAZORPAY_KEY_ID ? "✅ Loaded" : "❌ Missing",
+);
 console.log("---------------------------------------");
-
-
 
 // Database Connection
 await connectMongo();
@@ -80,45 +84,47 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // 📁 Uploads folder create karo agar nahi hai
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)){
-    fs.mkdirSync(uploadDir);
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
 }
 
 // ⚙️ Multer Storage Config
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'uploads/') 
+    cb(null, "uploads/");
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
     const ext = path.extname(file.originalname);
-    cb(null, 'blog-img-' + uniqueSuffix + ext)
-  }
+    cb(null, "blog-img-" + uniqueSuffix + ext);
+  },
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
 });
 
 // 🌐 Frontend ko images serve karne ke liye static route
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // 🚀 Admin Image Upload API
-app.post('/api/admin/upload-image', upload.single('image'), (req, res) => {
+app.post("/api/admin/upload-image", upload.single("image"), (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ ok: false, message: "No image provided" });
-    
+    if (!req.file)
+      return res.status(400).json({ ok: false, message: "No image provided" });
+
     // URL return kar rahe hain jo frontend text editor me use karega
     const imageUrl = `/uploads/${req.file.filename}`;
     return res.json({ ok: true, imageUrl });
   } catch (err) {
     console.error("Image upload error:", err);
-    return res.status(500).json({ ok: false, message: "Failed to upload image" });
+    return res
+      .status(500)
+      .json({ ok: false, message: "Failed to upload image" });
   }
 });
-
 
 function normalizeIndianMobile(num = "") {
   const digits = String(num).replace(/\D/g, ""); // सिर्फ नंबर रखें
@@ -126,12 +132,13 @@ function normalizeIndianMobile(num = "") {
   return digits.length > 10 ? digits.slice(-10) : digits;
 }
 
-
 async function sendEmail({ to, subject, html }) {
   console.log(`\n[MAIL] Sending to: ${to}`);
   try {
     const result = await transporter.sendMail({
-      from: process.env.MAIL_FROM || '"Conscious Karma" <no-reply@consciouskarma.co>',
+      from:
+        process.env.MAIL_FROM ||
+        '"Conscious Karma" <no-reply@consciouskarma.co>',
       to,
       subject,
       html,
@@ -229,7 +236,7 @@ async function sendSignupEmails({ email, name }) {
 app.post("/api/auth/register", async (req, res) => {
   try {
     console.log("Received tu call registration request:", req.body);
-    const {name, email, password } = req.body;
+    const { name, email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({
@@ -260,7 +267,7 @@ app.post("/api/auth/register", async (req, res) => {
     // Only send email AFTER successful DB save
     try {
       console.log("Sending signup emails...");
-      await sendSignupEmails({ email, name});
+      await sendSignupEmails({ email, name });
       console.log("Signup emails sent successfully");
     } catch (emailErr) {
       console.error("Signup email error:", emailErr);
@@ -271,7 +278,6 @@ app.post("/api/auth/register", async (req, res) => {
       ok: true,
       message: "Account created",
     });
-
   } catch (err) {
     console.error("Registration error:", err);
     return res.status(500).json({
@@ -280,7 +286,6 @@ app.post("/api/auth/register", async (req, res) => {
     });
   }
 });
-
 
 app.post("/api/email/send-otp", async (req, res) => {
   try {
@@ -321,13 +326,11 @@ app.post("/api/email/verify-otp", (req, res) => {
   if (Date.now() > entry.expiresAt)
     return res.json({ ok: false, expired: true });
 
-  if (entry.code !== code)
-    return res.json({ ok: false, verified: false });
+  if (entry.code !== code) return res.json({ ok: false, verified: false });
 
   emailOtps.delete(email);
   res.json({ ok: true, verified: true });
 });
-
 
 // User registration endpoint
 
@@ -386,7 +389,6 @@ app.post("/api/email/verify-otp", (req, res) => {
 //   }
 // });
 
-
 // User login endpoint
 // app.post("/api/auth/login", async (req, res) => {
 //   try {
@@ -430,19 +432,24 @@ app.post("/api/auth/login", async (req, res) => {
     console.log("ENV", process.env.ADMIN_EMAIL, process.env.ADMIN_PASSWORD);
 
     if (!email || !password) {
-      return res.status(400).json({ ok: false, message: "Email and password required" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Email and password required" });
     }
 
     // 👑 1. ADMIN CHECK (Direct from .env)
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+    if (
+      email === process.env.ADMIN_EMAIL &&
+      password === process.env.ADMIN_PASSWORD
+    ) {
       console.log("🛡️ [AUTH] Admin logged in");
-      
+
       // Bina JWT ke return kar rahe hain, frontend isko encrypt karke URL me daalega
       return res.json({
         ok: true,
         role: "admin",
         message: "Admin login successful",
-        user: { email }, 
+        user: { email },
       });
     }
 
@@ -463,7 +470,6 @@ app.post("/api/auth/login", async (req, res) => {
       message: "Login successful",
       user: { email: user.email },
     });
-
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ ok: false, message: "Server error" });
@@ -475,10 +481,12 @@ app.post("/api/auth/login", async (req, res) => {
 app.get("/api/admin/summary", async (req, res) => {
   try {
     const { email, range } = req.query;
-    
+
     // 🛡️ Admin Security Check
     if (!email || email !== process.env.ADMIN_EMAIL) {
-      return res.status(403).json({ ok: false, message: "Chal bhag yahan se! 🔒" });
+      return res
+        .status(403)
+        .json({ ok: false, message: "Chal bhag yahan se! 🔒" });
     }
 
     let dateQuery = {};
@@ -506,12 +514,19 @@ app.get("/api/admin/summary", async (req, res) => {
     }
 
     // ⚡ Parallel DB Calls for Superfast Speed
-    const [instantCount, personalisedCount, consultCount, contactCount] = await Promise.all([
-      Order.countDocuments({ ...dateQuery, "formData.parallels": { $size: 0 } }),
-      Order.countDocuments({ ...dateQuery, "formData.parallels": { $not: { $size: 0 } } }),
-      Consultation.countDocuments(dateQuery),
-      ContactMessage.countDocuments(dateQuery)
-    ]);
+    const [instantCount, personalisedCount, consultCount, contactCount] =
+      await Promise.all([
+        Order.countDocuments({
+          ...dateQuery,
+          "formData.parallels": { $size: 0 },
+        }),
+        Order.countDocuments({
+          ...dateQuery,
+          "formData.parallels": { $not: { $size: 0 } },
+        }),
+        Consultation.countDocuments(dateQuery),
+        ContactMessage.countDocuments(dateQuery),
+      ]);
 
     res.json({
       ok: true,
@@ -520,8 +535,8 @@ app.get("/api/admin/summary", async (req, res) => {
         personalised: personalisedCount,
         consult: consultCount,
         contact: contactCount,
-        total: instantCount + personalisedCount + consultCount + contactCount // Pro-level overall metric
-      }
+        total: instantCount + personalisedCount + consultCount + contactCount, // Pro-level overall metric
+      },
     });
   } catch (err) {
     console.error("Summary API Error:", err);
@@ -529,14 +544,81 @@ app.get("/api/admin/summary", async (req, res) => {
   }
 });
 
-// 🔒 GET: Admin API - Fetch ALL Blogs (Drafts & Published)
+// ==========================================
+// 🔥 NEW APIs FOR ADMIN DASHBOARD FEATURES
+// ==========================================
+
+// 1. GET Energy Logs based on Route
+app.get("/api/admin/energy-logs", async (req, res) => {
+  try {
+    const { email, routeHit } = req.query;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    const logs = await EnergyLog.find({ routeHit }).sort({ createdAt: -1 });
+    res.json({ ok: true, data: logs });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
+// ==========================================
+// 🔥 CATEGORY APIs
+// ==========================================
+app.get("/api/admin/categories", async (req, res) => {
+  try {
+    const categories = await Category.find().sort({ createdAt: -1 });
+    res.json({ ok: true, data: categories });
+  } catch (err) {
+    res.status(500).json({ ok: false });
+  }
+});
+
+// 🌐 PUBLIC API: Fetch All Categories for Blog Page
+app.get("/api/categories", async (req, res) => {
+  try {
+    const categories = await Category.find().sort({ createdAt: -1 });
+    res.json({ ok: true, data: categories });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
+app.post("/api/admin/category", async (req, res) => {
+  try {
+    const { email, name } = req.body;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    const category = await Category.create({ name });
+    res.json({ ok: true, category });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Failed to create category (Might be duplicate)" });
+  }
+});
+
+app.delete("/api/admin/category/:id", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    await Category.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false });
+  }
+});
+
+
+// ==========================================
+// 🔥 BLOG APIs
+// ==========================================
+
+// 1. GET ALL BLOGS (Admin) -> Iski wajah se 404 aa raha tha
 app.get("/api/admin/blogs", async (req, res) => {
   try {
     const { email } = req.query;
     if (!email || email !== process.env.ADMIN_EMAIL) {
       return res.status(403).json({ ok: false, message: "Unauthorized access" });
     }
-
     const blogs = await Blog.find().sort({ createdAt: -1 });
     res.json({ ok: true, data: blogs });
   } catch (err) {
@@ -544,38 +626,157 @@ app.get("/api/admin/blogs", async (req, res) => {
   }
 });
 
-// ✏️ PUT: Admin Edit/Update Blog
-app.put("/api/admin/blog/:id", async (req, res) => {
+// 2. CREATE BLOG
+app.post("/api/admin/blog", async (req, res) => {
   try {
-    const { email, title, content, imageUrl, status } = req.body;
-    
-    if (!email || email !== process.env.ADMIN_EMAIL) {
-      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+    const { email, title, content, imageUrl, status, category, keywords } = req.body;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false, message: "Unauthorized" });
+
+    if (!title || !content || !imageUrl) {
+      return res.status(400).json({ ok: false, message: "Title, content and image are required" });
     }
 
-    // Slug dobara generate karenge incase title change hua ho
     const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+    
+    const newBlog = await Blog.create({ 
+      title, 
+      slug, 
+      content, 
+      imageUrl, 
+      status: status || "draft", 
+      category: category || "Uncategorized", 
+      keywords: keywords || [] 
+    });
+    
+    res.json({ ok: true, message: "Blog saved successfully!", blog: newBlog });
+  } catch (err) {
+    console.error("Blog save error:", err);
+    if (err.code === 11000) return res.status(400).json({ ok: false, message: "Blog with this title already exists." });
+    res.status(500).json({ ok: false, message: "Failed to save blog" });
+  }
+});
 
+// 3. UPDATE BLOG
+app.put("/api/admin/blog/:id", async (req, res) => {
+  try {
+    const { email, title, content, imageUrl, status, category, keywords } = req.body;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+    
     const updatedBlog = await Blog.findByIdAndUpdate(
-      req.params.id, 
-      { title, slug, content, imageUrl, status },
-      { new: true } // Return updated document
+      req.params.id,
+      { title, slug, content, imageUrl, status, category, keywords },
+      { new: true }
     );
-
-    if (!updatedBlog) return res.status(404).json({ ok: false, message: "Blog not found" });
-
-    res.json({ ok: true, message: "Blog updated successfully!", blog: updatedBlog });
+    res.json({ ok: true, message: "Blog updated!", blog: updatedBlog });
   } catch (err) {
     res.status(500).json({ ok: false, message: "Failed to update blog" });
   }
 });
+
+// 4. DELETE BLOG
+app.delete("/api/admin/blog/:id", async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    await Blog.findByIdAndDelete(req.params.id);
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ ok: false });
+  }
+});
+
+
+// ==========================================
+// 🔥 ENERGY LOGS & ROUTES APIs
+// ==========================================
+app.get("/api/admin/available-routes", (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+    
+    const rawRoutes = process.env.AVAILABLE_ROUTES || "a1,a2";
+    const routesArray = rawRoutes.split(",").map(r => r.trim()).filter(Boolean);
+    res.json({ ok: true, data: routesArray });
+  } catch (err) {
+    res.status(500).json({ ok: false });
+  }
+});
+
+app.get("/api/admin/energy-logs", async (req, res) => {
+  try {
+    const { email, routeHit } = req.query;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    const logs = await EnergyLog.find({ routeHit }).sort({ createdAt: -1 });
+    res.json({ ok: true, data: logs });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+// // 🔒 GET: Admin API - Fetch ALL Blogs (Drafts & Published)
+// app.get("/api/admin/blogs", async (req, res) => {
+//   try {
+//     const { email } = req.query;
+//     if (!email || email !== process.env.ADMIN_EMAIL) {
+//       return res
+//         .status(403)
+//         .json({ ok: false, message: "Unauthorized access" });
+//     }
+
+//     const blogs = await Blog.find().sort({ createdAt: -1 });
+//     res.json({ ok: true, data: blogs });
+//   } catch (err) {
+//     res.status(500).json({ ok: false, message: "Server error" });
+//   }
+// });
+
+// // ✏️ PUT: Admin Edit/Update Blog
+// app.put("/api/admin/blog/:id", async (req, res) => {
+//   try {
+//     const { email, title, content, imageUrl, status } = req.body;
+
+//     if (!email || email !== process.env.ADMIN_EMAIL) {
+//       return res
+//         .status(403)
+//         .json({ ok: false, message: "Unauthorized access" });
+//     }
+
+//     // Slug dobara generate karenge incase title change hua ho
+//     const slug = title
+//       .toLowerCase()
+//       .replace(/[^a-z0-9]+/g, "-")
+//       .replace(/(^-|-$)+/g, "");
+
+//     const updatedBlog = await Blog.findByIdAndUpdate(
+//       req.params.id,
+//       { title, slug, content, imageUrl, status },
+//       { new: true }, // Return updated document
+//     );
+
+//     if (!updatedBlog)
+//       return res.status(404).json({ ok: false, message: "Blog not found" });
+
+//     res.json({
+//       ok: true,
+//       message: "Blog updated successfully!",
+//       blog: updatedBlog,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ ok: false, message: "Failed to update blog" });
+//   }
+// });
 
 // 🗑️ DELETE: Admin Delete Blog
 app.delete("/api/admin/blog/:id", async (req, res) => {
   try {
     const { email } = req.body; // Delete request me body bhejna allowed hai
     if (!email || email !== process.env.ADMIN_EMAIL) {
-      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+      return res
+        .status(403)
+        .json({ ok: false, message: "Unauthorized access" });
     }
 
     await Blog.findByIdAndDelete(req.params.id);
@@ -592,84 +793,128 @@ app.get("/api/admin/data", async (req, res) => {
 
     // 🛡️ Admin Security Check
     if (!email || email !== process.env.ADMIN_EMAIL) {
-      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+      return res
+        .status(403)
+        .json({ ok: false, message: "Unauthorized access" });
     }
 
     let query = {};
 
     // 📅 1. DATE FILTER LOGIC
     if (filterDate && filterDate !== "all") {
-      const startDate = new Date();
-      startDate.setHours(0, 0, 0, 0); 
+      let startDateObj = new Date();
+      startDateObj.setHours(0, 0, 0, 0); 
       
       if (filterDate === "today") {
-        // Aaj ka set hai
+        query.createdAt = { $gte: startDateObj };
       } else if (filterDate === "last7") {
-        startDate.setDate(startDate.getDate() - 7);
+        startDateObj.setDate(startDateObj.getDate() - 7);
+        query.createdAt = { $gte: startDateObj };
       } else if (filterDate === "last30") {
-        startDate.setDate(startDate.getDate() - 30);
+        startDateObj.setDate(startDateObj.getDate() - 30);
+        query.createdAt = { $gte: startDateObj };
+      } else if (filterDate === "custom" && req.query.startDate && req.query.endDate) {
+        // 🔥 Custom Date Logic
+        const customStart = new Date(req.query.startDate);
+        customStart.setHours(0, 0, 0, 0);
+        const customEnd = new Date(req.query.endDate);
+        customEnd.setHours(23, 59, 59, 999);
+        query.createdAt = { $gte: customStart, $lte: customEnd };
       }
-      query.createdAt = { $gte: startDate };
     }
 
     // 🔎 2. SEARCH LOGIC (Regex match on existing fields)
     if (search && search.trim() !== "") {
       const searchRegex = new RegExp(search.trim(), "i");
-      
+
       // Multiple fields search taaki Order, Consult aur Contact sab cover ho jayein
       query.$or = [
         { name: searchRegex },
         { email: searchRegex },
         { phone: searchRegex },
         { "formData.general.name": searchRegex },
-        { "formData.general.email": searchRegex }
+        { "formData.general.email": searchRegex },
       ];
     }
 
     let results = [];
     let totalCount = 0;
-    
+
     const skip = (Number(page) - 1) * Number(limit);
-    const sort = { createdAt: -1 }; 
+    const sort = { createdAt: -1 };
 
     // 📂 3. FETCH DATA BASED ON 'TYPE'
     switch (type) {
       case "instant":
         query["formData.parallels"] = { $size: 0 };
-        results = await Order.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        const rawResults = await Order.find(query)
+          .sort(sort)
+          .skip(skip)
+          .limit(Number(limit))
+          .lean();
+
+        results = rawResults.map((o) => ({
+          ...o,
+          date: new Date(o.createdAt).toLocaleDateString(),
+          time: new Date(o.createdAt).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          paymentMode:
+            o.amount === 0
+              ? `Coupon (${o.couponCode || "FREE"})`
+              : "Online Payment",
+          reportStatus:
+            o.instantEmailSent === true
+              ? "✅ Delivered"
+              : "⏳ Processing/Failed",
+        }));
         totalCount = await Order.countDocuments(query);
         break;
 
       case "personalised":
         query["formData.parallels"] = { $not: { $size: 0 } };
-        results = await Order.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        results = await Order.find(query)
+          .sort(sort)
+          .skip(skip)
+          .limit(Number(limit))
+          .lean();
         totalCount = await Order.countDocuments(query);
         break;
 
       case "consult":
-        results = await Consultation.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        results = await Consultation.find(query)
+          .sort(sort)
+          .skip(skip)
+          .limit(Number(limit))
+          .lean();
         totalCount = await Consultation.countDocuments(query);
         break;
 
       case "contact":
-        results = await ContactMessage.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
+        results = await ContactMessage.find(query)
+          .sort(sort)
+          .skip(skip)
+          .limit(Number(limit))
+          .lean();
         totalCount = await ContactMessage.countDocuments(query);
         break;
 
       default:
-        return res.status(400).json({ ok: false, message: "Invalid type parameter" });
+        return res
+          .status(400)
+          .json({ ok: false, message: "Invalid type parameter" });
     }
 
-    res.json({ 
-      ok: true, 
+    res.json({
+      ok: true,
       data: results,
       pagination: {
         total: totalCount,
         page: Number(page),
-        pages: Math.ceil(totalCount / Number(limit))
-      }
+        pages: Math.ceil(totalCount / Number(limit)),
+      },
     });
-
   } catch (err) {
     console.error("Admin Data API Error:", err);
     res.status(500).json({ ok: false, message: "Failed to fetch data" });
@@ -686,15 +931,22 @@ app.post("/api/admin/blog", async (req, res) => {
 
     // 🛡️ Admin Security Check
     if (!email || email !== process.env.ADMIN_EMAIL) {
-      return res.status(403).json({ ok: false, message: "Unauthorized access" });
+      return res
+        .status(403)
+        .json({ ok: false, message: "Unauthorized access" });
     }
 
     if (!title || !content || !imageUrl) {
-      return res.status(400).json({ ok: false, message: "Title, content and image are required" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Title, content and image are required" });
     }
 
     // URL friendly slug bana rahe hain (E.g., "My First Blog" -> "my-first-blog")
-    const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)+/g, "");
 
     const newBlog = await Blog.create({
       title,
@@ -704,33 +956,34 @@ app.post("/api/admin/blog", async (req, res) => {
       status: status || "draft", // Agar status nahi aaya toh default 'draft'
     });
 
-    res.json({ 
-      ok: true, 
-      message: status === "published" ? "Blog published successfully!" : "Blog saved as draft!", 
-      blog: newBlog 
+    res.json({
+      ok: true,
+      message:
+        status === "published"
+          ? "Blog published successfully!"
+          : "Blog saved as draft!",
+      blog: newBlog,
     });
-
   } catch (err) {
     console.error("Blog save error:", err);
     // Agar same title dobara use kiya toh slug duplicate ka error aayega
     if (err.code === 11000) {
-      return res.status(400).json({ ok: false, message: "Blog with this title already exists." });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Blog with this title already exists." });
     }
     res.status(500).json({ ok: false, message: "Failed to save blog" });
   }
 });
 
-// 🌐 GET: Public API - Fetch ALL "Published" Blogs (Cards ke liye)
+// server.js mein is route ko replace karein agar nahi kiya hai toh
 app.get("/api/blogs", async (req, res) => {
   try {
-    // Sirf 'published' wale utha rahe hain, aur 'content' skip kar rahe hain taaki API superfast load ho
     const blogs = await Blog.find({ status: "published" })
-                            .select("title slug imageUrl content createdAt") 
-                            .sort({ createdAt: -1 });
-    
+      .select("title slug imageUrl content createdAt category keywords") 
+      .sort({ createdAt: -1 });
     res.json({ ok: true, data: blogs });
   } catch (err) {
-    console.error("Fetch blogs error:", err);
     res.status(500).json({ ok: false, message: "Server error" });
   }
 });
@@ -738,8 +991,11 @@ app.get("/api/blogs", async (req, res) => {
 // 📖 GET: Public API - Fetch Single Blog Detail (Read More ke liye)
 app.get("/api/blogs/:slug", async (req, res) => {
   try {
-    const blog = await Blog.findOne({ slug: req.params.slug, status: "published" });
-    
+    const blog = await Blog.findOne({
+      slug: req.params.slug,
+      status: "published",
+    });
+
     if (!blog) {
       return res.status(404).json({ ok: false, message: "Blog not found" });
     }
@@ -761,9 +1017,9 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
 
     // 🛡️ FIX: Remove "₹" and spaces, convert to number
     const numericPrice = Number(String(price).replace(/[^0-9.]/g, ""));
-    
+
     if (isNaN(numericPrice) || numericPrice <= 0) {
-        return res.json({ ok: false, message: "Invalid price format" });
+      return res.json({ ok: false, message: "Invalid price format" });
     }
 
     const amountInPaise = numericPrice * 100;
@@ -781,7 +1037,10 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
     });
   } catch (err) {
     console.error("Create Order Error:", err);
-    return res.json({ ok: false, message: "Failed creating consultation order" });
+    return res.json({
+      ok: false,
+      message: "Failed creating consultation order",
+    });
   }
 });
 
@@ -789,16 +1048,16 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
 app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
   try {
     const { mobile_number } = req.body;
-    
+
     // URL se dynamic part nikal liya (e.g. 'a1' or 'a2')
-    const { routeId } = req.params; 
+    const { routeId } = req.params;
 
     // 1️⃣ STEP 1: DB SAVE (Logging)
     // Hum routeHit mein 'a1'/'a2' save kar rahe hain taaki pata chale user ne kya check kiya
     await EnergyLog.create({
       mobileNumber: mobile_number,
-      routeHit: routeId, 
-      ipAddress: req.userIP, 
+      routeHit: routeId,
+      ipAddress: req.userIP,
       userAgent: req.headers["user-agent"],
     });
 
@@ -810,24 +1069,23 @@ app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
 
     const externalResponse = await axios.post(
       CLIENT_API_URL,
-      { mobile_number }, 
+      { mobile_number },
       {
         headers: {
           "Content-Type": "application/json",
           "X-API-Key": "CK_Score_2365abhnf895asfw", // Key ab safe hai backend pe
         },
-      }
+      },
     );
 
     // 3️⃣ STEP 3: RETURN RESULT
     return res.json(externalResponse.data);
-
   } catch (err) {
     console.error(`Error in route ${req.params.routeId}:`, err.message);
-    
+
     // Agar external API fail ho, toh wahi error frontend ko dikhao
     if (err.response) {
-        return res.status(err.response.status).json(err.response.data);
+      return res.status(err.response.status).json(err.response.data);
     }
     return res.status(500).json({ ok: false, message: "External API Failed" });
   }
@@ -860,28 +1118,61 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
       return res.json({ ok: false, message: "Invalid signature" });
     }
 
-    // Extract Info
+    // 🚀 BULLETPROOF DATA EXTRACTION
+    const step1 = formData?.["1"] || {};
+    const step2 = formData?.["2"] || {};
     const general = formData?.general || {};
     const primary = formData?.primary || {};
-    const phone = `${primary.isd || ""}${primary.number || ""}`;
 
-    // 🛡️ FIX: Sanitise Price for Database (Prevents NaN Crash)
-    let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+    const finalName = general.name || step1["Name"] || formData?.name || "User";
+    const finalEmail = general.email || step1["Email-id"] || formData?.email || "";
     
-    // Fallback: If price is still invalid, try getting it from form or default to 0
+    let finalPhone = "";
+    if (primary.number) {
+        finalPhone = `${primary.isd || ""}${primary.number}`;
+    } else if (step2["Mobile Number"]?.mobile) {
+        finalPhone = `${step2["Mobile Number"].isd || ""}${step2["Mobile Number"].mobile}`;
+    } else {
+        finalPhone = formData?.phone || formData?.mobile || "";
+    }
+
+    // 🛡️ Price Sanitization
+    let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
     if (isNaN(finalPrice)) {
-        console.warn("⚠️ Price invalid, attempting fallback...");
         finalPrice = Number(formData?.price) || Number(formData?.totalPrice) || 0;
     }
 
-    console.log(`[VERIFY] Saving to DB with Final Price: ${finalPrice}`);
+    // 🚨 ULTIMATE MAGIC FIX: Har jagah email daal do taaki mailer function crash na ho!
+    const safeFormData = {
+        ...formData,
+        name: finalName,       
+        email: finalEmail,     
+        phone: finalPhone,     
+        general: {
+            ...general,
+            name: finalName,
+            email: finalEmail  
+        },
+        "1": {                 
+            ...step1,
+            "Name": finalName,
+            "Email-id": finalEmail 
+        },
+        primary: {
+            ...primary,
+            number: finalPhone,
+            isd: primary.isd || step2["Mobile Number"]?.isd || "+91"
+        }
+    };
 
-    // ✅ Save to DB (Only Once!)
+    console.log(`[VERIFY] Saving to DB -> Name: ${finalName} | Email: ${finalEmail} | Phone: ${finalPhone}`);
+
+    // ✅ Save to DB
     const consultation = await Consultation.create({
-      formData,
-      name: general.name,
-      email: general.email,
-      phone,
+      formData: safeFormData,
+      name: finalName,
+      email: finalEmail,
+      phone: finalPhone,
       planName,
       price: finalPrice, 
       paymentStatus: "paid",
@@ -890,9 +1181,12 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
     // Send Emails (Non-blocking)
     try {
       await sendConsultationEmails({
-        formData,
+        formData: safeFormData, 
         docId: consultation._id,
       });
+      // Email success hui toh Status Update karo
+      consultation.emailSent = true;
+      await consultation.save();
     } catch (mailErr) {
       console.error("Consultation Email Failed:", mailErr.message);
     }
@@ -903,6 +1197,82 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
     res.status(500).json({ ok: false, message: "Verification failed on server" });
   }
 });
+// app.post("/api/pay/verify-consultation", async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       formData,
+//       planName,
+//       price,
+//     } = req.body;
+
+//     console.log(
+//       `[VERIFY] Processing for plan: ${planName}, Price Input: ${price}`,
+//     );
+
+//     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+//       return res.json({ ok: false, message: "Missing Razorpay params" });
+//     }
+
+//     const body = razorpay_order_id + "|" + razorpay_payment_id;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(body)
+//       .digest("hex");
+
+//     if (expected !== razorpay_signature) {
+//       return res.json({ ok: false, message: "Invalid signature" });
+//     }
+
+//     // Extract Info
+//     const general = formData?.general || {};
+//     const primary = formData?.primary || {};
+//     const phone = `${primary.isd || ""}${primary.number || ""}`;
+
+//     // 🛡️ FIX: Sanitise Price for Database (Prevents NaN Crash)
+//     let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+
+//     // Fallback: If price is still invalid, try getting it from form or default to 0
+//     if (isNaN(finalPrice)) {
+//       console.warn("⚠️ Price invalid, attempting fallback...");
+//       finalPrice = Number(formData?.price) || Number(formData?.totalPrice) || 0;
+//     }
+
+//     console.log(`[VERIFY] Saving to DB with Final Price: ${finalPrice}`);
+
+//     // ✅ Save to DB (Only Once!)
+//     const consultation = await Consultation.create({
+//       formData,
+//       name: general.name,
+//       email: general.email,
+//       phone,
+//       planName,
+//       price: finalPrice,
+//       paymentStatus: "paid",
+//     });
+
+//     // Send Emails (Non-blocking)
+//     try {
+//       await sendConsultationEmails({
+//         formData,
+//         docId: consultation._id,
+//       });
+//       consultation.emailSent = true;
+//   await consultation.save();
+//     } catch (mailErr) {
+//       console.error("Consultation Email Failed:", mailErr.message);
+//     }
+
+//     return res.json({ ok: true, id: consultation._id });
+//   } catch (err) {
+//     console.error("verify-consultation error:", err);
+//     res
+//       .status(500)
+//       .json({ ok: false, message: "Verification failed on server" });
+//   }
+// });
 /* ---------- Twilio Verify ---------- */
 
 async function getAuthToken() {
@@ -925,9 +1295,8 @@ async function getAuthToken() {
 
     console.log("Auth Token Response:", data);
 
-
     if (data?.token) {
-      console.log("Obtained auth token",data.token);
+      console.log("Obtained auth token", data.token);
       return data.token;
     }
 
@@ -938,14 +1307,13 @@ async function getAuthToken() {
   }
 }
 
-
 /* ---------- Coupon allowlist ---------- */
 
 const allowlist = new Set(
   (process.env.COUPON_ALLOWLIST || "")
     .split(/\s|,|;/)
     .map((s) => s.trim().toUpperCase())
-    .filter(Boolean)
+    .filter(Boolean),
 );
 const isAllowlisted = (c = "") => allowlist.has(String(c).toUpperCase());
 
@@ -1107,9 +1475,10 @@ async function redeemCoupon(code, mobile) {
   const apiKey = process.env.CK_COUPON_API_KEY; // Nayi key use hogi yahan
 
   try {
-    const response = await axios.post(url, 
+    const response = await axios.post(
+      url,
       { coupon: code, mobile_number: mobile },
-      { headers: { "X-API-Key": apiKey } }
+      { headers: { "X-API-Key": apiKey } },
     );
     return response.data;
   } catch (err) {
@@ -1122,7 +1491,7 @@ async function redeemCoupon(code, mobile) {
 app.post("/api/coupon/validate", async (req, res) => {
   try {
     const { code, price, mobile, email, name } = req.body;
-    
+
     // Partner API se check karo
     const result = await redeemCoupon(code, mobile);
 
@@ -1140,8 +1509,8 @@ app.post("/api/coupon/validate", async (req, res) => {
           primary: { isd: "+91", number: mobile },
           totalPrice: Number(price) / 100,
           parallels: [],
-          previousNumbers: []
-        }
+          previousNumbers: [],
+        },
       });
 
       // 2. Client ko Response
@@ -1158,7 +1527,7 @@ app.post("/api/coupon/validate", async (req, res) => {
 app.post("/api/coupon/validate", async (req, res) => {
   try {
     const { code, price, mobile, email, name } = req.body || {};
-    
+
     // 1. Coupon check karo
     const result = await redeemCoupon(code, mobile);
 
@@ -1178,8 +1547,8 @@ app.post("/api/coupon/validate", async (req, res) => {
           primary: { isd: "+91", number: mobile },
           parallels: [],
           previousNumbers: [],
-          totalPrice: Number(price) / 100
-        }
+          totalPrice: Number(price) / 100,
+        },
       });
 
       // ✅ Response bhejo taaki Frontend success dikhaye
@@ -1188,24 +1557,27 @@ app.post("/api/coupon/validate", async (req, res) => {
         finalAmount: 0,
         couponApplied: true,
         coupon: code,
-        orderId: order._id
+        orderId: order._id,
       });
 
       // ✅ Background mein Report aur Mail trigger karo
       // Hum wahi function use karenge jo paid flow mein use hota hai
-      processInstantReport(order).catch(err => 
-        console.error("Coupon Mail Error:", err.message)
+      processInstantReport(order).catch((err) =>
+        console.error("Coupon Mail Error:", err.message),
       );
-
     } else {
-      return res.json({ valid: false, message: result.message || "Invalid coupon" });
+      return res.json({
+        valid: false,
+        message: result.message || "Invalid coupon",
+      });
     }
   } catch (err) {
     console.error("Coupon validate error:", err.message);
-    return res.status(500).json({ valid: false, message: "Server error during validation" });
+    return res
+      .status(500)
+      .json({ valid: false, message: "Server error during validation" });
   }
 });
-
 
 app.post("/api/send-otp", async (req, res) => {
   try {
@@ -1222,12 +1594,16 @@ app.post("/api/send-otp", async (req, res) => {
 
     const url = `https://cpaas.messagecentral.com/verification/v3/send?customerId=${process.env.MC_CUSTOMER_ID}&countryCode=${process.env.MC_COUNTRY_CODE}&flowType=SMS&mobileNumber=${number}`;
 
-    const { data } = await axios.post(url, {}, {
-      headers: {
-        authToken,
-        Accept: "*/*",
+    const { data } = await axios.post(
+      url,
+      {},
+      {
+        headers: {
+          authToken,
+          Accept: "*/*",
+        },
       },
-    });
+    );
 
     console.log("Send OTP Response:", data);
 
@@ -1244,7 +1620,6 @@ app.post("/api/send-otp", async (req, res) => {
         response: data,
       });
     }
-
   } catch (err) {
     console.error("Send OTP Error:", err.response?.data || err.message);
     res.status(500).json({
@@ -1254,16 +1629,16 @@ app.post("/api/send-otp", async (req, res) => {
   }
 });
 
-
-
 app.get("/api/consultation/plans", (req, res) => {
   const plans = [
     {
       id: 1,
       title: process.env.REACT_APP_PLAN_1_TITLE,
       price: Number(
-        String(process.env.REACT_APP_PLAN_1_PRICE || "")
-          .replace(/[^0-9.]/g, "")
+        String(process.env.REACT_APP_PLAN_1_PRICE || "").replace(
+          /[^0-9.]/g,
+          "",
+        ),
       ),
       displayPrice: process.env.REACT_APP_PLAN_1_PRICE,
       description: process.env.REACT_APP_PLAN_1_DESC,
@@ -1274,8 +1649,10 @@ app.get("/api/consultation/plans", (req, res) => {
       id: 2,
       title: process.env.REACT_APP_PLAN_2_TITLE,
       price: Number(
-        String(process.env.REACT_APP_PLAN_2_PRICE || "")
-          .replace(/[^0-9.]/g, "")
+        String(process.env.REACT_APP_PLAN_2_PRICE || "").replace(
+          /[^0-9.]/g,
+          "",
+        ),
       ),
       displayPrice: process.env.REACT_APP_PLAN_2_PRICE,
       description: process.env.REACT_APP_PLAN_2_DESC,
@@ -1286,8 +1663,10 @@ app.get("/api/consultation/plans", (req, res) => {
       id: 3,
       title: process.env.REACT_APP_PLAN_3_TITLE,
       price: Number(
-        String(process.env.REACT_APP_PLAN_3_PRICE || "")
-          .replace(/[^0-9.]/g, "")
+        String(process.env.REACT_APP_PLAN_3_PRICE || "").replace(
+          /[^0-9.]/g,
+          "",
+        ),
       ),
       displayPrice: process.env.REACT_APP_PLAN_3_PRICE,
       description: process.env.REACT_APP_PLAN_3_DESC,
@@ -1298,7 +1677,6 @@ app.get("/api/consultation/plans", (req, res) => {
 
   res.json({ ok: true, plans });
 });
-
 
 /* ---------- Create order AFTER OTP verified ---------- */
 /* Frontend sends full form + price once all OTPs are verified */
@@ -1320,14 +1698,11 @@ app.post("/api/pay/create-order", async (req, res) => {
         .json({ ok: false, message: "Missing required fields" });
     }
 
-   const basePrice = Number(price || 0); 
+    const basePrice = Number(price || 0);
 
+    const hasCoupon = Boolean(coupon);
 
-const hasCoupon = Boolean(coupon);
-
-
-const amount = hasCoupon ? 0 : basePrice * 100;
-
+    const amount = hasCoupon ? 0 : basePrice * 100;
 
     // ALWAYS LATEST NUMBER
     const primaryFull = `${primary.isd}${primary.number}`;
@@ -1357,8 +1732,7 @@ const amount = hasCoupon ? 0 : basePrice * 100;
 
     // If coupon made it fully free, no Razorpay
     if (amount === 0) {
-      
-  processInstantReport(order).catch(console.error);
+      processInstantReport(order).catch(console.error);
       return res.json({
         ok: true,
         free: true,
@@ -1480,7 +1854,7 @@ const amount = hasCoupon ? 0 : basePrice * 100;
 
 //           if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
 //   throw new Error("Internal security misconfigured");
-  
+
 // }
 
 // try {
@@ -1514,10 +1888,6 @@ const amount = hasCoupon ? 0 : basePrice * 100;
 //       }
 //     }
 
-   
-
-
-
 //     await order.save();
 
 //     return res.json({ ok: true });
@@ -1529,9 +1899,6 @@ const amount = hasCoupon ? 0 : basePrice * 100;
 //     });
 //   }
 // });
-
-
-
 
 app.post("/api/pay/verify", async (req, res) => {
   try {
@@ -1585,7 +1952,6 @@ app.post("/api/pay/verify", async (req, res) => {
     processInstantReport(order).catch((err) => {
       console.error("Background task failed:", err);
     });
-
   } catch (err) {
     console.error("pay/verify error:", err);
     return res.status(500).json({ ok: false, message: "Server error" });
@@ -1603,7 +1969,7 @@ async function processInstantReport(order) {
   const freshOrder = await Order.findOneAndUpdate(
     { _id: order._id, instantEmailSent: { $ne: true } },
     { $set: { instantEmailSent: "processing", status: "processing" } },
-    { new: true }
+    { new: true },
   );
 
   if (!freshOrder) return; // already processed or in-progress
@@ -1611,21 +1977,21 @@ async function processInstantReport(order) {
   try {
     const fd = freshOrder.formData || {};
     const general = fd.general || {};
-    
+
     // नाम निकालने का सही क्रम: पहले Form का नाम, फिर Order का नाम, फिर Email
-    const userName = 
-      general.name || 
-      freshOrder.name || 
+    const userName =
+      general.name ||
+      freshOrder.name ||
       (freshOrder.email ? freshOrder.email.split("@")[0] : "User");
 
     const primary = fd.primary || {};
     const userPhone = `${primary.number || ""}`;
 
     // 3️⃣ ईमेल भेजते समय userName पास करें
-   await sendEmail({
-  to: freshOrder.email,
-  subject: "Your Instant Report is being prepared",
-  html: `
+    await sendEmail({
+      to: freshOrder.email,
+      subject: "Your Instant Report is being prepared",
+      html: `
     <p>Dear ${userName},</p>
 
     <p>Thank you for your order.</p>
@@ -1645,15 +2011,15 @@ async function processInstantReport(order) {
       Conscious Karma
     </p>
   `,
-});
+    });
 
-console.log("✅ Instant report email sent to:");
+    console.log("✅ Instant report email sent to:");
     // 4️⃣ Internal security check
     if (process.env.INTERNAL_SCORE_SECRET !== process.env.FINAL_SECRET) {
       throw new Error("Security misconfigured");
     }
 
-console.log("🔐 Internal security check passed");
+    console.log("🔐 Internal security check passed");
 
     // 5️⃣ Generate score
     // const { data } = await axios.post(
@@ -1670,84 +2036,75 @@ console.log("🔐 Internal security check passed");
 
     // const scoreData = data.score || data;
 
-
     let scoreData;
 
-try {
-  console.log("📡 [SCORE] Calling score API...");
-  const startTime = Date.now();
+    try {
+      console.log("📡 [SCORE] Calling score API...");
+      const startTime = Date.now();
 
-  // Generate score logic inside processInstantReport
-const response = await axios.post(
-  `${process.env.REACT_APP_SCORE_API}/score`,
-  { mobile_number: userPhone },
-  {
-    headers: {
-      "Content-Type": "application/json",
-      // ✅ Yahan confirm karein ki hum vahi key bhej rahe hain jo client ne di hai
-      "X-API-Key": process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw", 
-    },
-    timeout: 15000,
-  }
-);
+      // Generate score logic inside processInstantReport
+      const response = await axios.post(
+        `${process.env.REACT_APP_SCORE_API}/score`,
+        { mobile_number: userPhone },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // ✅ Yahan confirm karein ki hum vahi key bhej rahe hain jo client ne di hai
+            "X-API-Key":
+              process.env.REACT_APP_SCORE_API_KEY ||
+              "CK_Score_2365abhnf895asfw",
+          },
+          timeout: 15000,
+        },
+      );
 
-  console.log(
-    "✅ [SCORE] API success in",
-    Date.now() - startTime,
-    "ms"
-  );
+      console.log("✅ [SCORE] API success in", Date.now() - startTime, "ms");
 
-  const { data } = response;
+      const { data } = response;
 
-  if (!data) {
-    throw new Error("Empty response from score API");
-  }
+      if (!data) {
+        throw new Error("Empty response from score API");
+      }
 
-  scoreData = data.score || data;
+      scoreData = data.score || data;
 
-  if (!scoreData || typeof scoreData !== "object") {
-    throw new Error("Invalid score data structure");
-  }
+      if (!scoreData || typeof scoreData !== "object") {
+        throw new Error("Invalid score data structure");
+      }
 
-  console.log(
-    "📊 [SCORE] Parsed score data:\n",
-    JSON.stringify(scoreData, null, 2)
-  );
+      console.log(
+        "📊 [SCORE] Parsed score data:\n",
+        JSON.stringify(scoreData, null, 2),
+      );
+    } catch (err) {
+      console.error("❌ [SCORE] API failed");
 
-} catch (err) {
-  console.error("❌ [SCORE] API failed");
+      if (err.response) {
+        console.error("➡️ Status:", err.response.status);
+        console.error(
+          "➡️ Response:",
+          JSON.stringify(err.response.data, null, 2),
+        );
+      } else if (err.request) {
+        console.error("➡️ No response received:", err.message);
+      } else {
+        console.error("➡️ Internal error:", err.message);
+      }
 
-  if (err.response) {
-    console.error("➡️ Status:", err.response.status);
-    console.error(
-      "➡️ Response:",
-      JSON.stringify(err.response.data, null, 2)
-    );
-  } else if (err.request) {
-    console.error("➡️ No response received:", err.message);
-  } else {
-    console.error("➡️ Internal error:", err.message);
-  }
-
-  // rethrow or return early depending on your flow
-  throw err;
-}
-
+      // rethrow or return early depending on your flow
+      throw err;
+    }
 
     console.log("[SCORE] Generated score for:", scoreData);
     // 6️⃣ Send score email
-   try {
-    console.log("✉️ Sending score email...");
-    await sendScoreMail(
-      freshOrder.email,
-      scoreData,
-      userPhone,
-      userName
-    );
-    console.log("✅ Score email sent");
-  } catch (mailErr) {
-    console.error("⚠️ Email failed (PDF generated):", mailErr.message);
-  }
+    try {
+      console.log("✉️ Sending score email...");
+      await sendScoreMail(freshOrder.email, scoreData, userPhone, userName);
+      console.log("✅ Score email sent");
+await Order.updateOne({ _id: freshOrder._id }, { $set: { instantEmailSent: true } });
+    } catch (mailErr) {
+      console.error("⚠️ Email failed (PDF generated):", mailErr.message);
+    }
 
     // ...
   } catch (err) {
@@ -1758,7 +2115,7 @@ const response = await axios.post(
 import rateLimit from "express-rate-limit";
 const linkLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
-  max: 20,                 // per IP
+  max: 20, // per IP
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -1776,7 +2133,7 @@ app.post("/link", linkLimiter, async (req, res) => {
     // 1. Check if key exists in the allowed list (Case Insensitive)
     const allowed = (process.env.LINK_ALLOWED_KEYS || "")
       .split(",")
-      .map(k => k.trim().toLowerCase());
+      .map((k) => k.trim().toLowerCase());
 
     if (!allowed.includes(key.toLowerCase())) {
       console.log("Access Denied: Key not in allowed list.");
@@ -1785,21 +2142,24 @@ app.post("/link", linkLimiter, async (req, res) => {
 
     // 2. Map Key -> Route (Try both uppercase and lowercase)
     // If key is "abc", looks for LINK_ABC_API or LINK_abc_API
-    const apiPath = process.env[`LINK_${key.toUpperCase()}_API`] || process.env[`LINK_${key.toLowerCase()}_API`];
+    const apiPath =
+      process.env[`LINK_${key.toUpperCase()}_API`] ||
+      process.env[`LINK_${key.toLowerCase()}_API`];
 
     if (!apiPath) {
-      console.error(`CONFIG ERROR: Variable LINK_${key.toUpperCase()}_API is missing in .env`);
+      console.error(
+        `CONFIG ERROR: Variable LINK_${key.toUpperCase()}_API is missing in .env`,
+      );
       // Return 404 instead of 500 so it's easier to debug
       return res.status(404).json({
         ok: false,
         code: "API_NOT_MAPPED",
-        details: `Missing environment variable for: ${key}`
+        details: `Missing environment variable for: ${key}`,
       });
     }
 
     console.log("Success! Routing to:", apiPath);
     return res.json({ ok: true, route: apiPath });
-
   } catch (err) {
     console.error("CRITICAL LINK ERROR:", err.message);
     return res.status(500).json({ ok: false, code: "SERVER_ERROR" });
@@ -1813,12 +2173,10 @@ app.get("/api/link/check", (req, res) => {
 
   const allowed = (process.env.LINK_ALLOWED_KEYS || "")
     .split(",")
-    .map(k => k.trim());
+    .map((k) => k.trim());
 
   res.json({ valid: allowed.includes(key) });
 });
-
-
 
 app.post("/api/pay/verify-report", async (req, res) => {
   try {
@@ -1883,7 +2241,6 @@ app.post("/api/pay/verify-report", async (req, res) => {
   }
 });
 
-
 // routes/config.js or directly in server.js
 app.get("/api/config/price", (req, res) => {
   res.json({
@@ -1894,12 +2251,8 @@ app.get("/api/config/personalizereportprice", (req, res) => {
   res.json({ price: Number(process.env.REACT_APP_REPORT_BASE_PRICE || 1) });
 });
 
-
 /* ---------- Final submit AFTER payment verified ---------- */
 /* Frontend calls this with orderId once /api/pay/verify is ok */
-
-
-
 
 app.get("/test-mail", async (req, res) => {
   try {
@@ -1931,12 +2284,12 @@ app.post("/api/verify-otp", async (req, res) => {
 
     // ❗ API docs ke according validateOtp ko GET se call karna hai
     const url = `https://cpaas.messagecentral.com/verification/v3/validateOtp?verificationId=${encodeURIComponent(
-      verificationId
+      verificationId,
     )}&code=${encodeURIComponent(code)}`;
 
     const { data } = await axios.get(url, {
       headers: {
-        authToken,       // EXACT header name docs jaisa
+        authToken, // EXACT header name docs jaisa
         Accept: "*/*",
       },
     });
@@ -1954,7 +2307,7 @@ app.post("/api/verify-otp", async (req, res) => {
     console.error(
       "Verify OTP Error:",
       err.response?.status,
-      err.response?.data || err.message
+      err.response?.data || err.message,
     );
 
     // Debug ke liye providerStatus/body bhej sakte ho – baad me hata dena
@@ -1975,7 +2328,11 @@ app.post("/api/auth/check-password", async (req, res) => {
     if (!email || !oldPassword) {
       return res
         .status(400)
-        .json({ ok: false, valid: false, message: "Email and password required" });
+        .json({
+          ok: false,
+          valid: false,
+          message: "Email and password required",
+        });
     }
 
     const user = await User.findOne({ email });
@@ -1995,9 +2352,7 @@ app.post("/api/auth/check-password", async (req, res) => {
     res.json({ ok: true, valid: true });
   } catch (err) {
     console.error("check-password error:", err);
-    res
-      .status(500)
-      .json({ ok: false, valid: false, message: "Server error" });
+    res.status(500).json({ ok: false, valid: false, message: "Server error" });
   }
 });
 app.post("/api/auth/change-password", async (req, res) => {
@@ -2012,9 +2367,7 @@ app.post("/api/auth/change-password", async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ ok: false, message: "User not found" });
+      return res.status(404).json({ ok: false, message: "User not found" });
     }
 
     const match = await bcrypt.compare(oldPassword, user.password);
@@ -2078,9 +2431,7 @@ app.post("/api/contact", async (req, res) => {
       to: "hello@consciouskarma.co",
       subject: "New Contact Message – Conscious Karma",
       html: adminHtml,
-    }).catch(err =>
-      console.error("Contact mail failed:", err.message)
-    );
+    }).catch((err) => console.error("Contact mail failed:", err.message));
 
     return res.json({ ok: true });
   } catch (err) {
@@ -2091,7 +2442,6 @@ app.post("/api/contact", async (req, res) => {
     });
   }
 });
-
 
 app.get("/api/user-activity", async (req, res) => {
   try {
@@ -2140,9 +2490,7 @@ app.get("/api/user-activity", async (req, res) => {
     }
 
     // Sort all together (latest first)
-    activity.sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
+    activity.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     res.json({ ok: true, data: activity });
   } catch (err) {
@@ -2150,7 +2498,6 @@ app.get("/api/user-activity", async (req, res) => {
     res.status(500).json({ ok: false, message: "Server error" });
   }
 });
-
 
 app.post("/api/report/submit", async (req, res) => {
   try {
@@ -2160,7 +2507,9 @@ app.post("/api/report/submit", async (req, res) => {
       return res.status(404).json({ ok: false, message: "Order not found" });
 
     if (!(order.status === "paid" || order.status === "free")) {
-      return res.status(400).json({ ok: false, message: "Payment not completed" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Payment not completed" });
     }
 
     const fd = order.formData || {};
@@ -2192,7 +2541,7 @@ app.post("/api/report/submit", async (req, res) => {
 
     /* ----- User email ----- */
     /* ----- User email (REPORT IN PROGRESS) ----- */
-const userHtml = `
+    const userHtml = `
   <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
     <p>Dear <strong>${general.name || "User"}</strong>,</p>
 
@@ -2221,13 +2570,14 @@ const userHtml = `
   </div>
 `;
 
-await sendEmail({
-  to: general.email,
-  subject: "Your Personalised Report is Now in Progress",
-  html: userHtml,
-});
+    await sendEmail({
+      to: general.email,
+      subject: "Your Personalised Report is Now in Progress",
+      html: userHtml,
+    });
 
     order.status = "submitted";
+    order.emailSent = true;
     await order.save();
 
     res.json({ ok: true });
@@ -2237,14 +2587,13 @@ await sendEmail({
   }
 });
 
-
 /* ---------- Optional: existing async pipeline (if you still want it) ---------- */
 /* You can keep /api/report/start calling triggerReportAndEmail separately if needed */
 
 app.post("/api/mail/score", async (req, res) => {
   try {
     const { email, mobileNumber, scoreData } = req.body;
-console.log("Final mobile for score mail:", req.body, mobileNumber);
+    console.log("Final mobile for score mail:", req.body, mobileNumber);
     // ALWAYS latest mobile
     const finalMobile =
       mobileNumber ||
@@ -2253,14 +2602,10 @@ console.log("Final mobile for score mail:", req.body, mobileNumber);
       scoreData?.primaryMobile ||
       scoreData?.phone ||
       "";
-const userName =
-  scoreData?.name ||
-  scoreData?.user_name ||
-  email?.split("@")[0] ||
-  "User";
+    const userName =
+      scoreData?.name || scoreData?.user_name || email?.split("@")[0] || "User";
 
-await sendScoreMail(email, scoreData, finalMobile, userName);
-
+    await sendScoreMail(email, scoreData, finalMobile, userName);
 
     res.json({ ok: true });
   } catch (err) {
@@ -2394,7 +2739,6 @@ app.post("/api/auth/reset-password", async (req, res) => {
       ok: true,
       message: "Password updated successfully",
     });
-
   } catch (err) {
     console.error(err);
     return res.json({
@@ -2413,17 +2757,22 @@ app.post("/api/admin/force-send-report", async (req, res) => {
 
     // 🔒 Security Check
     if (secretKey !== "admin_power_123") {
-      return res.status(401).json({ ok: false, message: "Chal bhag yahan se! 🔒" });
+      return res
+        .status(401)
+        .json({ ok: false, message: "Chal bhag yahan se! 🔒" });
     }
 
     if (!mobile || !email) {
-      return res.status(400).json({ ok: false, message: "Mobile aur Email dono chahiye" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Mobile aur Email dono chahiye" });
     }
 
     // 1️⃣ Score API se Data mangwana
     console.log("📡 Fetching Score Data...");
     const apiUrl = `${process.env.REACT_APP_SCORE_API}/score`;
-    const apiKey = process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
+    const apiKey =
+      process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
 
     const { data } = await axios.post(
       apiUrl,
@@ -2433,40 +2782,34 @@ app.post("/api/admin/force-send-report", async (req, res) => {
           "Content-Type": "application/json",
           "X-API-Key": apiKey,
         },
-        timeout: 20000, 
-      }
+        timeout: 20000,
+      },
     );
 
     const scoreData = data.score || data;
 
     // 🔥🔥 YE RAHA WOH LOGIC JO TUJHE CHAHIYE 🔥🔥
     console.log("\n👇👇👇 [DEBUG] SCORE API RESPONSE START 👇👇👇");
-    console.log(JSON.stringify(scoreData, null, 2)); 
+    console.log(JSON.stringify(scoreData, null, 2));
     console.log("👆👆👆 [DEBUG] SCORE API RESPONSE END 👆👆👆\n");
 
     // 2️⃣ PDF Generate karke Mail Bhejna
     console.log("✉️ Generating PDF & Sending Mail...");
-    
+
     // 'sendScoreMail' import hona chahiye upar
-    await sendScoreMail(
-      email, 
-      scoreData, 
-      mobile, 
-      name || "Special User"
-    );
+    await sendScoreMail(email, scoreData, mobile, name || "Special User");
 
     console.log("✅ Mail Sent Successfully!");
-    return res.json({ 
-      ok: true, 
-      message: "Mail sent!", 
-      apiResponseSummary: "Check console for full JSON" 
+    return res.json({
+      ok: true,
+      message: "Mail sent!",
+      apiResponseSummary: "Check console for full JSON",
     });
-
   } catch (err) {
     console.error("❌ Force Send Failed:", err.message);
     if (err.response) {
-        console.error("API Error Data:", err.response.data);
-        return res.status(err.response.status).json(err.response.data);
+      console.error("API Error Data:", err.response.data);
+      return res.status(err.response.status).json(err.response.data);
     }
     return res.status(500).json({ ok: false, error: err.message });
   }
@@ -2476,7 +2819,7 @@ app.post("/api/admin/force-send-report", async (req, res) => {
 app.post("/api/admin/bulk-test-custom", async (req, res) => {
   try {
     // 30 minute timeout for this request (kyunki 15 PDF time legi)
-    req.setTimeout(1800000); 
+    req.setTimeout(1800000);
 
     const { email, mobile, samples, secretKey } = req.body;
 
@@ -2486,7 +2829,9 @@ app.post("/api/admin/bulk-test-custom", async (req, res) => {
     }
 
     if (!samples || !Array.isArray(samples) || samples.length === 0) {
-      return res.status(400).json({ ok: false, message: "Samples array is empty!" });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Samples array is empty!" });
     }
 
     console.log(`🚀 Starting Bulk Test for ${samples.length} samples...`);
@@ -2494,12 +2839,13 @@ app.post("/api/admin/bulk-test-custom", async (req, res) => {
     // 1️⃣ STEP 1: Fetch Real Score Data (Sirf ek baar)
     console.log("📡 Fetching Base Data from Score API...");
     const apiUrl = `${process.env.REACT_APP_SCORE_API}/score`;
-    const apiKey = process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
+    const apiKey =
+      process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
 
     const apiRes = await axios.post(
       apiUrl,
       { mobile_number: mobile || "9999999999" }, // Default dummy agar mobile nahi diya
-      { headers: { "Content-Type": "application/json", "X-API-Key": apiKey } }
+      { headers: { "Content-Type": "application/json", "X-API-Key": apiKey } },
     );
 
     const baseScoreData = apiRes.data.score || apiRes.data;
@@ -2507,9 +2853,9 @@ app.post("/api/admin/bulk-test-custom", async (req, res) => {
 
     // 2️⃣ STEP 2: Loop Through Samples & Send Mails
     let successCount = 0;
-    
+
     // Helper function for delay (taaki server crash na ho)
-    const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
     for (const [index, textContent] of samples.entries()) {
       console.log(`\n📄 Processing Sample ${index + 1}/${samples.length}...`);
@@ -2519,8 +2865,8 @@ app.post("/api/admin/bulk-test-custom", async (req, res) => {
         ...baseScoreData,
         influence_section: {
           ...baseScoreData.influence_section,
-          as_text: textContent // 🔥 Yahan tera custom text jayega
-        }
+          as_text: textContent, // 🔥 Yahan tera custom text jayega
+        },
       };
 
       try {
@@ -2530,25 +2876,23 @@ app.post("/api/admin/bulk-test-custom", async (req, res) => {
           email,
           customScoreData,
           mobile || "9999999999",
-          `Test User (Sample ${index + 1})`
+          `Test User (Sample ${index + 1})`,
         );
-        
+
         console.log(`✅ Sample ${index + 1} Sent!`);
         successCount++;
-        
-        // ⏳ 2 Second wait between emails to be safe
-        await wait(2000); 
 
+        // ⏳ 2 Second wait between emails to be safe
+        await wait(2000);
       } catch (err) {
         console.error(`❌ Failed Sample ${index + 1}:`, err.message);
       }
     }
 
-    return res.json({ 
-      ok: true, 
-      message: `Bulk Process Complete. Sent ${successCount}/${samples.length} reports.` 
+    return res.json({
+      ok: true,
+      message: `Bulk Process Complete. Sent ${successCount}/${samples.length} reports.`,
     });
-
   } catch (err) {
     console.error("❌ Bulk Route Error:", err.message);
     return res.status(500).json({ ok: false, error: err.message });

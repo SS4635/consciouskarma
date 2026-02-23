@@ -11,7 +11,6 @@ const OrderSchema = new mongoose.Schema({
   couponRedeemResponse: {},       // optional raw partner response
   accountChoice: { type:String, enum:['guest','create'], default:'guest' },
   
-  // ✅ FIX: Added 'submitted' to the enum list below
   status: { 
     type: String, 
     enum: ['pending', 'free', 'paid', 'processing', 'emailed', 'failed', 'submitted'], 
@@ -20,14 +19,15 @@ const OrderSchema = new mongoose.Schema({
 
   razorpay: { orderId:String, paymentId:String, signature:String },
   
-  // Isme ek aur cheez: Kabhi kabhi hum formData bhi save kar rahe hain backend me
-  // par schema me defined nahi hai. Mongoose strict mode me usse ignore kar dega (save nahi karega).
-  // Agar tum chahte ho ki formData save ho (jo reports ke liye zaroori hai), 
-  // toh usse bhi yahan define karna padega:
-  formData: { type: Object }, // ✅ Added to ensure form data is saved
+  formData: { type: Object }, 
 
   pdfKey: String,
   pdfUrl: String,
+
+  // ✅ FIX: Dono email tracking fields add karni padengi
+  emailSent: { type: Boolean, default: false }, // For Personalised
+  instantEmailSent: { type: mongoose.Schema.Types.Mixed, default: false } // For Instant (Takes "processing" or true)
+
 }, { timestamps:true });
 
-export default mongoose.model('Order', OrderSchema);
+export default mongoose.models.Order || mongoose.model('Order', OrderSchema);

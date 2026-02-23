@@ -17,6 +17,9 @@ const ConsultationSchema = new mongoose.Schema(
       enum: ["pending", "paid"],
       default: "pending",
     },
+
+    // ✅ FIX: Dashboard status ke liye ye field add karna zaroori hai
+    emailSent: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
