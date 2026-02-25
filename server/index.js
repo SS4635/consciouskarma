@@ -9,12 +9,12 @@ import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
 
-// dotenv.config({
-//   path: "/var/www/.env",
-// });
+dotenv.config({
+  path: "/var/www/.env",
+});
 
 // import dotenv from "dotenv";
-dotenv.config();
+// dotenv.config();
 // //channges
 import EnergyLog from "./models/EnergyLog.js";
 import { protectAndLog } from "./middleware/security.js"; // Path check kar lena
