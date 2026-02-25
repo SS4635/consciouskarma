@@ -59,6 +59,7 @@ export default function AdminDashboardLayout() {
   const [isLinkOpen, setIsLinkOpen] = useState(false);
   const [selectedRoute, setSelectedRoute] = useState("");
   const [availableRoutes, setAvailableRoutes] = useState([]); 
+  const [historicalLinks, setHistoricalLinks] = useState([]); // 🔥 NEW STATE
 
   // Category States
   const [categories, setCategories] = useState([]);
@@ -90,11 +91,12 @@ export default function AdminDashboardLayout() {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch Categories AND Routes Initially
+  // Fetch Categories, Routes AND Historical Links Initially
   useEffect(() => {
     if(adminEmail) {
       fetchCategories();
       fetchAvailableRoutes();
+      fetchHistoricalLinks(); // 🔥 CALL NEW FUNCTION
     }
   }, [adminEmail]);
 
@@ -111,6 +113,14 @@ export default function AdminDashboardLayout() {
     try {
       const { data } = await axios.get(`${API_BASE_URL}/api/admin/available-routes`, { params: { email: adminEmail } });
       if (data.ok) setAvailableRoutes(data.data);
+    } catch (err) {}
+  };
+
+  // 🔥 NEW FUNCTION: Fetch Previous Links
+  const fetchHistoricalLinks = async () => {
+    try {
+      const { data } = await axios.get(`${API_BASE_URL}/api/admin/historical-links`, { params: { email: adminEmail } });
+      if (data.ok) setHistoricalLinks(data.data);
     } catch (err) {}
   };
 
@@ -146,21 +156,30 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, debouncedSearch, filterDate, startDate, endDate, page, adminEmail]);
 
-  // Fetch Energy Logs
+  // 🔥 UPDATED: Fetch Energy Logs (with Filters & SourceLink)
   useEffect(() => {
-    if (activeTab === "energy-logs" && selectedRoute) {
+    if ((activeTab === "energy-logs" || activeTab === "previous-links") && selectedRoute) {
+      if (filterDate === "custom" && (!startDate || !endDate)) return;
+      
       const fetchLogs = async () => {
         setLoading(true);
         try {
           const { data } = await axios.get(`${API_BASE_URL}/api/admin/energy-logs`, {
-            params: { email: adminEmail, routeHit: selectedRoute }
-          });
+          params: { 
+            email: adminEmail, 
+            routeHit: selectedRoute, // Yahan sourceLink ki jagah wapas routeHit aayega
+            search: debouncedSearch, 
+            filterDate, 
+            startDate, 
+            endDate 
+          }
+        });
           if (data.ok) setTableData(data.data);
         } catch (err) {} finally { setLoading(false); }
       };
       fetchLogs();
     }
-  }, [activeTab, selectedRoute, adminEmail]);
+  }, [activeTab, selectedRoute, adminEmail, debouncedSearch, filterDate, startDate, endDate]);
   
   // Fetch Blogs
   useEffect(() => {
@@ -176,7 +195,7 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, blogView, adminEmail]);
 
-  // --- Category Actions (FIXED) ---
+  // --- Category Actions ---
   const handleAddCategory = async () => {
     if (!newCategory.trim()) {
       return Swal.fire("Warning", "Category name cannot be empty", "warning");
@@ -245,12 +264,10 @@ export default function AdminDashboardLayout() {
   };
 
   const handleBlogSubmit = async (status) => {
-    // 1. Basic Validations (Title, Content, Image)
     if (!blogTitle.trim()) return Swal.fire("Error", "Blog Title is required!", "error");
     if (!blogContent || blogContent === "<p><br></p>") return Swal.fire("Error", "Blog Content cannot be empty!", "error");
     if (!blogImageFile && !existingImageUrl) return Swal.fire("Error", "Please select a Featured Image!", "error");
 
-    // 🔥 2. STRICT PUBLISH VALIDATION (Naya Code)
     if (status === "published") {
       if (!blogCategory || blogCategory.trim() === "") {
         return Swal.fire("Missing Info", "Please select a Category before publishing!", "warning");
@@ -310,7 +327,7 @@ export default function AdminDashboardLayout() {
     Swal.fire({ title: `Message from ${name}`, text: message, icon: 'info', confirmButtonColor: '#ff914d' });
   };
 
-  // 🔥 EXPORT EXCEL FUNCTION (UPDATED TO HANDLE LOGS TOO)
+  // 🔥 UPDATED: EXPORT EXCEL FUNCTION
   const exportToExcel = () => {
     if (!tableData || tableData.length === 0) {
       return Swal.fire("Empty", "No data available to export.", "info");
@@ -318,9 +335,9 @@ export default function AdminDashboardLayout() {
 
     let csvRows = [];
 
-    // Logics for 'energy-logs' Tab Export
-    if (activeTab === "energy-logs") {
-      const headers = ["Date", "Time", "Mobile Hit", "IP Address"];
+    // Logics for 'energy-logs' or 'previous-links' Tab Export
+    if (activeTab === "energy-logs" || activeTab === "previous-links") {
+      const headers = ["Date", "Time", "Mobile Hit", "Source Link", "API Route Hit", "IP Address"];
       csvRows.push(headers.join(","));
 
       tableData.forEach(item => {
@@ -328,8 +345,10 @@ export default function AdminDashboardLayout() {
         const dateStr = d.toLocaleDateString('en-IN');
         const timeStr = d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
         const mobile = `"${item.mobileNumber || "-"}"`;
+        const source = `"${item.sourceLink || "-"}"`;
+        const apiRoute = `"${item.routeHit || "-"}"`;
         const ip = `"${item.ipAddress || "-"}"`;
-        csvRows.push([dateStr, timeStr, mobile, ip].join(","));
+        csvRows.push([dateStr, timeStr, mobile, source, apiRoute, ip].join(","));
       });
     } 
     // Logic for other Core Tabs Export
@@ -426,15 +445,14 @@ export default function AdminDashboardLayout() {
                 {tab === "summary" ? "📊 Dashboard Overview" : tab === "personalised" ? "Personalised Reports" : `${tab} Data`}
               </button>
             ))}
-
-            {/* LINK DROPDOWN (DYNAMIC FROM .ENV) */}
+{/* LINK DROPDOWN (DYNAMIC FROM .ENV) */}
             <div style={{ marginTop: "5px" }}>
               <button 
                 className="ck-nav-item" 
                 onClick={() => setIsLinkOpen(!isLinkOpen)}
                 style={{ color: activeTab === "energy-logs" ? "#ff914d" : "#aaa", background: activeTab === "energy-logs" ? "rgba(255, 145, 77, 0.1)" : "transparent", width: "100%", textAlign: "left", display: "flex", justifyContent: "space-between" }}
               >
-                <span>🔗 Link Actions</span>
+                <span>🔗 Active Links</span>
                 <span>{isLinkOpen ? "▾" : "▸"}</span>
               </button>
               {isLinkOpen && (
@@ -443,18 +461,39 @@ export default function AdminDashboardLayout() {
                     availableRoutes.map(route => (
                       <button 
                         key={route} 
-                        onClick={() => { setActiveTab("energy-logs"); setSelectedRoute(route); }}
-                        style={{ background: selectedRoute === route ? "#ff914d" : "#222", color: selectedRoute === route ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left" }}
+                        onClick={() => { 
+                          setActiveTab("energy-logs"); 
+                          setSelectedRoute(route); 
+                          setPage(1);
+                          setSearchQuery("");
+                          setFilterDate("all"); 
+                        }}
+                        style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#ff914d" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left" }}
                       >
                         Route: /{route}
                       </button>
                     ))
                   ) : (
-                    <span style={{ color: "#666", fontSize: "12px", padding: "8px" }}>No routes found in .env</span>
+                    <span style={{ color: "#666", fontSize: "12px", padding: "8px" }}>No routes found</span>
                   )}
                 </div>
               )}
             </div>
+
+            {/* PREVIOUS LINKS BUTTON */}
+            <button 
+              className={`ck-nav-item ${activeTab === "previous-links" ? "ck-nav-item--active" : ""}`} 
+              onClick={() => { 
+                setActiveTab("previous-links"); 
+                setSelectedRoute(historicalLinks[0] || ""); 
+                setPage(1);
+                setSearchQuery("");
+                setFilterDate("all");
+              }}
+              style={{ color: activeTab === "previous-links" ? "#ff914d" : "#aaa", background: activeTab === "previous-links" ? "rgba(255, 145, 77, 0.1)" : "transparent", marginTop: "5px" }}
+            >
+              🗃️ Previous Links
+            </button>
 
             <button 
               className={`ck-nav-item ${activeTab === "contact" ? "ck-nav-item--active" : ""}`} 
@@ -644,24 +683,67 @@ export default function AdminDashboardLayout() {
               </section>
             )}
 
-            {/* 🔥 NEW: ENERGY LOGS VIEW (WITH EXPORT BUTTON) */}
-            {activeTab === "energy-logs" && (
+            {/* 🔥 NEW: COMBINED ACTIVE & PREVIOUS LINKS VIEW */}
+            {(activeTab === "energy-logs" || activeTab === "previous-links") && (
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
                 
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                  <h2 className="ck-panel-title" style={{ color: "#fff", margin: 0 }}>Logs for Route: /{selectedRoute}</h2>
+                {/* Header & Export */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
+                  <h2 className="ck-panel-title" style={{ color: "#fff", margin: 0 }}>
+                    {activeTab === "previous-links" ? "Archived Link Data" : `Traffic for Link: ?${selectedRoute}`}
+                  </h2>
                   <button className="ck-btn-sm" style={{ background: "#2ecc71", color: "#000", fontWeight: "bold", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: "6px" }} onClick={exportToExcel}>
                     📥 Export Excel
                   </button>
                 </div>
 
+                {/* Filters Row (Dropdown for historical, Search, Dates) */}
+                <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", alignItems: "center", marginBottom: "20px" }}>
+                  
+                  {/* Show Dropdown ONLY on Previous Links tab */}
+                  {activeTab === "previous-links" && (
+                     <select className="ck-input" style={{ width: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={selectedRoute} onChange={(e) => setSelectedRoute(e.target.value)}>
+                       <option value="" disabled>Select a previous link...</option>
+                       {historicalLinks.map(link => (
+                         <option key={link} value={link}>{link}</option>
+                       ))}
+                     </select>
+                  )}
+
+                  <input type="text" placeholder="Search Mobile..." className="ck-input" style={{ flex: 1, minWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+                  
+                  <select className="ck-input" style={{ width: "150px", background: "#222", color: "#fff", border: "1px solid #444" }} value={filterDate} onChange={(e) => setFilterDate(e.target.value)}>
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="last7">Last 7 Days</option>
+                    <option value="last30">Last 30 Days</option>
+                    <option value="custom">Custom Range</option>
+                  </select>
+
+                  {filterDate === "custom" && (
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <input type="date" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={startDate} max={endDate || undefined} onChange={(e) => setStartDate(e.target.value)} />
+                      <span style={{color: "#888"}}>to</span>
+                      <input type="date" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={endDate} min={startDate || undefined} onChange={(e) => setEndDate(e.target.value)} />
+                    </div>
+                  )}
+                </div>
+
+                {/* Data Table */}
                 {loading ? <div className="ck-empty-state" style={{color: "#ff914d"}}>Loading logs...</div> : tableData.length === 0 ? (
-                  <div className="ck-empty-state" style={{color: "#888"}}>No hits recorded for this route yet.</div>
+                  <div className="ck-empty-state" style={{color: "#888"}}>No hits recorded yet.</div>
                 ) : (
                   <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
                     <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
                       <thead style={{ background: "#222" }}>
-                        <tr><th style={{padding: "12px"}}>Date</th><th style={{padding: "12px"}}>Time</th><th style={{padding: "12px"}}>Mobile Hit</th><th style={{padding: "12px"}}>IP Address</th></tr>
+                        <tr>
+                          <th style={{padding: "12px"}}>Date</th>
+                          <th style={{padding: "12px"}}>Time</th>
+                          <th style={{padding: "12px"}}>Mobile Hit</th>
+                          <th style={{padding: "12px"}}>Source Link</th>
+                          <th style={{padding: "12px"}}>API Used</th>
+                          <th style={{padding: "12px"}}>IP Address</th>
+                        </tr>
                       </thead>
                       <tbody>
                         {tableData.map(log => {
@@ -671,6 +753,8 @@ export default function AdminDashboardLayout() {
                               <td style={{padding: "12px"}}>{d.toLocaleDateString('en-IN')}</td>
                               <td style={{padding: "12px", color: "#aaa"}}>{d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</td>
                               <td style={{padding: "12px", color: "#ff914d", fontWeight: "bold"}}>{log.mobileNumber}</td>
+                              <td style={{padding: "12px"}}><span style={{background: "#333", padding: "4px 8px", borderRadius: "4px"}}>{log.sourceLink}</span></td>
+                              <td style={{padding: "12px", color: "#aaa"}}>{log.routeHit}</td>
                               <td style={{padding: "12px"}}>{log.ipAddress}</td>
                             </tr>
                           )

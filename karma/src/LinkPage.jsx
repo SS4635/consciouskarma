@@ -51,6 +51,7 @@ export default function ConsciousKarmaSections() {
   const calledRef = useRef(false); // 🔒 LOCK
 
   const [resolvedRoute, setResolvedRoute] = useState(null);
+  const [sourceKey, setSourceKey] = useState(null);
 
   useEffect(() => {
     const search = location.search;
@@ -64,6 +65,7 @@ export default function ConsciousKarmaSections() {
     const key = search.slice(1); // remove '?'
 
     console.log("QUERY KEY:", key);
+    setSourceKey(key);
 
     fetch(`${process.env.REACT_APP_API_URL}/link`, {
       method: "POST",
@@ -290,7 +292,7 @@ export default function ConsciousKarmaSections() {
         .text-fluid-24-30{font-size:clamp(24px,3.2vw,30px)}
       `}</style>
 
-      <FirstSection resolvedRoute={resolvedRoute} />
+      <FirstSection resolvedRoute={resolvedRoute} sourceKey={sourceKey}/>
 
       <div className="absolute top-0 left-0 w-full z-50">
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />

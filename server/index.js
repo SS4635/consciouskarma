@@ -9,12 +9,12 @@ import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
 
-dotenv.config({
-  path: "/var/www/.env",
-});
+// dotenv.config({
+//   path: "/var/www/.env",
+// });
 
 // import dotenv from "dotenv";
-// dotenv.config();
+dotenv.config();
 // //channges
 import EnergyLog from "./models/EnergyLog.js";
 import { protectAndLog } from "./middleware/security.js"; // Path check kar lena
@@ -688,29 +688,110 @@ app.delete("/api/admin/blog/:id", async (req, res) => {
   }
 });
 
+// 1. UPDATE: Save sourceLink when getting energy
+app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
+  try {
+    const { mobile_number, source_link } = req.body;
+    const { routeId } = req.params;
 
-// ==========================================
-// 🔥 ENERGY LOGS & ROUTES APIs
-// ==========================================
+    // Save BOTH the API route (routeId) and the URL Key (source_link)
+    await EnergyLog.create({
+      mobileNumber: mobile_number,
+      routeHit: routeId,
+      sourceLink: source_link || "direct", 
+      ipAddress: req.userIP,
+      userAgent: req.headers["user-agent"],
+    });
+
+    const CLIENT_API_URL = `https://api.consciouskarma.co/micro/${routeId}`;
+    const externalResponse = await axios.post(
+      CLIENT_API_URL,
+      { mobile_number },
+      { headers: { "Content-Type": "application/json", "X-API-Key": "CK_Score_2365abhnf895asfw" } }
+    );
+
+    return res.json(externalResponse.data);
+  } catch (err) {
+    console.error(`Error in route ${req.params.routeId}:`, err.message);
+    if (err.response) return res.status(err.response.status).json(err.response.data);
+    return res.status(500).json({ ok: false, message: "External API Failed" });
+  }
+});
+
+
+// HELPER FUNCTION: To extract UNIQUE active routes from .env
+const getActiveRoutes = () => {
+  const rawKeys = process.env.LINK_ALLOWED_KEYS || "";
+  const keysArray = rawKeys.split(",").map(k => k.trim()).filter(Boolean);
+  
+  const activeRoutes = keysArray.map(key => {
+    const apiPath = process.env[`LINK_${key.toUpperCase()}_API`] || process.env[`LINK_${key.toLowerCase()}_API`];
+    return apiPath ? apiPath.replace(/^\//, '') : null; 
+  }).filter(Boolean);
+
+  // 🔥 FIX: Return only UNIQUE routes to prevent duplicates in the sidebar
+  return [...new Set(activeRoutes)]; 
+};
+
+// 1. ACTIVE ROUTES API
 app.get("/api/admin/available-routes", (req, res) => {
   try {
     const { email } = req.query;
     if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
     
-    const rawRoutes = process.env.AVAILABLE_ROUTES || "a1,a2";
-    const routesArray = rawRoutes.split(",").map(r => r.trim()).filter(Boolean);
-    res.json({ ok: true, data: routesArray });
+    // This will now send a deduplicated array to the frontend
+    res.json({ ok: true, data: getActiveRoutes() });
   } catch (err) {
     res.status(500).json({ ok: false });
   }
 });
 
-app.get("/api/admin/energy-logs", async (req, res) => {
+// 2. PREVIOUS/HISTORICAL ROUTES API
+app.get("/api/admin/historical-links", async (req, res) => {
   try {
-    const { email, routeHit } = req.query;
+    const { email } = req.query;
     if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
 
-    const logs = await EnergyLog.find({ routeHit }).sort({ createdAt: -1 });
+    const activeRoutes = getActiveRoutes(); 
+    const allRoutes = await EnergyLog.distinct("routeHit"); 
+    
+    // Find routes in DB that are NOT currently active
+    const historicalRoutes = allRoutes.filter(route => !activeRoutes.includes(route));
+    
+    res.json({ ok: true, data: historicalRoutes });
+  } catch (err) {
+    res.status(500).json({ ok: false });
+  }
+});
+
+// 3. ENERGY LOGS API
+app.get("/api/admin/energy-logs", async (req, res) => {
+  try {
+    const { email, routeHit, search, filterDate, startDate, endDate } = req.query;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    let query = {};
+    if (routeHit) query.routeHit = routeHit; 
+
+    if (search && search.trim() !== "") {
+      query.mobileNumber = new RegExp(search.trim(), "i");
+    }
+
+    if (filterDate && filterDate !== "all") {
+      let startObj = new Date();
+      startObj.setHours(0, 0, 0, 0);
+      
+      if (filterDate === "today") query.createdAt = { $gte: startObj };
+      else if (filterDate === "last7") { startObj.setDate(startObj.getDate() - 7); query.createdAt = { $gte: startObj }; }
+      else if (filterDate === "last30") { startObj.setDate(startObj.getDate() - 30); query.createdAt = { $gte: startObj }; }
+      else if (filterDate === "custom" && startDate && endDate) {
+        const customStart = new Date(startDate); customStart.setHours(0, 0, 0, 0);
+        const customEnd = new Date(endDate); customEnd.setHours(23, 59, 59, 999);
+        query.createdAt = { $gte: customStart, $lte: customEnd };
+      }
+    }
+
+    const logs = await EnergyLog.find(query).sort({ createdAt: -1 });
     res.json({ ok: true, data: logs });
   } catch (err) {
     res.status(500).json({ ok: false, message: "Server error" });
@@ -1044,52 +1125,7 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
   }
 });
 
-// ✅ MICRO ROUTE: Protected & Logged
-app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
-  try {
-    const { mobile_number } = req.body;
 
-    // URL se dynamic part nikal liya (e.g. 'a1' or 'a2')
-    const { routeId } = req.params;
-
-    // 1️⃣ STEP 1: DB SAVE (Logging)
-    // Hum routeHit mein 'a1'/'a2' save kar rahe hain taaki pata chale user ne kya check kiya
-    await EnergyLog.create({
-      mobileNumber: mobile_number,
-      routeHit: routeId,
-      ipAddress: req.userIP,
-      userAgent: req.headers["user-agent"],
-    });
-
-    console.log(`[GLOBAL PROXY] Processing route: ${routeId}`);
-
-    // 2️⃣ STEP 2: EXTERNAL API CALL
-    // Jo routeId frontend se aaya, wahi humne external API ke aage chipka diya
-    const CLIENT_API_URL = `https://api.consciouskarma.co/micro/${routeId}`;
-
-    const externalResponse = await axios.post(
-      CLIENT_API_URL,
-      { mobile_number },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": "CK_Score_2365abhnf895asfw", // Key ab safe hai backend pe
-        },
-      },
-    );
-
-    // 3️⃣ STEP 3: RETURN RESULT
-    return res.json(externalResponse.data);
-  } catch (err) {
-    console.error(`Error in route ${req.params.routeId}:`, err.message);
-
-    // Agar external API fail ho, toh wahi error frontend ko dikhao
-    if (err.response) {
-      return res.status(err.response.status).json(err.response.data);
-    }
-    return res.status(500).json({ ok: false, message: "External API Failed" });
-  }
-});
 
 app.post("/api/pay/verify-consultation", async (req, res) => {
   try {

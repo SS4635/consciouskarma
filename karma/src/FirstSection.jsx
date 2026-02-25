@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-export default function FirstSection({ resolvedRoute }) {
+export default function FirstSection({ resolvedRoute, sourceKey}) {
   // Array of 10 strings for individual inputs
   const [otp, setOtp] = useState(new Array(10).fill(""));
   const [apiData, setApiData] = useState(null);
@@ -103,7 +103,11 @@ export default function FirstSection({ resolvedRoute }) {
           "Content-Type": "application/json",
           "X-API-Key": "CK_Score_2365abhnf895asfw",
         },
-        body: JSON.stringify({ mobile_number: inputValue }),
+        // ✅ 2. Body mein 'source_link' bhej do
+        body: JSON.stringify({ 
+          mobile_number: inputValue,
+          source_link: sourceKey 
+        }),
       });
 
       if (!response.ok) throw new Error("API failed");
