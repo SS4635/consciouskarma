@@ -102,8 +102,8 @@ export default function Blog1() {
           <div className="flex flex-col lg:flex-row gap-10">
             
             {/* 👈 LEFT SIDEBAR: CATEGORIES */}
-            <aside className="w-full lg:w-[280px] flex-shrink-0">
-              <div className="sticky top-32 bg-[#111] border border-[#333] rounded-xl p-6">
+            <aside className="w-full lg:w-[280px] flex-shrink-0 relative">
+              <div className="sticky top-32 bg-[#111] rounded-xl p-6 lg:border-r border-[#333] lg:rounded-r-none h-full min-h-[400px]">
                 <h3 className="text-xl font-bold text-white mb-4 border-b border-[#333] pb-2">Categories</h3>
                 <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto custom-scrollbar pt-2">
                   {dbCategories.map(cat => (
@@ -125,7 +125,7 @@ export default function Blog1() {
             </aside>
 
             {/* 👉 RIGHT AREA: 3x3 GRID */}
-            <div className="w-full flex-1 flex flex-col">
+            <div className="w-full flex-1 flex flex-col pl-0 lg:pl-6">
               {currentBlogs.length === 0 ? (
                 <div className="text-center py-20 italic text-gray-500">No blogs found for selected filters.</div>
               ) : (
@@ -156,7 +156,7 @@ export default function Blog1() {
                       {[...Array(totalPages)].map((_, i) => (
                         <button 
                           key={i} 
-                          onClick={() => { setCurrentPage(i + 1); window.scrollTo(0, 0); }} 
+                          onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
                           className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
                         >
                           {i + 1}
@@ -207,9 +207,13 @@ export default function Blog1() {
           height: 100%;
         }
         .blog-card-container:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(255, 145, 77, 0.2); }
-        .blog-card-image-box { width: 100%; height: 250px; overflow: hidden; border: none !important; }
-        .blog-card-img { width: 100%; height: 100%; object-fit: cover; display: block; border: none !important; }
-        .blog-card-content { padding: 24px; display: flex; flex-direction: column; flex-grow: 1; }
+        
+        /* 🎨 Added Padding configuration to card images */
+        .blog-card-image-box { width: 100%; height: 250px; overflow: hidden; border: none !important; padding: 14px; box-sizing: border-box; }
+        .blog-card-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; border: none !important; }
+        
+        /* Balanced content padding to match the image spacing */
+        .blog-card-content { padding: 0 24px 24px 24px; display: flex; flex-direction: column; flex-grow: 1; }
         .blog-card-title { color: #fff; font-size: 24px; font-weight: 700; margin-bottom: 12px; font-family: 'Balgin', sans-serif; }
         .blog-card-excerpt { color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 24px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 300; }
         .blog-card-readmore { color: #ff914d; text-decoration: none; font-weight: 600; font-size: 16px; margin-top: auto; }

@@ -548,18 +548,6 @@ app.get("/api/admin/summary", async (req, res) => {
 // 🔥 NEW APIs FOR ADMIN DASHBOARD FEATURES
 // ==========================================
 
-// 1. GET Energy Logs based on Route
-app.get("/api/admin/energy-logs", async (req, res) => {
-  try {
-    const { email, routeHit } = req.query;
-    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
-
-    const logs = await EnergyLog.find({ routeHit }).sort({ createdAt: -1 });
-    res.json({ ok: true, data: logs });
-  } catch (err) {
-    res.status(500).json({ ok: false, message: "Server error" });
-  }
-});
 
 // ==========================================
 // 🔥 CATEGORY APIs
@@ -867,16 +855,16 @@ app.delete("/api/admin/blog/:id", async (req, res) => {
   }
 });
 
-// 🔍 GET: Admin Data with Search & Filters
+// ... [Keep your other imports and setups same] ...
+
+// 🔍 GET: Admin Data with Search & Filters (Updated for Limit 10 and Deep Search)
 app.get("/api/admin/data", async (req, res) => {
   try {
-    const { email, type, search, filterDate, page = 1, limit = 20 } = req.query;
+    const { email, type, search, filterDate, page = 1, limit = 10 } = req.query; // ✅ Changed default limit to 10
 
     // 🛡️ Admin Security Check
     if (!email || email !== process.env.ADMIN_EMAIL) {
-      return res
-        .status(403)
-        .json({ ok: false, message: "Unauthorized access" });
+      return res.status(403).json({ ok: false, message: "Unauthorized access" });
     }
 
     let query = {};
@@ -895,7 +883,6 @@ app.get("/api/admin/data", async (req, res) => {
         startDateObj.setDate(startDateObj.getDate() - 30);
         query.createdAt = { $gte: startDateObj };
       } else if (filterDate === "custom" && req.query.startDate && req.query.endDate) {
-        // 🔥 Custom Date Logic
         const customStart = new Date(req.query.startDate);
         customStart.setHours(0, 0, 0, 0);
         const customEnd = new Date(req.query.endDate);
@@ -904,23 +891,24 @@ app.get("/api/admin/data", async (req, res) => {
       }
     }
 
-    // 🔎 2. SEARCH LOGIC (Regex match on existing fields)
+    // 🔎 2. DEEP SEARCH LOGIC (Matches all labels across modules)
     if (search && search.trim() !== "") {
       const searchRegex = new RegExp(search.trim(), "i");
-
-      // Multiple fields search taaki Order, Consult aur Contact sab cover ho jayein
       query.$or = [
         { name: searchRegex },
         { email: searchRegex },
         { phone: searchRegex },
+        { couponCode: searchRegex },
+        { planName: searchRegex },
+        { message: searchRegex },
         { "formData.general.name": searchRegex },
         { "formData.general.email": searchRegex },
+        { "formData.primary.number": searchRegex }
       ];
     }
 
     let results = [];
     let totalCount = 0;
-
     const skip = (Number(page) - 1) * Number(limit);
     const sort = { createdAt: -1 };
 
@@ -928,63 +916,24 @@ app.get("/api/admin/data", async (req, res) => {
     switch (type) {
       case "instant":
         query["formData.parallels"] = { $size: 0 };
-        const rawResults = await Order.find(query)
-          .sort(sort)
-          .skip(skip)
-          .limit(Number(limit))
-          .lean();
-
-        results = rawResults.map((o) => ({
-          ...o,
-          date: new Date(o.createdAt).toLocaleDateString(),
-          time: new Date(o.createdAt).toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          paymentMode:
-            o.amount === 0
-              ? `Coupon (${o.couponCode || "FREE"})`
-              : "Online Payment",
-          reportStatus:
-            o.instantEmailSent === true
-              ? "✅ Delivered"
-              : "⏳ Processing/Failed",
-        }));
+        results = await Order.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
         totalCount = await Order.countDocuments(query);
         break;
-
       case "personalised":
         query["formData.parallels"] = { $not: { $size: 0 } };
-        results = await Order.find(query)
-          .sort(sort)
-          .skip(skip)
-          .limit(Number(limit))
-          .lean();
+        results = await Order.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
         totalCount = await Order.countDocuments(query);
         break;
-
       case "consult":
-        results = await Consultation.find(query)
-          .sort(sort)
-          .skip(skip)
-          .limit(Number(limit))
-          .lean();
+        results = await Consultation.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
         totalCount = await Consultation.countDocuments(query);
         break;
-
       case "contact":
-        results = await ContactMessage.find(query)
-          .sort(sort)
-          .skip(skip)
-          .limit(Number(limit))
-          .lean();
+        results = await ContactMessage.find(query).sort(sort).skip(skip).limit(Number(limit)).lean();
         totalCount = await ContactMessage.countDocuments(query);
         break;
-
       default:
-        return res
-          .status(400)
-          .json({ ok: false, message: "Invalid type parameter" });
+        return res.status(400).json({ ok: false, message: "Invalid type parameter" });
     }
 
     res.json({
@@ -1001,6 +950,49 @@ app.get("/api/admin/data", async (req, res) => {
     res.status(500).json({ ok: false, message: "Failed to fetch data" });
   }
 });
+
+// 3. ENERGY LOGS API (Updated Search)
+app.get("/api/admin/energy-logs", async (req, res) => {
+  try {
+    const { email, routeHit, search, filterDate, startDate, endDate } = req.query;
+    if (!email || email !== process.env.ADMIN_EMAIL) return res.status(403).json({ ok: false });
+
+    let query = {};
+    if (routeHit) query.routeHit = routeHit; 
+
+    // ✅ Deep Search for Energy Logs
+    if (search && search.trim() !== "") {
+      const searchRegex = new RegExp(search.trim(), "i");
+      query.$or = [
+        { mobileNumber: searchRegex },
+        { sourceLink: searchRegex },
+        { routeHit: searchRegex },
+        { ipAddress: searchRegex }
+      ];
+    }
+
+    if (filterDate && filterDate !== "all") {
+      let startObj = new Date();
+      startObj.setHours(0, 0, 0, 0);
+      
+      if (filterDate === "today") query.createdAt = { $gte: startObj };
+      else if (filterDate === "last7") { startObj.setDate(startObj.getDate() - 7); query.createdAt = { $gte: startObj }; }
+      else if (filterDate === "last30") { startObj.setDate(startObj.getDate() - 30); query.createdAt = { $gte: startObj }; }
+      else if (filterDate === "custom" && startDate && endDate) {
+        const customStart = new Date(startDate); customStart.setHours(0, 0, 0, 0);
+        const customEnd = new Date(endDate); customEnd.setHours(23, 59, 59, 999);
+        query.createdAt = { $gte: customStart, $lte: customEnd };
+      }
+    }
+
+    const logs = await EnergyLog.find(query).sort({ createdAt: -1 });
+    res.json({ ok: true, data: logs });
+  } catch (err) {
+    res.status(500).json({ ok: false, message: "Server error" });
+  }
+});
+
+// ... [Keep the rest of your server.js same] ...
 
 import Blog from "./models/Blog.js";
 
