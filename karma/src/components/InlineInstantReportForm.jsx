@@ -211,11 +211,11 @@ export default function InlineInstantReportForm({
         <div
           className="fixed"
           style={{
-            top: '20px',
+            top: '80px',
             left: '50%',
             transform: 'translateX(-50%)',
             animation: 'slideDown 0.3s ease-out',
-            zIndex: 9999,
+            zIndex: 999999,
           }}
         >
           <div
