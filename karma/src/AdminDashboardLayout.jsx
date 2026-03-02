@@ -11,27 +11,25 @@ import "./DashboardLayout.css";
 const API_BASE_URL = `${process.env.REACT_APP_API_URL}`;
 
 // 🔥 THE ULTIMATE FIX: Create an array of ALL sizes from 8px to 100px
-// This forces Quill to accept any manual input, while keeping the dropdown intact!
 const allSizes = [];
 for (let i = 8; i <= 100; i++) {
   allSizes.push(`${i}px`);
 }
 
 const SizeStyle = Quill.import("attributors/style/size");
-SizeStyle.whitelist = allSizes; // Assigning all 8-100 values
+SizeStyle.whitelist = allSizes; 
 Quill.register(SizeStyle, true);
 
 const FontStyle = Quill.import("attributors/style/font");
 FontStyle.whitelist = ["sans-serif", "serif", "monospace", "balgin", "arsenal"];
 Quill.register(FontStyle, true);
 
-// These are the specific options that will appear in the Dropdown Menu
 const toolbarDropdownSizes = ["12px", "14px", "16px", "18px", "20px", "24px", "30px", "36px"];
 
 const modules = {
   toolbar: [
     [{ header: [1, 2, 3, 4, false] }],
-    [{ size: toolbarDropdownSizes }], // Dropdown will show these options
+    [{ size: toolbarDropdownSizes }], 
     [{ font: FontStyle.whitelist }],
     ["bold", "italic", "underline", "strike"],
     [{ color: [] }, { background: [] }], 
@@ -64,6 +62,9 @@ export default function AdminDashboardLayout() {
 
   const [activeTab, setActiveTab] = useState("summary"); 
   const [loading, setLoading] = useState(false);
+
+  // 🔥 NEW: Mobile Sidebar State
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   // Core Data States
   const [summaryRange, setSummaryRange] = useState("today"); 
@@ -101,9 +102,9 @@ export default function AdminDashboardLayout() {
   const [blogKeywords, setBlogKeywords] = useState([]);
   const [keywordInput, setKeywordInput] = useState("");
   
-  // 🔥 Custom Manual Font Size States
+  // Custom Manual Font Size States
   const quillRef = useRef(null);
-  const [customFontSize, setCustomFontSize] = useState("25"); // Default value
+  const [customFontSize, setCustomFontSize] = useState("25"); 
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedSearch(searchQuery), 500);
@@ -152,7 +153,6 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, adminEmail, summaryRange]);
 
-  // Fetch Core Data Tables
   useEffect(() => {
     const tableTabs = ["instant", "personalised", "consult", "contact"];
     if (tableTabs.includes(activeTab)) {
@@ -173,7 +173,6 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, debouncedSearch, filterDate, startDate, endDate, page, adminEmail]);
 
-  // Fetch Energy Logs
   useEffect(() => {
     if ((activeTab === "energy-logs" || activeTab === "previous-links") && selectedRoute) {
       if (filterDate === "custom" && (!startDate || !endDate)) return;
@@ -191,7 +190,6 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, selectedRoute, adminEmail, debouncedSearch, filterDate, startDate, endDate]);
   
-  // Fetch Blogs
   useEffect(() => {
     if (activeTab === "blog" && blogView === "list") {
       const fetchBlogs = async () => {
@@ -262,7 +260,6 @@ export default function AdminDashboardLayout() {
     setBlogKeywords(blogKeywords.filter(k => k !== kw));
   };
 
-  // ✅ FUNCTION TO APPLY ANY CUSTOM FONT SIZE
   const applyCustomFontSize = (e) => {
     e.preventDefault();
     if (!quillRef.current) return;
@@ -390,20 +387,48 @@ export default function AdminDashboardLayout() {
   const darkCardStyle = { padding: "24px", background: "linear-gradient(145deg, #1a1a1a 0%, #111111 100%)", border: "1px solid #333", borderRadius: "16px", color: "white", boxShadow: "0 8px 24px rgba(0,0,0,0.4)", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" };
   const rangeBtnStyle = (range) => ({ padding: "8px 16px", background: summaryRange === range ? "#ff914d" : "transparent", color: summaryRange === range ? "#000" : "#888", border: `1px solid ${summaryRange === range ? "#ff914d" : "#444"}`, borderRadius: "20px", cursor: "pointer", fontWeight: summaryRange === range ? "bold" : "500", transition: "all 0.3s ease", fontSize: "13px" });
 
+  // Helper to close sidebar after navigation on mobile
+  const handleNavClick = (tabAction) => {
+    tabAction();
+    setIsMobileSidebarOpen(false);
+  };
+
   return (
     <div className="ck-dashboard" style={{ background: "#000", minHeight: "100vh" }}>
-      <header className="ck-navbar" style={{ background: "#111", borderBottom: "1px solid #333" }}>
+      
+      {/* HEADER WITH MOBILE TOGGLE */}
+      <header className="ck-navbar" style={{ background: "#111", borderBottom: "1px solid #333", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px" }}>
         <div className="ck-navbar-brand">
           <span className="brand-text-top">conscious</span>
           <span className="brand-text-bottom" style={{color: "#ff914d"}}>KARMA (ADMIN)</span>
         </div>
+        
+        {/* 🔥 Hamburger Button (Visible only on mobile via CSS) */}
+        <button 
+          className="mobile-sidebar-toggle"
+          onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+          style={{ background: "transparent", border: "none", color: "#ff914d", fontSize: "28px", cursor: "pointer" }}
+        >
+          {isMobileSidebarOpen ? "✕" : "☰"}
+        </button>
       </header>
 
-      <div className="dashboard-body">
-        <aside className="ck-sidebar" style={{ background: "#111", borderRight: "1px solid #333" }}>
+      <div className="dashboard-body" style={{ display: "flex", position: "relative" }}>
+        
+        {/* 🔥 Mobile Overlay: Closes sidebar when clicking outside */}
+        {isMobileSidebarOpen && (
+          <div 
+            className="mobile-overlay"
+            onClick={() => setIsMobileSidebarOpen(false)}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 99, backdropFilter: "blur(4px)" }}
+          />
+        )}
+
+        {/* SIDEBAR */}
+        <aside className={`ck-sidebar ${isMobileSidebarOpen ? "open" : ""}`} style={{ background: "#111", borderRight: "1px solid #333" }}>
           <nav className="ck-nav">
             {["summary", "instant", "personalised", "consult"].map((tab) => (
-              <button key={tab} className={`ck-nav-item ${activeTab === tab ? "ck-nav-item--active" : ""}`} onClick={() => { setActiveTab(tab); setPage(1); }} style={{ textTransform: "capitalize", color: activeTab === tab ? "#ff914d" : "#aaa", background: activeTab === tab ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+              <button key={tab} className={`ck-nav-item ${activeTab === tab ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab(tab); setPage(1); })} style={{ textTransform: "capitalize", color: activeTab === tab ? "#ff914d" : "#aaa", background: activeTab === tab ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
                 {tab === "summary" ? "📊 Dashboard Overview" : tab === "personalised" ? "Personalised Reports" : `${tab} Data`}
               </button>
             ))}
@@ -416,7 +441,7 @@ export default function AdminDashboardLayout() {
                 <div style={{ paddingLeft: "15px", display: "flex", flexDirection: "column", gap: "5px", marginTop: "5px" }}>
                   {availableRoutes.length > 0 ? (
                     availableRoutes.map(route => (
-                      <button key={route} onClick={() => { setActiveTab("energy-logs"); setSelectedRoute(route); setPage(1); setSearchQuery(""); setFilterDate("all"); }} style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#ff914d" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left" }}>
+                      <button key={route} onClick={() => handleNavClick(() => { setActiveTab("energy-logs"); setSelectedRoute(route); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#ff914d" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left" }}>
                         Route: /{route}
                       </button>
                     ))
@@ -425,27 +450,28 @@ export default function AdminDashboardLayout() {
               )}
             </div>
 
-            <button className={`ck-nav-item ${activeTab === "previous-links" ? "ck-nav-item--active" : ""}`} onClick={() => { setActiveTab("previous-links"); setSelectedRoute(historicalLinks[0] || ""); setPage(1); setSearchQuery(""); setFilterDate("all"); }} style={{ color: activeTab === "previous-links" ? "#ff914d" : "#aaa", background: activeTab === "previous-links" ? "rgba(255, 145, 77, 0.1)" : "transparent", marginTop: "5px" }}>
+            <button className={`ck-nav-item ${activeTab === "previous-links" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("previous-links"); setSelectedRoute(historicalLinks[0] || ""); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ color: activeTab === "previous-links" ? "#ff914d" : "#aaa", background: activeTab === "previous-links" ? "rgba(255, 145, 77, 0.1)" : "transparent", marginTop: "5px" }}>
               🗃️ Previous Links
             </button>
 
-            <button className={`ck-nav-item ${activeTab === "contact" ? "ck-nav-item--active" : ""}`} onClick={() => { setActiveTab("contact"); setPage(1); }} style={{ color: activeTab === "contact" ? "#ff914d" : "#aaa", background: activeTab === "contact" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+            <button className={`ck-nav-item ${activeTab === "contact" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("contact"); setPage(1); })} style={{ color: activeTab === "contact" ? "#ff914d" : "#aaa", background: activeTab === "contact" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
               💬 Contact Data
             </button>
 
             <hr style={{ margin: "15px 0", borderColor: "#333" }} />
             
-            <button className={`ck-nav-item ${activeTab === "blog" ? "ck-nav-item--active" : ""}`} onClick={() => { setActiveTab("blog"); setBlogView("list"); setPage(1); }} style={{ color: activeTab === "blog" ? "#ff914d" : "#aaa", background: activeTab === "blog" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+            <button className={`ck-nav-item ${activeTab === "blog" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("blog"); setBlogView("list"); setPage(1); })} style={{ color: activeTab === "blog" ? "#ff914d" : "#aaa", background: activeTab === "blog" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
               📝 Manage Blogs
             </button>
-            <button className={`ck-nav-item ${activeTab === "categories" ? "ck-nav-item--active" : ""}`} onClick={() => {setActiveTab("categories"); setPage(1);}} style={{ color: activeTab === "categories" ? "#ff914d" : "#aaa", background: activeTab === "categories" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+            <button className={`ck-nav-item ${activeTab === "categories" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => {setActiveTab("categories"); setPage(1);})} style={{ color: activeTab === "categories" ? "#ff914d" : "#aaa", background: activeTab === "categories" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
               🗂️ Manage Categories
             </button>
           </nav>
         </aside>
 
-        <div className="ck-main" style={{ background: "#000" }}>
-          <main className="ck-content">
+        {/* MAIN CONTENT AREA */}
+        <div className="ck-main" style={{ background: "#000", flex: 1, width: "100%", overflowX: "hidden" }}>
+          <main className="ck-content" style={{ padding: "20px" }}>
 
             {activeTab === "summary" && (
               <section style={{ padding: "10px 0" }}>
@@ -504,8 +530,8 @@ export default function AdminDashboardLayout() {
                   <div className="ck-empty-state" style={{color: "#888"}}>No records found.</div>
                 ) : (
                   <>
-                    <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
-                      <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
+                    <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px", overflowX: "auto" }}>
+                      <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left", minWidth: "600px" }}>
                         <thead style={{ background: "#222" }}>
                           <tr>
                             <th style={{padding: "12px"}}>Date</th><th style={{padding: "12px"}}>Time</th><th style={{padding: "12px"}}>Name</th><th style={{padding: "12px"}}>Email</th><th style={{padding: "12px"}}>Mobile</th>
@@ -557,7 +583,7 @@ export default function AdminDashboardLayout() {
                 </div>
                 <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", alignItems: "center", marginBottom: "20px" }}>
                   {activeTab === "previous-links" && (
-                     <select className="ck-input" style={{ width: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={selectedRoute} onChange={(e) => {setSelectedRoute(e.target.value); setPage(1);}}>
+                     <select className="ck-input" style={{ width: "100%", maxWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={selectedRoute} onChange={(e) => {setSelectedRoute(e.target.value); setPage(1);}}>
                        <option value="" disabled>Select a previous link...</option>
                        {historicalLinks.map(link => (<option key={link} value={link}>{link}</option>))}
                      </select>
@@ -569,8 +595,8 @@ export default function AdminDashboardLayout() {
                   <div className="ck-empty-state" style={{color: "#888"}}>No hits recorded yet.</div>
                 ) : (
                   <>
-                  <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
-                    <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
+                  <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px", overflowX: "auto" }}>
+                    <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left", minWidth: "600px" }}>
                       <thead style={{ background: "#222" }}>
                         <tr><th style={{padding: "12px"}}>Date</th><th style={{padding: "12px"}}>Time</th><th style={{padding: "12px"}}>Mobile Hit</th><th style={{padding: "12px"}}>Source Link</th><th style={{padding: "12px"}}>API Used</th><th style={{padding: "12px"}}>IP Address</th></tr>
                       </thead>
@@ -602,13 +628,13 @@ export default function AdminDashboardLayout() {
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
                 <h2 className="ck-panel-title" style={{ color: "#fff" }}>Blog Categories</h2>
                 
-                <div style={{ display: "flex", gap: "10px", marginBottom: "30px" }}>
-                  <input type="text" className="ck-input" placeholder="New Category Name..." value={newCategory} onChange={e => setNewCategory(e.target.value)} style={{ background: "#222", color: "#fff", border: "1px solid #444", padding: "10px", borderRadius: "6px" }}/>
+                <div style={{ display: "flex", gap: "10px", marginBottom: "30px", flexWrap: "wrap" }}>
+                  <input type="text" className="ck-input" placeholder="New Category Name..." value={newCategory} onChange={e => setNewCategory(e.target.value)} style={{ background: "#222", color: "#fff", border: "1px solid #444", padding: "10px", borderRadius: "6px", flex: 1, minWidth: "200px" }}/>
                   <button onClick={handleAddCategory} style={{ background: "#ff914d", color: "#000", fontWeight: "bold", border: "none", padding: "10px 20px", borderRadius: "6px", cursor: "pointer" }}>Add Category</button>
                 </div>
 
-                <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
-                    <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
+                <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px", overflowX: "auto" }}>
+                    <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left", minWidth: "400px" }}>
                       <thead style={{ background: "#222" }}>
                         <tr><th style={{padding: "12px"}}>Category Name</th><th style={{padding: "12px", width: "100px"}}>Action</th></tr>
                       </thead>
@@ -628,12 +654,12 @@ export default function AdminDashboardLayout() {
             {/* BLOGS TAB */}
             {activeTab === "blog" && (
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
                   <h2 className="ck-panel-title" style={{color: "#fff", margin: 0}}>Manage Blogs</h2>
                   {blogView === "list" ? (
-                    <button className="ck-btn-sm" style={{background: "#ff914d", color: "#000", fontWeight: "bold", border: "none"}} onClick={handleCreateNewBlog}>+ Create New Blog</button>
+                    <button className="ck-btn-sm" style={{background: "#ff914d", color: "#000", fontWeight: "bold", border: "none", padding: "8px 16px", borderRadius: "4px"}} onClick={handleCreateNewBlog}>+ Create New Blog</button>
                   ) : (
-                    <button className="ck-btn-sm" style={{background: "#333", color: "#fff", border: "1px solid #555"}} onClick={() => setBlogView("list")}>← Back to List</button>
+                    <button className="ck-btn-sm" style={{background: "#333", color: "#fff", border: "1px solid #555", padding: "8px 16px", borderRadius: "4px"}} onClick={() => setBlogView("list")}>← Back to List</button>
                   )}
                 </div>
 
@@ -642,8 +668,8 @@ export default function AdminDashboardLayout() {
                   <input type="text" placeholder="Search Title or Category..." className="ck-input" style={{ width: "100%", maxWidth: "300px", background: "#222", color: "#fff", border: "1px solid #444", marginBottom: "20px" }} value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); setPage(1);}} />
                   {loading ? <p style={{color: "#ff914d"}}>Loading blogs...</p> : displayedBlogs.length === 0 ? <p style={{color: "#888"}}>No blogs found.</p> : (
                     <>
-                    <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px" }}>
-                      <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left" }}>
+                    <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px", overflowX: "auto" }}>
+                      <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left", minWidth: "500px" }}>
                         <thead style={{ background: "#222" }}>
                           <tr><th style={{padding: "12px"}}>Title</th><th style={{padding: "12px"}}>Category</th><th style={{padding: "12px"}}>Status</th><th style={{padding: "12px"}}>Actions</th></tr>
                         </thead>
@@ -669,13 +695,13 @@ export default function AdminDashboardLayout() {
                   <div style={{ display: "flex", flexDirection: "column", gap: "15px", marginTop: "20px" }}>
                     <div>
                       <label className="ck-label" style={{color: "#aaa"}}>Blog Title</label>
-                      <input type="text" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} />
+                      <input type="text" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444", width: "100%", padding: "10px" }} value={blogTitle} onChange={(e) => setBlogTitle(e.target.value)} />
                     </div>
 
-                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "15px" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "15px" }}>
                       <div>
                         <label className="ck-label" style={{color: "#aaa"}}>Select Category</label>
-                        <select className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444", width: "100%" }} value={blogCategory} onChange={(e) => setBlogCategory(e.target.value)}>
+                        <select className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444", width: "100%", padding: "10px" }} value={blogCategory} onChange={(e) => setBlogCategory(e.target.value)}>
                           <option value="">-- Choose Category --</option>
                           {categories.map(c => <option key={c._id} value={c.name}>{c.name}</option>)}
                         </select>
@@ -697,14 +723,13 @@ export default function AdminDashboardLayout() {
                     <div>
                       <label className="ck-label" style={{color: "#aaa"}}>Featured Image</label>
                       {existingImageUrl && <img src={existingImageUrl} alt="Current" style={{ display: "block", width: "150px", height: "100px", objectFit: "cover", borderRadius: "8px", border: "2px solid #333", margin: "10px 0" }} />}
-                      <input type="file" accept="image/*" className="ck-input" style={{ padding: "10px", background: "#222", color: "#fff", border: "1px solid #444" }} onChange={(e) => setBlogImageFile(e.target.files[0])} />
+                      <input type="file" accept="image/*" className="ck-input" style={{ padding: "10px", background: "#222", color: "#fff", border: "1px solid #444", width: "100%" }} onChange={(e) => setBlogImageFile(e.target.files[0])} />
                     </div>
 
                     <div>
                       <label className="ck-label" style={{color: "#aaa"}}>Blog Content</label>
                       
-                      {/* 🔥 NEW: CUSTOM MANUAL FONT SIZE CONTROLS */}
-                      <div style={{ display: "flex", gap: "10px", marginTop: "10px", alignItems: "center", padding: "10px", background: "#222", border: "1px solid #444", borderRadius: "8px" }}>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px", alignItems: "center", padding: "10px", background: "#222", border: "1px solid #444", borderRadius: "8px" }}>
                          <span style={{color: "#fff", fontSize: "14px", fontWeight: "bold"}}>Manual Size:</span>
                          <input 
                             type="number" 
@@ -728,9 +753,9 @@ export default function AdminDashboardLayout() {
                       </div>
                     </div>
 
-                    <div style={{ display: "flex", gap: "15px", marginTop: "40px" }}>
-                      <button className="ck-btn" style={{ background: "#333", color: "#fff", border: "1px solid #555" }} onClick={() => handleBlogSubmit("draft")} disabled={loading}>Save as Draft</button>
-                      <button className="ck-btn" style={{ background: "#ff914d", color: "#000", fontWeight: "bold" }} onClick={() => handleBlogSubmit("published")} disabled={loading}>Publish Now</button>
+                    <div style={{ display: "flex", gap: "15px", marginTop: "40px", flexWrap: "wrap" }}>
+                      <button className="ck-btn" style={{ background: "#333", color: "#fff", border: "1px solid #555", padding: "12px 24px", borderRadius: "6px" }} onClick={() => handleBlogSubmit("draft")} disabled={loading}>Save as Draft</button>
+                      <button className="ck-btn" style={{ background: "#ff914d", color: "#000", fontWeight: "bold", padding: "12px 24px", borderRadius: "6px", border: "none" }} onClick={() => handleBlogSubmit("published")} disabled={loading}>Publish Now</button>
                     </div>
                   </div>
                 )}
@@ -741,9 +766,9 @@ export default function AdminDashboardLayout() {
         </div>
       </div>
       
-      {/* 🚀 BULLETPROOF CSS OVERRIDES FOR QUILL */}
+      {/* 🚀 BULLETPROOF CSS OVERRIDES FOR QUILL + MOBILE SIDEBAR */}
       <style>{`
-        /* 1️⃣ Hardcoded Fix for ReactQuill "Normal" Issue - Explicitly writing labels for our Dropdown items */
+        /* 1️⃣ Hardcoded Fix for ReactQuill "Normal" Issue */
         .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="12px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="12px"]::before { content: "12px" !important; }
         .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="14px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="14px"]::before { content: "14px" !important; }
         .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="16px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="16px"]::before { content: "16px" !important; }
@@ -753,7 +778,6 @@ export default function AdminDashboardLayout() {
         .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="30px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="30px"]::before { content: "30px" !important; }
         .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="36px"]::before, .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before { content: "36px" !important; }
 
-        /* Default fallback logic for any manual size you apply that is not in the dropdown */
         .ql-snow .ql-picker.ql-size .ql-picker-label:not([data-value])::before,
         .ql-snow .ql-picker.ql-size .ql-picker-item:not([data-value])::before { content: "Normal" !important; }
 
@@ -780,6 +804,43 @@ export default function AdminDashboardLayout() {
         .ql-snow .ql-fill { fill: #fff !important; }
         .ql-snow .ql-picker { color: #fff !important; }
         .ql-snow .ql-picker-options { background-color: #222 !important; color: #fff !important; border: 1px solid #555 !important; }
+
+        /* 📱 🔥 MOBILE RESPONSIVE SIDEBAR CSS 🔥 📱 */
+        .ck-sidebar {
+          width: 260px;
+          min-height: calc(100vh - 60px);
+          transition: transform 0.3s ease-in-out;
+          flex-shrink: 0;
+        }
+
+        .mobile-sidebar-toggle {
+          display: none; /* Hidden on desktop */
+        }
+
+        @media (max-width: 850px) {
+          .mobile-sidebar-toggle {
+            display: block; /* Show hamburger on mobile */
+          }
+          
+          .ck-sidebar {
+            position: fixed;
+            top: 60px; /* Adjust if your header height differs */
+            left: 0;
+            height: calc(100vh - 60px);
+            z-index: 100;
+            background: #111 !important;
+            transform: translateX(-100%); /* Hidden by default */
+            box-shadow: 4px 0 15px rgba(0,0,0,0.8);
+          }
+
+          .ck-sidebar.open {
+            transform: translateX(0); /* Slide in when open */
+          }
+          
+          .ck-main {
+            width: 100vw;
+          }
+        }
       `}</style>
     </div>
   );
