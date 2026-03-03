@@ -51,6 +51,7 @@ export default function ConsciousKarmaSections() {
   const calledRef = useRef(false); // 🔒 LOCK
 
   const [resolvedRoute, setResolvedRoute] = useState(null);
+  const [dynamicTitle, setDynamicTitle] = useState("");
   const [sourceKey, setSourceKey] = useState(null);
 
   useEffect(() => {
@@ -83,7 +84,8 @@ export default function ConsciousKarmaSections() {
           return;
         }
 
-        setResolvedRoute(data.route); // "/a3"
+        setResolvedRoute(data.route);
+        setDynamicTitle(data.title);
       })
       .catch(() => navigate("/404", { replace: true }));
   }, [location.search, navigate]);
@@ -292,7 +294,7 @@ export default function ConsciousKarmaSections() {
         .text-fluid-24-30{font-size:clamp(24px,3.2vw,30px)}
       `}</style>
 
-      <FirstSection resolvedRoute={resolvedRoute} sourceKey={sourceKey}/>
+      <FirstSection resolvedRoute={resolvedRoute} sourceKey={sourceKey} dynamicTitle={dynamicTitle}/>
 
       <div className="absolute top-0 left-0 w-full z-50">
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />

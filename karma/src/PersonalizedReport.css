@@ -97,9 +97,11 @@
 .ck-form-layout {
   width: 100%;
   max-width: 1400px;
+  flex-direction: column;
   margin: 0 auto;
   display: flex;
-  gap: 100px;
+  gap: 210px;
+  margin-top: 20px;
   align-items: center;
   justify-content: center;
 }

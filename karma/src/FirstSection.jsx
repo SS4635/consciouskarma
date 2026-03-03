@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 
-export default function FirstSection({ resolvedRoute, sourceKey}) {
+export default function FirstSection({ resolvedRoute, sourceKey, dynamicTitle}) {
   // Array of 10 strings for individual inputs
   const [otp, setOtp] = useState(new Array(10).fill(""));
   const [apiData, setApiData] = useState(null);
@@ -149,7 +149,7 @@ export default function FirstSection({ resolvedRoute, sourceKey}) {
     if (r.endsWith("a2")) return { title: "ggg", icon: commonIcon };
     if (r.endsWith("a3")) return { title: "aaa", icon: commonIcon };
 
-    return { title: "Result", icon: commonIcon };
+    return { title: dynamicTitle || "Result", icon: commonIcon };
   };
   const routeDetails = getRouteDetails(resolvedRoute);
 

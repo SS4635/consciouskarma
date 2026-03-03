@@ -150,6 +150,51 @@ async function sendEmail({ to, subject, html }) {
   }
 }
 
+// 1. Naya API Route OTP text ke liye (.env se fetch karne ke liye)
+app.get("/api/config/otp-text", (req, res) => {
+  // Apni backend .env file mein OTP_EXTRA_TEXT naam ka variable add kar lena
+  res.json({ text: process.env.OTP_EXTRA_TEXT || "" });
+});
+
+// 2. Email ke liye Form Data ko HTML mein convert karne ka Helper Function
+function generateFormDataHtml(fd) {
+  if (!fd) return "";
+  const { general = {}, primary = {}, parallels = [], previousNumbers = [] } = fd;
+  
+  let html = `<div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #333;">
+    <h3 style="margin-top: 0; color: #ff914d;">Your Submitted Details:</h3>
+    <p style="margin-top: 0;"><strong>Name:</strong> ${general.name || "-"}<br/>
+    <strong>Email:</strong> ${general.email || "-"}<br/>
+    <strong>Gender:</strong> ${general.gender || "-"}<br/>
+    <strong>Age:</strong> ${general.ageYears || "0"} Years ${general.ageMonths || "0"} Months</p>
+    
+    <h4 style="margin-bottom: 5px; color: #333;">Primary Number</h4>
+    <p style="margin-top: 0;"><strong>Number:</strong> ${primary.isd || ""}${primary.number || "-"}<br/>
+    <strong>Since:</strong> ${primary.sinceMonth || "-"} ${primary.sinceYear || "-"}<br/>
+    <strong>Usage Type:</strong> ${primary.usageType || "-"}<br/>
+    <strong>Role:</strong> ${primary.role || "-"}<br/>
+    <strong>Line of Work:</strong> ${primary.lineOfWork || "-"}</p>`;
+
+  if (parallels.length > 0) {
+    html += `<h4 style="margin-bottom: 5px; color: #333;">Parallel Numbers</h4><ul style="margin-top: 0; padding-left: 20px;">`;
+    parallels.forEach((p, i) => {
+      html += `<li style="margin-bottom: 4px;"><strong>#${i + 1}:</strong> ${p.isd || ""}${p.number || "-"} (Since: ${p.sinceMonth || "-"}/${p.sinceYear || "-"}, Usage: ${p.usageType || "-"}, Role: ${p.role || "-"})</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  if (previousNumbers.length > 0) {
+    html += `<h4 style="margin-bottom: 5px; color: #333;">Previous Numbers</h4><ul style="margin-top: 0; padding-left: 20px;">`;
+    previousNumbers.forEach((p, i) => {
+      html += `<li style="margin-bottom: 4px;"><strong>#${i + 1}:</strong> ${p.isd || ""}${p.number || "-"} (Used: ${p.usedSinceMonth || "-"}/${p.usedSinceYear || "-"} to ${p.usedTillMonth || "-"}/${p.usedTillYear || "-"}, Usage: ${p.usageType || "-"}, Role: ${p.role || "-"})</li>`;
+    });
+    html += `</ul>`;
+  }
+
+  html += `</div>`;
+  return html;
+}
+
 const rp = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -2028,7 +2073,7 @@ async function processInstantReport(order) {
       Your Instant Mobile Number Report is now being generated and will be
       delivered to this email shortly.
     </p>
-
+${generateFormDataHtml(fd)}
     <p>
       If you have any questions, feel free to write to us at
       <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
@@ -2158,7 +2203,6 @@ app.post("/link", linkLimiter, async (req, res) => {
       return res.status(400).json({ ok: false, code: "MISSING_KEY" });
     }
 
-    // 1. Check if key exists in the allowed list (Case Insensitive)
     const allowed = (process.env.LINK_ALLOWED_KEYS || "")
       .split(",")
       .map((k) => k.trim().toLowerCase());
@@ -2168,17 +2212,20 @@ app.post("/link", linkLimiter, async (req, res) => {
       return res.status(401).json({ ok: false, code: "INVALID_KEY" });
     }
 
-    // 2. Map Key -> Route (Try both uppercase and lowercase)
-    // If key is "abc", looks for LINK_ABC_API or LINK_abc_API
+    // 1. API Path ढूंढना (पुराना लॉजिक)
     const apiPath =
       process.env[`LINK_${key.toUpperCase()}_API`] ||
       process.env[`LINK_${key.toLowerCase()}_API`];
 
+    // ✅ 2. LABEL ढूंढना (नया लॉजिक)
+    // यह .env से LABEL उठाएगा, अगर नहीं मिला तो "Result" भेज देगा
+    const label = 
+      process.env[`LINK_${key.toUpperCase()}_LABEL`] || 
+      process.env[`LINK_${key.toLowerCase()}_LABEL`] || 
+      "Result";
+
     if (!apiPath) {
-      console.error(
-        `CONFIG ERROR: Variable LINK_${key.toUpperCase()}_API is missing in .env`,
-      );
-      // Return 404 instead of 500 so it's easier to debug
+      console.error(`CONFIG ERROR: Variable LINK_${key.toUpperCase()}_API is missing in .env`);
       return res.status(404).json({
         ok: false,
         code: "API_NOT_MAPPED",
@@ -2186,14 +2233,20 @@ app.post("/link", linkLimiter, async (req, res) => {
       });
     }
 
-    console.log("Success! Routing to:", apiPath);
-    return res.json({ ok: true, route: apiPath });
+    console.log(`Success! Routing to: ${apiPath} with Label: ${label}`);
+
+    // ✅ 3. Response में 'title' (या label) भी भेजें
+    return res.json({ 
+      ok: true, 
+      route: apiPath, 
+      title: label  // यह फ्रंटएंड को "Wealth Energy" जैसा नाम देगा
+    });
+
   } catch (err) {
     console.error("CRITICAL LINK ERROR:", err.message);
     return res.status(500).json({ ok: false, code: "SERVER_ERROR" });
   }
 });
-
 app.get("/api/link/check", (req, res) => {
   const { key } = req.query;
 
@@ -2580,6 +2633,7 @@ app.post("/api/report/submit", async (req, res) => {
     <p>
       Your details have been received and your report is now under preparation.
     </p>
+    ${generateFormDataHtml(fd)}
 
     <p>
       <strong>Delivery timeline:</strong> 5–7 days<br/>

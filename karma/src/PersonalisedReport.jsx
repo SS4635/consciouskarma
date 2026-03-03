@@ -81,8 +81,18 @@ const ConsciousKarmaPage = () => {
 
   const [otpParallels, setOtpParallels] = useState([]);
 
+  const [otpExtraText, setOtpExtraText] = useState("");
 
  useEffect(() => {
+  async function loadOtpText() {
+    try {
+      const res = await fetch(`${API_BASE}/api/config/otp-text`);
+      const data = await res.json();
+      setOtpExtraText(data.text || "");
+    } catch (err) {
+      console.error("Failed to load OTP text");
+    }
+  }
   async function loadPrice() {
     console.log("Loading personalized report base price from server...");
     try {
@@ -106,7 +116,7 @@ const ConsciousKarmaPage = () => {
       
     }
   }
-
+loadOtpText();
   loadPrice();
 }, []);
 
@@ -954,7 +964,7 @@ We will be in touch soon.</h2>
           {/* ... Rest of your render logic remains exactly the same ... */}
           <div className="ck-form-layout">
             {/* LEFT HERO */}
-            <br />
+          
             <div className="ck-hero mt-4 md:mt-0">
               <p className="ck-hero-text text-[23px] md:text-[24px]">
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
@@ -996,6 +1006,12 @@ We will be in touch soon.</h2>
                   Delivery within 5–7 days
                   <br />
                   Requires mobile number OTP verification
+                  {otpExtraText && (
+      <>
+        <br />
+        {otpExtraText}
+      </>
+    )}
                 </>
               </p>
             </div>
