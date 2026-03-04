@@ -11,7 +11,7 @@ const API_BASE_URL = `${process.env.REACT_APP_API_URL}`;
 
 export default function Blog1() {
   const [blogs, setBlogs] = useState([]);
-  const [dbCategories, setDbCategories] = useState([]); // 🔥 Backend categories
+  const [dbCategories, setDbCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
@@ -20,13 +20,12 @@ export default function Blog1() {
   // 🔥 FILTER & PAGINATION STATES
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const blogsPerPage = 9; // 3x3 grid ke liye 9 best hai
+  const blogsPerPage = 9;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Dono APIs ek saath call ho rahi hain
         const [blogsRes, catsRes] = await Promise.all([
           axios.get(`${API_BASE_URL}/api/blogs`),
           axios.get(`${API_BASE_URL}/api/categories`)
@@ -43,7 +42,7 @@ export default function Blog1() {
     fetchData();
   }, []);
 
-  // 🔥 SEO INJECTION: Head mein keywords daalna (User ko nahi dikhega)
+  // 🔥 SEO INJECTION
   useEffect(() => {
     if (blogs.length > 0) {
       const allKws = blogs.flatMap(b => b.keywords || []);
@@ -66,12 +65,12 @@ export default function Blog1() {
     return text.length > 120 ? text.substring(0, 120) + "..." : text;
   };
 
-  // 🔄 Filter Logic
+  // 🔄 Filter Logic 
   const handleCategoryChange = (catName) => {
     setSelectedCategories((prev) => 
       prev.includes(catName) ? prev.filter(c => c !== catName) : [...prev, catName]
     );
-    setCurrentPage(1); // Page reset on filter
+    setCurrentPage(1);
   };
 
   // 📄 Pagination Logic
@@ -90,20 +89,49 @@ export default function Blog1() {
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
       </div>
 
-      {/* Main Container Adjusted for Sidebar */}
-      <main className="flex-1 pt-32 pb-20 px-4 sm:px-8 lg:px-12 max-w-[1500px] w-full mx-auto">
-        <h1 className="font-balgin text-center text-[#ff914d] text-4xl md:text-5xl font-bold mb-16 uppercase tracking-wider">
+      <main className="flex-grow pt-32 pb-20 px-4 sm:px-8 lg:px-12 max-w-[1500px] w-full mx-auto">
+        <h1 className="font-balgin text-center text-[#ff914d] text-4xl md:text-5xl font-bold mb-10 lg:mb-12 uppercase tracking-wider">
           BLOGS
         </h1>
+
+        {/* 📱 MOBILE VIEW: ALL PILLS VISIBLE (No Scroll, Flex-Wrap used) */}
+        <div className="block lg:hidden mb-8">
+          <div className="flex flex-wrap gap-2 pb-2">
+            <button
+              onClick={() => { setSelectedCategories([]); setCurrentPage(1); }}
+              className={`whitespace-nowrap px-4 py-2 rounded-full transition-all text-sm ${
+                selectedCategories.length === 0 
+                ? "bg-[#ff914d] text-black font-bold" 
+                : "bg-[#111] text-gray-400 hover:text-white border border-[#333]"
+              }`}
+            >
+              All Posts
+            </button>
+
+            {dbCategories.map(cat => (
+              <button
+                key={cat._id}
+                onClick={() => handleCategoryChange(cat.name)}
+                className={`whitespace-nowrap px-4 py-2 rounded-full transition-all text-sm ${
+                  selectedCategories.includes(cat.name) 
+                  ? "bg-[#ff914d] text-black font-bold" 
+                  : "bg-[#111] text-gray-400 hover:text-white border border-[#333]"
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
 
         {loading ? (
           <div className="text-center text-[#ff914d] py-20 text-xl animate-pulse">Loading amazing stories...</div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-10">
             
-            {/* 👈 LEFT SIDEBAR: CATEGORIES */}
-            <aside className="w-full lg:w-[280px] flex-shrink-0 relative">
-              <div className="sticky top-32 bg-[#111] rounded-xl p-6 lg:border-r border-[#333] lg:rounded-r-none h-full min-h-[400px]">
+            {/* 💻 DESKTOP VIEW: ORIGINAL CHECKBOX STYLE (Hidden on Mobile) */}
+            <aside className="hidden lg:block w-[280px] flex-shrink-0 relative">
+              <div className="sticky top-32 bg-[#111] rounded-xl p-6 border-r border-[#333] rounded-r-none h-full min-h-[400px]">
                 <h3 className="text-xl font-bold text-white mb-4 border-b border-[#333] pb-2">Categories</h3>
                 <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto custom-scrollbar pt-2">
                   {dbCategories.map(cat => (
@@ -125,43 +153,61 @@ export default function Blog1() {
             </aside>
 
             {/* 👉 RIGHT AREA: 3x3 GRID */}
-            <div className="w-full flex-1 flex flex-col pl-0 lg:pl-6">
+            <div className="w-full flex-1 flex flex-col lg:pl-6">
               {currentBlogs.length === 0 ? (
                 <div className="text-center py-20 italic text-gray-500">No blogs found for selected filters.</div>
               ) : (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {currentBlogs.map((blog) => (
-                      <div key={blog._id} className="blog-card-container">
+                      <div key={blog._id} className="blog-card-container group">
                         <div className="blog-card-image-box">
                           <img src={`${API_BASE_URL}${blog.imageUrl}`} alt={blog.title} className="blog-card-img" />
                         </div>
                         <div className="blog-card-content">
-                          <p className="text-[#ff914d] text-[11px] font-bold uppercase tracking-widest mb-3">
+                          <p className="text-[#ff914d] text-[10px] font-bold uppercase tracking-widest mb-3">
                             {blog.category || "Uncategorized"}
                           </p>
                           <h3 className="blog-card-title">{blog.title}</h3>
                           <p className="blog-card-excerpt">{getExcerpt(blog.content)}</p>
-                          <Link to={`/blog/${blog.slug}`} className="blog-card-readmore mt-auto">
-                            Read more →
+                          <Link to={`/blog/${blog.slug}`} className="blog-card-readmore mt-auto group-hover:text-white transition-colors">
+                            Read article →
                           </Link>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* 🔢 PAGINATION */}
+                  {/* 🔢 CLEAN PAGINATION */}
                   {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2 mt-16 pt-8 border-t border-[#333]">
-                      {[...Array(totalPages)].map((_, i) => (
-                        <button 
-                          key={i} 
-                          onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-                          className={`page-btn ${currentPage === i + 1 ? "active" : ""}`}
-                        >
-                          {i + 1}
-                        </button>
-                      ))}
+                    <div className="flex justify-between items-center mt-16 pt-8 border-t border-[#222]">
+                      <button 
+                        disabled={currentPage === 1}
+                        onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
+                        className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-bold flex items-center gap-2"
+                      >
+                        ← Previous
+                      </button>
+                      
+                      <div className="hidden sm:flex items-center gap-2">
+                        {[...Array(totalPages)].map((_, i) => (
+                          <button 
+                            key={i} 
+                            onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
+                            className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all ${currentPage === i + 1 ? "bg-[#ff914d] text-black" : "text-gray-400 hover:bg-[#222] hover:text-white"}`}
+                          >
+                            {i + 1}
+                          </button>
+                        ))}
+                      </div>
+
+                      <button 
+                        disabled={currentPage === totalPages}
+                        onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
+                        className="text-gray-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors text-sm font-bold flex items-center gap-2"
+                      >
+                        Next →
+                      </button>
                     </div>
                   )}
                 </>
@@ -171,21 +217,36 @@ export default function Blog1() {
         )}
       </main>
 
-      <footer className="w-full bg-black text-white border-t-2 border-[#ff914d] py-4 mt-auto">
-         <div className="container mx-auto flex flex-col items-center justify-center text-center gap-6">
-           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:gap-6">
-             <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors"><FormattedMessage id="footer.termsConditions" /></a>
-             <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
-             <a href="/privacy-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors"><FormattedMessage id="footer.privacyPolicy" /></a>
-             <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
-             <a href="/refund-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors"><FormattedMessage id="footer.refundPolicy" /></a>
-             <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
-             <a href="/shipping-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors"><FormattedMessage id="footer.shippingDelivery" /></a>
-             <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
-             <a href="/contact-us" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors"><FormattedMessage id="footer.contactUs" /></a>
-           </div>
-         </div>
-       </footer>
+      {/* 🦶 EXACT FOOTER FROM CONSCIOUS KARMA */}
+      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
+        <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+            <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">
+              <FormattedMessage id="footer.termsConditions" />
+            </a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+
+            <a href="/privacy-policy" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">
+              <FormattedMessage id="footer.privacyPolicy" />
+            </a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+
+            <a href="/refund-policy" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">
+              <FormattedMessage id="footer.refundPolicy" />
+            </a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+
+            <a href="/shipping-policy" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">
+              <FormattedMessage id="footer.shippingDelivery" />
+            </a>
+            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
+
+            <a href="/contact-us" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">
+              <FormattedMessage id="footer.contactUs" />
+            </a>
+          </div>
+        </div>
+      </footer>
 
       {/* MODALS */}
       {(showSignup || showLogin) && (
@@ -196,36 +257,32 @@ export default function Blog1() {
       )}
 
       <style>{`
+        /* Minimalist Blog Cards */
         .blog-card-container {
-          background: #000;
-          border: 1.5px solid #ff914d;
-          border-radius: 12px;
-          overflow: hidden;
+          background: transparent;
+          border-radius: 8px;
           display: flex;
           flex-direction: column;
-          transition: transform 0.3s ease;
+          transition: transform 0.2s ease;
           height: 100%;
         }
-        .blog-card-container:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(255, 145, 77, 0.2); }
+        .blog-card-container:hover .blog-card-img {
+          transform: scale(1.03);
+        }
         
-        /* 🎨 Added Padding configuration to card images */
-        .blog-card-image-box { width: 100%; height: 250px; overflow: hidden; border: none !important; padding: 14px; box-sizing: border-box; }
-        .blog-card-img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 8px; border: none !important; }
+        .blog-card-image-box { width: 100%; aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; margin-bottom: 16px; }
+        .blog-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
         
-        /* Balanced content padding to match the image spacing */
-        .blog-card-content { padding: 0 24px 24px 24px; display: flex; flex-direction: column; flex-grow: 1; }
-        .blog-card-title { color: #fff; font-size: 24px; font-weight: 700; margin-bottom: 12px; font-family: 'Balgin', sans-serif; }
-        .blog-card-excerpt { color: #ccc; font-size: 15px; line-height: 1.6; margin-bottom: 24px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 300; }
-        .blog-card-readmore { color: #ff914d; text-decoration: none; font-weight: 600; font-size: 16px; margin-top: auto; }
-        
+        .blog-card-content { display: flex; flex-direction: column; flex-grow: 1; }
+        .blog-card-title { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 8px; font-family: 'Inter', sans-serif; line-height: 1.3; }
+        .blog-card-excerpt { color: #888; font-size: 14px; line-height: 1.6; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; }
+        .blog-card-readmore { color: #ff914d; text-decoration: none; font-size: 14px; margin-top: auto; }
+
+        /* 🔥 RESTORED CHECKBOX CSS 🔥 */
         .ck-checkbox { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 5px; cursor: pointer; position: relative; background: #222; vertical-align: middle; }
         .ck-checkbox:checked { background: #ff914d; border-color: #ff914d; }
         .ck-checkbox:checked::after { content: '✓'; position: absolute; color: black; font-size: 14px; font-weight: 900; top: 50%; left: 50%; transform: translate(-50%, -50%); }
         
-        .page-btn { background: #111; color: #fff; border: 1px solid #333; padding: 8px 18px; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .page-btn.active { background: #ff914d; color: #000; border-color: #ff914d; }
-        .page-btn:hover:not(.active) { border-color: #ff914d; color: #ff914d; }
-
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
       `}</style>
