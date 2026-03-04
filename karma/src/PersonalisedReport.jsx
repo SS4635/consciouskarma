@@ -1007,11 +1007,13 @@ We will be in touch soon.</h2>
                   <br />
                   Requires mobile number OTP verification
                   {otpExtraText && (
-      <>
-        <br />
-        {otpExtraText}
-      </>
-    )}
+  <>
+    <br />
+    <span className="text-[#ff914d]">
+      {otpExtraText}
+    </span>
+  </>
+)}
                 </>
               </p>
             </div>
