@@ -172,7 +172,7 @@ export default function CKNavbar({
             </a>
 
             <a
-              href="/personalised-report"
+              href="/personalized-report"
               className="menu-link"
               onClick={() => setMenuOpen(false)}
             >
