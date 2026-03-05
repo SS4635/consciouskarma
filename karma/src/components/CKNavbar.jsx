@@ -176,7 +176,7 @@ export default function CKNavbar({
               className="menu-link"
               onClick={() => setMenuOpen(false)}
             >
-              <FormattedMessage id="menu.personalisedReport" />
+              <FormattedMessage id="Personalized Report" />
             </a>
 
             <a
