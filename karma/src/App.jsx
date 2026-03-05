@@ -49,7 +49,7 @@ export default function App() {
 
           <Route path="/login" element={<LoginModal />} />
 
-          <Route path="/personalised-report" element={<PersonalisedReport />} />
+          <Route path="/personalized-report" element={<PersonalisedReport />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/consult" element={<Consult />} />
           <Route path="/termsandconditions" element={<TermsAndConditions />} />

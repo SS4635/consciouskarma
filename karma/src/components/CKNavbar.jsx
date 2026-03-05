@@ -21,7 +21,7 @@ export default function CKNavbar({
           right: 0;
           height: 60px;
           background: #000;
-          z-index: 2001;
+          z-index: 99990; /* 🔥 Header ka z-index 99990 (Drawer se kam) */
           display: flex;
           align-items: center;
         }
@@ -124,7 +124,8 @@ export default function CKNavbar({
       {/* BACKDROP */}
       {menuOpen && !hideDrawer && (
         <div
-          className="fixed inset-0 bg-[rgba(0,0,0,0.5)] backdrop-blur-[2px] z-20"
+          /* 🔥 Backdrop header ke bhi upar aayega taaki background dim ho jaye */
+          className="fixed inset-0 bg-[rgba(0,0,0,0.6)] backdrop-blur-sm z-[99995]"
           onClick={() => setMenuOpen(false)}
         />
       )}
@@ -132,59 +133,70 @@ export default function CKNavbar({
       {/* DRAWER */}
       {!hideDrawer && (
         <nav
-          className={`ck-navbar-drawer fixed top-0 right-0 h-full w-[min(340px,92vw)]
+          /* 🔥 FIXES:
+             1. top-0 lagaya taaki header ko overlap kare.
+             2. z-[99999] sabse highest z-index diya hai.
+          */
+          className={`ck-navbar-drawer fixed top-0 right-0 h-[100dvh] w-[min(340px,92vw)]
           bg-[#0f0f0f] border-l border-[#333]
           shadow-[0_20px_60px_rgba(0,0,0,0.5)]
-          z-[30] flex flex-col gap-[10px] p-[22px_20px]
+          z-[99999] flex flex-col p-[20px]
           transition-transform duration-300 ease-in-out
           ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
         >
-          <div className="font-balgin font-bold text-white mb-3">
-            <FormattedMessage id="menu.title" />
+          {/* Top Row: Title & Close Button */}
+          <div className="flex justify-between items-center mb-6">
+            <div className="font-balgin font-bold text-white">
+              <FormattedMessage id="menu.title" defaultMessage="Menu" />
+            </div>
+            
+            {/* 'X' Close Button */}
+            <button 
+              onClick={() => setMenuOpen(false)}
+              className="text-gray-400 hover:text-white p-1 transition-colors"
+              aria-label="Close Menu"
+            >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <path d="M18 6L6 18M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </button>
           </div>
 
-          <a
-            href="/"
-            className="menu-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            Home
-          </a>
+          <div className="flex flex-col gap-[10px]">
+            <a
+              href="/"
+              className="menu-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </a>
 
-          {/* 🔥 NAYA BLOGS LINK YAHAN ADD KIYA HAI 🔥 */}
-          {/* <a
-            href="/blogspage"
-            className="menu-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            Blogs
-          </a> */}
+            <a
+              href="/personalised-report"
+              className="menu-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              <FormattedMessage id="menu.personalisedReport" />
+            </a>
 
-          <a
-            href="/personalised-report"
-            className="menu-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            <FormattedMessage id="menu.personalisedReport" />
-          </a>
+            <a
+              href="/consult"
+              className="menu-link"
+              onClick={() => setMenuOpen(false)}
+            >
+              <FormattedMessage id="menu.consult" />
+            </a>
 
-          <a
-            href="/consult"
-            className="menu-link"
-            onClick={() => setMenuOpen(false)}
-          >
-            <FormattedMessage id="menu.consult" />
-          </a>
-
-          <button
-            className="menu-link text-left"
-            onClick={() => {
-              setMenuOpen(false);
-              setShowSignup(true);
-            }}
-          >
-            Signup / Login
-          </button>
+            <button
+              className="menu-link text-left"
+              onClick={() => {
+                setMenuOpen(false);
+                setShowSignup(true);
+              }}
+            >
+              Signup / Login
+            </button>
+          </div>
         </nav>
       )}
     </>

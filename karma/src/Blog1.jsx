@@ -94,14 +94,14 @@ export default function Blog1() {
           BLOGS
         </h1>
 
-        {/* 📱 MOBILE VIEW: ALL PILLS VISIBLE (No Scroll, Flex-Wrap used) */}
+        {/* 📱 MOBILE VIEW: ALL PILLS VISIBLE */}
         <div className="block lg:hidden mb-8">
           <div className="flex flex-wrap gap-2 pb-2">
             <button
               onClick={() => { setSelectedCategories([]); setCurrentPage(1); }}
               className={`whitespace-nowrap px-4 py-2 rounded-full transition-all text-sm ${
                 selectedCategories.length === 0 
-                ? "bg-[#ff914d] text-black font-bold" 
+                ? "bg-[#ff914d] text-black font-bold border-none" 
                 : "bg-[#111] text-gray-400 hover:text-white border border-[#333]"
               }`}
             >
@@ -114,7 +114,7 @@ export default function Blog1() {
                 onClick={() => handleCategoryChange(cat.name)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full transition-all text-sm ${
                   selectedCategories.includes(cat.name) 
-                  ? "bg-[#ff914d] text-black font-bold" 
+                  ? "bg-[#ff914d] text-black font-bold border-none" 
                   : "bg-[#111] text-gray-400 hover:text-white border border-[#333]"
                 }`}
               >
@@ -129,25 +129,38 @@ export default function Blog1() {
         ) : (
           <div className="flex flex-col lg:flex-row gap-10">
             
-            {/* 💻 DESKTOP VIEW: ORIGINAL CHECKBOX STYLE (Hidden on Mobile) */}
-            <aside className="hidden lg:block w-[280px] flex-shrink-0 relative">
-              <div className="sticky top-32 bg-[#111] rounded-xl p-6 border-r border-[#333] rounded-r-none h-full min-h-[400px]">
-                <h3 className="text-xl font-bold text-white mb-4 border-b border-[#333] pb-2">Categories</h3>
-                <div className="flex flex-col gap-4 max-h-[400px] overflow-y-auto custom-scrollbar pt-2">
+            {/* 💻 DESKTOP VIEW: NOTION.COM STYLE CLEAN SIDEBAR */}
+            <aside className="hidden lg:block w-[240px] flex-shrink-0 relative">
+              <div className="sticky top-32">
+                <h3 className="text-xs font-semibold text-gray-500 mb-3 uppercase tracking-widest pl-3">Categories</h3>
+                
+                <div className="flex flex-col gap-1">
+                  <button
+                    onClick={() => { setSelectedCategories([]); setCurrentPage(1); }}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-[15px] ${
+                      selectedCategories.length === 0 
+                      ? "bg-[#1f1f1f] text-[#ff914d] font-semibold" 
+                      : "text-gray-400 hover:bg-[#111] hover:text-white"
+                    }`}
+                  >
+                    All Posts
+                  </button>
+                  
                   {dbCategories.map(cat => (
-                    <label key={cat._id} className="flex items-center gap-3 cursor-pointer group">
-                      <input 
-                        type="checkbox" 
-                        checked={selectedCategories.includes(cat.name)}
-                        onChange={() => handleCategoryChange(cat.name)}
-                        className="ck-checkbox"
-                      />
-                      <span className={`text-[15px] transition-colors ${selectedCategories.includes(cat.name) ? "text-[#ff914d] font-bold" : "text-gray-300 group-hover:text-white"}`}>
-                        {cat.name}
-                      </span>
-                    </label>
+                    <button
+                      key={cat._id}
+                      onClick={() => handleCategoryChange(cat.name)}
+                      className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-[15px] ${
+                        selectedCategories.includes(cat.name) 
+                        ? "bg-[#1f1f1f] text-[#ff914d] font-semibold" 
+                        : "text-gray-400 hover:bg-[#111] hover:text-white"
+                      }`}
+                    >
+                      {cat.name}
+                    </button>
                   ))}
-                  {dbCategories.length === 0 && <p className="text-gray-500 text-sm">No categories</p>}
+                  
+                  {dbCategories.length === 0 && <p className="text-gray-500 text-sm pl-3">No categories</p>}
                 </div>
               </div>
             </aside>
@@ -278,11 +291,6 @@ export default function Blog1() {
         .blog-card-excerpt { color: #888; font-size: 14px; line-height: 1.6; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; }
         .blog-card-readmore { color: #ff914d; text-decoration: none; font-size: 14px; margin-top: auto; }
 
-        /* 🔥 RESTORED CHECKBOX CSS 🔥 */
-        .ck-checkbox { appearance: none; width: 20px; height: 20px; border: 2px solid #555; border-radius: 5px; cursor: pointer; position: relative; background: #222; vertical-align: middle; }
-        .ck-checkbox:checked { background: #ff914d; border-color: #ff914d; }
-        .ck-checkbox:checked::after { content: '✓'; position: absolute; color: black; font-size: 14px; font-weight: 900; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-        
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
       `}</style>
