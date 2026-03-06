@@ -275,7 +275,7 @@ useEffect(() => {
             The depth of analysis varies with your alignment needs.
           </p>
           {otpExtraText && (
-  <p className="fs-6 fw-light font-arsenal" style={{ color: '#ff914d', marginTop: '-10px' }}>
+  <p className=" fw-light font-arsenal text-[14px] md:text-[18px] " style={{ color: '#ff914d', marginTop: '-10px' }}>
     {otpExtraText}
   </p>
 )}
