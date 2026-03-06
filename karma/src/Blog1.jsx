@@ -174,7 +174,12 @@ export default function Blog1() {
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {currentBlogs.map((blog) => (
-                      <div key={blog._id} className="blog-card-container group">
+                      <Link 
+                        key={blog._id} 
+                        to={`/blog/${blog.slug}`} 
+                        className="blog-card-container group cursor-pointer"
+                        style={{ textDecoration: 'none' }}
+                      >
                         <div className="blog-card-image-box">
                           <img src={`${API_BASE_URL}${blog.imageUrl}`} alt={blog.title} className="blog-card-img" />
                         </div>
@@ -184,11 +189,11 @@ export default function Blog1() {
                           </p>
                           <h3 className="blog-card-title">{blog.title}</h3>
                           <p className="blog-card-excerpt">{getExcerpt(blog.content)}</p>
-                          <Link to={`/blog/${blog.slug}`} className="blog-card-readmore mt-auto group-hover:text-white transition-colors">
+                          <div className="blog-card-readmore mt-auto group-hover:text-white transition-colors">
                             Read article →
-                          </Link>
+                          </div>
                         </div>
-                      </div>
+                      </Link>
                     ))}
                   </div>
 
