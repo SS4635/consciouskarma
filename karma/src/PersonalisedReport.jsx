@@ -803,7 +803,7 @@ const errorOverlay = showError ? (
       }}
       onClick={() => {
         setShowSuccess(false);
-        window.location.href = "/personalised-report";
+        window.location.href = "/personalized-report";
       }}
     >
       <div
@@ -846,7 +846,7 @@ We will be in touch soon.</h2>
           }}
           onClick={() => {
             setShowSuccess(false);
-            window.location.href = "/personalised-report";
+            window.location.href = "/personalized-report";
           }}
           aria-label="Close"
         >×</button>
