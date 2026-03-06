@@ -166,6 +166,7 @@ export default function Blog1() {
             </aside>
 
             {/* 👉 RIGHT AREA: 3x3 GRID */}
+            
             <div className="w-full flex-1 flex flex-col lg:pl-6">
               {currentBlogs.length === 0 ? (
                 <div className="text-center py-20 italic text-gray-500">No blogs found for selected filters.</div>
@@ -284,7 +285,7 @@ export default function Blog1() {
         }
         
         .blog-card-image-box { width: 100%; aspect-ratio: 16/9; overflow: hidden; border-radius: 8px; margin-bottom: 16px; }
-        .blog-card-img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+        .blog-card-img { width: 100%; height: 100%; object-fit: fill; display: block; transition: transform 0.3s ease; }
         
         .blog-card-content { display: flex; flex-direction: column; flex-grow: 1; }
         .blog-card-title { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 8px; font-family: 'Inter', sans-serif; line-height: 1.3; }

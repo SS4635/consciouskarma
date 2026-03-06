@@ -216,7 +216,7 @@ export default function InlineInstantReportForm1({
             left: '50%',
             transform: 'translateX(-50%)',
             animation: 'slideDown 0.3s ease-out',
-            zIndex: 9999,
+            zIndex: 999999,
           }}
         >
           <div

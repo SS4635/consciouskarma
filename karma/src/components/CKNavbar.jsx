@@ -147,7 +147,7 @@ export default function CKNavbar({
           {/* Top Row: Title & Close Button */}
           <div className="flex justify-between items-center mb-6">
             <div className="font-balgin font-bold text-white">
-              <FormattedMessage id="menu.title" defaultMessage="Menu" />
+              {/* <FormattedMessage id="menu.title" defaultMessage="Menu" /> */}
             </div>
             
             {/* 'X' Close Button */}

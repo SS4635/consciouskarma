@@ -1,13 +1,15 @@
 import nodemailer from "nodemailer";
 
-export async function sendConsultationEmails({ formData, docId }) {
-  const name = formData?.[1]?.["Name"] || "Customer";
-  const email = formData?.[1]?.["Email-id"];
-  const phone = formData?.[2]?.["Mobile Number"]?.mobile || "";
+// 👇 FIX 1: Add submittedDetailsHtml to the function parameters
+export async function sendConsultationEmails({ formData, docId, submittedDetailsHtml }) {
+  // 👇 FIX 2: Safely extract Name, Email, and Phone using the mapped data or fallback to old structure
+  const name = formData?.general?.name || formData?.rawStepData?.[1]?.["Name"] || formData?.[1]?.["Name"] || "Customer";
+  const email = formData?.general?.email || formData?.rawStepData?.[1]?.["Email-id"] || formData?.[1]?.["Email-id"];
+  const phone = formData?.primary?.number || formData?.rawStepData?.[2]?.["Mobile Number"]?.mobile || formData?.[2]?.["Mobile Number"]?.mobile || "";
 
   if (!email) throw new Error("Missing user email for consultation");
 
-  // ✅ HOSTINGER SMTP (SAME AS WORKING TEST-MAIL)
+  // ✅ HOSTINGER SMTP
   const transporter = nodemailer.createTransport({
     host: "smtp.hostinger.com",
     port: 465,
@@ -18,7 +20,7 @@ export async function sendConsultationEmails({ formData, docId }) {
     },
   });
 
-  /* ================= USER MAIL (UNCHANGED) ================= */
+  /* ================= USER MAIL (UPDATED WITH FORM DETAILS) ================= */
   const userHTML = `
 <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
   <p>Dear <strong>${name}</strong>,</p>
@@ -28,10 +30,12 @@ export async function sendConsultationEmails({ formData, docId }) {
     <strong>Conscious Karma</strong>.
   </p>
 
-  <p>Your request has been received.</p>
+  <p>Your payment was successful and your booking details have been received.</p>
+
+  ${submittedDetailsHtml || ""}
 
   <p>
-    You will receive your consultation details and next steps shortly.
+    We will review your details and get in touch with you shortly to schedule your consultation.
   </p>
 
   <p>
@@ -46,9 +50,10 @@ export async function sendConsultationEmails({ formData, docId }) {
 </div>
 `;
 
-  /* ================= ADMIN TABLE (UNCHANGED) ================= */
+  /* ================= ADMIN TABLE (UPDATED DATA SOURCE) ================= */
   function renderStep(stepIdx) {
-    const step = formData?.[stepIdx];
+    // 🔥 Fix: Check for rawStepData first (which we sent from server.js)
+    const step = formData?.rawStepData?.[stepIdx] || formData?.[stepIdx];
     if (!step) return "";
     return Object.entries(step)
       .map(([k, v]) => {

@@ -265,7 +265,7 @@ export default function ConsciousKarmaSections() {
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
 
         {/* MAIN CONTENT AREA */}
-        <div className="flex-1 flex flex-col justify-center items-center w-full relative z-10 pt-20 md:pt-12 pb-10">
+        <div className="flex-1 flex flex-col justify-center items-center w-full relative  pt-20 md:pt-12 pb-10">
           
           {/* 1. HERO TEXT SECTION */}
           <div className="text-center w-full px-4 mb-10 md:mb-14 md:mt-2">

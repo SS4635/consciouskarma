@@ -8,7 +8,6 @@ function Typewriter({
 }) {
   const [idx, setIdx] = useState(0);
   const [typed, setTyped] = useState(() => lines.map(() => ""));
-
   // typing loop (left→right)
   useEffect(() => {
     let t;

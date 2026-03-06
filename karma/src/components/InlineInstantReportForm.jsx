@@ -207,15 +207,16 @@ export default function InlineInstantReportForm({
             sample report
           </a>
       {/* Toast Notification */}
+      {/* Toast Notification */}
       {toast.show && (
         <div
           className="fixed"
           style={{
-            top: '80px',
+            top: '20px', // 👈 CHANGED: Pushed it down slightly to avoid the header, or set to '20px' if z-index works
             left: '50%',
             transform: 'translateX(-50%)',
-            animation: 'slideDown 0.3s ease-out',
-            zIndex: 999999,
+            animation: 'slideUp 0.3s ease-out',
+            zIndex: 999999, // 👈 CHANGED: Ensure this is higher than your header's z-index (e.g., 99999)
           }}
         >
           <div

@@ -1009,7 +1009,7 @@ We will be in touch soon.</h2>
                   {otpExtraText && (
   <>
     <br />
-    <span className="text-[#ff914d]">
+    <span className="text-[#ff914d] text-[14px] md:text-[18px]">
       {otpExtraText}
     </span>
   </>

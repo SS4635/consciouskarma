@@ -156,11 +156,27 @@ app.get("/api/config/otp-text", (req, res) => {
   res.json({ text: process.env.OTP_EXTRA_TEXT || "" });
 });
 
+app.get("/api/config/otp-text1", (req, res) => {
+  // Apni backend .env file mein OTP_EXTRA_TEXT naam ka variable add kar lena
+  res.json({ text: process.env.OTP_EXTRA_TEXT1 || "" });
+});
+
+// 2. Email ke liye Form Data ko HTML mein convert karne ka Helper Function
 // 2. Email ke liye Form Data ko HTML mein convert karne ka Helper Function
 function generateFormDataHtml(fd) {
   if (!fd) return "";
-  const { general = {}, primary = {}, parallels = [], previousNumbers = [] } = fd;
+  const general = fd.general || {};
+  const primary = fd.primary || {};
+  const parallels = fd.parallels || [];
+  const previousNumbers = fd.previousNumbers || [];
   
+  // Smart extract for Primary Number fields (Handling both camelCase and strings with spaces)
+  const sinceMonth = primary.sinceMonth || primary["sinceMonth"] || "-";
+  const sinceYear = primary.sinceYear || primary["sinceYear"] || "-";
+  const usageType = primary.usageType || primary["Usage type"] || "-";
+  const role = primary.role || primary["Role"] || "-";
+  const lineOfWork = primary.lineOfWork || primary["Line of Work"] || "-";
+
   let html = `<div style="background-color: #f4f4f4; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 14px; color: #333;">
     <h3 style="margin-top: 0; color: #ff914d;">Your Submitted Details:</h3>
     <p style="margin-top: 0;"><strong>Name:</strong> ${general.name || "-"}<br/>
@@ -170,15 +186,19 @@ function generateFormDataHtml(fd) {
     
     <h4 style="margin-bottom: 5px; color: #333;">Primary Number</h4>
     <p style="margin-top: 0;"><strong>Number:</strong> ${primary.isd || ""}${primary.number || "-"}<br/>
-    <strong>Since:</strong> ${primary.sinceMonth || "-"} ${primary.sinceYear || "-"}<br/>
-    <strong>Usage Type:</strong> ${primary.usageType || "-"}<br/>
-    <strong>Role:</strong> ${primary.role || "-"}<br/>
-    <strong>Line of Work:</strong> ${primary.lineOfWork || "-"}</p>`;
+    <strong>Since:</strong> ${sinceMonth} ${sinceYear}<br/>
+    <strong>Usage Type:</strong> ${usageType}<br/>
+    <strong>Role:</strong> ${role}<br/>
+    <strong>Line of Work:</strong> ${lineOfWork}</p>`;
 
   if (parallels.length > 0) {
     html += `<h4 style="margin-bottom: 5px; color: #333;">Parallel Numbers</h4><ul style="margin-top: 0; padding-left: 20px;">`;
     parallels.forEach((p, i) => {
-      html += `<li style="margin-bottom: 4px;"><strong>#${i + 1}:</strong> ${p.isd || ""}${p.number || "-"} (Since: ${p.sinceMonth || "-"}/${p.sinceYear || "-"}, Usage: ${p.usageType || "-"}, Role: ${p.role || "-"})</li>`;
+      const pSinceM = p.sinceMonth || "-";
+      const pSinceY = p.sinceYear || "-";
+      const pUsage = p.usageType || p["Usage type"] || "-";
+      const pRole = p.role || p["Role"] || "-";
+      html += `<li style="margin-bottom: 4px;"><strong>#${i + 1}:</strong> ${p.isd || ""}${p.number || "-"} (Since: ${pSinceM}/${pSinceY}, Usage: ${pUsage}, Role: ${pRole})</li>`;
     });
     html += `</ul>`;
   }
@@ -186,7 +206,9 @@ function generateFormDataHtml(fd) {
   if (previousNumbers.length > 0) {
     html += `<h4 style="margin-bottom: 5px; color: #333;">Previous Numbers</h4><ul style="margin-top: 0; padding-left: 20px;">`;
     previousNumbers.forEach((p, i) => {
-      html += `<li style="margin-bottom: 4px;"><strong>#${i + 1}:</strong> ${p.isd || ""}${p.number || "-"} (Used: ${p.usedSinceMonth || "-"}/${p.usedSinceYear || "-"} to ${p.usedTillMonth || "-"}/${p.usedTillYear || "-"}, Usage: ${p.usageType || "-"}, Role: ${p.role || "-"})</li>`;
+      const pUsage = p.usageType || p["Usage type"] || "-";
+      const pRole = p.role || p["Role"] || "-";
+      html += `<li style="margin-bottom: 4px;"><strong>#${i + 1}:</strong> ${p.isd || ""}${p.number || "-"} (Used: ${p.usedSinceMonth || "-"}/${p.usedSinceYear || "-"} to ${p.usedTillMonth || "-"}/${p.usedTillYear || "-"}, Usage: ${pUsage}, Role: ${pRole})</li>`;
     });
     html += `</ul>`;
   }
@@ -1253,9 +1275,13 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
 
     // Send Emails (Non-blocking)
     try {
+      // 🔥 Generate the HTML representation of the submitted data
+      const submittedDetailsHtml = generateFormDataHtml(safeFormData);
+
       await sendConsultationEmails({
         formData: safeFormData, 
         docId: consultation._id,
+        submittedDetailsHtml: submittedDetailsHtml, // 👈 Pass the HTML string here
       });
       // Email success hui toh Status Update karo
       consultation.emailSent = true;
@@ -1793,10 +1819,7 @@ app.post("/api/pay/create-order", async (req, res) => {
       otpVerified: true,
       formData: {
         general,
-        primary: {
-          isd: primary.isd,
-          number: primary.number,
-        },
+        primary: primary, // 🔥 Pura ka pura primary object pass kar do
         parallels,
         previousNumbers,
         totalPrice: basePrice,

@@ -10,6 +10,7 @@ export default function ConsultationPlans() {
   const [showModal, setShowModal] = useState(false);
   const [modalOpening, setModalOpening] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [otpExtraText, setOtpExtraText] = useState("");
 
   // lock page scroll while modal is open
   useEffect(() => {
@@ -76,8 +77,20 @@ useEffect(() => {
       setLoading(false);
     }
   }
+  async function loadOtpText() {
+    try {
+      const res = await fetch(`${API_BASE}/api/config/otp-text1`);
+      const data = await res.json();
+      setOtpExtraText(data.text || "");
+    } catch (err) {
+      console.error("Failed to load text", err);
+    }
+  }
+
   loadPlans();
+  loadOtpText(); // 👇 ISKO CALL KARNA MAT BHOOLNA
 }, []);
+
 
 
   const handleSelect = (plan) => {
@@ -261,6 +274,11 @@ useEffect(() => {
           <p className="fs-6 fw-light font-arsenal">
             The depth of analysis varies with your alignment needs.
           </p>
+          {otpExtraText && (
+  <p className="fs-6 fw-light font-arsenal" style={{ color: '#ff914d', marginTop: '-10px' }}>
+    {otpExtraText}
+  </p>
+)}
         </div>
 
         {/* Plans Section */}
