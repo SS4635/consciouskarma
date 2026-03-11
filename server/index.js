@@ -744,35 +744,84 @@ app.delete("/api/admin/blog/:id", async (req, res) => {
 });
 
 // 1. UPDATE: Save sourceLink when getting energy
+// app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
+//   try {
+//     const { mobile_number, source_link } = req.body;
+//     const { routeId } = req.params;
+
+//     // Save BOTH the API route (routeId) and the URL Key (source_link)
+//     await EnergyLog.create({
+//       mobileNumber: mobile_number,
+//       routeHit: routeId,
+//       sourceLink: source_link || "direct", 
+//       ipAddress: req.userIP,
+//       userAgent: req.headers["user-agent"],
+//     });
+
+//     const CLIENT_API_URL = `https://api.consciouskarma.co/micro/${routeId}`;
+//     const externalResponse = await axios.post(
+//       CLIENT_API_URL,
+//       { mobile_number },
+//       { headers: { "Content-Type": "application/json", "X-API-Key": "CK_Score_2365abhnf895asfw" } }
+//     );
+
+//     return res.json(externalResponse.data);
+//   } catch (err) {
+//     console.error(`Error in route ${req.params.routeId}:`, err.message);
+//     if (err.response) return res.status(err.response.status).json(err.response.data);
+//     return res.status(500).json({ ok: false, message: "External API Failed" });
+//   }
+// });
+
 app.post("/api/get-energy/:routeId", protectAndLog, async (req, res) => {
   try {
     const { mobile_number, source_link } = req.body;
     const { routeId } = req.params;
 
-    // Save BOTH the API route (routeId) and the URL Key (source_link)
+    // 1. 🔍 CHECK DATABASE: Do we already have a response for this number and route?
+    const existingEntry = await EnergyLog.findOne({ 
+      mobileNumber: mobile_number, 
+      routeHit: routeId 
+    });
+
+    if (existingEntry && existingEntry.responseData) {
+      console.log(`[CACHE HIT] Returning saved data for ${mobile_number}`);
+      return res.json(existingEntry.responseData);
+    }
+
+    // 2. 🌐 FETCH NEW DATA: If no entry found, call the external API
+    console.log(`[CACHE MISS] Fetching fresh data for ${mobile_number}`);
+    const CLIENT_API_URL = `https://api.consciouskarma.co/micro/${routeId}`;
+    
+    const externalResponse = await axios.post(
+      CLIENT_API_URL,
+      { mobile_number },
+      { 
+        headers: { 
+          "Content-Type": "application/json", 
+          "X-API-Key": "CK_Score_2365abhnf895asfw" 
+        } 
+      }
+    );
+
+    // 3. 💾 SAVE TO DB: Store the response so we don't have to fetch it again
     await EnergyLog.create({
       mobileNumber: mobile_number,
       routeHit: routeId,
-      sourceLink: source_link || "direct", 
+      sourceLink: source_link || "direct",
+      responseData: externalResponse.data, // Storing the full JSON response
       ipAddress: req.userIP,
       userAgent: req.headers["user-agent"],
     });
 
-    const CLIENT_API_URL = `https://api.consciouskarma.co/micro/${routeId}`;
-    const externalResponse = await axios.post(
-      CLIENT_API_URL,
-      { mobile_number },
-      { headers: { "Content-Type": "application/json", "X-API-Key": "CK_Score_2365abhnf895asfw" } }
-    );
-
     return res.json(externalResponse.data);
+
   } catch (err) {
     console.error(`Error in route ${req.params.routeId}:`, err.message);
     if (err.response) return res.status(err.response.status).json(err.response.data);
     return res.status(500).json({ ok: false, message: "External API Failed" });
   }
 });
-
 
 // HELPER FUNCTION: To extract UNIQUE active routes from .env
 const getActiveRoutes = () => {
