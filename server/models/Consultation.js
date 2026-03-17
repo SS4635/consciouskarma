@@ -20,6 +20,7 @@ const ConsultationSchema = new mongoose.Schema(
 
     // ✅ FIX: Dashboard status ke liye ye field add karna zaroori hai
     emailSent: { type: Boolean, default: false },
+    isCompleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

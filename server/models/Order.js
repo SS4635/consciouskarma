@@ -26,7 +26,8 @@ const OrderSchema = new mongoose.Schema({
 
   // ✅ FIX: Dono email tracking fields add karni padengi
   emailSent: { type: Boolean, default: false }, // For Personalised
-  instantEmailSent: { type: mongoose.Schema.Types.Mixed, default: false } // For Instant (Takes "processing" or true)
+  instantEmailSent: { type: mongoose.Schema.Types.Mixed, default: false }, // For Instant (Takes "processing" or true)
+  isCompleted: { type: Boolean, default: false },
 
 }, { timestamps:true });
 

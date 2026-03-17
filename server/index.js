@@ -9,12 +9,12 @@ import bcrypt from "bcrypt";
 import axios from "axios";
 import dotenv from "dotenv";
 
-dotenv.config({
-  path: "/var/www/.env",
-});
+// dotenv.config({
+//   path: "/var/www/.env",
+// });
 
 // import dotenv from "dotenv";
-// dotenv.config();
+dotenv.config();
 // //channges
 import EnergyLog from "./models/EnergyLog.js";
 import { protectAndLog } from "./middleware/security.js"; // Path check kar lena
@@ -351,6 +351,29 @@ app.post("/api/auth/register", async (req, res) => {
       ok: false,
       message: "Server error",
     });
+  }
+});
+
+// ✅ NEW API: Mark Personalised or Consult as Completed
+app.put("/api/admin/mark-completed", async (req, res) => {
+  try {
+    const { email, id, type } = req.body;
+    
+    // 🛡️ Security Check
+    if (!email || email !== process.env.ADMIN_EMAIL) {
+      return res.status(403).json({ ok: false, message: "Unauthorized" });
+    }
+
+    if (type === "consult") {
+      await Consultation.findByIdAndUpdate(id, { isCompleted: true });
+    } else if (type === "personalised") {
+      await Order.findByIdAndUpdate(id, { isCompleted: true });
+    }
+
+    res.json({ ok: true, message: "Marked as completed!" });
+  } catch (err) {
+    console.error("Mark completed error:", err);
+    res.status(500).json({ ok: false, message: "Server error" });
   }
 });
 

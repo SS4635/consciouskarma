@@ -203,6 +203,37 @@ export default function AdminDashboardLayout() {
     }
   }, [activeTab, blogView, adminEmail]);
 
+// 🔥 NEW: Mark as Completed Handler
+  const handleMarkCompleted = async (id, type) => {
+    const confirm = await Swal.fire({
+      title: 'Mark as Completed?',
+      text: "You won't be able to undo this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#2ecc71',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, complete it!'
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const { data } = await axios.put(`${API_BASE_URL}/api/admin/mark-completed`, {
+          email: adminEmail,
+          id,
+          type
+        });
+        
+        if (data.ok) {
+          // Update the UI instantly without reloading
+          setTableData(prev => prev.map(item => item._id === id ? { ...item, isCompleted: true } : item));
+          Swal.fire("Completed!", "Report has been marked as completed.", "success");
+        }
+      } catch (err) {
+        Swal.fire("Error", "Failed to update status", "error");
+      }
+    }
+  };
+
   const handleAddCategory = async () => {
     if (!newCategory.trim()) return Swal.fire("Warning", "Category name cannot be empty", "warning");
     try {
@@ -323,13 +354,31 @@ export default function AdminDashboardLayout() {
     Swal.fire({ title: `Message from ${name}`, text: message, icon: 'info', confirmButtonColor: '#ff914d' });
   };
 
-  const exportToExcel = () => {
-    if (!tableData || tableData.length === 0) return Swal.fire("Empty", "No data available to export.", "info");
+  const exportToExcel = async () => {
+    let fullDataForExport = tableData;
+
+    // 🔥 FIX: If it's a paginated table, fetch ALL data based on current filters
+    if (["instant", "personalised", "consult", "contact"].includes(activeTab)) {
+      Swal.fire({ title: 'Preparing Export...', text: 'Fetching all records, please wait.', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+      try {
+        const { data } = await axios.get(`${API_BASE_URL}/api/admin/data`, {
+          params: { email: adminEmail, type: activeTab, search: debouncedSearch, filterDate, startDate, endDate, page: 1, limit: 100000 } // Super high limit to get everything
+        });
+        if (data.ok) fullDataForExport = data.data;
+        Swal.close();
+      } catch (err) {
+        Swal.fire("Error", "Failed to fetch full data for export.", "error");
+        return;
+      }
+    }
+
+    if (!fullDataForExport || fullDataForExport.length === 0) return Swal.fire("Empty", "No data available to export.", "info");
+    
     let csvRows = [];
     if (activeTab === "energy-logs" || activeTab === "previous-links") {
       const headers = ["Date", "Time", "Mobile Hit", "Source Link", "API Route Hit", "IP Address"];
       csvRows.push(headers.join(","));
-      tableData.forEach(item => {
+      fullDataForExport.forEach(item => {
         const d = new Date(item.createdAt);
         csvRows.push([d.toLocaleDateString('en-IN'), d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }), `"${item.mobileNumber || "-"}"`, `"${item.sourceLink || "-"}"`, `"${item.routeHit || "-"}"`, `"${item.ipAddress || "-"}"`].join(","));
       });
@@ -338,10 +387,11 @@ export default function AdminDashboardLayout() {
       if (activeTab === "instant") headers.push("Payment Mode");
       if (activeTab === "consult") headers.push("Plan Name");
       if (activeTab !== "contact") headers.push("Report Status");
+      if (activeTab === "personalised" || activeTab === "consult") headers.push("Completion Status"); // New Column
       if (activeTab === "contact") headers.push("Message");
       csvRows.push(headers.join(","));
 
-      tableData.forEach(item => {
+      fullDataForExport.forEach(item => {
         const fd = item.formData || {};
         let rawName = item.name || item.firstName || fd.general?.name || fd.name || fd.fullName || fd.firstName || "-";
         let rawEmail = item.email || fd.general?.email || fd.email || fd.emailAddress || "-";
@@ -352,6 +402,7 @@ export default function AdminDashboardLayout() {
         if (activeTab === "instant") row.push(item.amount === 0 || item.price === 0 ? "Coupon" : "Paid");
         if (activeTab === "consult") row.push(`"${item.planName || item.formData?.planName || "-"}"`);
         if (activeTab !== "contact") row.push(item.instantEmailSent === true || item.emailSent === true ? "True" : "False");
+        if (activeTab === "personalised" || activeTab === "consult") row.push(item.isCompleted ? "Completed" : "Pending"); // Export completion status
         if (activeTab === "contact") row.push(`"${(item.message || "").replace(/"/g, '""')}"`);
         csvRows.push(row.join(","));
       });
@@ -441,10 +492,10 @@ export default function AdminDashboardLayout() {
                 <div style={{ paddingLeft: "15px", display: "flex", flexDirection: "column", gap: "5px", marginTop: "5px" }}>
                   {availableRoutes.length > 0 ? (
                     availableRoutes.map(route => (
-                      <button key={route} onClick={() => handleNavClick(() => { setActiveTab("energy-logs"); setSelectedRoute(route); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#ff914d" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left" }}>
-                        Route: /{route}
-                      </button>
-                    ))
+  <button key={route} title={`/${route}`} onClick={() => handleNavClick(() => { setActiveTab("energy-logs"); setSelectedRoute(route); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#ff914d" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left", whiteSpace: "nowrap", overflow: "hidden" }}>
+    Route: /{route?.length > 4 ? route.substring(0, 4) + '...' : route}
+  </button>
+))
                   ) : (<span style={{ color: "#666", fontSize: "12px", padding: "8px" }}>No routes found</span>)}
                 </div>
               )}
@@ -538,6 +589,7 @@ export default function AdminDashboardLayout() {
                             {activeTab === "instant" && <th style={{padding: "12px"}}>Payment Mode</th>}
                             {activeTab === "consult" && <th style={{padding: "12px"}}>Plan Name</th>}
                             {activeTab !== "contact" && <th style={{padding: "12px"}}>Report Status</th>}
+                            {(activeTab === "personalised" || activeTab === "consult") && <th style={{padding: "12px"}}>Task Status</th>}
                             {activeTab === "contact" && <th style={{padding: "12px"}}>Message</th>}
                           </tr>
                         </thead>
@@ -562,6 +614,19 @@ export default function AdminDashboardLayout() {
                                 {activeTab === "instant" && (<td style={{ padding: "12px", color: isFreeOrCoupon ? "#2ecc71" : "#3498db" }}>{isFreeOrCoupon ? "Coupon" : "Paid"}</td>)}
                                 {activeTab === "consult" && <td style={{padding: "12px"}}>{planName}</td>}
                                 {activeTab !== "contact" && (<td style={{padding: "12px"}}><span style={{ padding: "4px 8px", borderRadius: "4px", fontSize: "12px", background: isEmailSent ? "rgba(46,204,113,0.1)" : "rgba(231,76,60,0.1)", color: isEmailSent ? "#2ecc71" : "#e74c3c", fontWeight: "bold" }}>{isEmailSent ? "True" : "False"}</span></td>)}
+                                {(activeTab === "personalised" || activeTab === "consult") && (
+  <td style={{padding: "12px"}}>
+    {item.isCompleted ? (
+      <span style={{ color: "#2ecc71", fontWeight: "bold", fontSize: "14px" }}>Completed ✅</span>
+    ) : (
+      <button 
+        onClick={() => handleMarkCompleted(item._id, activeTab)} 
+        style={{ background: "#f39c12", color: "#fff", border: "none", padding: "6px 12px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold" }}>
+        Mark Complete
+      </button>
+    )}
+  </td>
+)}
                                 {activeTab === "contact" && (<td style={{padding: "12px"}}><button className="ck-btn-sm" style={{background: "#ff914d", border: "none", color: "black", fontWeight: "bold", cursor: "pointer", padding: "6px 12px", borderRadius: "4px"}} onClick={() => viewFullMessage(name, item.message)}>Read</button></td>)}
                               </tr>
                             );
@@ -579,14 +644,23 @@ export default function AdminDashboardLayout() {
             {(activeTab === "energy-logs" || activeTab === "previous-links") && (
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
-                  <h2 className="ck-panel-title" style={{ color: "#fff", margin: 0 }}>{activeTab === "previous-links" ? "Archived Link Data" : `Traffic for Link: ?${selectedRoute}`}</h2>
+                  <h2 className="ck-panel-title" style={{ color: "#fff", margin: 0 }}>
+  {activeTab === "previous-links" 
+    ? "Archived Link Data" 
+    : `Traffic for Link: /${selectedRoute?.length > 4 ? selectedRoute.substring(0, 4) + '...' : selectedRoute}`
+  }
+</h2>
                 </div>
                 <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", alignItems: "center", marginBottom: "20px" }}>
                   {activeTab === "previous-links" && (
                      <select className="ck-input" style={{ width: "100%", maxWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={selectedRoute} onChange={(e) => {setSelectedRoute(e.target.value); setPage(1);}}>
-                       <option value="" disabled>Select a previous link...</option>
-                       {historicalLinks.map(link => (<option key={link} value={link}>{link}</option>))}
-                     </select>
+  <option value="" disabled>Select a previous link...</option>
+  {historicalLinks.map(link => (
+    <option key={link} value={link} title={link}>
+      {link?.length > 4 ? link.substring(0, 4) + '...' : link}
+    </option>
+  ))}
+</select>
                   )}
                   <input type="text" placeholder="Search Deep Across Forms..." className="ck-input" style={{ flex: 1, minWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); setPage(1);}} />
                 </div>
@@ -608,8 +682,15 @@ export default function AdminDashboardLayout() {
                               <td style={{padding: "12px"}}>{d.toLocaleDateString('en-IN')}</td>
                               <td style={{padding: "12px", color: "#aaa"}}>{d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</td>
                               <td style={{padding: "12px", color: "#ff914d", fontWeight: "bold"}}>{log.mobileNumber}</td>
-                              <td style={{padding: "12px"}}><span style={{background: "#333", padding: "4px 8px", borderRadius: "4px"}}>{log.sourceLink}</span></td>
-                              <td style={{padding: "12px", color: "#aaa"}}>{log.routeHit}</td>
+                              {/* 🔥 Truncated to 4 chars with ... */}
+<td style={{padding: "12px", maxWidth: "150px"}} title={log.sourceLink}>
+  <span style={{background: "#333", padding: "4px 8px", borderRadius: "4px"}}>
+    {log.sourceLink?.length > 4 ? log.sourceLink.substring(0, 4) + '...' : (log.sourceLink || "-")}
+  </span>
+</td>
+<td style={{padding: "12px", color: "#aaa", maxWidth: "150px"}} title={log.routeHit}>
+  {log.routeHit?.length > 4 ? log.routeHit.substring(0, 4) + '...' : (log.routeHit || "-")}
+</td>
                               <td style={{padding: "12px"}}>{log.ipAddress}</td>
                             </tr>
                           )
