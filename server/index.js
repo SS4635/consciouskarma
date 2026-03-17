@@ -27,7 +27,8 @@ import { sendConsultationEmails } from "./lib/sendConsultationEmails.js";
 import { sendScoreMail } from "./lib/sendScoreMail.js";
 import ContactMessage from "./models/ContactMessage.js";
 import Category from "./models/Category.js";
-
+import { startMonitorCron } from "./lib/monitorCron.js";
+import { runDailyApiMonitor } from "./lib/apiMonitor.js";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
@@ -634,6 +635,32 @@ app.get("/api/admin/summary", async (req, res) => {
   }
 });
 
+
+
+app.post("/api/admin/run-monitor-now", async (req, res) => {
+  try {
+    const { secretKey } = req.body || {};
+
+    if (secretKey !== process.env.CRON_MONITOR_SECRET) {
+      return res.status(401).json({ ok: false, message: "Unauthorized" });
+    }
+
+    const results = await runDailyApiMonitor({
+      sendEmail,
+      processInstantReport,
+    });
+
+    return res.json({ ok: true, results });
+  } catch (err) {
+    console.error("Manual monitor run failed:", err);
+    return res.status(500).json({
+      ok: false,
+      message: "Monitor execution failed",
+      error: err.message,
+    });
+  }
+});
+
 // ==========================================
 // 🔥 NEW APIs FOR ADMIN DASHBOARD FEATURES
 // ==========================================
@@ -726,7 +753,7 @@ app.post("/api/admin/blog", async (req, res) => {
       keywords: keywords || [] 
     });
     
-    res.json({ ok: true, message: "Blog saved successfully!", blog: newBlog });
+    res.json({ ok: true, message: "Blog saved successfully!", blg: newBlog });
   } catch (err) {
     console.error("Blog save error:", err);
     if (err.code === 11000) return res.status(400).json({ ok: false, message: "Blog with this title already exists." });
@@ -3079,4 +3106,9 @@ app.post("/api/admin/bulk-test-custom", async (req, res) => {
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
 const port = process.env.PORT || 4000;
-app.listen(port, () => console.log("Server listening on", port));
+
+
+app.listen(port, () => {
+  console.log("Server listening on", port);
+  startMonitorCron({ sendEmail, processInstantReport });
+});
