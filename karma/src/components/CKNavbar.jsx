@@ -20,7 +20,7 @@ export default function CKNavbar({
           left: 0;
           right: 0;
           height: 60px;
-          background: #000;
+          background: #0b0b0b;
           z-index: 99990; /* 🔥 Header ka z-index 99990 (Drawer se kam) */
           display: flex;
           align-items: center;

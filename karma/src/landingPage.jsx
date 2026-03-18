@@ -259,13 +259,14 @@ export default function ConsciousKarmaSections() {
 
 
       {/* HERO SECTION */}
-      <section className="relative min-h-screen bg-black flex flex-col pt-0 overflow-x-hidden">
+      <section className="relative  bg-black flex flex-col pt-0 overflow-x-hidden"> 
+        {/* //min-h-screen */}
         
         {/* BACKGROUND GRADIENT LINE (Bottom) */}
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
 
         {/* MAIN CONTENT AREA */}
-        <div className="flex-1 flex flex-col justify-center items-center w-full relative  pt-20 md:pt-12 pb-10">
+        <div className="flex-1 flex flex-col justify-center items-center w-full relative  pt-20 md:pt-12 ">
           
           {/* 1. HERO TEXT SECTION */}
           <div className="text-center w-full px-4 mb-10 md:mb-14 md:mt-2">
@@ -376,12 +377,13 @@ export default function ConsciousKarmaSections() {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
         )}
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
-        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+        <div style={{ height: "250px" }} />
       </section>
 
 
       {/* WHAT IS THIS */}
-      <section className="relative min-h-screen bg-black flex items-center justify-center pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] px-4 sm:px-6">
+      <section className="relative bg-black flex items-center justify-center  px-4 sm:px-6">
+        {/* pt-8 sm:pt-10 md:pt-12 lg:pt-[44px] pb-8 sm:pb-10 md:pb-12 lg:pb-[64px] */}
         <div className="container mx-auto max-w-full text-center flex flex-col justify-center">
           <h2 className="font-balgin leading-[1.05] mb-8 sm:mb-10 md:mb-12 lg:mb-16 font-bold tracking-[0.02em] text-white" style={{ fontSize: 'clamp(20px, 2.8vw, 25px)' }}>
             <FormattedMessage id="whatIsThis.title" />
@@ -480,13 +482,14 @@ export default function ConsciousKarmaSections() {
         </div>
 
         {/* Gradient line at bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+        <div style={{ height: "250px" }} />
       </section >
 
       {/* MOBILE NUMBER ENERGY FLOW SECTION */}
       {/* MOBILE NUMBER ENERGY FLOW SECTION */}
+      <div style={{ height: "250px" }} />
 <motion.section
-  className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-24 px-2 sm:px-6"
+  className="relative bg-black flex flex-col items-center justify-center  px-2 sm:px-6"
   variants={parent}
   initial="hidden"
   whileInView="visible"
@@ -529,12 +532,13 @@ export default function ConsciousKarmaSections() {
       </div>
     </motion.div>
   </div>
-  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-gray-400 via-gray-600 to-gray-800 opacity-40" />
+  <div style={{ height: "250px" }} />
 </motion.section>
 
       {/* DISTINCTLY YOURS */}
       {/* DISTINCTLY YOURS */}
-<section className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6">
+<section className="relative bg-black flex flex-col items-center justify-center text-center px-4 sm:px-6">
+  {/* py-12 sm:py-16 md:py-20 lg:py-[72px]  */}
   <div className="container mx-auto">
     
     {/* YAHAN CHANGE HAI: Saare alag <p> hata kar ek single <p> mein daal diya */}
@@ -570,12 +574,13 @@ export default function ConsciousKarmaSections() {
       </a>
     </p>
   </div>
-  <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+  <div style={{ height: "250px" }} />
 </section>
 
       {/* WOVEN / EARTH CONNECTIONS SECTION */}
       <motion.section
-        className="relative bg-black flex flex-col items-center justify-center py-10 px-4 sm:px-6 text-center min-h-screen"
+        className="relative bg-black flex flex-col items-center justify-center px-4 sm:px-6 text-center"
+        // py-10
         variants={parent}
         initial="hidden"
         whileInView="visible"
@@ -620,12 +625,12 @@ export default function ConsciousKarmaSections() {
         </motion.div>
 
         {/* Bottom gradient line */}
-        <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+        <div style={{ height: "250px" }} />
       </motion.section >
 
       {/* DIGITAL AGE YANTRA + TYPING EFFECT INSTEAD OF DECRYPT */}
       <section
-        className="relative min-h-screen bg-black flex flex-col items-center justify-center text-center px-4"
+        className="relative bg-black flex flex-col items-center justify-center text-center px-4"
       >
         <div className="container mx-auto max-w-[760px] text-center">
 
@@ -642,7 +647,8 @@ export default function ConsciousKarmaSections() {
           <br />
 
           {/* TYPING EFFECT 4-LINES */}
-          <div className="mb-10">
+          <div className="">
+            {/* mb-10 */}
             <p className="text-white font-thin mb-0" style={commonTextStyle}>
               {journeyLines[0]}
             </p>
@@ -671,7 +677,7 @@ export default function ConsciousKarmaSections() {
           <br /><br />
           <a
             href="/consult"
-            className="text-[#ff914d] font-thin no-underline hover:opacity-80"
+            className="text-[#ff914d] font-thin no-underline hover:opacity-80 mb-0" 
             style={commonTextStyle}
           >
             <FormattedMessage id="digitalYantra.cta" />
@@ -686,14 +692,16 @@ export default function ConsciousKarmaSections() {
           
 
         </div>
+        <div style={{ height: "250px" }} />
       </section >
 
       {/* BLOGS */}
       {/* BLOGS */}
       <section
           id="blogs"
-          className="relative min-h-screen bg-black flex flex-col items-center justify-center py-12 sm:py-16 md:py-20 lg:py-[72px] px-4 sm:px-6 mt-0"
+          className="relative bg-black flex flex-col items-center justify-center  px-4 sm:px-6 mt-0"
          >
+          {/* py-12 sm:py-16 md:py-20 lg:py-[72px] */}
           <div className="container mx-auto text-center w-full">
             {/* Heading */}
             <h2 className="font-balgin text-white mb-8 sm:mb-10 md:mb-12 lg:mb-[40px]" style={{ fontSize: 'clamp(22px, 3vw, 28px)' }}>
@@ -860,7 +868,7 @@ export default function ConsciousKarmaSections() {
           </div>
   
           {/* Bottom gradient line */}
-          <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#bbb] via-[#444] to-[#222] opacity-50" />
+          <div style={{ height: "250px" }} />
         </section >
       {/* FINAL CTA */}
       <section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
@@ -888,7 +896,7 @@ export default function ConsciousKarmaSections() {
           </div>
 
           {/* Form Section */}
-          <div className="w-[300px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center justify-center">
+            <div className="w-[300px] sm:w-[300px] md:w-[340px] mt-10 sm:mt-[8px] flex flex-col items-center justify-center">
             <InlineInstantReportForm1
               ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
               onSubmit={openPrefilledModal}

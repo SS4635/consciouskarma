@@ -265,3 +265,22 @@
   position: fixed;
   z-index: 1001;
 }
+
+/* 🔥 HACK: Overwriting Tailwind's bg-black globally without touching components 🔥 */
+.bg-black {
+  background-color: #0b0b0b !important;
+}
+
+/* Optional: Agar koi section pure black #000 use kar raha hai inline style mein */
+section {
+  background-color: #0b0b0b !important;
+}
+
+body, 
+#root, 
+.bg-black, 
+[class*="bg-black"], 
+section, 
+footer {
+  background-color: #0b0b0b !important;
+}

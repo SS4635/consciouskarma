@@ -21,7 +21,7 @@ import LinkPage from "./LinkPage.jsx";
 import NotFound from "./NotFound.jsx";
 
 // ✅ Import your translations
-import { IntlProvider } from "./i18n/IntlProvider.jsx"; // 👈 yahan se saari text aayegi
+import { IntlProvider } from "./i18n/IntlProvider.jsx"; 
 import DashboardLayout from "./DashboardLayout.jsx";
 import SignupModal from "./SignupModal.jsx";
 import LoginModal from "./LoginModal.jsx";
@@ -32,6 +32,18 @@ import SingleBlog from "./SingleBlog.jsx";
 export default function App() {
   return (
     <IntlProvider>
+      
+      {/* 🔥 THE ULTIMATE FIX 🔥 
+          Ye CSS directly aapke pure app mein jahan bhi 'bg-black' likha hai, 
+          usko automatically #0b0b0b mein convert kar dega. 
+          Koi z-index nahi, koi content hide nahi hoga! */}
+      <style>{`
+        html, body, #root { background-color: #0b0b0b !important; }
+        .bg-black { background-color: #0b0b0b !important; }
+        section { background-color: #0b0b0b !important; }
+        footer { background-color: #0b0b0b !important; }
+      `}</style>
+
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />

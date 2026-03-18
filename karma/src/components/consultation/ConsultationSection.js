@@ -172,15 +172,7 @@ export default function ConsultationSection() {
         </div>
       </div>
 
-      {/* Gradient line separator */}
-      <div
-        className="position-absolute bottom-0 start-0 end-0"
-        style={{
-          height: "4px",
-          background: "linear-gradient(to right, #bbb, #444, #222)",
-          opacity: "0.5",
-        }}
-      />
+      <div style={{ height: "80px" }} />
     </section>
   );
 }

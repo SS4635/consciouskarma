@@ -48,6 +48,10 @@ module.exports = {
           '50%': { opacity: 0 },
         },
       },
+      colors: {
+        // 👇 Ye ek line Tailwind ke pure "black" ko #0b0b0b bana degi puri website ke liye!
+        black: '#0b0b0b',
+      }
     },
   },
   plugins: [],
