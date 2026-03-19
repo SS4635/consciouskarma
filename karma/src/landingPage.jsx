@@ -868,7 +868,7 @@ export default function ConsciousKarmaSections() {
           </div>
   
           {/* Bottom gradient line */}
-          <div style={{ height: "145px" }} />
+          {/* <div style={{ height: "145px" }} /> */}
         </section >
       {/* FINAL CTA */}
       <section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
