@@ -377,7 +377,7 @@ export default function ConsciousKarmaSections() {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" onClick={() => setMenuOpen(false)} />
         )}
         <CKNavbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} setShowSignup={setShowSignup} />
-        <div style={{ height: "250px" }} />
+        <div style={{ height: "145px" }} />
       </section>
 
 
@@ -482,12 +482,12 @@ export default function ConsciousKarmaSections() {
         </div>
 
         {/* Gradient line at bottom */}
-        <div style={{ height: "250px" }} />
+        <div style={{ height: "145px" }} />
       </section >
 
       {/* MOBILE NUMBER ENERGY FLOW SECTION */}
       {/* MOBILE NUMBER ENERGY FLOW SECTION */}
-      <div style={{ height: "250px" }} />
+      <div style={{ height: "145px" }} />
 <motion.section
   className="relative bg-black flex flex-col items-center justify-center  px-2 sm:px-6"
   variants={parent}
@@ -532,7 +532,7 @@ export default function ConsciousKarmaSections() {
       </div>
     </motion.div>
   </div>
-  <div style={{ height: "250px" }} />
+  <div style={{ height: "145px" }} />
 </motion.section>
 
       {/* DISTINCTLY YOURS */}
@@ -574,7 +574,7 @@ export default function ConsciousKarmaSections() {
       </a>
     </p>
   </div>
-  <div style={{ height: "250px" }} />
+  <div style={{ height: "145px" }} />
 </section>
 
       {/* WOVEN / EARTH CONNECTIONS SECTION */}
@@ -625,7 +625,7 @@ export default function ConsciousKarmaSections() {
         </motion.div>
 
         {/* Bottom gradient line */}
-        <div style={{ height: "250px" }} />
+        <div style={{ height: "145px" }} />
       </motion.section >
 
       {/* DIGITAL AGE YANTRA + TYPING EFFECT INSTEAD OF DECRYPT */}
@@ -692,7 +692,7 @@ export default function ConsciousKarmaSections() {
           
 
         </div>
-        <div style={{ height: "250px" }} />
+        <div style={{ height: "145px" }} />
       </section >
 
       {/* BLOGS */}
@@ -868,7 +868,7 @@ export default function ConsciousKarmaSections() {
           </div>
   
           {/* Bottom gradient line */}
-          <div style={{ height: "250px" }} />
+          <div style={{ height: "145px" }} />
         </section >
       {/* FINAL CTA */}
       <section className="relative min-h-screen bg-black flex flex-col items-center justify-center py-10 sm:py-12 md:py-[45px] px-4 sm:px-6" >
