@@ -641,28 +641,60 @@ export default function AdminDashboardLayout() {
             )}
 
             {/* ENERGY LOGS TAB */}
+            {/* ENERGY LOGS TAB */}
             {(activeTab === "energy-logs" || activeTab === "previous-links") && (
               <section className="ck-panel" style={{ background: "#111", border: "1px solid #333" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "15px" }}>
                   <h2 className="ck-panel-title" style={{ color: "#fff", margin: 0 }}>
-  {activeTab === "previous-links" 
-    ? "Archived Link Data" 
-    : `Traffic for Link: /${selectedRoute?.length > 4 ? selectedRoute.substring(0, 4) + '...' : selectedRoute}`
-  }
-</h2>
+                    {activeTab === "previous-links" 
+                      ? "Archived Link Data" 
+                      : `Traffic for Link: /${selectedRoute?.length > 4 ? selectedRoute.substring(0, 4) + '...' : selectedRoute}`
+                    }
+                  </h2>
+                  
+                  {/* Export Button */}
+                  <button 
+                    className="ck-btn-sm" 
+                    style={{ background: "#2ecc71", color: "#000", fontWeight: "bold", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: "6px" }} 
+                    onClick={exportToExcel}
+                  >
+                    📥 Export Excel
+                  </button>
                 </div>
+
+                {/* 🔥 NEW: Filters Wrapper containing Dropdown, Search, and Date Filters */}
                 <div style={{ display: "flex", gap: "15px", flexWrap: "wrap", alignItems: "center", marginBottom: "20px" }}>
+                  
                   {activeTab === "previous-links" && (
                      <select className="ck-input" style={{ width: "100%", maxWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={selectedRoute} onChange={(e) => {setSelectedRoute(e.target.value); setPage(1);}}>
-  <option value="" disabled>Select a previous link...</option>
-  {historicalLinks.map(link => (
-    <option key={link} value={link} title={link}>
-      {link?.length > 4 ? link.substring(0, 4) + '...' : link}
-    </option>
-  ))}
-</select>
+                      <option value="" disabled>Select a previous link...</option>
+                      {historicalLinks.map(link => (
+                        <option key={link} value={link} title={link}>
+                          {link?.length > 4 ? link.substring(0, 4) + '...' : link}
+                        </option>
+                      ))}
+                    </select>
                   )}
+
                   <input type="text" placeholder="Search Deep Across Forms..." className="ck-input" style={{ flex: 1, minWidth: "200px", background: "#222", color: "#fff", border: "1px solid #444" }} value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); setPage(1);}} />
+                  
+                  {/* 🔥 NEW: Same Date Filter from the other tabs */}
+                  <select className="ck-input" style={{ width: "150px", background: "#222", color: "#fff", border: "1px solid #444" }} value={filterDate} onChange={(e) => { setFilterDate(e.target.value); setPage(1); }}>
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="last7">Last 7 Days</option>
+                    <option value="last30">Last 30 Days</option>
+                    <option value="custom">Custom Range</option>
+                  </select>
+
+                  {/* 🔥 NEW: Custom Date Range Inputs */}
+                  {filterDate === "custom" && (
+                    <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                      <input type="date" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={startDate} onChange={(e) => { setStartDate(e.target.value); setPage(1); }} />
+                      <span style={{color: "#888"}}>to</span>
+                      <input type="date" className="ck-input" style={{ background: "#222", color: "#fff", border: "1px solid #444" }} value={endDate} onChange={(e) => { setEndDate(e.target.value); setPage(1); }} />
+                    </div>
+                  )}
                 </div>
 
                 {loading ? <div className="ck-empty-state" style={{color: "#ff914d"}}>Loading logs...</div> : displayedEnergyLogs.length === 0 ? (
@@ -682,15 +714,14 @@ export default function AdminDashboardLayout() {
                               <td style={{padding: "12px"}}>{d.toLocaleDateString('en-IN')}</td>
                               <td style={{padding: "12px", color: "#aaa"}}>{d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</td>
                               <td style={{padding: "12px", color: "#ff914d", fontWeight: "bold"}}>{log.mobileNumber}</td>
-                              {/* 🔥 Truncated to 4 chars with ... */}
-<td style={{padding: "12px", maxWidth: "150px"}} title={log.sourceLink}>
-  <span style={{background: "#333", padding: "4px 8px", borderRadius: "4px"}}>
-    {log.sourceLink?.length > 4 ? log.sourceLink.substring(0, 4) + '...' : (log.sourceLink || "-")}
-  </span>
-</td>
-<td style={{padding: "12px", color: "#aaa", maxWidth: "150px"}} title={log.routeHit}>
-  {log.routeHit?.length > 4 ? log.routeHit.substring(0, 4) + '...' : (log.routeHit || "-")}
-</td>
+                              <td style={{padding: "12px", maxWidth: "150px"}} title={log.sourceLink}>
+                                <span style={{background: "#333", padding: "4px 8px", borderRadius: "4px"}}>
+                                  {log.sourceLink?.length > 4 ? log.sourceLink.substring(0, 4) + '...' : (log.sourceLink || "-")}
+                                </span>
+                              </td>
+                              <td style={{padding: "12px", color: "#aaa", maxWidth: "150px"}} title={log.routeHit}>
+                                {log.routeHit?.length > 4 ? log.routeHit.substring(0, 4) + '...' : (log.routeHit || "-")}
+                              </td>
                               <td style={{padding: "12px"}}>{log.ipAddress}</td>
                             </tr>
                           )

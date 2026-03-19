@@ -563,10 +563,10 @@ export default function ConsciousKarmaSections() {
 />
     </p>
 
-    <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light text-[20px] md:text-[30px]">
+    <p className=" text-[#ff914d] font-light text-[20px] md:text-[30px]">
       <a
         href="/personalised-report"
-        className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
+        className="inline-block mt-16 sm:mt-16 md:mt-[60px]
           text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
       
       >
