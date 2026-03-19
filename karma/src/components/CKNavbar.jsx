@@ -100,7 +100,7 @@ export default function CKNavbar({
             aria-label={intl.formatMessage({ id: "app.aria.home" })}
           >
             <img
-              src="/Logo.png"
+              src="/logo.png"
               alt={intl.formatMessage({ id: "app.title" })}
               className="ck-header-logo mt-4"
               draggable={false}
