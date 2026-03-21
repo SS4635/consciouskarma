@@ -5,7 +5,7 @@ export function startMonitorCron({ sendEmail, processInstantReport }) {
   const timezone = process.env.CRON_TIMEZONE || "Asia/Kolkata";
 
   cron.schedule(
-    "0 17 * * *",
+    "0 5 * * *",
     async () => {
       console.log("🕘 Starting daily API monitor cron...");
       try {
