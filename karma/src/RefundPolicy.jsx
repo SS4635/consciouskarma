@@ -35,7 +35,6 @@ const RefundPolicy = () => {
           </p>
         </section>
 
-        <div className="rp-divider"></div>
 
         <section className="rp-section">
           <h2 className="rp-heading">Video Consultations</h2>
@@ -45,7 +44,6 @@ const RefundPolicy = () => {
           </p>
         </section>
 
-        <div className="rp-divider"></div>
 
         <section className="rp-section">
           <h2 className="rp-heading">Exceptional Circumstances</h2>
@@ -57,7 +55,6 @@ const RefundPolicy = () => {
           </p>
         </section>
 
-        <div className="rp-divider"></div>
 
         <section className="rp-section">
           <h2 className="rp-heading">Important Note</h2>
@@ -67,7 +64,6 @@ const RefundPolicy = () => {
           </p>
         </section>
 
-        <div className="rp-divider"></div>
 
         <section className="rp-section">
           <h2 className="rp-heading">Contact</h2>

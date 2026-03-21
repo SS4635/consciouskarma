@@ -24,7 +24,8 @@ body {
    (Visible on Mobile, Hidden on Desktop)
 */
 .ck-menu-btn {
-  display: none; /* Hidden on Desktop */
+  display: none;
+  /* Hidden on Desktop */
   background: transparent;
   border: none;
   cursor: pointer;
@@ -33,7 +34,8 @@ body {
   width: 28px;
   height: 20px;
   padding: 0;
-  z-index: 2000; /* Stays above other elements */
+  z-index: 2000;
+  /* Stays above other elements */
 }
 
 .ck-menu-btn .menu-line {
@@ -49,9 +51,11 @@ body {
 .ck-menu-btn.open .menu-line:nth-child(1) {
   transform: rotate(45deg) translate(5px, 6px);
 }
+
 .ck-menu-btn.open .menu-line:nth-child(2) {
   opacity: 0;
 }
+
 .ck-menu-btn.open .menu-line:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -6px);
 }
@@ -60,7 +64,7 @@ body {
 /* HEADER */
 .ck-navbar {
   background: #000;
-  height: 80px; 
+  height: 80px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -97,7 +101,8 @@ body {
 /* BODY WRAPPER (Sidebar + Main Content) */
 .dashboard-body {
   display: flex;
-  flex: 1; /* Pushes footer down and fills space */
+  flex: 1;
+  /* Pushes footer down and fills space */
   width: 100%;
 }
 
@@ -155,7 +160,8 @@ body {
 }
 
 .ck-nav-mobile-menu {
-  display: none; /* Hidden on desktop */
+  display: none;
+  /* Hidden on desktop */
   flex-direction: column;
   gap: 14px;
 }
@@ -297,7 +303,7 @@ body {
   width: 100%;
   border-collapse: collapse;
   background: #111;
-  min-width: 600px; 
+  min-width: 600px;
 }
 
 .ck-table th,
@@ -409,7 +415,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: auto; 
+  margin-top: auto;
   z-index: 10;
 }
 
@@ -530,6 +536,7 @@ body {
 .ck-btn-sm:hover {
   background: #ff9b56;
 }
+
 .ck-btn-sm:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -558,9 +565,10 @@ body {
    ------------------------------------- */
 
 @media (max-width: 768px) {
+
   /* Show hamburger button */
   .ck-menu-btn {
-    display: flex; 
+    display: flex;
   }
 
   /* Hide the dashboard header on mobile since CKNavbar is used */
@@ -576,19 +584,22 @@ body {
   /* Sidebar becomes off-canvas drawer */
   .ck-sidebar {
     position: fixed;
-    top: 60px; /* Below the CKNavbar (60px) */
+    top: 60px;
+    /* Below the CKNavbar (60px) */
     left: 0;
     width: 100%;
-    height: calc(100vh - 60px); /* Fill rest of screen */
-    transform: translateX(-100%); /* Hide left by default */
+    height: calc(100vh - 60px);
+    /* Fill rest of screen */
+    transform: translateX(-100%);
+    /* Hide left by default */
     border-right: none;
     border-bottom: 1px solid #222;
   }
-  
+
   /* Slide in when open */
   .ck-sidebar.open {
     transform: translateX(0);
-    box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+    box-shadow: 5px 0 20px rgba(0, 0, 0, 0.5);
   }
 
   /* Show mobile menu links */
@@ -606,6 +617,7 @@ body {
     padding: 0 16px;
     flex-direction: row;
   }
+
   .container-footer a {
     font-size: 0.85rem;
     white-space: nowrap;
@@ -617,6 +629,7 @@ body {
     flex-direction: column;
     align-items: stretch;
   }
+
   .ck-btn-sm {
     width: 100%;
   }

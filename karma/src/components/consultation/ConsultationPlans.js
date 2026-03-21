@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+function SubsectionSpacer() {
+  return <div style={{ height: "48px" }} />;
+}
+
 const API_BASE =  process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
 
 
@@ -130,7 +134,7 @@ useEffect(() => {
   };
 
   return (
-    <section className="bg-black text-white d-flex align-items-center py-5 font-arsenal">
+    <section className="bg-black text-white font-arsenal">
       <div className="container">
         <style>{`
           /* Thin Scrollbar */
@@ -171,7 +175,7 @@ useEffect(() => {
               position: absolute !important;
               right: 2rem !important;
               top: 1.75rem !important;
-              font-size: 2rem !important;
+              font-size: 25px !important;
               z-index: 10;
               line-height: 1;
             }
@@ -264,25 +268,27 @@ useEffect(() => {
         `}</style>
 
         {/* Header Section */}
-        <div className="text-center mb-5">
-          <h1 className="fw-light display-5 mb-3 font-arsenal">
+        <div className="text-center mb-0">
+          <h1 className="fw-light mb-0 font-arsenal" style={{ fontSize: "30px" }}>
             Consultation Plans
           </h1>
-          <p className="fs-5 fw-light mb-1 font-arsenal">
+          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "20px" }}>
             Each plan is designed for one mobile number.
           </p>
-          <p className="fs-6 fw-light font-arsenal">
+          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "20px" }}>
             The depth of analysis varies with your alignment needs.
           </p>
           {otpExtraText && (
-  <p className=" fw-light font-arsenal text-[14px] md:text-[18px] " style={{ color: '#ff914d', marginTop: '-10px' }}>
-    {otpExtraText}
-  </p>
-)}
+            <p className=" fw-light font-arsenal mb-0" style={{ color: '#ff914d', fontSize: "20px" }}>
+              {otpExtraText}
+            </p>
+          )}
         </div>
 
+        <SubsectionSpacer />
+
         {/* Plans Section */}
-        <div className="row justify-content-center g-4 mt-5">
+        <div className="row justify-content-center g-0">
           {plans.map((plan) => (
             <div key={plan.id} className="col-12 col-md-10 col-lg-7">
               <div
@@ -298,16 +304,16 @@ useEffect(() => {
                 }}
               >
                 <div className="d-flex justify-content-between flex-wrap mb-3">
-                  <h3 className="fw-normal fs-4 mb-2 text-start font-arsenal">
+                  <h3 className="fw-normal mb-2 text-start font-arsenal" style={{ fontSize: "25px" }}>
                     {plan.title}
                   </h3>
-                  <span className=" fs-4 font-arsenal">
+                  <span className="font-arsenal" style={{ fontSize: "25px" }}>
                     ₹{plan.price}
                   </span>
                 </div>
                 <p
                   className="mb-8 font-arsenal"
-                  style={{ whiteSpace: "pre-line", wordWrap: "break-word" }}
+                  style={{ whiteSpace: "pre-line", wordWrap: "break-word", fontSize: "20px" }}
                 >
                   {plan.description}
                 </p>

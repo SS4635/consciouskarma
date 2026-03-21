@@ -42,7 +42,6 @@ const [showLogin, setShowLogin] = useState(false);
           <p className="tc-text">Please read them carefully before proceeding.</p>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">2. Accountability</h2>
@@ -52,7 +51,6 @@ const [showLogin, setShowLogin] = useState(false);
           </p>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">3. Booking and Payments</h2>
@@ -76,7 +74,6 @@ const [showLogin, setShowLogin] = useState(false);
           </ul>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">4. Use of Information</h2>
@@ -102,7 +99,6 @@ const [showLogin, setShowLogin] = useState(false);
           </ol>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">5. Sharing of Information</h2>
@@ -122,7 +118,6 @@ const [showLogin, setShowLogin] = useState(false);
           </ul>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">6. Third-Party Links</h2>
@@ -136,7 +131,6 @@ const [showLogin, setShowLogin] = useState(false);
           </p>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">7. Prohibited Activities</h2>
@@ -156,7 +150,6 @@ const [showLogin, setShowLogin] = useState(false);
           </ol>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">8. Modifications</h2>
@@ -170,7 +163,6 @@ const [showLogin, setShowLogin] = useState(false);
           </p>
         </section>
 
-        <div className="tc-divider"></div>
 
         <section className="tc-section">
           <h2 className="tc-heading">9. Contact</h2>

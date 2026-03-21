@@ -9,11 +9,19 @@ import CKNavbar from "./components/CKNavbar.jsx";
 import SignupModal from "./SignupModal.jsx";
 import LoginModal from "./LoginModal.jsx";
 
+function SectionSpacer() {
+  return <div style={{ height: "145px", backgroundColor: "#0b0b0b" }} />;
+}
+
+function SubsectionSpacer() {
+  return <div style={{ height: "64px", backgroundColor: "#0b0b0b" }} />;
+}
+
 
 export default function Consult() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
-const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
 
   return (
@@ -240,46 +248,54 @@ const [showLogin, setShowLogin] = useState(false);
 
   `}</style>
 
-      
-      <CKNavbar
-  menuOpen={menuOpen}
-  setMenuOpen={setMenuOpen}
-  setShowSignup={setShowSignup}
-/>
 
+      <CKNavbar
+        menuOpen={menuOpen}
+        setMenuOpen={setMenuOpen}
+        setShowSignup={setShowSignup}
+      />
+
+
+      {/* 64px gap from navbar (60px header + 64px spacer) */}
+      <div style={{ height: "128px", backgroundColor: "#0b0b0b" }} />
 
       {/* Main Content */}
       <Home />
-  
+      <SectionSpacer />
 
       <ConsultationSection />
+      <SectionSpacer />
+
       <ConsultationPlans />
+      <SectionSpacer />
+
       {/* <ConsultationBookingForm /> */}
       <FaqAccordion />
-{(showSignup || showLogin) && (
-  <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
-    {showSignup && (
-      <SignupModal
-        onClose={() => setShowSignup(false)}
-        onSwitch={() => {
-          setShowSignup(false);
-          setShowLogin(true);
-        }}
-      />
-    )}
+      {(showSignup || showLogin) && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          {showSignup && (
+            <SignupModal
+              onClose={() => setShowSignup(false)}
+              onSwitch={() => {
+                setShowSignup(false);
+                setShowLogin(true);
+              }}
+            />
+          )}
 
-    {showLogin && (
-      <LoginModal
-        onClose={() => setShowLogin(false)}
-        onSwitch={() => {
-          setShowLogin(false);
-          setShowSignup(true);
-        }}
-      />
-    )}
-  </div>
-)}
+          {showLogin && (
+            <LoginModal
+              onClose={() => setShowLogin(false)}
+              onSwitch={() => {
+                setShowLogin(false);
+                setShowSignup(true);
+              }}
+            />
+          )}
+        </div>
+      )}
 
+      <SubsectionSpacer />
       {/* Footer */}
       <footer className="mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">

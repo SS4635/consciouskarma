@@ -71,9 +71,11 @@
 .ck-hamburger-open span:nth-child(1) {
   transform: translateY(10px) rotate(45deg);
 }
+
 .ck-hamburger-open span:nth-child(2) {
   opacity: 0;
 }
+
 .ck-hamburger-open span:nth-child(3) {
   transform: translateY(-10px) rotate(-45deg);
 }
@@ -91,7 +93,7 @@
 .ck-form-section {
   display: flex;
   justify-content: center;
-  padding: 90px 40px 80px;
+  padding: 0;
 }
 
 .ck-form-layout {
@@ -101,7 +103,7 @@
   margin: 0 auto;
   display: flex;
   gap: 210px;
-  margin-top: 20px;
+  margin-top: 0;
   align-items: center;
   justify-content: center;
 }
@@ -117,7 +119,7 @@
   font-weight: 300;
   line-height: 1.4;
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 0;
 }
 
 .ck-tags-wrap {
@@ -125,12 +127,13 @@
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  margin-bottom: 35px;
+  margin-bottom: 0;
 }
+
 .notPayble {
   margin-top: 16px !important;
   font-size: 14px !important;
-  color: #ff914d !important ;
+  color: #ff914d !important;
   display: flex !important;
   align-items: center !important;
   gap: 6px !important;
@@ -149,7 +152,7 @@
   font-weight: 300;
   line-height: 1.4;
   text-align: center;
-  margin-bottom: 25px;
+  margin-bottom: 0;
 }
 
 .ck-delivery-text-left {
@@ -170,10 +173,10 @@
   margin-top: -40px;
 }
 
-.ck-form-panel > .ck-form-heading {
+.ck-form-panel>.ck-form-heading {
   font-size: 26px;
   font-weight: 300;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
   text-align: left;
 }
 
@@ -202,7 +205,7 @@
 .ck-form-card,
 .ck-form-slide {
   /* Firefox */
-  scrollbar-width: thin; 
+  scrollbar-width: thin;
   scrollbar-color: #ff914d transparent;
 }
 
@@ -218,8 +221,10 @@
 /* Chrome, Edge, Safari */
 .ck-form-card::-webkit-scrollbar,
 .ck-form-slide::-webkit-scrollbar {
-  width: 2px !important;    /* Ultra thin vertical */
-  height: 2px !important;   /* Ultra thin horizontal */
+  width: 2px !important;
+  /* Ultra thin vertical */
+  height: 2px !important;
+  /* Ultra thin horizontal */
   background: transparent;
 }
 
@@ -236,7 +241,8 @@
 
 .ck-form-card::-webkit-scrollbar-track,
 .ck-form-slide::-webkit-scrollbar-track {
-  background: transparent; /* or #000 */
+  background: transparent;
+  /* or #000 */
 }
 
 /* Hide Arrows/Buttons */
@@ -392,7 +398,7 @@
   display: flex;
   width: 100%;
   background: #000;
-border-top: 2px solid #ff914d;
+  border-top: 2px solid #ff914d;
 }
 
 /* IMPORTANT: no borders here (borders cause corner cut) */
@@ -417,7 +423,7 @@ border-top: 2px solid #ff914d;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 21px;
+  font-size: 21px !important;
   border: none;
   background: grey;
   height: 48px;
@@ -425,7 +431,7 @@ border-top: 2px solid #ff914d;
 }
 
 .ck-proceed-btn:disabled {
- opacity: 0.5;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -441,19 +447,19 @@ border-top: 2px solid #ff914d;
    FAQ
    ========================= */
 .ck-faq-section {
-  padding: 24px 20px 10px;
+  padding: 0;
   text-align: center;
 }
 
 .ck-faq-title {
   font-size: 36px;
   font-weight: 300;
-  margin-bottom: 30px;
+  margin-bottom: 0;
 }
 
 .ck-faq-list {
   max-width: 470px;
-  margin: 0 auto 30px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
@@ -472,6 +478,7 @@ border-top: 2px solid #ff914d;
   .ck-price-pill {
     font-size: 16px;
   }
+
   .ck-proceed-btn {
     font-size: 20px;
   }
@@ -524,8 +531,9 @@ border-top: 2px solid #ff914d;
 .ck-faq-footer {
   font-size: 16px;
   opacity: 0.85;
-  margin-top: 15px;
+  margin-top: 0;
 }
+
 /* OTP heading centered */
 .otp-title {
   text-align: center !important;
@@ -543,6 +551,7 @@ border-top: 2px solid #ff914d;
   padding: 0 18px;
   transition: all 0.25s ease;
 }
+
 .otp-verified-btn.is-verified {
   background: #ff914d !important;
   border-color: #ff914d !important;
@@ -560,8 +569,10 @@ border-top: 2px solid #ff914d;
   color: #0b0b0b !important;
   font-weight: 800;
 }
+
 .otp-proceed-btn:disabled {
-  opacity: 0.55; /* keeps orange but shows disabled */
+  opacity: 0.55;
+  /* keeps orange but shows disabled */
   cursor: not-allowed;
 }
 
@@ -571,14 +582,16 @@ border-top: 2px solid #ff914d;
 @media (max-width: 1024px) {
   .ck-form-layout {
     flex-direction: column;
-    gap: 40px;
+    gap: 145px;
     align-items: center;
   }
+
   .ck-form-panel {
     max-width: 650px;
     margin-top: 0;
   }
-  .ck-form-panel > .ck-form-heading {
+
+  .ck-form-panel>.ck-form-heading {
     text-align: center;
   }
 }
@@ -587,9 +600,11 @@ border-top: 2px solid #ff914d;
   .ck-form-section {
     padding: 100px 20px 60px;
   }
+
   .ck-inline-inputs {
     flex-wrap: wrap;
   }
+
   .ck-form-inner {
     padding: 1.2rem;
   }

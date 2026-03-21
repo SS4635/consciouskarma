@@ -2,6 +2,10 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ElectricBorder from "../ElectricBorder.jsx";
 
+function SubsectionSpacer() {
+  return <div style={{ height: "48px" }} />;
+}
+
 const FeatureTag = ({ text }) => (
   <ElectricBorder
     color="#ff6b35"
@@ -18,27 +22,32 @@ const FeatureTag = ({ text }) => (
 
 export default function UniqueLifeDesign() {
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center bg-black text-white mt-5">
+    <div className="bg-black text-white">
       <div className="container text-center">
 
         {/* Header */}
-        <h1 className="fw-light unique-title mb-2">
+        <h1 className="fw-light unique-title mb-0">
           Every person is unique
         </h1>
-        <h2 className="fw-light unique-title mb-4">
+        <h2 className="fw-light unique-title mb-0">
           So are the needs of their life
         </h2>
 
+        <SubsectionSpacer />
+
+
         {/* Role text */}
-        <p className="fw-light unique-text mb-0">
+        <p className="fw-light unique-text mb-0 text-[20px]">
           A student, a professional, an entrepreneur,
         </p>
-        <p className="fw-light unique-text mb-0">
+        <p className="fw-light unique-text mb-0 text-[20px]">
           a homemaker, an elder –
         </p>
-        <p className="fw-light unique-text mb-5">
+        <p className="fw-light unique-text mb-0 text-[20px]">
           each role calls for different strengths.
         </p>
+
+        <SubsectionSpacer />
 
         {/* FEATURES */}
         <div className="unique-features-wrapper mx-auto">
@@ -66,15 +75,17 @@ export default function UniqueLifeDesign() {
 
         </div>
 
+        <SubsectionSpacer />
+
         {/* Footer text */}
-        <div className="mt-5">
-          <p className="fw-light unique-text mb-1">
+        <div className="">
+          <p className="fw-light unique-text mb-0 text-[20px]">
             Consciously chosen,
           </p>
-          <p className="fw-light unique-text mb-1">
+          <p className="fw-light unique-text mb-0 text-[20px]">
             A mobile number can amplify good phases,
           </p>
-          <p className="fw-light unique-text">
+          <p className="fw-light unique-text mb-0 text-[20px]">
             and ease the path in times of challenge.
           </p>
         </div>

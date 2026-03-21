@@ -38,8 +38,7 @@ const ShippingPolicy = () => {
           </p>
         </div>
 
-        <div className="sp-divider"></div>
-
+  
         <div className="sp-section">
           <h2 className="sp-heading">Delivery Time</h2>
           <div className="">
@@ -52,8 +51,7 @@ const ShippingPolicy = () => {
           </div>
         </div>
 
-        <div className="sp-divider"></div>
-
+  
         <div className="sp-section">
           <h2 className="sp-heading">If You Don't Receive Your Instant Report</h2>
           <p>
@@ -62,8 +60,7 @@ const ShippingPolicy = () => {
           </p>
         </div>
 
-        <div className="sp-divider"></div>
-
+  
         <div className="sp-section">
           <h2 className="sp-heading">Incorrect Email Entered</h2>
           <p>
@@ -73,8 +70,7 @@ const ShippingPolicy = () => {
           </p>
         </div>
 
-        <div className="sp-divider"></div>
-
+  
         <div className="sp-section">
           <h2 className="sp-heading">Non-Delivery</h2>
           <p>
@@ -83,8 +79,7 @@ const ShippingPolicy = () => {
           </p>
         </div>
 
-        <div className="sp-divider"></div>
-
+  
         <div className="sp-section">
           <h2 className="sp-heading">Refunds</h2>
           <p>

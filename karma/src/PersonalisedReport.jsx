@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom"; 
+import ReactDOM from "react-dom";
 import Swal from "sweetalert2";
 import "./PersonalizedReport.css";
-import { useEffect,axios } from "react";
+import { useEffect, axios } from "react";
 // Components
 import ElectricBorder from "./ElectricBorder";
 import GeneralInformationForm from "./components/consultation/forms/GeneralInformationForm";
@@ -14,7 +14,15 @@ import LoginModal from "./LoginModal";
 import CKNavbar from "./components/CKNavbar";
 
 // Constants
-import { COUNTRY_CODES } from "./components/constants/countryCodes"; 
+import { COUNTRY_CODES } from "./components/constants/countryCodes";
+
+function SectionSpacer() {
+  return <div style={{ height: "145px", backgroundColor: "#0b0b0b" }} />;
+}
+
+function SubsectionSpacer() {
+  return <div style={{ height: "48px", backgroundColor: "#0b0b0b" }} />;
+}
 
 // =======================
 // ENV CONFIG
@@ -83,42 +91,42 @@ const ConsciousKarmaPage = () => {
 
   const [otpExtraText, setOtpExtraText] = useState("");
 
- useEffect(() => {
-  async function loadOtpText() {
-    try {
-      const res = await fetch(`${API_BASE}/api/config/otp-text`);
-      const data = await res.json();
-      setOtpExtraText(data.text || "");
-    } catch (err) {
-      console.error("Failed to load OTP text");
+  useEffect(() => {
+    async function loadOtpText() {
+      try {
+        const res = await fetch(`${API_BASE}/api/config/otp-text`);
+        const data = await res.json();
+        setOtpExtraText(data.text || "");
+      } catch (err) {
+        console.error("Failed to load OTP text");
+      }
     }
-  }
-  async function loadPrice() {
-    console.log("Loading personalized report base price from server...");
-    try {
-      const res = await fetch(
-        `${API_BASE}/api/config/personalizereportprice`
-      );
+    async function loadPrice() {
+      console.log("Loading personalized report base price from server...");
+      try {
+        const res = await fetch(
+          `${API_BASE}/api/config/personalizereportprice`
+        );
 
-      const data = await res.json(); // ✅ IMPORTANT
-      console.log("Fetched personalized report base price:", data);
+        const data = await res.json(); // ✅ IMPORTANT
+        console.log("Fetched personalized report base price:", data);
 
-      const raw = Number(data?.price);
-      const safePrice =
-        Number.isFinite(raw) && raw > 0 ? raw : 1;
+        const raw = Number(data?.price);
+        const safePrice =
+          Number.isFinite(raw) && raw > 0 ? raw : 1;
 
-      setBASE_PRICE(safePrice ); // convert ₹ → paise
-    } catch (err) {
-      console.error(
-        "Failed to load personalized report base price, using default.",
-        err
-      );
-      
+        setBASE_PRICE(safePrice); // convert ₹ → paise
+      } catch (err) {
+        console.error(
+          "Failed to load personalized report base price, using default.",
+          err
+        );
+
+      }
     }
-  }
-loadOtpText();
-  loadPrice();
-}, []);
+    loadOtpText();
+    loadPrice();
+  }, []);
 
   // ----- PRICE -----
   const paidCount = 1 + parallels.length; // primary + each parallel
@@ -280,13 +288,13 @@ loadOtpText();
 
 
   const NotPayableNote = () => (
-  <div
-   className="notpayble" style={{ marginTop: '16px', fontSize: '14px', color: '#ff914d', display: 'flex', alignItems: 'center', gap: '6px', }}
-  >
-    
-    <span className="notpayble">* Every parallel number is charged at the same rate of primary number.</span>
-  </div>
-);
+    <div
+      className="notpayble" style={{ marginTop: '16px', fontSize: '14px', color: '#ff914d', display: 'flex', alignItems: 'center', gap: '6px', }}
+    >
+
+      <span className="notpayble">* Every parallel number is charged at the same rate of primary number.</span>
+    </div>
+  );
 
 
 
@@ -609,84 +617,84 @@ loadOtpText();
 
     new window.Razorpay(options).open();
   };
-// States mein ye add karein
-const [errorMsg, setErrorMsg] = useState("");
-const [showError, setShowError] = useState(false);
+  // States mein ye add karein
+  const [errorMsg, setErrorMsg] = useState("");
+  const [showError, setShowError] = useState(false);
 
-// Error Overlay Design (Success ki tarah)
-const errorOverlay = showError ? (
-  <div
-    style={{
-      position: 'fixed',
-      inset: 0,
-      background: 'rgba(0,0,0,0.85)',
-      zIndex: 999999,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    }}
-    onClick={() => setShowError(false)}
-  >
+  // Error Overlay Design (Success ki tarah)
+  const errorOverlay = showError ? (
     <div
       style={{
-        animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+        position: 'fixed',
+        inset: 0,
+        background: 'rgba(0,0,0,0.85)',
+        zIndex: 999999,
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
-        background: '#000',
-        border: '2px solid #ff914d', // Red border for error
-        borderRadius: '16px',
-        padding: '32px 28px',
-        width: '90%',
-        maxWidth: '420px',
-        textAlign: 'center',
-        position: 'relative'
+        justifyContent: 'center',
       }}
-      onClick={e => e.stopPropagation()}
+      onClick={() => setShowError(false)}
     >
-      {/* Error Icon (Cross) */}
-      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-        <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
-        <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      
-      <h2 style={{color: '#fff', fontSize: '22px', marginBottom: '10px'}}>Missing Information</h2>
-      <p style={{color: '#ccc', fontSize: '16px', lineHeight: '1.5'}}>{errorMsg}</p>
-      
-      <button
+      <div
         style={{
-          marginTop: '20px',
-          background: '#ff914d',
-          color: '#fff',
-          border: 'none',
-          padding: '10px 25px',
-          borderRadius: '8px',
-          cursor: 'pointer',
-          fontWeight: 'bold'
+          animation: "popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          background: '#000',
+          border: '2px solid #ff914d', // Red border for error
+          borderRadius: '16px',
+          padding: '32px 28px',
+          width: '90%',
+          maxWidth: '420px',
+          textAlign: 'center',
+          position: 'relative'
         }}
-        onClick={() => setShowError(false)}
+        onClick={e => e.stopPropagation()}
       >
-        Got it
-      </button>
+        {/* Error Icon (Cross) */}
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: '20px' }}>
+          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent" />
+          <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+
+        <h2 style={{ color: '#fff', fontSize: '22px', marginBottom: '10px' }}>Missing Information</h2>
+        <p style={{ color: '#ccc', fontSize: '16px', lineHeight: '1.5' }}>{errorMsg}</p>
+
+        <button
+          style={{
+            marginTop: '20px',
+            background: '#ff914d',
+            color: '#fff',
+            border: 'none',
+            padding: '10px 25px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            fontWeight: 'bold'
+          }}
+          onClick={() => setShowError(false)}
+        >
+          Got it
+        </button>
+      </div>
     </div>
-  </div>
-) : null;
+  ) : null;
   const handleProceed = async () => {
     let err = null;
 
     // Validation checks
     err = validateGeneralInfo() || validatePrimary() || validateParallels() || validatePreviousNumbers();
-    
+
     if (err) {
-        setErrorMsg(err);
-        setShowError(true);
-        return; // Aage nahi badhne dega
+      setErrorMsg(err);
+      setShowError(true);
+      return; // Aage nahi badhne dega
     }
 
     if (!allOtpsVerified) {
-        setErrorMsg("Please verify all OTPs before proceeding to payment.");
-        setShowError(true);
-        return;
+      setErrorMsg("Please verify all OTPs before proceeding to payment.");
+      setShowError(true);
+      return;
     }
 
     // Agar yahan tak code aaya, matlab sab sahi hai - Proceed with API/Razorpay
@@ -713,24 +721,24 @@ const errorOverlay = showError ? (
       if (createData.free || !createData.order) {
         // Free report flow
         try {
-            const startRes = await fetch(`${API_BASE}/api/report/start`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ orderId: localOrderId }),
-            });
-            const startData = await startRes.json();
-            if (!startData.ok) throw new Error(startData.message || "Failed to trigger report");
+          const startRes = await fetch(`${API_BASE}/api/report/start`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: localOrderId }),
+          });
+          const startData = await startRes.json();
+          if (!startData.ok) throw new Error(startData.message || "Failed to trigger report");
 
-            setIsGeneratingReport(false); 
+          setIsGeneratingReport(false);
 
-            // SUCCESS HANDLER
-            setShowSuccess(true);
-            // No auto-redirect. User must close overlay.
+          // SUCCESS HANDLER
+          setShowSuccess(true);
+          // No auto-redirect. User must close overlay.
 
-            return;
-        } catch(freeErr) {
-            setIsGeneratingReport(false);
-            throw freeErr;
+          return;
+        } catch (freeErr) {
+          setIsGeneratingReport(false);
+          throw freeErr;
         }
       }
 
@@ -824,12 +832,12 @@ const errorOverlay = showError ? (
         }}
         onClick={e => e.stopPropagation()}
       >
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
-          <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: '20px' }}>
+          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent" />
+          <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
-        <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success! <br/>Your consultation is booked.<br/>
-We will be in touch soon.</h2>
+        <h2 style={{ color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center' }}>Success! <br />Your consultation is booked.<br />
+          We will be in touch soon.</h2>
         <button
           style={{
             position: 'absolute',
@@ -960,15 +968,20 @@ We will be in touch soon.</h2>
       />
 
       <main>
+        {/* 64px gap from navbar (60px header + 64px spacer) */}
+        <div style={{ height: "128px", backgroundColor: "#0b0b0b" }} />
+
         <section className="ck-form-section">
           {/* ... Rest of your render logic remains exactly the same ... */}
           <div className="ck-form-layout">
             {/* LEFT HERO */}
-          
-            <div className="ck-hero mt-4 md:mt-0">
-              <p className="ck-hero-text text-[23px] md:text-[24px]">
+
+            <div className="ck-hero">
+              <p className="ck-hero-text text-[25px]">
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
               </p>
+
+              <SubsectionSpacer />
 
               <div className="mx-auto max-w-[900px] px-3">
                 <div className="ck-tags-wrap space-y-3">
@@ -984,7 +997,7 @@ We will be in touch soon.</h2>
                           style={{ borderRadius: 16 }}
                         >
                           <div className="flex items-center h-[26px] sm:h-[34px]">
-                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] sm:text-[18px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
+                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
                               {text}
                             </p>
                           </div>
@@ -995,52 +1008,56 @@ We will be in touch soon.</h2>
                 </div>
               </div>
 
+              <SubsectionSpacer />
+
               <p className="ck-hero-sub text-[25px] md:text-[24px]">
                 Every Mobile Number tells a story.
                 <br />
                 This is YOURS.
               </p>
 
-              <p className="ck-delivery-text-left text-[17px] md:text-[15px]">
+              <SubsectionSpacer />
+
+              <p className="ck-delivery-text-left text-[17px] md:text-[15px] !m-0">
                 <>
                   Delivery within 5–7 days
                   <br />
                   Requires mobile number OTP verification
                   {otpExtraText && (
-  <>
-    <br />
-    <span className="text-[#ff914d] text-[14px] md:text-[18px]">
-      {otpExtraText}
-    </span>
-  </>
-)}
+                    <>
+                      <br />
+                      <span className="text-[#ff914d] text-[14px] md:text-[18px]">
+                        {otpExtraText}
+                      </span>
+                    </>
+                  )}
                 </>
               </p>
             </div>
 
             {/* RIGHT FORM */}
-            <div className="ck-form-panel">
+            <div className="ck-form-panel flex gap-1">
               <div className="ck-form-heading" style={{
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-  }}>  Book Personalized Report</div>
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+              }}>  Book Personalized Report</div>
 
               <div className="ck-form-card">
 
-  {/* 👇 ONLY THIS PART SCROLLS */}
-  <div className="ck-form-scroll">
-    <div className="ck-form-slider">
-      <div
-        className="ck-form-track"
-        style={{ transform: `translateX(-${step * 100}%)` }}
-      >
-        {/* ALL SLIDES SAME AS BEFORE */}
-        {/* Slide 0 */}
+                {/* 👇 ONLY THIS PART SCROLLS */}
+                <div className="ck-form-scroll">
+                  <div className="ck-form-slider">
+                    <div
+                      className="ck-form-track"
+                      style={{ transform: `translateX(-${step * 100}%)` }}
+                    >
+                      {/* ALL SLIDES SAME AS BEFORE */}
+                      {/* Slide 0 */}
                       <div className="ck-form-slide">
                         <div className="ck-form-inner">
-                          
+
                           <GeneralInformationForm
                             data={getGeneralFormData()}
                             onChange={handleGeneralFormChange}
@@ -1164,10 +1181,10 @@ We will be in touch soon.</h2>
                                       {status?.verified
                                         ? "Verified"
                                         : status?.sent
-                                        ? status.cooldown > 0
-                                          ? `Resend in ${status.cooldown}s`
-                                          : "Resend OTP"
-                                        : "Send OTP"}
+                                          ? status.cooldown > 0
+                                            ? `Resend in ${status.cooldown}s`
+                                            : "Resend OTP"
+                                          : "Send OTP"}
                                     </button>
                                   </div>
                                 </div>
@@ -1231,25 +1248,28 @@ We will be in touch soon.</h2>
                   <div className="ck-price-pill">{priceText}</div>
 
                   {/* // Button JSX update */}
-<button
-  className="ck-proceed-btn"
-  onClick={handleProceed}
-  disabled={isGeneratingReport}
->
-  {isGeneratingReport ? "Processing..." : "Proceed"}
-</button>
+                  <button
+                    className="ck-proceed-btn"
+                    onClick={handleProceed}
+                    disabled={isGeneratingReport}
+                  >
+                    {isGeneratingReport ? "Processing..." : "Proceed"}
+                  </button>
 
-{/* // Render mein portal add karein */}
-{typeof document !== 'undefined' && ReactDOM.createPortal(errorOverlay, document.body)}
+                  {/* // Render mein portal add karein */}
+                  {typeof document !== 'undefined' && ReactDOM.createPortal(errorOverlay, document.body)}
                 </div>
               </div>
             </div>
           </div>
         </section>
 
+        <SectionSpacer />
+
         {/* FAQS */}
         <section className="ck-faq-section">
           <div className="ck-faq-title">FAQs</div>
+          <SubsectionSpacer />
           <div className="ck-faq-list">
             {faqs.map((faq, index) => {
               const questionText = faq.question.replace(/^\d+\s*[-–]\s*/, "");
@@ -1274,8 +1294,9 @@ We will be in touch soon.</h2>
               );
             })}
           </div>
+          <SubsectionSpacer />
 
-          <div className="ck-faq-footer pt-2" style={{ marginBottom: "1rem" }}>
+          <div className="ck-faq-footer">
             For any questions, write to us at hello@consciouskarma.co
           </div>
         </section>
@@ -1305,8 +1326,11 @@ We will be in touch soon.</h2>
           </div>
         )}
 
+        <SubsectionSpacer />
+
         {/* FOOTER */}
-        <footer className="w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
+        {/* <SectionSpacer /> */}
+        <footer className="w-full bg-black mt-2 text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
           <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
               <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline">

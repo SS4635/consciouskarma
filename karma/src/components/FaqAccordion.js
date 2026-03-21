@@ -189,6 +189,10 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './Faq.css'; // Import the CSS file
+
+function SubsectionSpacer() {
+  return <div style={{ height: "64px" }} />;
+}
 export default function FaqAccordion() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
@@ -249,8 +253,9 @@ export default function FaqAccordion() {
   };
 
   return (
-    <section className="ck-faq-section text-center">
+    <section className="ck-faq-section text-center" style={{ padding: 0 }}>
       <div className="ck-faq-title">Faqs</div>
+      <SubsectionSpacer />
       <div className="ck-faq-list " >
         {faqs.map((faq, index) => {
           const questionText = faq.question.replace(/^[0-9]+\s*[-–]\s*/, "");
@@ -282,7 +287,8 @@ export default function FaqAccordion() {
           );
         })}
       </div>
-      <div className="ck-faq-footer py-1 pb-2">
+      <SubsectionSpacer />
+      <div className="ck-faq-footer">
         For any questions, write to us at hello@consciouskarma.co
       </div>
 

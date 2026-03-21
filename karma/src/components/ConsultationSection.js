@@ -71,7 +71,7 @@ export default function ConsultationSection() {
 
           {/* CTA */}
           <div className="mt-4">
-            <h2 className="fw-light mb-1" style={{ color: "#ff6b35" }}>
+            <h2 className="fw-light mb-1 !text-[20px]" style={{ color: "#ff6b35" }}>
               Change your number
             </h2>
             <h2 className="fw-light" style={{ color: "#ff6b35" }}>

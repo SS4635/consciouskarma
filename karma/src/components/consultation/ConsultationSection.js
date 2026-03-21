@@ -1,12 +1,16 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+function SubsectionSpacer() {
+  return <div style={{ height: "48px" }} />;
+}
+
 export default function ConsultationSection() {
   return (
-    <section className="position-relative d-flex align-items-center justify-content-center bg-black text-white font-arsenal">
+    <section className="position-relative bg-black text-white font-arsenal">
       <div
         className="container"
-        style={{ paddingTop: "10rem", paddingBottom: "10rem" }}
+        style={{ padding: 0 }}
       >
         <div className="text-center mx-auto" style={{ maxWidth: "800px" }}>
           
@@ -15,24 +19,28 @@ export default function ConsultationSection() {
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}
           >
-            <p className="fs-4 fs-md-4 fw-light text-[23px] mb-3 font-arsenal">
+            <p className="fw-light !text-[20px] mb-0 font-arsenal">
               At Conscious Karma, we understand what an
               <br className="d-none d-md-block" />
               aligned number can bring to a person's life.
-              <br className="d-none d-md-block" />
             </p>
-            <p className="fs-4 fs-md-4 fw-light mb-4 mt-4 font-arsenal">
+
+            <SubsectionSpacer />
+
+            <p className="fw-light !text-[20px] mb-0 mt-0 font-arsenal">
               {" "}
               Our consultation is designed to help you find &nbsp;
               <br className="d-none d-md-block" />
               that alignment –
             </p>
 
+            <SubsectionSpacer />
+
             <style>
               {`
                 .consultation-text {
                   white-space: normal;
-                  font-size: 1.75rem;
+                  font-size: 20px;
                 }
                 
                 .consultation-icon {
@@ -53,7 +61,7 @@ export default function ConsultationSection() {
                 /* Mobile tweaks */
                 @media (max-width: 768px) {
                   .consultation-text {
-                    font-size: 1.5rem !important;
+                    font-size: 20px !important;
                     padding-left: 1rem !important;
                     padding-right: 1rem !important;
                   }
@@ -68,7 +76,7 @@ export default function ConsultationSection() {
                 
                 @media (max-width: 576px) {
                   .consultation-text {
-                    font-size: 1.35rem !important;
+                    font-size: 20px !important;
                     padding-left: 0.75rem !important;
                     padding-right: 0.75rem !important;
                   }
@@ -94,7 +102,7 @@ export default function ConsultationSection() {
                   style={{ flexShrink: 0 }}
                 ></i>
                 <span
-                  className="fw-light font-arsenal consultation-text"
+                  className="font-arsenal consultation-text"
                   style={{
                     color: "#ff6b35",
                     lineHeight: "1.3",
@@ -157,22 +165,22 @@ export default function ConsultationSection() {
             </div>
           </div>
 
+          <SubsectionSpacer />
+
           {/* CTA Text */}
-          <div className="mt-5">
+          <div className="">
             <h2
-              className="fw-light mb-1 font-arsenal"
-              style={{ color: "white" }}
+              className="fw-light mb-0 font-arsenal"
+              style={{ color: "white", fontSize: "20px" }}
             >
               Change your number
             </h2>
-            <h2 className="fw-light font-arsenal" style={{ color: "white" }}>
+            <h2 className="fw-light font-arsenal mb-0" style={{ color: "white", fontSize: "20px" }}>
               Change your destiny
             </h2>
           </div>
         </div>
       </div>
-
-      <div style={{ height: "80px" }} />
     </section>
   );
 }
