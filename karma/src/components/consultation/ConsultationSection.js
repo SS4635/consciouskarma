@@ -19,7 +19,7 @@ export default function ConsultationSection() {
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}
           >
-            <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+            <p className="fw-light mb-0 font-arsenal px-2" style={{ fontSize: "clamp(17px, 4vw, 30px)" }}>
               At Conscious Karma, we understand what an
               <br className="d-none d-md-block" />
               aligned number can bring to a person's life.
@@ -27,7 +27,7 @@ export default function ConsultationSection() {
 
             <SubsectionSpacer />
 
-            <p className="fw-light mb-0 mt-0 font-arsenal" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+            <p className="fw-light mb-0 mt-0 font-arsenal px-2" style={{ fontSize: "clamp(17px, 4vw, 30px)" }}>
               {" "}
               Our consultation is designed to help you find &nbsp;
               <br className="d-none d-md-block" />

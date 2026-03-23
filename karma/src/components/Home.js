@@ -1,6 +1,7 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import ElectricBorder from "../ElectricBorder.jsx";
+import { motion } from "framer-motion";
 
 function SubsectionSpacer() {
   return <div style={{ height: "48px" }} />;
@@ -50,30 +51,46 @@ export default function UniqueLifeDesign() {
         <SubsectionSpacer />
 
         {/* FEATURES */}
-        <div className="unique-features-wrapper mx-auto">
+       <div className="unique-features-wrapper mx-auto overflow-hidden"> {/* Parent में बस overflow-hidden डाल देना */}
 
-          {/* Row 1 – 3 */}
-          <div className="unique-feature-row row-3">
-            <FeatureTag text="Reducing stress" />
-            <FeatureTag text="Closing clients" />
-            <FeatureTag text="Love & support" />
-          </div>
+  {/* Row 1 – Left से घुसेगा */}
+  <motion.div 
+    initial={{ x: -100, opacity: 0 }}
+    whileInView={{ x: 0, opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.8, ease: "easeOut" }}
+    className="unique-feature-row row-3"
+  >
+    <FeatureTag text="Reducing stress" />
+    <FeatureTag text="Closing clients" />
+    <FeatureTag text="Love & support" />
+  </motion.div>
 
-          
+  {/* Row 2 – Right से घुसेगा */}
+  <motion.div 
+    initial={{ x: 100, opacity: 0 }}
+    whileInView={{ x: 0, opacity: 1 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.8, ease: "easeOut" }}
+    className="unique-feature-row row-2"
+  >
+    <FeatureTag text="Discipline & focus" />
+    <FeatureTag text="Unlocking motivation" />
+  </motion.div>
 
-          {/* Row 3 – 2 */}
-          <div className="unique-feature-row row-2">
-            <FeatureTag text="Discipline & focus" />
-            <FeatureTag text="Unlocking motivation" />
-          </div>
+  {/* Row 3 – Left से घुसेगा */}
+  <motion.div 
+    initial={{ x: -100, opacity: 0 }}
+    whileInView={{ x: 0, opacity: 1 }}
+    viewport={{ once: true }}    
+    transition={{ duration: 0.8, ease: "easeOut" }}
+    className="unique-feature-row row-2"
+  >
+    <FeatureTag text="Recognition & success" />
+    <FeatureTag text="Growth & confidence" />
+  </motion.div>
 
-          {/* Row 4 – 2 */}
-          <div className="unique-feature-row row-2">
-            <FeatureTag text="Recognition & success" />
-            <FeatureTag text="Growth & confidence" />
-          </div>
-
-        </div>
+</div>
 
         <SubsectionSpacer />
 
