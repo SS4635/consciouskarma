@@ -977,7 +977,7 @@ const ConsciousKarmaPage = () => {
             {/* LEFT HERO */}
 
             <div className="ck-hero">
-              <p className="ck-hero-text text-[25px] sm:text-[30px]" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+              <p className="ck-hero-text text-[25px] sm:text-[30px]" style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
               </p>
 
