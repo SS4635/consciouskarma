@@ -26,10 +26,10 @@ export default function UniqueLifeDesign() {
       <div className="container text-center">
 
         {/* Header */}
-        <h1 className="fw-light unique-title mb-0 font-balgin" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+        <h1 className="fw-light unique-title mb-0 " style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
           Every person is unique
         </h1>
-        <h2 className="fw-light unique-title mb-0 font-balgin" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+        <h2 className="fw-light unique-title mb-0 " style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
           So are the needs of their life
         </h2>
 

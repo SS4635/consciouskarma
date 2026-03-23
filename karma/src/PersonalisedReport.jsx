@@ -997,7 +997,7 @@ const ConsciousKarmaPage = () => {
                           style={{ borderRadius: 16 }}
                         >
                           <div className="flex items-center h-[26px] sm:h-[34px]">
-                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
+                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] md:text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
                               {text}
                             </p>
                           </div>

@@ -765,7 +765,7 @@ export default function ConsciousKarmaSections() {
         <div className="container mx-auto text-center w-full">
           <h2
             className="font-balgin text-white !m-0"
-            style={{ fontSize: "clamp(22px, 3vw, 28px)" }}
+            style={{ fontSize: "clamp(25px, 3vw, 28px)" }}
           >
             <FormattedMessage id="blogs.title" />
           </h2>

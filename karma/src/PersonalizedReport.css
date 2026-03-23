@@ -115,7 +115,7 @@
 }
 
 .ck-hero-text {
-  font-family: var(--font-display);
+  font-family: arsenal;
   font-weight: 300;
   line-height: 1.4;
   text-align: center;
@@ -148,7 +148,7 @@
 }
 
 .ck-hero-sub {
-  font-family: var(--font-display);
+  font-family: Arsenal;
   font-weight: 300;
   line-height: 1.4;
   text-align: center;
@@ -450,7 +450,7 @@
 
 .ck-faq-title {
   font-family: var(--font-display);
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 300;
   margin-bottom: 0;
 }
@@ -473,7 +473,7 @@
 
 @media (max-width: 500px) {
   .ck-price-pill {
-    font-size: 16px;
+    font-size: 21px;
   }
 
   .ck-proceed-btn {
@@ -512,12 +512,12 @@
 }
 
 .faq-question {
-  font-size: 18px;
+  font-size: 22px;
 }
 
 .faq-answer {
   padding-left: 15px;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 1.6;
   opacity: 0.85;
   margin-top: 10px;
