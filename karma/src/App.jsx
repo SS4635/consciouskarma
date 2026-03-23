@@ -33,57 +33,120 @@ export default function App() {
   return (
     <IntlProvider>
       
-      {/* 🔥 THE ULTIMATE FIX 🔥 
-          Ye CSS directly aapke pure app mein jahan bhi 'bg-black' likha hai, 
-          usko automatically #0b0b0b mein convert kar dega. 
-          Koi z-index nahi, koi content hide nahi hoga! */}
+      {/* CSS For Background and Animations */}
       <style>{`
-        html, body, #root { background-color: #0b0b0b !important; }
-        .bg-black { background-color: #0b0b0b !important; }
-        section { background-color: #0b0b0b !important; }
-        footer { background-color: #0b0b0b !important; }
+        html, body, #root { 
+          background-color: #0b0b0b !important; 
+          margin: 0;
+          padding: 0;
+          min-height: 100vh;
+          width: 100%;
+        }
+
+        /* Makes sections transparent so stars show through */
+        .bg-black, section, footer, #root > div:not(.stars-container) { 
+          background-color: transparent !important; 
+        }
+
+        .stars-container {
+          position: fixed;
+          top: -5%;
+          left: -5%;
+          width: 110vw;
+          height: 110vh;
+          z-index: 0;
+          pointer-events: none;
+          background-color: #0b0b0b;
+          overflow: hidden;
+        }
+
+        .content-wrapper {
+          position: relative;
+          z-index: 1; /* Sits on top of stars */
+        }
+
+        .star {
+          position: absolute;
+          background: white;
+          border-radius: 50%;
+          box-shadow: 0 0 4px rgba(255, 255, 255, 0.6);
+          animation: 
+            twinkle var(--duration) infinite ease-in-out,
+            drift var(--move-duration) infinite linear;
+        }
+
+        @keyframes twinkle {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.9; transform: scale(1.3); }
+        }
+@keyframes drift {
+          0% { transform: translate(0, 0); }
+          100% { transform: translate(200px, -200px); } 
+        }
       `}</style>
 
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/signup" element={<SignupModal />} />
-          <Route
-            path="/link"
-            element={
-              <LinkGuard>
-                <LinkPage />
-              </LinkGuard>
-            }
+      {/* 1. Background Layer (Stars) */}
+      <div className="stars-container">
+        {/* Changed Array size from 130 to 33 (approx 25%) */}
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="star"
+            style={{
+              top: `${Math.random() * 100}%`,
+              left: `${Math.random() * 100}%`,
+              width: `${1 + Math.random() * 2}px`,
+              height: `${1 + Math.random() * 2}px`,
+              "--duration": `${2.5 + Math.random() * 3}s`,
+              "--move-duration": `${18 + Math.random() * 15}s`,
+            }}
           />
-          <Route path="/404" element={<NotFound />} />
-          <Route path="*" element={<NotFound />} />
+        ))}
+      </div>
 
-          <Route path="/login" element={<LoginModal />} />
+      {/* 2. Content Layer (Routes) */}
+      <div className="content-wrapper">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/signup" element={<SignupModal />} />
+            <Route
+              path="/link"
+              element={
+                <LinkGuard>
+                  <LinkPage />
+                </LinkGuard>
+              }
+            />
+            <Route path="/404" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
 
-          <Route path="/personalized-report" element={<PersonalisedReport />} />
-          <Route path="/plans" element={<Plans />} />
-          <Route path="/consult" element={<Consult />} />
-          <Route path="/termsandconditions" element={<TermsAndConditions />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/refund-policy" element={<RefundPolicy />} />
-          <Route path="/shipping-policy" element={<ShippingPolicy />} />
-          <Route path="/contact-us" element={<ContactUs />} />
-          <Route path="/admin-dashboard" element={<AdminDashboardLayout />} />
-          <Route path="/blogspage" element={<Blog1 />} /> 
-          <Route path="/blog/:slug" element={<SingleBlog />} />
-          <Route path="/blogs" element={<Blog />} />
-          <Route
-            path="/blog/how-to-read-mobile-number"
-            element={<HowToReadMobileNumberBlog />}
-          />
-          <Route
-            path="/blog/how-to-choose-mobile-number"
-            element={<HowToChooseMobileNumberBlog />}
-          />
-          <Route path="/dashboard" element={<DashboardLayout />} />
-        </Routes>
-      </BrowserRouter>
+            <Route path="/login" element={<LoginModal />} />
+
+            <Route path="/personalized-report" element={<PersonalisedReport />} />
+            <Route path="/plans" element={<Plans />} />
+            <Route path="/consult" element={<Consult />} />
+            <Route path="/termsandconditions" element={<TermsAndConditions />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
+            <Route path="/shipping-policy" element={<ShippingPolicy />} />
+            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/admin-dashboard" element={<AdminDashboardLayout />} />
+            <Route path="/blogspage" element={<Blog1 />} /> 
+            <Route path="/blog/:slug" element={<SingleBlog />} />
+            <Route path="/blogs" element={<Blog />} />
+            <Route
+              path="/blog/how-to-read-mobile-number"
+              element={<HowToReadMobileNumberBlog />}
+            />
+            <Route
+              path="/blog/how-to-choose-mobile-number"
+              element={<HowToChooseMobileNumberBlog />}
+            />
+            <Route path="/dashboard" element={<DashboardLayout />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
     </IntlProvider>
   );
 }

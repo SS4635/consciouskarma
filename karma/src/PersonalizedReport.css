@@ -5,7 +5,7 @@
    ========================= */
 .ck-page {
   min-height: 100vh;
-  background: #000;
+  background: transparent !important; /* 👈 Isko change kiya hai */
   color: #fff;
   margin: 0;
   padding: 0;
