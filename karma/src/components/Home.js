@@ -8,7 +8,7 @@ function SubsectionSpacer() {
 
 const FeatureTag = ({ text }) => (
   <ElectricBorder
-    color="#ff6b35"
+    color="#f59255"
     speed={2.1}
     chaos={0.5}
     thickness={1}
@@ -26,10 +26,10 @@ export default function UniqueLifeDesign() {
       <div className="container text-center">
 
         {/* Header */}
-        <h1 className="fw-light unique-title mb-0">
+        <h1 className="fw-light unique-title mb-0 font-balgin" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
           Every person is unique
         </h1>
-        <h2 className="fw-light unique-title mb-0">
+        <h2 className="fw-light unique-title mb-0 font-balgin" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
           So are the needs of their life
         </h2>
 
@@ -37,13 +37,13 @@ export default function UniqueLifeDesign() {
 
 
         {/* Role text */}
-        <p className="fw-light unique-text mb-0 text-[20px]">
+        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
           A student, a professional, an entrepreneur,
         </p>
-        <p className="fw-light unique-text mb-0 text-[20px]">
+        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
           a homemaker, an elder –
         </p>
-        <p className="fw-light unique-text mb-0 text-[20px]">
+        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
           each role calls for different strengths.
         </p>
 
@@ -79,13 +79,13 @@ export default function UniqueLifeDesign() {
 
         {/* Footer text */}
         <div className="">
-          <p className="fw-light unique-text mb-0 text-[20px]">
+          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
             Consciously chosen,
           </p>
-          <p className="fw-light unique-text mb-0 text-[20px]">
+          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
             A mobile number can amplify good phases,
           </p>
-          <p className="fw-light unique-text mb-0 text-[20px]">
+          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
             and ease the path in times of challenge.
           </p>
         </div>
@@ -134,53 +134,18 @@ export default function UniqueLifeDesign() {
         /* =====================
            MOBILE ONLY
         ====================== */
-
         @media (max-width: 768px) {
-          .unique-title {
-            font-size: 28px;
-          }
-
-          .unique-text {
-            font-size: 20px;
-          }
-
           .unique-feature-row {
             gap: 10px;
             margin-bottom: 14px;
           }
-
-          .row-3,
-          .row-2 {
-            flex-wrap: nowrap;
-          }
-
-          .row-1 {
-            justify-content: center;
-          }
-
-          .unique-tag {
-            height: 30px;        /* reduced height */
-            padding: 0 18px;     /* reduced padding */
-          }
-
-          .unique-tag-text {
-            font-size: 15px;
-          }
+          ...
         }
 
         /* =====================
            VERY SMALL PHONES
         ====================== */
-
         @media (max-width: 480px) {
-          .unique-title {
-            font-size: 26px;
-          }
-
-          .unique-text {
-            font-size: 18px;
-          }
-
           .unique-tag {
             height: 28px;
             padding: 0 14px;

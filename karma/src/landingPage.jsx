@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useIntl, FormattedMessage } from "react-intl";
-import { motion } from "framer-motion";
 
 import InstantReportForm from "./InstantReportForm.jsx";
 import InlineInstantReportForm from "./components/InlineInstantReportForm.jsx";
@@ -97,7 +96,7 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
     return (
       <a
         href={href}
-        className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+        className="w-full max-w-[380px] border-2 border-[#f59255] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] block"
         style={{ textDecoration: "none" }}
       >
         <div className="aspect-square bg-black flex items-center justify-center">
@@ -120,7 +119,7 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
             {blog.excerpt}
           </p>
           <div className="mt-2">
-            <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+            <span className="text-[#f59255] font-semibold text-sd md:text-sm hover:text-orange-300">
               <FormattedMessage id="blogs.readMore" />
             </span>
           </div>
@@ -130,7 +129,7 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
   }
 
   return (
-    <div className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all">
+    <div className="w-full max-w-[380px] border-2 border-[#f59255] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)]">
       <div className="aspect-square bg-black flex items-center justify-center">
         {blog.img ? (
           <img
@@ -163,7 +162,7 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
         ) : (
           <div className="mt-2">
             <button
-              className="text-[#ff914d] font-semibold text-sm hover:text-orange-300"
+              className="text-[#f59255] font-semibold text-sm hover:text-orange-300"
               onClick={() => setExpandedBlog(index)}
               aria-expanded={false}
             >
@@ -216,7 +215,7 @@ export default function ConsciousKarmaSections() {
   ];
 
   const highlightValue = (id) => (
-    <span className="text-[#ff914d]">{intl.formatMessage({ id })}</span>
+    <span className="text-[#f59255]">{intl.formatMessage({ id })}</span>
   );
 
   useEffect(() => {
@@ -268,9 +267,8 @@ export default function ConsciousKarmaSections() {
   return (
     <div className="min-h-screen flex flex-col bg-black text-gray-50 font-arsenal overflow-x-hidden">
       <style>{`
-        .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #ff914d;border-radius:10px;overflow:hidden}
-        .rotating-border-btn::before{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;background:conic-gradient(from 0deg, rgba(255,145,77,0.95), rgba(255,145,77,0.2) 18%, transparent 30%, transparent 70%, rgba(255,145,77,0.2) 82%, rgba(255,145,77,0.95));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ckSpin 3.2s linear infinite;pointer-events:none}
-        @keyframes ckSpin{to{transform:rotate(360deg)}}
+        .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #f59255;border-radius:10px;overflow:hidden}
+        .rotating-border-btn::before{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;background:conic-gradient(from 0deg, rgba(255,145,77,0.95), rgba(255,145,77,0.2) 18%, transparent 30%, transparent 70%, rgba(255,145,77,0.2) 82%, rgba(255,145,77,0.95));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
         .rotating-border-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(255,145,77,.25)}
         .text-fluid-16-20{font-size:clamp(16px,3.8vw,20px)}
         .text-fluid-18-24{font-size:clamp(18px,3.6vw,24px)}
@@ -318,7 +316,7 @@ export default function ConsciousKarmaSections() {
                     id="hero.title.line2"
                     defaultMessage="IS THE"
                   />
-                  <span className="text-[#ff914d] font-normal">
+                  <span className="text-[#f59255] font-normal">
                     {" "}
                     <FormattedMessage
                       id="hero.title.key"
@@ -349,7 +347,7 @@ export default function ConsciousKarmaSections() {
                     defaultMessage="YOUR "
                   />
                 </span>
-                <span className="text-[#ff914d] font-normal">
+                <span className="text-[#f59255] font-normal">
                   <FormattedMessage
                     id="hero.title.dreams"
                     defaultMessage="DREAMS"
@@ -358,12 +356,14 @@ export default function ConsciousKarmaSections() {
               </span>
             </h1>
 
-            <SubsectionSpacer />
+            {/* <SubsectionSpacer /> */}
+            <div className="h-[24px]" />
             <div className="space-y-0 text-gray-200 font-thin tracking-wide">
               <p className="text-[20px] md:text-[25px] !m-0">
                 Every number carries a pattern
               </p>
-              <SubsectionSpacer />
+              {/* <SubsectionSpacer /> */}
+              <div className="h-[24px]" />
               <p style={{ fontSize: "20px" }}>
                 Discover How a Mobile Number <br className="block sm:hidden" />
                 Shapes Life’s Key Areas
@@ -374,7 +374,7 @@ export default function ConsciousKarmaSections() {
           <div style={{ height: "24px" }} />
 
           <div className="w-full flex justify-center">
-            <div className="grid grid-cols-[60px_1fr] gap-y-3 gap-x-4 items-center w-fit md:flex md:flex-row md:gap-12 lg:gap-20 md:w-auto">
+            <div className="grid grid-cols-[60px_1fr] gap-y-3 gap-x-4 items-center w-fit md:flex md:flex-row md:gap-12 lg:gap-20 md:w-auto !py-0">
               {heroIcons.map(([src, label], i) => (
                 <React.Fragment key={i}>
                   <div className="contents md:flex md:flex-col md:items-center md:gap-2">
@@ -401,8 +401,9 @@ export default function ConsciousKarmaSections() {
           <div style={{ height: "24px" }} />
           {/* <SubsectionSpacer /> */}
 
-          <div className="w-full max-w-[340px] md:max-w-[420px] px-4 py-2">
-            <SubsectionSpacer />
+          <div className="w-full max-w-[340px] md:max-w-[420px] px-4 sm:py-0 lg:py-2">
+            <div className="md:h-[48px]" />
+            {/* <SubsectionSpacer /> */}
             <InlineInstantReportForm
               ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
               onSubmit={openPrefilledModal}
@@ -448,14 +449,14 @@ export default function ConsciousKarmaSections() {
               </div>
 
               <p
-                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block max-w-[280px] sm:max-w-none"
                 style={commonTextStyle}
               >
                 <FormattedMessage
                   id="whatIsThis.universe.line1"
                   values={{
                     patterns: (
-                      <span className="text-[#ff914d] font-normal">
+                      <span className="text-[#f59255] font-normal">
                         patterns
                       </span>
                     ),
@@ -467,7 +468,7 @@ export default function ConsciousKarmaSections() {
             </div>
 
             <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[64px] w-full max-w-[320px]">
-              <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent pt-2.5 mr-7">
+              <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent pt-1 mr-7">
                 <img
                   src={zeroPng}
                   alt={intl.formatMessage({ id: "alt.zeroSymbol" })}
@@ -476,19 +477,19 @@ export default function ConsciousKarmaSections() {
               </div>
 
               <p
-                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block pt-4"
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block"
                 style={commonTextStyle}
               >
                 <FormattedMessage
                   id="whatIsThis.numbers.line1"
                   values={{
                     numbers: (
-                      <span style={{ color: "#ff914d" }}>
+                      <span style={{ color: "#f59255" }}>
                         {intl.formatMessage({ id: "whatIsThis.numbers" })}
                       </span>
                     ),
                     symbols: (
-                      <span style={{ color: "#ff914d" }}>
+                      <span style={{ color: "#f59255" }}>
                         {intl.formatMessage({ id: "whatIsThis.symbols" })}
                       </span>
                     ),
@@ -497,7 +498,7 @@ export default function ConsciousKarmaSections() {
                   id="whatIsThis.numbers.line2"
                   values={{
                     numericalSystems: (
-                      <span className="text-[#ff914d] font-normal">
+                      <span className="text-[#f59255] font-normal">
                         numerical systems
                       </span>
                     ),
@@ -523,7 +524,7 @@ export default function ConsciousKarmaSections() {
                   id="whatIsThis.karma.line1"
                   values={{
                     patternsAligned: (
-                      <span className="text-[#ff914d] font-normal">
+                      <span className="text-[#f59255] font-normal">
                         patterns we align with{" "}
                       </span>
                     ),
@@ -533,7 +534,7 @@ export default function ConsciousKarmaSections() {
                   id="whatIsThis.karma.line2"
                   values={{
                     destiny: (
-                      <span style={{ color: "#ff914d" }}>
+                      <span style={{ color: "#f59255" }}>
                         {intl.formatMessage({
                           id: "whatIsThis.karma.destiny",
                         })}
@@ -556,20 +557,16 @@ export default function ConsciousKarmaSections() {
         <SectionSpacer />
       </section>
 
-      <motion.section
+      <section
         className="relative bg-black flex flex-col items-center justify-center px-2 sm:px-6"
-        variants={parent}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
       >
         <div className="container mx-auto text-center max-w-5xl">
-          <motion.div variants={item}>
+          <div>
             <SectionSpacer />
             {/* <SubsectionSpacer /> */}
-          </motion.div>
+          </div>
 
-          <motion.div variants={item}>
+          <div>
             {/* <SubsectionSpacer /> */}
             <div className="w-full flex justify-center px-1 sm:px-0">
               <img
@@ -578,12 +575,12 @@ export default function ConsciousKarmaSections() {
                 className="lg:w-[560px] md:w-[650px] sm:w-[450px] h-auto"
               />
             </div>
-          </motion.div>
+          </div>
 
           <SubsectionSpacer />
 
           <p
-            className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0"
+            className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 max-w-[300px] sm:max-w-none mx-auto"
             style={commonTextStyle}
           >
             <span className="text-white inline md:block">
@@ -597,7 +594,7 @@ export default function ConsciousKarmaSections() {
                 id="mobileEnergy.line3"
                 values={{
                   distinctPattern: (
-                    <span className="text-[#ff914d] font-normal">
+                    <span className="text-[#f59255] font-normal">
                       distinct pattern
                     </span>
                   ),
@@ -611,7 +608,7 @@ export default function ConsciousKarmaSections() {
         </div>
 
         <SubsectionSpacer />
-      </motion.section>
+      </section>
 
       <section className="relative bg-black flex flex-col items-center justify-center text-center px-2 sm:px-6">
         <div className="container">
@@ -632,7 +629,7 @@ export default function ConsciousKarmaSections() {
               id="distinctly.line4"
               values={{
                 distinctlyYours: (
-                  <span className="text-[#ff914d] font-normal">
+                  <span className="text-[#f59255] font-normal">
                     DISTINCTLY YOURS
                   </span>
                 ),
@@ -642,10 +639,13 @@ export default function ConsciousKarmaSections() {
 
           <SubsectionSpacer />
 
-          <p className="text-[#ff914d] font-light text-[20px] md:text-[25px] !m-0">
+          <p className="!m-0 !text-[25px]">
             <a
               href="/personalised-report"
-              className="inline-block text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
+              className="inline-block font-light no-underline"
+              style={{ color: "white", transition: "color 0.3s" }}
+              onMouseEnter={(e) => (e.target.style.color = "#f59255")}
+              onMouseLeave={(e) => (e.target.style.color = "white")}
             >
               <FormattedMessage id="distinctly.line5" />
             </a>
@@ -655,24 +655,20 @@ export default function ConsciousKarmaSections() {
         <SectionSpacer />
       </section>
 
-      <motion.section
+      <section
         className="relative bg-black flex flex-col items-center justify-center px-4 sm:px-6 text-center"
-        variants={parent}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.25 }}
       >
-        <motion.div variants={item}>
+        <div>
           <img
             src={earthConnections}
             alt={intl.formatMessage({ id: "woven.altImage" })}
             className="w-[260px] sm:w-[320px] md:w-[380px] lg:w-[450px] mx-auto"
           />
-        </motion.div>
+        </div>
 
-        <motion.div variants={item} className="max-w-3xl mx-auto  relative">
+        <div className="max-w-3xl mx-auto  relative">
           <SubsectionSpacer />
-          <p className="mb-1 text-gray-200 font-thin" style={commonTextStyle}>
+          <p className="mb-1 text-gray-200 font-thin max-w-[300px] sm:max-w-none mx-auto" style={commonTextStyle}>
             <span className="inline md:block">
               <FormattedMessage id="woven.line1" />
             </span>{" "}
@@ -687,7 +683,7 @@ export default function ConsciousKarmaSections() {
                 id="woven.line4"
                 values={{
                   shapesYourKarma: (
-                    <span className="text-[#ff914d] font-normal">
+                    <span className="text-[#f59255] font-normal">
                       shapes your karma
                     </span>
                   ),
@@ -695,11 +691,11 @@ export default function ConsciousKarmaSections() {
               />
             </span>
           </p>
-        </motion.div>
+        </div>
 
 
         <SubsectionSpacer />
-      </motion.section>
+      </section>
 
       <section className="relative bg-black flex flex-col items-center justify-center text-center px-4">
         <div className="container mx-auto max-w-[760px] text-center">
@@ -737,7 +733,7 @@ export default function ConsciousKarmaSections() {
                 id="digitalYantra.line4"
                 values={{
                   greatestAsset: (
-                    <span className="text-[#ff914d] font-normal">
+                    <span className="text-[#f59255] font-normal">
                       It is your greatest asset — the code of your journey
                     </span>
                   ),
@@ -749,8 +745,10 @@ export default function ConsciousKarmaSections() {
 
             <a
               href="/consult"
-              className="text-[#ff914d] font-thin no-underline hover:opacity-80 mb-0"
-              style={{ fontSize: "25px" }}
+              className="font-thin no-underline mb-0"
+              style={{ fontSize: "25px", color: "white", transition: "color 0.3s" }}
+              onMouseEnter={(e) => (e.target.style.color = "#f59255")}
+              onMouseLeave={(e) => (e.target.style.color = "white")}
             >
               <FormattedMessage id="digitalYantra.cta" />
             </a>
@@ -842,14 +840,14 @@ export default function ConsciousKarmaSections() {
         </div>
       </section>
 
-      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3">
+      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#f59255] py-3 sm:py-2 md:py-3">
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             {footerLinks.map((link, index) => (
               <React.Fragment key={link.href}>
                 <a
                   href={link.href}
-                  className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+                  className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
                 >
                   <FormattedMessage id={link.id} />
                 </a>
@@ -866,7 +864,7 @@ export default function ConsciousKarmaSections() {
           onClick={() => setShowForm(false)}
         >
           <div
-            className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
+            className="bg-black border-2 border-[#f59255] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             <div

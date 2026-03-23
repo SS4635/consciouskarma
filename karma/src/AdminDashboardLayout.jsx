@@ -351,7 +351,7 @@ export default function AdminDashboardLayout() {
   };
 
   const viewFullMessage = (name, message) => {
-    Swal.fire({ title: `Message from ${name}`, text: message, icon: 'info', confirmButtonColor: '#ff914d' });
+    Swal.fire({ title: `Message from ${name}`, text: message, icon: 'info', confirmButtonColor: '#f59255' });
   };
 
   const exportToExcel = async () => {
@@ -421,9 +421,9 @@ export default function AdminDashboardLayout() {
     if (totalPagesObj <= 1) return null;
     return (
       <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "20px", padding: "10px" }}>
-        <button onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1} style={{ padding: "8px 16px", background: currentPage === 1 ? "#333" : "#ff914d", color: currentPage === 1 ? "#666" : "#000", border: "none", borderRadius: "4px", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "bold" }}>Prev</button>
+        <button onClick={() => setPage(currentPage - 1)} disabled={currentPage === 1} style={{ padding: "8px 16px", background: currentPage === 1 ? "#333" : "#f59255", color: currentPage === 1 ? "#666" : "#000", border: "none", borderRadius: "4px", cursor: currentPage === 1 ? "not-allowed" : "pointer", fontWeight: "bold" }}>Prev</button>
         <span style={{ color: "#fff", display: "flex", alignItems: "center" }}>Page {currentPage} of {totalPagesObj}</span>
-        <button onClick={() => setPage(currentPage + 1)} disabled={currentPage === totalPagesObj} style={{ padding: "8px 16px", background: currentPage === totalPagesObj ? "#333" : "#ff914d", color: currentPage === totalPagesObj ? "#666" : "#000", border: "none", borderRadius: "4px", cursor: currentPage === totalPagesObj ? "not-allowed" : "pointer", fontWeight: "bold" }}>Next</button>
+        <button onClick={() => setPage(currentPage + 1)} disabled={currentPage === totalPagesObj} style={{ padding: "8px 16px", background: currentPage === totalPagesObj ? "#333" : "#f59255", color: currentPage === totalPagesObj ? "#666" : "#000", border: "none", borderRadius: "4px", cursor: currentPage === totalPagesObj ? "not-allowed" : "pointer", fontWeight: "bold" }}>Next</button>
       </div>
     );
   };
@@ -436,7 +436,7 @@ export default function AdminDashboardLayout() {
   const totalEnergyPages = Math.ceil(tableData.length / 10);
 
   const darkCardStyle = { padding: "24px", background: "linear-gradient(145deg, #1a1a1a 0%, #111111 100%)", border: "1px solid #333", borderRadius: "16px", color: "white", boxShadow: "0 8px 24px rgba(0,0,0,0.4)", display: "flex", flexDirection: "column", justifyContent: "space-between", position: "relative", overflow: "hidden" };
-  const rangeBtnStyle = (range) => ({ padding: "8px 16px", background: summaryRange === range ? "#ff914d" : "transparent", color: summaryRange === range ? "#000" : "#888", border: `1px solid ${summaryRange === range ? "#ff914d" : "#444"}`, borderRadius: "20px", cursor: "pointer", fontWeight: summaryRange === range ? "bold" : "500", transition: "all 0.3s ease", fontSize: "13px" });
+  const rangeBtnStyle = (range) => ({ padding: "8px 16px", background: summaryRange === range ? "#f59255" : "transparent", color: summaryRange === range ? "#000" : "#888", border: `1px solid ${summaryRange === range ? "#f59255" : "#444"}`, borderRadius: "20px", cursor: "pointer", fontWeight: summaryRange === range ? "bold" : "500", transition: "all 0.3s ease", fontSize: "13px" });
 
   // Helper to close sidebar after navigation on mobile
   const handleNavClick = (tabAction) => {
@@ -451,14 +451,14 @@ export default function AdminDashboardLayout() {
       <header className="ck-navbar" style={{ background: "#111", borderBottom: "1px solid #333", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 20px" }}>
         <div className="ck-navbar-brand">
           <span className="brand-text-top">conscious</span>
-          <span className="brand-text-bottom" style={{color: "#ff914d"}}>KARMA (ADMIN)</span>
+          <span className="brand-text-bottom" style={{color: "#f59255"}}>KARMA (ADMIN)</span>
         </div>
         
         {/* 🔥 Hamburger Button (Visible only on mobile via CSS) */}
         <button 
           className="mobile-sidebar-toggle"
           onClick={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
-          style={{ background: "transparent", border: "none", color: "#ff914d", fontSize: "28px", cursor: "pointer" }}
+          style={{ background: "transparent", border: "none", color: "#f59255", fontSize: "28px", cursor: "pointer" }}
         >
           {isMobileSidebarOpen ? "✕" : "☰"}
         </button>
@@ -479,20 +479,20 @@ export default function AdminDashboardLayout() {
         <aside className={`ck-sidebar ${isMobileSidebarOpen ? "open" : ""}`} style={{ background: "#111", borderRight: "1px solid #333" }}>
           <nav className="ck-nav">
             {["summary", "instant", "personalised", "consult"].map((tab) => (
-              <button key={tab} className={`ck-nav-item ${activeTab === tab ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab(tab); setPage(1); })} style={{ textTransform: "capitalize", color: activeTab === tab ? "#ff914d" : "#aaa", background: activeTab === tab ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+              <button key={tab} className={`ck-nav-item ${activeTab === tab ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab(tab); setPage(1); })} style={{ textTransform: "capitalize", color: activeTab === tab ? "#f59255" : "#aaa", background: activeTab === tab ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
                 {tab === "summary" ? "📊 Dashboard Overview" : tab === "personalised" ? "Personalised Reports" : `${tab} Data`}
               </button>
             ))}
 
             <div style={{ marginTop: "5px" }}>
-              <button className="ck-nav-item" onClick={() => setIsLinkOpen(!isLinkOpen)} style={{ color: activeTab === "energy-logs" ? "#ff914d" : "#aaa", background: activeTab === "energy-logs" ? "rgba(255, 145, 77, 0.1)" : "transparent", width: "100%", textAlign: "left", display: "flex", justifyContent: "space-between" }}>
+              <button className="ck-nav-item" onClick={() => setIsLinkOpen(!isLinkOpen)} style={{ color: activeTab === "energy-logs" ? "#f59255" : "#aaa", background: activeTab === "energy-logs" ? "rgba(255, 145, 77, 0.1)" : "transparent", width: "100%", textAlign: "left", display: "flex", justifyContent: "space-between" }}>
                 <span>🔗 Active Links</span><span>{isLinkOpen ? "▾" : "▸"}</span>
               </button>
               {isLinkOpen && (
                 <div style={{ paddingLeft: "15px", display: "flex", flexDirection: "column", gap: "5px", marginTop: "5px" }}>
                   {availableRoutes.length > 0 ? (
                     availableRoutes.map(route => (
-  <button key={route} title={`/${route}`} onClick={() => handleNavClick(() => { setActiveTab("energy-logs"); setSelectedRoute(route); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#ff914d" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left", whiteSpace: "nowrap", overflow: "hidden" }}>
+  <button key={route} title={`/${route}`} onClick={() => handleNavClick(() => { setActiveTab("energy-logs"); setSelectedRoute(route); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ background: selectedRoute === route && activeTab === "energy-logs" ? "#f59255" : "#222", color: selectedRoute === route && activeTab === "energy-logs" ? "#000" : "#fff", border: "none", padding: "8px", borderRadius: "4px", cursor: "pointer", textAlign: "left", whiteSpace: "nowrap", overflow: "hidden" }}>
     Route: /{route?.length > 4 ? route.substring(0, 4) + '...' : route}
   </button>
 ))
@@ -501,20 +501,20 @@ export default function AdminDashboardLayout() {
               )}
             </div>
 
-            <button className={`ck-nav-item ${activeTab === "previous-links" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("previous-links"); setSelectedRoute(historicalLinks[0] || ""); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ color: activeTab === "previous-links" ? "#ff914d" : "#aaa", background: activeTab === "previous-links" ? "rgba(255, 145, 77, 0.1)" : "transparent", marginTop: "5px" }}>
+            <button className={`ck-nav-item ${activeTab === "previous-links" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("previous-links"); setSelectedRoute(historicalLinks[0] || ""); setPage(1); setSearchQuery(""); setFilterDate("all"); })} style={{ color: activeTab === "previous-links" ? "#f59255" : "#aaa", background: activeTab === "previous-links" ? "rgba(255, 145, 77, 0.1)" : "transparent", marginTop: "5px" }}>
               🗃️ Previous Links
             </button>
 
-            <button className={`ck-nav-item ${activeTab === "contact" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("contact"); setPage(1); })} style={{ color: activeTab === "contact" ? "#ff914d" : "#aaa", background: activeTab === "contact" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+            <button className={`ck-nav-item ${activeTab === "contact" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("contact"); setPage(1); })} style={{ color: activeTab === "contact" ? "#f59255" : "#aaa", background: activeTab === "contact" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
               💬 Contact Data
             </button>
 
             <hr style={{ margin: "15px 0", borderColor: "#333" }} />
             
-            <button className={`ck-nav-item ${activeTab === "blog" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("blog"); setBlogView("list"); setPage(1); })} style={{ color: activeTab === "blog" ? "#ff914d" : "#aaa", background: activeTab === "blog" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+            <button className={`ck-nav-item ${activeTab === "blog" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => { setActiveTab("blog"); setBlogView("list"); setPage(1); })} style={{ color: activeTab === "blog" ? "#f59255" : "#aaa", background: activeTab === "blog" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
               📝 Manage Blogs
             </button>
-            <button className={`ck-nav-item ${activeTab === "categories" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => {setActiveTab("categories"); setPage(1);})} style={{ color: activeTab === "categories" ? "#ff914d" : "#aaa", background: activeTab === "categories" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
+            <button className={`ck-nav-item ${activeTab === "categories" ? "ck-nav-item--active" : ""}`} onClick={() => handleNavClick(() => {setActiveTab("categories"); setPage(1);})} style={{ color: activeTab === "categories" ? "#f59255" : "#aaa", background: activeTab === "categories" ? "rgba(255, 145, 77, 0.1)" : "transparent" }}>
               🗂️ Manage Categories
             </button>
           </nav>
@@ -535,16 +535,16 @@ export default function AdminDashboardLayout() {
                   </div>
                 </div>
 
-                {loading ? ( <div style={{ color: "#ff914d", textAlign: "center", padding: "50px" }}>Loading metrics...</div> ) : (
+                {loading ? ( <div style={{ color: "#f59255", textAlign: "center", padding: "50px" }}>Loading metrics...</div> ) : (
                   <>
-                    <div style={{ ...darkCardStyle, borderLeft: "6px solid #ff914d", marginBottom: "24px", flexDirection: "row", alignItems: "center" }}>
+                    <div style={{ ...darkCardStyle, borderLeft: "6px solid #f59255", marginBottom: "24px", flexDirection: "row", alignItems: "center" }}>
                       <div><h3 style={{ color: "#aaa", margin: 0, fontSize: "14px" }}>Total Interactions Volume</h3><p style={{ fontSize: "56px", fontWeight: "900", margin: "5px 0 0", color: "#fff" }}>{summaryData.total}</p></div>
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "24px" }}>
-                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Instant Reports</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#ff914d" }}>{summaryData.instant}</p></div>
-                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Personalised</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#ff914d" }}>{summaryData.personalised}</p></div>
-                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Consultations</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#ff914d" }}>{summaryData.consult}</p></div>
-                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Contacts</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#ff914d" }}>{summaryData.contact}</p></div>
+                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Instant Reports</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#f59255" }}>{summaryData.instant}</p></div>
+                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Personalised</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#f59255" }}>{summaryData.personalised}</p></div>
+                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Consultations</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#f59255" }}>{summaryData.consult}</p></div>
+                      <div style={darkCardStyle}><h3 style={{ margin: 0, fontSize: "15px", color: "#aaa" }}>Contacts</h3><p style={{ fontSize: "40px", fontWeight: "bold", margin: "15px 0 0", color: "#f59255" }}>{summaryData.contact}</p></div>
                     </div>
                   </>
                 )}
@@ -577,7 +577,7 @@ export default function AdminDashboardLayout() {
                   <button className="ck-btn-sm" style={{ background: "#2ecc71", color: "#000", fontWeight: "bold", border: "none", cursor: "pointer", padding: "8px 16px", borderRadius: "6px" }} onClick={exportToExcel}>📥 Export Excel</button>
                 </div>
 
-                {loading ? <div className="ck-empty-state" style={{color: "#ff914d"}}>Loading records...</div> : tableData.length === 0 ? (
+                {loading ? <div className="ck-empty-state" style={{color: "#f59255"}}>Loading records...</div> : tableData.length === 0 ? (
                   <div className="ck-empty-state" style={{color: "#888"}}>No records found.</div>
                 ) : (
                   <>
@@ -627,7 +627,7 @@ export default function AdminDashboardLayout() {
     )}
   </td>
 )}
-                                {activeTab === "contact" && (<td style={{padding: "12px"}}><button className="ck-btn-sm" style={{background: "#ff914d", border: "none", color: "black", fontWeight: "bold", cursor: "pointer", padding: "6px 12px", borderRadius: "4px"}} onClick={() => viewFullMessage(name, item.message)}>Read</button></td>)}
+                                {activeTab === "contact" && (<td style={{padding: "12px"}}><button className="ck-btn-sm" style={{background: "#f59255", border: "none", color: "black", fontWeight: "bold", cursor: "pointer", padding: "6px 12px", borderRadius: "4px"}} onClick={() => viewFullMessage(name, item.message)}>Read</button></td>)}
                               </tr>
                             );
                           })}
@@ -697,7 +697,7 @@ export default function AdminDashboardLayout() {
                   )}
                 </div>
 
-                {loading ? <div className="ck-empty-state" style={{color: "#ff914d"}}>Loading logs...</div> : displayedEnergyLogs.length === 0 ? (
+                {loading ? <div className="ck-empty-state" style={{color: "#f59255"}}>Loading logs...</div> : displayedEnergyLogs.length === 0 ? (
                   <div className="ck-empty-state" style={{color: "#888"}}>No hits recorded yet.</div>
                 ) : (
                   <>
@@ -713,7 +713,7 @@ export default function AdminDashboardLayout() {
                             <tr key={log._id} style={{ borderBottom: "1px solid #333" }}>
                               <td style={{padding: "12px"}}>{d.toLocaleDateString('en-IN')}</td>
                               <td style={{padding: "12px", color: "#aaa"}}>{d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}</td>
-                              <td style={{padding: "12px", color: "#ff914d", fontWeight: "bold"}}>{log.mobileNumber}</td>
+                              <td style={{padding: "12px", color: "#f59255", fontWeight: "bold"}}>{log.mobileNumber}</td>
                               <td style={{padding: "12px", maxWidth: "150px"}} title={log.sourceLink}>
                                 <span style={{background: "#333", padding: "4px 8px", borderRadius: "4px"}}>
                                   {log.sourceLink?.length > 4 ? log.sourceLink.substring(0, 4) + '...' : (log.sourceLink || "-")}
@@ -742,7 +742,7 @@ export default function AdminDashboardLayout() {
                 
                 <div style={{ display: "flex", gap: "10px", marginBottom: "30px", flexWrap: "wrap" }}>
                   <input type="text" className="ck-input" placeholder="New Category Name..." value={newCategory} onChange={e => setNewCategory(e.target.value)} style={{ background: "#222", color: "#fff", border: "1px solid #444", padding: "10px", borderRadius: "6px", flex: 1, minWidth: "200px" }}/>
-                  <button onClick={handleAddCategory} style={{ background: "#ff914d", color: "#000", fontWeight: "bold", border: "none", padding: "10px 20px", borderRadius: "6px", cursor: "pointer" }}>Add Category</button>
+                  <button onClick={handleAddCategory} style={{ background: "#f59255", color: "#000", fontWeight: "bold", border: "none", padding: "10px 20px", borderRadius: "6px", cursor: "pointer" }}>Add Category</button>
                 </div>
 
                 <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px", overflowX: "auto" }}>
@@ -769,7 +769,7 @@ export default function AdminDashboardLayout() {
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
                   <h2 className="ck-panel-title" style={{color: "#fff", margin: 0}}>Manage Blogs</h2>
                   {blogView === "list" ? (
-                    <button className="ck-btn-sm" style={{background: "#ff914d", color: "#000", fontWeight: "bold", border: "none", padding: "8px 16px", borderRadius: "4px"}} onClick={handleCreateNewBlog}>+ Create New Blog</button>
+                    <button className="ck-btn-sm" style={{background: "#f59255", color: "#000", fontWeight: "bold", border: "none", padding: "8px 16px", borderRadius: "4px"}} onClick={handleCreateNewBlog}>+ Create New Blog</button>
                   ) : (
                     <button className="ck-btn-sm" style={{background: "#333", color: "#fff", border: "1px solid #555", padding: "8px 16px", borderRadius: "4px"}} onClick={() => setBlogView("list")}>← Back to List</button>
                   )}
@@ -778,7 +778,7 @@ export default function AdminDashboardLayout() {
                 {blogView === "list" && (
                   <>
                   <input type="text" placeholder="Search Title or Category..." className="ck-input" style={{ width: "100%", maxWidth: "300px", background: "#222", color: "#fff", border: "1px solid #444", marginBottom: "20px" }} value={searchQuery} onChange={(e) => {setSearchQuery(e.target.value); setPage(1);}} />
-                  {loading ? <p style={{color: "#ff914d"}}>Loading blogs...</p> : displayedBlogs.length === 0 ? <p style={{color: "#888"}}>No blogs found.</p> : (
+                  {loading ? <p style={{color: "#f59255"}}>Loading blogs...</p> : displayedBlogs.length === 0 ? <p style={{color: "#888"}}>No blogs found.</p> : (
                     <>
                     <div className="ck-table-wrapper" style={{ border: "1px solid #333", borderRadius: "8px", overflowX: "auto" }}>
                       <table className="ck-table" style={{ color: "#fff", width: "100%", textAlign: "left", minWidth: "500px" }}>
@@ -823,7 +823,7 @@ export default function AdminDashboardLayout() {
                         <label className="ck-label" style={{color: "#aaa"}}>Meta Keywords (Press Enter)</label>
                         <div style={{ background: "#222", border: "1px solid #444", borderRadius: "6px", padding: "5px", display: "flex", flexWrap: "wrap", gap: "5px", alignItems: "center" }}>
                           {blogKeywords.map(kw => (
-                            <span key={kw} style={{ background: "#ff914d", color: "#000", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", display: "flex", alignItems: "center", gap: "5px", fontWeight: "bold" }}>
+                            <span key={kw} style={{ background: "#f59255", color: "#000", padding: "4px 8px", borderRadius: "4px", fontSize: "12px", display: "flex", alignItems: "center", gap: "5px", fontWeight: "bold" }}>
                               {kw} <button type="button" onClick={() => removeKeyword(kw)} style={{ background: "transparent", border: "none", color: "#000", cursor: "pointer", fontSize: "14px", lineHeight: 1 }}>×</button>
                             </span>
                           ))}
@@ -855,7 +855,7 @@ export default function AdminDashboardLayout() {
                          <button 
                             onClick={applyCustomFontSize}
                             className="ck-btn-sm" 
-                            style={{ background: "#ff914d", color: "#000", border: "none", padding: "6px 16px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", marginLeft: "10px" }}>
+                            style={{ background: "#f59255", color: "#000", border: "none", padding: "6px 16px", borderRadius: "4px", cursor: "pointer", fontWeight: "bold", marginLeft: "10px" }}>
                             Apply To Selected Text
                          </button>
                       </div>
@@ -867,7 +867,7 @@ export default function AdminDashboardLayout() {
 
                     <div style={{ display: "flex", gap: "15px", marginTop: "40px", flexWrap: "wrap" }}>
                       <button className="ck-btn" style={{ background: "#333", color: "#fff", border: "1px solid #555", padding: "12px 24px", borderRadius: "6px" }} onClick={() => handleBlogSubmit("draft")} disabled={loading}>Save as Draft</button>
-                      <button className="ck-btn" style={{ background: "#ff914d", color: "#000", fontWeight: "bold", padding: "12px 24px", borderRadius: "6px", border: "none" }} onClick={() => handleBlogSubmit("published")} disabled={loading}>Publish Now</button>
+                      <button className="ck-btn" style={{ background: "#f59255", color: "#000", fontWeight: "bold", padding: "12px 24px", borderRadius: "6px", border: "none" }} onClick={() => handleBlogSubmit("published")} disabled={loading}>Publish Now</button>
                     </div>
                   </div>
                 )}

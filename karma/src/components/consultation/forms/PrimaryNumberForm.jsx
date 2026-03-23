@@ -174,7 +174,7 @@ export default function PrimaryNumberForm({
         }
         .primary-input:focus, .primary-select:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
           box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
         .primary-input::placeholder { color: #999; }
@@ -215,11 +215,11 @@ export default function PrimaryNumberForm({
           flex: 1;
           transition: all 0.25s ease;
         }
-        .primary-btn:hover { border-color: #ff6b35; }
+        .primary-btn:hover { border-color: #f59255; }
         
         .primary-btn.active {
-          background: #ff6b35;
-          border-color: #ff6b35;
+          background: #f59255;
+          border-color: #f59255;
           color: #000;
           font-weight: 700;
         }

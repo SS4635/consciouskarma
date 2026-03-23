@@ -289,7 +289,7 @@ const ConsciousKarmaPage = () => {
 
   const NotPayableNote = () => (
     <div
-      className="notpayble" style={{ marginTop: '16px', fontSize: '14px', color: '#ff914d', display: 'flex', alignItems: 'center', gap: '6px', }}
+      className="notpayble" style={{ marginTop: '16px', fontSize: '14px', color: '#f59255', display: 'flex', alignItems: 'center', gap: '6px', }}
     >
 
       <span className="notpayble">* Every parallel number is charged at the same rate of primary number.</span>
@@ -612,7 +612,7 @@ const ConsciousKarmaPage = () => {
         email: general.email,
         contact: `${primary.isd}${primary.number}`,
       },
-      theme: { color: "#ff8a2b" },
+      theme: { color: "#f59255" },
     };
 
     new window.Razorpay(options).open();
@@ -642,7 +642,7 @@ const ConsciousKarmaPage = () => {
           flexDirection: 'column',
           alignItems: 'center',
           background: '#000',
-          border: '2px solid #ff914d', // Red border for error
+          border: '2px solid #f59255', // Red border for error
           borderRadius: '16px',
           padding: '32px 28px',
           width: '90%',
@@ -654,8 +654,8 @@ const ConsciousKarmaPage = () => {
       >
         {/* Error Icon (Cross) */}
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: '20px' }}>
-          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent" />
-          <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="11" stroke="#f59255" strokeWidth="2" fill="transparent" />
+          <path d="M15 9L9 15M9 9L15 15" stroke="#f59255" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
 
         <h2 style={{ color: '#fff', fontSize: '22px', marginBottom: '10px' }}>Missing Information</h2>
@@ -664,7 +664,7 @@ const ConsciousKarmaPage = () => {
         <button
           style={{
             marginTop: '20px',
-            background: '#ff914d',
+            background: '#f59255',
             color: '#fff',
             border: 'none',
             padding: '10px 25px',
@@ -823,7 +823,7 @@ const ConsciousKarmaPage = () => {
           justifyContent: 'center',
           position: 'relative',
           background: '#000',
-          border: '2px solid #ff914d',
+          border: '2px solid #f59255',
           borderRadius: '16px',
           padding: '32px 28px',
           width: '90%',
@@ -833,8 +833,8 @@ const ConsciousKarmaPage = () => {
         onClick={e => e.stopPropagation()}
       >
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ marginBottom: '20px' }}>
-          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent" />
-          <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="12" cy="12" r="11" stroke="#f59255" strokeWidth="2" fill="transparent" />
+          <path d="M7 12L10 15L17 8" stroke="#f59255" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
         <h2 style={{ color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center' }}>Success! <br />Your consultation is booked.<br />
           We will be in touch soon.</h2>
@@ -843,7 +843,7 @@ const ConsciousKarmaPage = () => {
             position: 'absolute',
             top: 12,
             right: 12,
-            background: '#ff914d',
+            background: '#f59255',
             color: '#fff',
             border: 'none',
             borderRadius: '50%',
@@ -874,7 +874,7 @@ const ConsciousKarmaPage = () => {
         .swal2-popup {
           background: #111 !important;
           color: #fff !important;
-          border: 2px solid #ff914d !important;
+          border: 2px solid #f59255 !important;
           border-radius: 16px !important;
         }
         .swal2-title,
@@ -887,23 +887,23 @@ const ConsciousKarmaPage = () => {
           background: none !important;
         }
         .swal2-success {
-          border-color: #ff914d !important;
+          border-color: #f59255 !important;
         }
         .swal2-success .swal2-success-ring {
-          border: 4px solid #ff914d !important;
+          border: 4px solid #f59255 !important;
         }
         .swal2-success .swal2-success-line-tip,
         .swal2-success .swal2-success-line-long {
-          background-color: #ff914d !important;
+          background-color: #f59255 !important;
         }
         .swal2-styled.swal2-confirm {
-          background-color: #ff914d !important;
+          background-color: #f59255 !important;
           color: #fff !important;
-          border: 2px solid #ff914d !important;
+          border: 2px solid #f59255 !important;
           border-radius: 8px !important;
         }
         .swal2-styled.swal2-confirm:focus {
-          box-shadow: 0 0 0 2px #ff914d55 !important;
+          box-shadow: 0 0 0 2px #f5925555 !important;
         }
         .swal2-container { z-index: 9999 !important; }
 
@@ -919,7 +919,7 @@ const ConsciousKarmaPage = () => {
 
 /* Hover (only when enabled) */
 .ck-proceed-btn:hover:not(:disabled) {
-  background-color: #ff914d;       /* orange bg */
+  background-color: #f59255;       /* orange bg */
   color: #000;                     /* black text */
 }
 
@@ -950,7 +950,7 @@ const ConsciousKarmaPage = () => {
 }
 
 .ck-form-scroll::-webkit-scrollbar-thumb {
-  background: #ff914d;
+  background: #f59255;
   border-radius: 10px;
 }
 
@@ -968,7 +968,7 @@ const ConsciousKarmaPage = () => {
       />
 
       <main>
-        {/* 64px gap from navbar (60px header + 64px spacer) */}
+        {/* 64px gap from navbar (60px header) */}
         <div style={{ height: "128px", backgroundColor: "#0b0b0b" }} />
 
         <section className="ck-form-section">
@@ -977,7 +977,7 @@ const ConsciousKarmaPage = () => {
             {/* LEFT HERO */}
 
             <div className="ck-hero">
-              <p className="ck-hero-text text-[25px]">
+              <p className="ck-hero-text text-[25px] sm:text-[30px]" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
               </p>
 
@@ -990,7 +990,7 @@ const ConsciousKarmaPage = () => {
                       {row.map((text, index) => (
                         <ElectricBorder
                           key={index}
-                          color="#ff914d"
+                          color="#f59255"
                           speed={2.1}
                           chaos={0.5}
                           thickness={1}
@@ -1010,7 +1010,7 @@ const ConsciousKarmaPage = () => {
 
               <SubsectionSpacer />
 
-              <p className="ck-hero-sub text-[25px] md:text-[24px]">
+              <p className="ck-hero-sub" style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}>
                 Every Mobile Number tells a story.
                 <br />
                 This is YOURS.
@@ -1018,7 +1018,7 @@ const ConsciousKarmaPage = () => {
 
               <SubsectionSpacer />
 
-              <p className="ck-delivery-text-left text-[17px] md:text-[15px] !m-0">
+              <p className="ck-delivery-text-left !m-0" style={{ fontSize: "clamp(14px, 2vw, 16px)" }}>
                 <>
                   Delivery within 5–7 days
                   <br />
@@ -1026,7 +1026,7 @@ const ConsciousKarmaPage = () => {
                   {otpExtraText && (
                     <>
                       <br />
-                      <span className="text-[#ff914d] text-[14px] md:text-[18px]">
+                      <span className="text-[#f59255]" style={{ fontSize: "clamp(13px, 1.8vw, 15px)" }}>
                         {otpExtraText}
                       </span>
                     </>

@@ -112,7 +112,7 @@ export default function ConsciousKarmaSections() {
   ];
 
   const highlightValue = (id) => (
-    <span className="text-[#ff914d]">
+    <span className="text-[#f59255]">
       {intl.formatMessage({ id })}
     </span>
   );
@@ -282,7 +282,7 @@ export default function ConsciousKarmaSections() {
       {/* Animated rotating border button styles (applies to all CTA buttons) */}
 
       <style>{`
-        .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #ff914d;border-radius:10px;overflow:hidden}
+        .rotating-border-btn{position:relative;display:inline-flex;align-items:center;justify-content:center;background:#000;color:#fff;border:2px solid #f59255;border-radius:10px;overflow:hidden}
         .rotating-border-btn::before{content:"";position:absolute;inset:-2px;padding:2px;border-radius:inherit;background:conic-gradient(from 0deg, rgba(255,145,77,0.95), rgba(255,145,77,0.2) 18%, transparent 30%, transparent 70%, rgba(255,145,77,0.2) 82%, rgba(255,145,77,0.95));-webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:ckSpin 3.2s linear infinite;pointer-events:none}
         @keyframes ckSpin{to{transform:rotate(360deg)}}
         .rotating-border-btn:focus{outline:none;box-shadow:0 0 0 3px rgba(255,145,77,.25)}
@@ -332,7 +332,7 @@ export default function ConsciousKarmaSections() {
                 {/* Mobile Row 2 - Desktop gap reduced via md:mt-0 */}
                 <span className="block md:inline mt-1 md:mt-0"> 
                   <FormattedMessage id="hero.title.line2" defaultMessage="IS THE" />
-                  <span className="text-[#ff914d] font-normal">
+                  <span className="text-[#f59255] font-normal">
                     {" "}
                     <FormattedMessage id="hero.title.key" defaultMessage="KEY" />
                     {" "}
@@ -353,7 +353,7 @@ export default function ConsciousKarmaSections() {
                 <span className="hidden md:inline">
                   <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
                 </span>
-                <span className="text-[#ff914d] font-normal">
+                <span className="text-[#f59255] font-normal">
                   <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
                 </span>
               </span>
@@ -452,7 +452,7 @@ export default function ConsciousKarmaSections() {
                 <FormattedMessage
   id="whatIsThis.universe.line1"
   values={{
-    patterns: <span className="text-[#ff914d] font-normal">patterns</span>
+    patterns: <span className="text-[#f59255] font-normal">patterns</span>
   }}
 />
                 <FormattedMessage id="whatIsThis.universe.line2" />
@@ -477,14 +477,14 @@ export default function ConsciousKarmaSections() {
                 <FormattedMessage
                   id="whatIsThis.numbers.line1"
                   values={{
-                    numbers: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.numbers" })}</span>,
-                    symbols: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
+                    numbers: <span style={{ color: "#f59255" }}>{intl.formatMessage({ id: "whatIsThis.numbers" })}</span>,
+                    symbols: <span style={{ color: "#f59255" }}>{intl.formatMessage({ id: "whatIsThis.symbols" })}</span>
                   }}
                 />
                 <FormattedMessage
   id="whatIsThis.numbers.line2"
   values={{
-    numericalSystems: <span className="text-[#ff914d] font-normal">numerical systems</span>
+    numericalSystems: <span className="text-[#f59255] font-normal">numerical systems</span>
   }}
 />
                 <FormattedMessage id="whatIsThis.numbers.line3" />
@@ -509,13 +509,13 @@ export default function ConsciousKarmaSections() {
                 <FormattedMessage
   id="whatIsThis.karma.line1"
   values={{
-    patternsAligned: <span className="text-[#ff914d] font-normal">patterns we align with </span>
+    patternsAligned: <span className="text-[#f59255] font-normal">patterns we align with </span>
   }}
 />
                 <FormattedMessage
                   id="whatIsThis.karma.line2"
                   values={{
-                    destiny: <span style={{ color: "#ff914d" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
+                    destiny: <span style={{ color: "#f59255" }}>{intl.formatMessage({ id: "whatIsThis.karma.destiny" })}</span>
                   }}
                 />
                 <br />
@@ -558,7 +558,7 @@ export default function ConsciousKarmaSections() {
   <FormattedMessage 
     id="mobileEnergy.line3" 
     values={{
-      distinctPattern: <span className="text-[#ff914d] font-normal">distinct pattern</span>
+      distinctPattern: <span className="text-[#f59255] font-normal">distinct pattern</span>
     }}
   />
 </span>
@@ -602,16 +602,16 @@ export default function ConsciousKarmaSections() {
       <FormattedMessage
   id="distinctly.line4"
   values={{ 
-    distinctlyYours: <span className="text-[#ff914d] font-normal">DISTINCTLY YOURS</span> 
+    distinctlyYours: <span className="text-[#f59255] font-normal">DISTINCTLY YOURS</span> 
   }}
 />
     </p>
 
-    <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#ff914d] font-light text-[20px] md:text-[30px]">
+    <p className="mt-0 sm:mt-16 md:mt-20 lg:mt-[170px] text-[#f59255] font-light text-[20px] md:text-[30px]">
       <a
         href="/personalised-report"
         className="inline-block mt-16 sm:mt-16 md:mt-20 lg:mt-[170px]
-          text-[#ff914d] font-light hover:opacity-80 transition-opacity no-underline"
+          text-[#f59255] font-light hover:opacity-80 transition-opacity no-underline"
       
       >
         <FormattedMessage id="distinctly.line5" />
@@ -651,7 +651,7 @@ export default function ConsciousKarmaSections() {
   <FormattedMessage 
     id="woven.line4" 
     values={{
-      shapesYourKarma: <span className="text-[#ff914d] font-normal">shapes your karma</span>
+      shapesYourKarma: <span className="text-[#f59255] font-normal">shapes your karma</span>
     }}
   />
 </span>
@@ -709,7 +709,7 @@ export default function ConsciousKarmaSections() {
   <FormattedMessage 
     id="digitalYantra.line4" 
     values={{
-      greatestAsset: <span className="text-[#ff914d] font-normal">It is your greatest asset — the code of your journey</span>
+      greatestAsset: <span className="text-[#f59255] font-normal">It is your greatest asset — the code of your journey</span>
     }}
   />
 
@@ -718,7 +718,7 @@ export default function ConsciousKarmaSections() {
           <br /><br /><br />
           <a
             href="/consult"
-            className="text-[#ff914d] font-thin no-underline hover:opacity-80"
+            className="text-[#f59255] font-thin no-underline hover:opacity-80"
             style={commonTextStyle}
           >
             <FormattedMessage id="digitalYantra.cta" />
@@ -754,7 +754,7 @@ export default function ConsciousKarmaSections() {
                   <a
                     key={i}
                     href="/blogs"
-                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                    className="w-full max-w-[380px] border-2 border-[#f59255] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
@@ -776,7 +776,7 @@ export default function ConsciousKarmaSections() {
                         {b.excerpt}
                       </p>
                       <div className="mt-2">
-                        <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+                        <span className="text-[#f59255] font-semibold text-sd md:text-sm hover:text-orange-300">
                           <FormattedMessage id="blogs.readMore" />
                         </span>
                       </div>
@@ -786,7 +786,7 @@ export default function ConsciousKarmaSections() {
                   <a
                     key={i}
                     href="/blog/how-to-read-mobile-number"
-                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                    className="w-full max-w-[380px] border-2 border-[#f59255] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
@@ -808,7 +808,7 @@ export default function ConsciousKarmaSections() {
                         {b.excerpt}
                       </p>
                       <div className="mt-2">
-                        <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+                        <span className="text-[#f59255] font-semibold text-sd md:text-sm hover:text-orange-300">
                           <FormattedMessage id="blogs.readMore" />
                         </span>
                       </div>
@@ -818,7 +818,7 @@ export default function ConsciousKarmaSections() {
                   <a
                     key={i}
                     href="/blog/how-to-choose-mobile-number"
-                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
+                    className="w-full max-w-[380px] border-2 border-[#f59255] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all block"
                     style={{ textDecoration: 'none' }}
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
@@ -840,7 +840,7 @@ export default function ConsciousKarmaSections() {
                         {b.excerpt}
                       </p>
                       <div className="mt-2">
-                        <span className="text-[#ff914d] font-semibold text-sd md:text-sm hover:text-orange-300">
+                        <span className="text-[#f59255] font-semibold text-sd md:text-sm hover:text-orange-300">
                           <FormattedMessage id="blogs.readMore" />
                         </span>
                       </div>
@@ -849,7 +849,7 @@ export default function ConsciousKarmaSections() {
                 ) : (
                   <div
                     key={i}
-                    className="w-full max-w-[380px] border-2 border-[#ff914d] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all"
+                    className="w-full max-w-[380px] border-2 border-[#f59255] rounded-lg overflow-hidden bg-[rgba(255,255,255,0.03)] hover:bg-[rgba(255,255,255,0.06)] transition-all"
                   >
                     <div className="aspect-square bg-black flex items-center justify-center">
                       {b.img ? (
@@ -884,7 +884,7 @@ export default function ConsciousKarmaSections() {
                       ) : (
                         <div className="mt-2">
                           <button
-                            className="text-[#ff914d] font-semibold text-sm hover:text-orange-300"
+                            className="text-[#f59255] font-semibold text-sm hover:text-orange-300"
                             onClick={() => setExpandedBlog(i)}
                             aria-expanded={false}
                           >
@@ -945,7 +945,7 @@ export default function ConsciousKarmaSections() {
       </section >
 
       {/* Global Footer */}
-      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
+      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#f59255] py-3 sm:py-2 md:py-3" >
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
 
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
@@ -1033,7 +1033,7 @@ export default function ConsciousKarmaSections() {
     onClick={() => setShowForm(false)}
   >
     <div 
-      className="bg-black border-2 border-[#ff914d] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
+      className="bg-black border-2 border-[#f59255] rounded-[16px] p-0 max-w-[400px] w-full max-h-[70vh] relative flex flex-col overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
 

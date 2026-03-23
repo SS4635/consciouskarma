@@ -154,7 +154,7 @@ export default function GeneralInformationForm({
 
         .gen-info-input:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
           box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
 
@@ -182,20 +182,20 @@ export default function GeneralInformationForm({
         }
 
         .gen-info-btn-option:hover {
-           border-color: #ff6b35;
+           border-color: #f59255;
         }
 
         .gen-info-btn-option.active {
-          background: #ff6b35;
+          background: #f59255;
           color: #0b0b0b;
           font-weight: 700;
-          border-color: #ff6b35;
+          border-color: #f59255;
         }
 
         .gen-info-link-btn {
           background: none;
           border: none;
-          color: #ff6b35;
+          color: #f59255;
           cursor: pointer;
           padding: 0;
           font-size: 0.9rem;

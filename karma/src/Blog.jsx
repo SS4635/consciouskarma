@@ -42,7 +42,7 @@ const Blog = () => {
             and that it flows through life in patterns.  
             To express and organise this insight, they used something simple,precise, and timeless:
             <br/><br/>
-            <span style={{"color":"#ff914d"}}>Numbers.</span>
+            <span style={{"color":"#f59255"}}>Numbers.</span>
          <br/><br/>
             Numbers are stable symbols.  
             <br/>They do not depend on culture, language, or geography.<br/>  
@@ -57,7 +57,7 @@ const Blog = () => {
             In the digital age, numbers run systems, networks, and algorithms that connect the world.
          <br/><br/>
             Among all these systems, one sequence holds a special place today:
-            <br /><br/> <span style={{"color":"#ff914d"}}>The mobile number.</span>
+            <br /><br/> <span style={{"color":"#f59255"}}>The mobile number.</span>
           
            <br/><br/> Unlike other numbers in life — names, addresses, or even dates — this one is activated
             daily through intention and interaction.
@@ -66,7 +66,7 @@ const Blog = () => {
         <br/><br/>
             A mobile number connects a person to every domain of life:<br/>
             work, finances, relationships, interactions, opportunities, and identity.<br/><br/>
-         <span style={{"color":"#ff914d"}}>Every mobile number is unique.</span>
+         <span style={{"color":"#f59255"}}>Every mobile number is unique.</span>
 <br/><br/>
              Dialled with the correct ISD code, it reaches the same user anywhere in the world,
             regardless of how it is saved — by name, spelling, or language.<br/>

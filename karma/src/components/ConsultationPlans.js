@@ -67,7 +67,7 @@
 //             </div>
 //             <button
 //               className="btn btn-sm"
-//               style={{border:'1.5px solid #ff6b35',background:'transparent',color:'#fff'}}
+//               style={{border:'1.5px solid #f59255',background:'transparent',color:'#fff'}}
 //               onClick={() => setSelectedPlan(null)}
 //             >
 //               Change Plan
@@ -83,7 +83,7 @@
 //                 <div
 //                   className="rounded-4 p-4 h-100 text-white bg-transparent"
 //                   style={{
-//                     border: "3px solid #ff6b35",
+//                     border: "3px solid #f59255",
 //                     transition: "0.3s",
 //                     cursor: 'pointer'
 //                   }}
@@ -232,7 +232,7 @@ export default function ConsultationPlans() {
               <div
                 className="rounded-4 p-4 h-100 text-white bg-transparent !m-0"
                 style={{
-                  borderBottom: "3px solid #ff6b35",
+                  borderBottom: "3px solid #f59255",
                   borderLeft: 'none',
                   borderRight: 'none',
                   borderTop: 'none',
@@ -291,7 +291,7 @@ export default function ConsultationPlans() {
                 // make modal a bit smaller so it doesn't force a large scrollbar
                 width: isMobile ? '94vw' : 'min(50vw, 440px)',
                 background: '#000',
-                border: '2px solid #ff6b35',
+                border: '2px solid #f59255',
                 borderRadius: 12,
                 boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
                 // constrain the modal height but allow internal scrolling if content is tall

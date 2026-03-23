@@ -204,9 +204,9 @@ export default function FirstSection({ resolvedRoute, sourceKey, dynamicTitle}) 
                             border-[1.5px] rounded-md md:rounded-lg
                             transition-all duration-300 outline-none
                             bg-transparent
-                            border-[#ff914d]
+                            border-[#f59255]
                             text-white caret-transparent selection:bg-transparent
-                            focus:bg-[#ff914d]/10
+                            focus:bg-[#f59255]/10
                             ${shouldBounce ? "animate-bounce" : ""} 
                         `}
                   />
@@ -269,7 +269,7 @@ export default function FirstSection({ resolvedRoute, sourceKey, dynamicTitle}) 
                       type="button"
                       onClick={() => setShowInfo(true)}
                       // Change 2: -mt-1 (negative margin) se upar uthaya, ml-1 se thoda gap diya
-                      className="text-[#ff914d] hover:text-white transition-colors duration-300 ml-1 -mt-1"
+                      className="text-[#f59255] hover:text-white transition-colors duration-300 ml-1 -mt-1"
                     >
                        <svg 
                          xmlns="http://www.w3.org/2000/svg" 
@@ -301,7 +301,7 @@ relative z-40
 border-1
 
                     ${isComplete 
-                        ? "border-[#ff914d] bg-black text-[#ff914d] cursor-pointer" 
+                        ? "border-[#f59255] bg-black text-[#f59255] cursor-pointer" 
                         : "border-white bg-transparent text-[white] opacity-80 cursor-default"
                     }
                   `}
@@ -314,7 +314,7 @@ border-1
             {/* FLASH MESSAGE BAR */}
             {showInfo && (
               <div className="mt-6 animate-in fade-in slide-in-from-bottom-2 duration-300 w-full max-w-md">
-                <div className="bg-[#111] border border-[#ff914d] text-gray-200 px-6 py-3 rounded-lg text-center text-sm tracking-wide shadow-[0_0_15px_rgba(255,145,77,0.2)]">
+                <div className="bg-[#111] border border-[#f59255] text-gray-200 px-6 py-3 rounded-lg text-center text-sm tracking-wide shadow-[0_0_15px_rgba(255,145,77,0.2)]">
                   Add leading <strong>0</strong>s if less than 10 digits. Enter
                   first 10 if more.
                 </div>
@@ -325,7 +325,7 @@ border-1
           {/* RESPONSE AREA */}
           <div className="w-full mt-3 min-h-[150px] flex flex-col items-center">
             {loading && (
-              <div className="text-[#ff914d] animate-pulse text-lg text-center tracking-widest">
+              <div className="text-[#f59255] animate-pulse text-lg text-center tracking-widest">
                 ANALYZING ENERGY...
               </div>
             )}
@@ -413,10 +413,10 @@ border-1
                     onClick={handleScrollNext}
                     className="flex flex-col items-center justify-center group cursor-pointer"
                   >
-                    <span className="text-[12px] uppercase tracking-[0.2em] mb-2 text-[#ff914d] group-hover:text-white transition-colors bg-black/80 px-3 py-1 rounded-full backdrop-blur-sm border border-[#ff914d]/30">
+                    <span className="text-[12px] uppercase tracking-[0.2em] mb-2 text-[#f59255] group-hover:text-white transition-colors bg-black/80 px-3 py-1 rounded-full backdrop-blur-sm border border-[#f59255]/30">
                       Explore More
                     </span>
-                    <div className="animate-bounce text-[#ff914d] group-hover:text-white transition-colors text-2xl drop-shadow-md">
+                    <div className="animate-bounce text-[#f59255] group-hover:text-white transition-colors text-2xl drop-shadow-md">
                       ↓
                     </div>
                   </button>
@@ -436,9 +436,9 @@ border-1
             />
 
             {/* Modal Box */}
-            <div className="relative bg-[#111] border border-[#ff914d]/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-[0_0_30px_rgba(255,145,77,0.15)] flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+            <div className="relative bg-[#111] border border-[#f59255]/40 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-[0_0_30px_rgba(255,145,77,0.15)] flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
               {/* Icon */}
-              <div className="w-12 h-12 rounded-full bg-[#ff914d]/10 flex items-center justify-center mb-4 text-[#ff914d]">
+              <div className="w-12 h-12 rounded-full bg-[#f59255]/10 flex items-center justify-center mb-4 text-[#f59255]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -459,7 +459,7 @@ border-1
                 Entry Instructions
               </h3>
 
-              <div className="w-12 h-[1px] bg-[#ff914d] mb-6"></div>
+              <div className="w-12 h-[1px] bg-[#f59255] mb-6"></div>
 
               <div className="space-y-4 text-gray-300 text-sm md:text-base font-light leading-relaxed">
                 <div className="bg-white/5 p-3 rounded-lg border border-white/10">
@@ -467,7 +467,7 @@ border-1
                     Fewer than 10 digits?
                   </p>
                   <p className="opacity-80">
-                    Add leading <span className="text-[#ff914d] font-bold">0</span>s
+                    Add leading <span className="text-[#f59255] font-bold">0</span>s
                     to fill the empty boxes.
                   </p>
                 </div>
@@ -484,7 +484,7 @@ border-1
 
               <button
                 onClick={() => setShowInfo(false)}
-                className="mt-8 px-8 py-2 bg-[#ff914d] hover:bg-[#ff8033] text-black font-semibold rounded-full text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#ff914d]/20"
+                className="mt-8 px-8 py-2 bg-[#f59255] hover:bg-[#ff8033] text-black font-semibold rounded-full text-sm tracking-widest uppercase transition-all shadow-lg shadow-[#f59255]/20"
               >
                 Got it
               </button>

@@ -53,7 +53,7 @@ export default function Consult() {
           font-family: 'Balgin', 'Arsenal', system-ui, sans-serif;
           font-size: clamp(28px, 2.4vw, 36px);
           letter-spacing: 2px;
-          color: #ff6b35;
+          color: #f59255;
           margin-top: 2px;
         }
         
@@ -74,9 +74,8 @@ export default function Consult() {
           display: block;
           width: 24px;
           height: 3px;
-          background: #ff6b35;
+          background: #f59255;
           border-radius: 2px;
-          transition: transform 0.25s ease, opacity 0.25s ease;
         }
         
         .hamburger.is-open span:nth-child(1) {
@@ -113,7 +112,7 @@ export default function Consult() {
           display: flex;
           flex-direction: column;
           gap: 8px;
-          transition: right 0.28s ease;
+          transition: none;
         }
         
         .nav-drawer.open {
@@ -223,7 +222,7 @@ export default function Consult() {
   .ck-step-text {
     font-size: 15px;
     line-height: 1.4;
-    color: #ff6b35;
+    color: #f59255;
   }
 
   /* Footer */
@@ -302,7 +301,7 @@ export default function Consult() {
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a
               href="/termsandconditions"
-              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
             >
               Terms & Conditions
             </a>
@@ -319,7 +318,7 @@ export default function Consult() {
 
             <a
               href="/privacy-policy"
-              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
             >
               Privacy Policy
             </a>
@@ -336,7 +335,7 @@ export default function Consult() {
 
             <a
               href="/refund-policy"
-              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
             >
               Refund Policy
             </a>
@@ -353,7 +352,7 @@ export default function Consult() {
 
             <a
               href="/shipping-policy"
-              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
             >
               Shipping & Delivery
             </a>
@@ -370,7 +369,7 @@ export default function Consult() {
 
             <a
               href="/contact-us"
-              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline"
+              className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
             >
               Contact Us
             </a>

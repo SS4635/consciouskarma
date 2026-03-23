@@ -39,7 +39,7 @@ But the complete arrangement — digit by digit, in the exact order in which it 
 This order is never random.<br/>
 The position each digit occupies shapes how the number expresses its energy and how it interacts
 with the life of the person using it.<br/><br/>
-<span style={{"color":"#ff914d"}}>The Importance of Sequence</span><br/><br/>
+<span style={{"color":"#f59255"}}>The Importance of Sequence</span><br/><br/>
 Consider these numbers:<br/>
 4871365462<br/>
 4183672456<br/>
@@ -49,7 +49,7 @@ The reason is simple: the sequence is not the same.<br/><br/>
 Just as rearranging words changes the meaning of a sentence, rearranging digits changes the
 meaning of a mobile number.<br/>
 A number is defined not only by what digits it contains, but by where those digits appear.<br/><br/>
-<span style={{"color":"#ff914d"}}>Position Alters Meaning</span><br/><br/>
+<span style={{"color":"#f59255"}}>Position Alters Meaning</span><br/><br/>
 Now look at another group:<br/>
 5876332415<br/>
 5876323415<br/>
@@ -63,7 +63,7 @@ A digit expresses itself according to its placement.<br/>
 Its effect changes depending on what comes before it, what follows it, and the overall movement of
 the sequence.<br/>
 The energy of a mobile number arises from interaction, not isolation.<br/><br/>
-<span style={{"color":"#ff914d"}}>Reading a Mobile Number Correctly</span><br/><br/>
+<span style={{"color":"#f59255"}}>Reading a Mobile Number Correctly</span><br/><br/>
 To understand the energy of a mobile number, the interaction between digits must be studied across
 the entire sequence.<br/>
 A clear and effective method is to break the number into overlapping pairs.<br/><br/>
@@ -72,7 +72,7 @@ For example, for 5876332415, the overlapping pairs are:
 These pairs reveal the flow of the number — how one digit transitions into the next, and how each
 interaction contributes to the overall pattern that moves through the sequence.<br/><br/>
 This movement is what defines the number’s influence.<br/><br/>
-<span style={{"color":"#ff914d"}}>The User Matters</span><br/><br/>
+<span style={{"color":"#f59255"}}>The User Matters</span><br/><br/>
 A mobile number does not behave identically for everyone.<br/>
 The same sequence can express different results depending on who is using it.<br/><br/>
 Key factors include:<br/>
@@ -84,7 +84,7 @@ The number remains constant, but the relationship between the number and the use
 way its energy is experienced.<br/>
 Each individual brings a different background, and the number interacts with that background in its
 own way.<br/><br/>
-<span style={{"color":"#ff914d"}}>The Role of Time</span><br/><br/>
+<span style={{"color":"#f59255"}}>The Role of Time</span><br/><br/>
 Time is an essential element in mobile number analysis.<br/><br/>
 When a number enters a person’s life, the stage they are in — their circumstances, responsibilities,
 and priorities — forms the backdrop against which the number begins to express itself.<br/><br/>

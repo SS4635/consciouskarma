@@ -99,21 +99,14 @@ export default function ConsultationBookingForm({
           width: 65,
           height: 65,
           border: "6px solid #222",
-          borderTop: "6px solid #ff914d", 
+          borderTop: "6px solid #f59255", 
           borderRadius: "50%",
-          animation: "spin 1s linear infinite",
           marginBottom: 20,
         }}
       />
       <div style={{ color: "#fff", fontSize: 20, letterSpacing: '0.5px' }}>
         Processing payment…
       </div>
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>,
     document.body
   ) : null;
@@ -144,7 +137,7 @@ export default function ConsultationBookingForm({
           justifyContent: 'center',
           position: 'relative',
           background: '#000',
-          border: '2px solid #ff914d',
+          border: '2px solid #f59255',
           borderRadius: '16px',
           padding: '32px 28px',
           width: '90%',
@@ -154,8 +147,8 @@ export default function ConsultationBookingForm({
         onClick={e => e.stopPropagation()}
       >
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
-          <path d="M7 12L10 15L17 8" stroke="#ff914d" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="11" stroke="#f59255" strokeWidth="2" fill="transparent"/>
+          <path d="M7 12L10 15L17 8" stroke="#f59255" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold', textAlign: 'center'}}>Success</h2>
         <p style={{color: '#fff', fontSize: '16px', marginTop: '10px'}}>Your consultation is booked. <br/> We will be in touch soon.</p>
@@ -164,7 +157,7 @@ export default function ConsultationBookingForm({
             position: 'absolute',
             top: 12,
             right: 12,
-            background: '#ff914d',
+            background: '#f59255',
             color: '#fff',
             border: 'none',
             borderRadius: '50%',
@@ -180,9 +173,6 @@ export default function ConsultationBookingForm({
           aria-label="Close"
         >×</button>
       </div>
-      <style>{`
-            @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-      `}</style>
     </div>
   ) : null;
 
@@ -532,7 +522,7 @@ export default function ConsultationBookingForm({
           justifyContent: 'center',
           position: 'relative',
           background: '#000',
-          border: '2px solid #ff914d', // Error ke liye Red color use kiya hai
+          border: '2px solid #f59255', // Error ke liye Red color use kiya hai
           borderRadius: '16px',
           padding: '32px 28px',
           width: '90%',
@@ -543,15 +533,15 @@ export default function ConsultationBookingForm({
       >
         {/* Error (Cross) Icon */}
         <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-          <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
-          <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="12" r="11" stroke="#f59255" strokeWidth="2" fill="transparent"/>
+          <path d="M15 9L9 15M9 9L15 15" stroke="#f59255" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
         <h2 style={{color: '#fff', fontSize: '24px', fontFamily: 'Arsenal, sans-serif', fontWeight: 'bold'}}>Missing Information</h2>
         <p style={{color: '#ccc', fontSize: '16px', marginTop: '10px', fontFamily: 'Arsenal, sans-serif'}}>{errorMsg}</p>
         <button
           style={{
             marginTop: '20px',
-            background: '#ff914d',
+            background: '#f59255',
             color: '#fff',
             border: 'none',
             borderRadius: '8px',
@@ -694,7 +684,7 @@ const handleProceed = async () => {
           contact: `${mappedFormData.primary.isd}${mappedFormData.primary.number}`,
         },
         
-        theme: { color: "#ff914d" },
+        theme: { color: "#f59255" },
       };
 
       // 6. OPEN RAZORPAY
@@ -732,7 +722,7 @@ const handleProceed = async () => {
   max-height: 35rem;                 /* ✅ fills modal height */
   display: flex;
   flex-direction: column;
-  border: 1px solid #ff914d;
+  border: 1px solid #f59255;
   border-radius: 16px;
   overflow: hidden;             /* ✅ clips footer/header correctly */
   background: #000;
@@ -762,11 +752,11 @@ const handleProceed = async () => {
 /* Optional: thin orange scrollbar */
 .ck-scroll-body {
   scrollbar-width: thin;
-  scrollbar-color: #ff914d #000;
+  scrollbar-color: #f59255 #000;
 }
 .ck-scroll-body::-webkit-scrollbar { width: 4px; }
 .ck-scroll-body::-webkit-scrollbar-track { background: #000; }
-.ck-scroll-body::-webkit-scrollbar-thumb { background: #ff914d; border-radius: 4px; }
+.ck-scroll-body::-webkit-scrollbar-thumb { background: #f59255; border-radius: 4px; }
 
 .ck-nav {
   flex: 0 0 auto;
@@ -782,7 +772,7 @@ const handleProceed = async () => {
 .ck-nav-btn {
   background: none;
   border: none;
-  color: #ff914d;
+  color: #f59255;
   font-size: 15px;
   cursor: pointer;
   padding: 4px 6px;
@@ -795,7 +785,7 @@ const handleProceed = async () => {
 .modal-footer {
   flex: 0 0 58px;               /* ✅ fixed footer height */
   display: flex;
-  border-top: 2px solid #ff914d;
+  border-top: 2px solid #f59255;
   background: #000;
 }
 
@@ -811,7 +801,7 @@ const handleProceed = async () => {
 }
 
 .modal-footer .price-btn {
-  border-right: 1px solid #ff914d;
+  border-right: 1px solid #f59255;
   color: #fff;
 }
 
@@ -825,12 +815,12 @@ const handleProceed = async () => {
   cursor: pointer;
   font-weight: 500;
   font-size: 25px;
-  border: 2px solid #ff914d;
+  border: 2px solid #f59255;
   transition: all 0.25s ease;
 }
 
 .proceed-btn:hover:not(:disabled) {
-  background-color: #ff914d;   /* orange bg on hover */
+  background-color: #f59255;   /* orange bg on hover */
   color: #000;                 /* black text on hover */
 }
 

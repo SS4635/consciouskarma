@@ -23,8 +23,8 @@ export default function ConsultationPlans() {
         window.innerWidth - document.documentElement.clientWidth;
       document.body.style.overflow = "hidden";
       document.body.style.paddingRight = `${scrollbarWidth}px`;
-      const id = setTimeout(() => setModalOpening(true), 20);
-      return () => clearTimeout(id);
+      setModalOpening(true);
+      return () => {};
     } else {
       document.body.style.overflow = "auto";
       document.body.style.paddingRight = "0px";
@@ -57,10 +57,8 @@ export default function ConsultationPlans() {
 
   const closeModal = () => {
     setModalOpening(false);
-    setTimeout(() => {
-      setShowModal(false);
-      setSelectedPlan(null);
-    }, 220);
+    setShowModal(false);
+    setSelectedPlan(null);
   };
 
   // --- PLANS DATA FROM ENV ---
@@ -140,7 +138,7 @@ useEffect(() => {
           /* Thin Scrollbar */
           .ck-modal-card {
             scrollbar-width: thin;
-            scrollbar-color: #ff914d #000;
+            scrollbar-color: #f59255 #000;
           }
           .ck-modal-card::-webkit-scrollbar {
             width: 4px;
@@ -149,7 +147,7 @@ useEffect(() => {
             background: #000;
           }
           .ck-modal-card::-webkit-scrollbar-thumb {
-            background-color: #ff914d;
+            background-color: #f59255;
             border-radius: 4px;
           }
           
@@ -253,33 +251,33 @@ useEffect(() => {
           }
 
           .consultation-plan-button {
-            border: 1.5px solid #ff914d;
+            border: 1.5px solid #f59255;
             background-color: #000;
-            color: #ff914d;
+            color: #f59255;
             padding: 8px 16px;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: none;
           }
 
           .consultation-plan-button:hover {
-            background-color: #ff914d;
+            background-color: #f59255;
             color: #000;
           }
         `}</style>
 
         {/* Header Section */}
         <div className="text-center mb-0">
-          <h1 className="fw-light mb-0 font-arsenal" style={{ fontSize: "30px" }}>
+          <h1 className="fw-light mb-0 font-balgin" style={{ fontSize: "clamp(24px, 4vw, 28px)" }}>
             Consultation Plans
           </h1>
-          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "20px" }}>
+          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 20px)" }}>
             Each plan is designed for one mobile number.
           </p>
-          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "20px" }}>
+          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 20px)" }}>
             The depth of analysis varies with your alignment needs.
           </p>
           {otpExtraText && (
-            <p className=" fw-light font-arsenal mb-0" style={{ color: '#ff914d', fontSize: "20px" }}>
+            <p className="fw-light font-arsenal mb-0" style={{ color: '#f59255', fontSize: "clamp(13px, 1.8vw, 16px)" }}>
               {otpExtraText}
             </p>
           )}
@@ -294,26 +292,26 @@ useEffect(() => {
               <div
                 className="consultation-plan-card rounded-4 p-4 h-100 text-white bg-transparent"
                 style={{
-                  borderBottom: "3px solid #ff6b35",
+                  borderBottom: "3px solid #f59255",
                   borderLeft: "none",
                   borderRight: "none",
                   borderTop: "none",
-                  transition: "0.3s",
+                  transition: "none",
                   cursor: "default",
                   position: "relative",
                 }}
               >
                 <div className="d-flex justify-content-between flex-wrap mb-3">
-                  <h3 className="fw-normal mb-2 text-start font-arsenal" style={{ fontSize: "25px" }}>
+                  <h3 className="fw-normal mb-2 text-start font-arsenal" style={{ fontSize: "clamp(22px, 4vw, 28px)" }}>
                     {plan.title}
                   </h3>
-                  <span className="font-arsenal" style={{ fontSize: "25px" }}>
+                  <span className="font-arsenal" style={{ fontSize: "clamp(22px, 4vw, 28px)" }}>
                     ₹{plan.price}
                   </span>
                 </div>
                 <p
                   className="mb-8 font-arsenal"
-                  style={{ whiteSpace: "pre-line", wordWrap: "break-word", fontSize: "20px" }}
+                  style={{ whiteSpace: "pre-line", wordWrap: "break-word", fontSize: "clamp(18px, 2.7vw, 22px)" }}
                 >
                   {plan.description}
                 </p>
@@ -342,7 +340,7 @@ useEffect(() => {
               inset: 0,
               background: "rgba(0,0,0,0.9)",
               opacity: modalOpening ? 1 : 0,
-              transition: "opacity 400ms ease-in-out",
+              transition: "none",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -371,9 +369,7 @@ useEffect(() => {
       ? "translateY(14px) scale(0.98)"
       : "scale(0.92)",
     opacity: modalOpening ? 1 : 0.85,
-    transition: isMobile
-      ? "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), opacity 220ms ease"
-      : "transform 220ms ease, opacity 220ms ease",
+    transition: "none",
   }}
   onClick={(ev) => ev.stopPropagation()}
 >
