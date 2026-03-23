@@ -29,7 +29,7 @@ export default function ConsultationSection() {
   {/* Item 1 */}
   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
     <div style={{ flexShrink: 0, marginTop: '5px' }}>
-      <i className="bi bi-clipboard-check text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+      <i className="bi bi-clipboard-check text-[#f59255]" style={{ fontSize: '1rem' }}></i>
     </div>
     <span className="fs-4 fw-light">
       Beginning with a discovery form,
@@ -39,7 +39,7 @@ export default function ConsultationSection() {
   {/* Item 2 */}
   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
     <div style={{ flexShrink: 0, marginTop: '5px' }}>
-      <i className="bi bi-camera-video text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+      <i className="bi bi-camera-video text-[#f59255]" style={{ fontSize: '1rem' }}></i>
     </div>
     <span className="fs-4 fw-light">
       Moving to a focused 25-minute video call,
@@ -49,7 +49,7 @@ export default function ConsultationSection() {
   {/* Item 3 */}
   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
     <div style={{ flexShrink: 0, marginTop: '5px' }}>
-      <i className="bi bi-chat-dots text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+      <i className="bi bi-chat-dots text-[#f59255]" style={{ fontSize: '1rem' }}></i>
     </div>
     <span className="fs-4 fw-light">
       Followed continued guidance on chat,
@@ -59,7 +59,7 @@ export default function ConsultationSection() {
   {/* Item 4 */}
   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '15px' }}>
     <div style={{ flexShrink: 0, marginTop: '5px' }}>
-      <i className="bi bi-check-circle text-[#ff6b35]" style={{ fontSize: '1rem' }}></i>
+      <i className="bi bi-check-circle text-[#f59255]" style={{ fontSize: '1rem' }}></i>
     </div>
     <span className="fs-4 fw-light">
       Until the right number is chosen.
@@ -71,10 +71,10 @@ export default function ConsultationSection() {
 
           {/* CTA */}
           <div className="mt-4">
-            <h2 className="fw-light mb-1 !text-[20px]" style={{ color: "#ff6b35" }}>
+            <h2 className="fw-light mb-1 !text-[20px]" style={{ color: "#f59255" }}>
               Change your number
             </h2>
-            <h2 className="fw-light" style={{ color: "#ff6b35" }}>
+            <h2 className="fw-light" style={{ color: "#f59255" }}>
               Change your destiny
             </h2>
           </div>

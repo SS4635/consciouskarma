@@ -14,12 +14,12 @@
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: #ff914d;
+  background-color: #f59255;
   border-radius: 4px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: #ff914d;
+  background-color: #f59255;
 }
 
 /* Hide arrows */
@@ -77,7 +77,7 @@
   width: 100%;
   max-width: 400px;
   background: #111;
-  border: 2px solid #ff914d;
+  border: 2px solid #f59255;
   border-radius: 14px;
   padding: 22px;
   color: white;
@@ -134,7 +134,7 @@
   right: 10px;
   background: none;
   border: none;
-  color: #ff914d;
+  color: #f59255;
   cursor: pointer;
   font-weight: 600;
   display: inline-flex;
@@ -149,8 +149,8 @@
   width: 100%;
   padding: 12px 0;
   background: transparent;
-  color: #ff914d;
-  border: 2px solid #ff914d;
+  color: #f59255;
+  border: 2px solid #f59255;
   border-radius: 8px;
   margin-top: 16px;
   font-weight: bold;
@@ -161,8 +161,8 @@
 .ck-btn1 {
   padding: 12px 0;
   background: transparent;
-  color: #ff914d;
-  border: 2px solid #ff914d;
+  color: #f59255;
+  border: 2px solid #f59255;
   border-radius: 8px;
   margin-top: 16px;
   cursor: pointer;
@@ -173,12 +173,12 @@
 }
 
 .ck-btn1:hover:not(:disabled) {
-  background: #ff914d;
+  background: #f59255;
   color: #111;
 }
 
 .ck-btn:hover:not(:disabled) {
-  background: #ff914d;
+  background: #f59255;
   color: #111;
 }
 
@@ -207,7 +207,7 @@
 
 .ck-switch {
   font-size: 14px;
-  color: #ff914d;
+  color: #f59255;
   background: none;
   border: none;
   cursor: pointer;
@@ -218,7 +218,7 @@
 }
 
 .ck-switch:hover {
-  color: #ff914d;
+  color: #f59255;
 }
 
 .ck-switch-divider {

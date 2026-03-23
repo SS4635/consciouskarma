@@ -97,7 +97,7 @@ export default function InlineInstantReportForm({
             value={isd}
             onChange={(e) => setIsd(e.target.value)}
             className="w-full h-full px-3 rounded-[7px] bg-transparent border-[1.5px] border-[#666]
-                     text-transparent appearance-none cursor-pointer focus:outline-none focus:border-[#ff6b35] transition-all duration-250"
+                     text-transparent appearance-none cursor-pointer focus:outline-none focus:border-[#f59255] transition-all duration-250"
             style={{
               fontSize: '0.95rem',
             }}
@@ -121,7 +121,7 @@ export default function InlineInstantReportForm({
         </div>
 
         <input
-          className="inline-report-mobile-input w-full h-[44px] px-[2.1rem] rounded-[7px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#ff6b35] focus:outline-none transition-all duration-250 text-[0.95rem]"
+          className="inline-report-mobile-input w-full h-[44px] px-[2.1rem] rounded-[7px] bg-transparent border-[1.5px] border-[#666] text-white placeholder-[#999] focus:border-[#f59255] focus:outline-none transition-all duration-250 text-[0.95rem]"
           type="tel"
           inputMode="numeric"
           pattern="[0-9 ]*"
@@ -168,8 +168,8 @@ export default function InlineInstantReportForm({
               padding: 3px;
               background: conic-gradient(
                 from var(--angle),
-                #ff914d,
-                #ff914d 20%,
+                #f59255,
+                #f59255 20%,
                 transparent 60%
               );
               -webkit-mask:
@@ -202,7 +202,7 @@ export default function InlineInstantReportForm({
             target="_blank"
             rel="noopener noreferrer"
             className="font-balgin no-underline hover:no-underline transition-colors sample-rep"
-            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#ff914d' }}
+            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#f59255' }}
           >
             sample report
           </a>

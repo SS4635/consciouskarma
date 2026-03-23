@@ -90,7 +90,7 @@ export default function Blog1() {
       </div>
 
       <main className="flex-grow pt-32 pb-20 px-4 sm:px-8 lg:px-12 max-w-[1500px] w-full mx-auto">
-        <h1 className="font-balgin text-center text-[#ff914d] text-4xl md:text-5xl font-bold mb-10 lg:mb-12 uppercase tracking-wider">
+        <h1 className="font-balgin text-center text-[#f59255] text-4xl md:text-5xl font-bold mb-10 lg:mb-12 uppercase tracking-wider">
           BLOGS
         </h1>
 
@@ -101,7 +101,7 @@ export default function Blog1() {
               onClick={() => { setSelectedCategories([]); setCurrentPage(1); }}
               className={`whitespace-nowrap px-4 py-2 rounded-full transition-all text-sm ${
                 selectedCategories.length === 0 
-                ? "bg-[#ff914d] text-black font-bold border-none" 
+                ? "bg-[#f59255] text-black font-bold border-none" 
                 : "bg-[#111] text-gray-400 hover:text-white border border-[#333]"
               }`}
             >
@@ -114,7 +114,7 @@ export default function Blog1() {
                 onClick={() => handleCategoryChange(cat.name)}
                 className={`whitespace-nowrap px-4 py-2 rounded-full transition-all text-sm ${
                   selectedCategories.includes(cat.name) 
-                  ? "bg-[#ff914d] text-black font-bold border-none" 
+                  ? "bg-[#f59255] text-black font-bold border-none" 
                   : "bg-[#111] text-gray-400 hover:text-white border border-[#333]"
                 }`}
               >
@@ -125,7 +125,7 @@ export default function Blog1() {
         </div>
 
         {loading ? (
-          <div className="text-center text-[#ff914d] py-20 text-xl animate-pulse">Loading amazing stories...</div>
+          <div className="text-center text-[#f59255] py-20 text-xl animate-pulse">Loading amazing stories...</div>
         ) : (
           <div className="flex flex-col lg:flex-row gap-10">
             
@@ -139,7 +139,7 @@ export default function Blog1() {
                     onClick={() => { setSelectedCategories([]); setCurrentPage(1); }}
                     className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-[15px] ${
                       selectedCategories.length === 0 
-                      ? "bg-[#1f1f1f] text-[#ff914d] font-semibold" 
+                      ? "bg-[#1f1f1f] text-[#f59255] font-semibold" 
                       : "text-gray-400 hover:bg-[#111] hover:text-white"
                     }`}
                   >
@@ -152,7 +152,7 @@ export default function Blog1() {
                       onClick={() => handleCategoryChange(cat.name)}
                       className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-[15px] ${
                         selectedCategories.includes(cat.name) 
-                        ? "bg-[#1f1f1f] text-[#ff914d] font-semibold" 
+                        ? "bg-[#1f1f1f] text-[#f59255] font-semibold" 
                         : "text-gray-400 hover:bg-[#111] hover:text-white"
                       }`}
                     >
@@ -184,7 +184,7 @@ export default function Blog1() {
                           <img src={`${API_BASE_URL}${blog.imageUrl}`} alt={blog.title} className="blog-card-img" />
                         </div>
                         <div className="blog-card-content">
-                          <p className="text-[#ff914d] text-[10px] font-bold uppercase tracking-widest mb-3">
+                          <p className="text-[#f59255] text-[10px] font-bold uppercase tracking-widest mb-3">
                             {blog.category || "Uncategorized"}
                           </p>
                           <h3 className="blog-card-title">{blog.title}</h3>
@@ -213,7 +213,7 @@ export default function Blog1() {
                           <button 
                             key={i} 
                             onClick={() => { setCurrentPage(i + 1); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
-                            className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all ${currentPage === i + 1 ? "bg-[#ff914d] text-black" : "text-gray-400 hover:bg-[#222] hover:text-white"}`}
+                            className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-bold transition-all ${currentPage === i + 1 ? "bg-[#f59255] text-black" : "text-gray-400 hover:bg-[#222] hover:text-white"}`}
                           >
                             {i + 1}
                           </button>
@@ -237,7 +237,7 @@ export default function Blog1() {
       </main>
 
       {/* 🦶 EXACT FOOTER FROM CONSCIOUS KARMA */}
-      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#ff914d] py-3 sm:py-2 md:py-3" >
+      <footer className="mt-auto w-screen relative left-1/2 -translate-x-1/2 bg-black text-white border-t-2 border-[#f59255] py-3 sm:py-2 md:py-3" >
         <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
             <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline hover:no-underline focus:no-underline">
@@ -295,7 +295,7 @@ export default function Blog1() {
         .blog-card-content { display: flex; flex-direction: column; flex-grow: 1; }
         .blog-card-title { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 8px; font-family: 'Inter', sans-serif; line-height: 1.3; }
         .blog-card-excerpt { color: #888; font-size: 14px; line-height: 1.6; margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; font-weight: 400; }
-        .blog-card-readmore { color: #ff914d; text-decoration: none; font-size: 14px; margin-top: auto; }
+        .blog-card-readmore { color: #f59255; text-decoration: none; font-size: 14px; margin-top: auto; }
 
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }

@@ -41,7 +41,7 @@
 .sp-heading {
   font-size: 25px;
   font-weight: bold;
-  color: #ff914d;
+  color: #f59255;
   margin-bottom: 24px;
 }
 
@@ -69,19 +69,19 @@
 }
 
 .sp-list li strong {
-  color: #ff914d;
+  color: #f59255;
   font-weight: 600;
 }
 
 .sp-email {
-  color: #ff914d;
+  color: #f59255;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.3s ease;
 }
 
 .sp-email:hover {
-  color: #ff914d;
+  color: #f59255;
   text-decoration: underline;
 }
 
@@ -131,7 +131,7 @@
 @media (max-width: 640px) {
   .sp-policy-footer {
     background: #000000 !important;
-    border-top: 1px solid #ff914d !important;
+    border-top: 1px solid #f59255 !important;
     padding: 12px 0 !important;
     color: #ffffff !important;
   }

@@ -76,7 +76,7 @@
 //         }
         
 //         .faq-item.active {
-//           border-color: #ff6b35;
+//           border-color: #f59255;
 //         }
         
 //         .faq-question {

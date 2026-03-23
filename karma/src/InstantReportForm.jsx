@@ -376,7 +376,7 @@ const canApplyCoupon =
 
 
   const footerFix = {
-    width: "100%", display: "flex", borderTop: "2px solid #ff914d",
+    width: "100%", display: "flex", borderTop: "2px solid #f59255",
   };
   const currentCountry = getSelectedCountry();
   const maxAllowedLength = currentCountry?.max_length || 15;
@@ -436,7 +436,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
     <div
       style={{
         background: "#000",
-        border: "2px solid #ff914d",
+        border: "2px solid #f59255",
         borderRadius: "16px",
         padding: "32px 28px",
         width: "90%",
@@ -452,12 +452,12 @@ const successOverlay = (generatingReport && showSuccess) ? (
             cx="12"
             cy="12"
             r="10.5"
-            stroke="#ff914d"
+            stroke="#f59255"
             strokeWidth="2"
           />
           <path
             d="M7 12L10.2 15.2L17 8"
-            stroke="#ff914d"
+            stroke="#f59255"
             strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -469,7 +469,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
       <h2
         style={{
           fontSize: "22px",
-          color: "#ff914d",
+          color: "#f59255",
           marginBottom: "10px",
           fontWeight: "600",
         }}
@@ -523,7 +523,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
           width: 52,
           height: 52,
           border: "4px solid #333",
-          borderTop: "4px solid #ff914d",
+          borderTop: "4px solid #f59255",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           marginBottom: 16,
@@ -566,7 +566,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
           width: "48px",
           height: "48px",
           border: "4px solid #333",
-          borderTop: "4px solid #ff914d",
+          borderTop: "4px solid #f59255",
           borderRadius: "50%",
           animation: "spin 1s linear infinite",
           marginBottom: "16px",
@@ -604,7 +604,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
             .swal2-popup {
               background: #111 !important;
               color: #fff !important;
-              border: 2px solid #ff914d !important;
+              border: 2px solid #f59255 !important;
               border-radius: 16px !important;
             }
             .swal2-title,
@@ -617,23 +617,23 @@ const successOverlay = (generatingReport && showSuccess) ? (
               background: none !important;
             }
             .swal2-success {
-              border-color: #ff914d !important;
+              border-color: #f59255 !important;
             }
             .swal2-success .swal2-success-ring {
-              border: 4px solid #ff914d !important;
+              border: 4px solid #f59255 !important;
             }
             .swal2-success .swal2-success-line-tip,
             .swal2-success .swal2-success-line-long {
-              background-color: #ff914d !important;
+              background-color: #f59255 !important;
             }
             .swal2-styled.swal2-confirm {
-              background-color: #ff914d !important;
+              background-color: #f59255 !important;
               color: #fff !important;
-              border: 2px solid #ff914d !important;
+              border: 2px solid #f59255 !important;
               border-radius: 8px !important;
             }
             .swal2-styled.swal2-confirm:focus {
-              box-shadow: 0 0 0 2px #ff914d55 !important;
+              box-shadow: 0 0 0 2px #f5925555 !important;
             }
             .swal2-container { z-index: 9999 !important; }
 
@@ -651,7 +651,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
               outline: none;
             }
             .instant-input:focus {
-              border-color: #ff914d;
+              border-color: #f59255;
               box-shadow: 0 0 0 0.2rem rgba(255, 145, 77, 0.25);
             }
             .instant-input.error {
@@ -675,7 +675,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
               transition: all 0.25s ease;
             }
             .instant-select:focus {
-              border-color: #ff914d;
+              border-color: #f59255;
               box-shadow: 0 0 0 0.2rem rgba(255, 145, 77, 0.25);
             }
           `}</style>
@@ -701,7 +701,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
       <div
         style={{
           background: "#000",
-          border: "2px solid #ff914d",
+          border: "2px solid #f59255",
           borderRadius: "16px",
           padding: "30px",
           width: "90%",
@@ -712,17 +712,17 @@ const successOverlay = (generatingReport && showSuccess) ? (
       >
         {/* TICK */}
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10.5" stroke="#ff914d" strokeWidth="2" />
+          <circle cx="12" cy="12" r="10.5" stroke="#f59255" strokeWidth="2" />
           <path
             d="M7 12L10.2 15.2L17 8"
-            stroke="#ff914d"
+            stroke="#f59255"
             strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
 
-        <h2 style={{ color: "#ff914d", marginTop: "16px" }}>
+        <h2 style={{ color: "#f59255", marginTop: "16px" }}>
           Coupon Applied!
         </h2>
 
@@ -775,7 +775,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
       <div
         style={{
           background: "#000",
-          border: "2px solid #ff914d",
+          border: "2px solid #f59255",
           borderRadius: "16px",
           padding: "32px",
           width: "90%",
@@ -786,17 +786,17 @@ const successOverlay = (generatingReport && showSuccess) ? (
       >
         {/* TICK */}
         <svg width="64" height="64" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10.5" stroke="#ff914d" strokeWidth="2" />
+          <circle cx="12" cy="12" r="10.5" stroke="#f59255" strokeWidth="2" />
           <path
             d="M7 12L10.2 15.2L17 8"
-            stroke="#ff914d"
+            stroke="#f59255"
             strokeWidth="2.8"
             strokeLinecap="round"
             strokeLinejoin="round"
           />
         </svg>
 
-        <h2 style={{ color: "#ff914d", marginTop: 16 }}>
+        <h2 style={{ color: "#f59255", marginTop: 16 }}>
           Payment Successful
         </h2>
 
@@ -879,7 +879,7 @@ const successOverlay = (generatingReport && showSuccess) ? (
               <div style={{ marginBottom: "18px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", marginBottom: "6px", fontSize: "17px" }}>
                   <span>Email*</span>
-                  <button type="button" style={{ color: "#ff914d", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
+                  <button type="button" style={{ color: "#f59255", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
                 </div>
                 <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className={`instant-input ${errors.email ? 'error' : ''}`} />
                 {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
@@ -927,14 +927,14 @@ const successOverlay = (generatingReport && showSuccess) ? (
             width: "100%", 
             display: "flex",
             flexShrink: 0,
-            // borderTop: "2px solid #ff914d" // Removed container border to fix overlap
+            // borderTop: "2px solid #f59255" // Removed container border to fix overlap
           }}>
             <div style={{ 
               width: "50%", 
               padding: "7px 61px", 
               background: "#161616", 
-              borderRight: "2px solid #ff914d", 
-              borderTop: "2px solid #ff914d", // Moved border to children
+              borderRight: "2px solid #f59255", 
+              borderTop: "2px solid #f59255", // Moved border to children
               color: "#fff", 
               borderBottomLeftRadius: "12px", 
               fontSize: "21px",
@@ -951,9 +951,9 @@ const successOverlay = (generatingReport && showSuccess) ? (
                 justifyContent: "center", 
                 alignItems: "center", 
                 fontSize: "21px", 
-                background: (paying || !rzReady || !isFormValid || generatingReport) ? "#1a1a1a" : "#ff914d", 
+                background: (paying || !rzReady || !isFormValid || generatingReport) ? "#1a1a1a" : "#f59255", 
                 border: "none", 
-                borderTop: "2px solid #ff914d", // Explicit border top for button
+                borderTop: "2px solid #f59255", // Explicit border top for button
                 color: (paying || !rzReady || !isFormValid || generatingReport) ? "#666" : "black", 
                 cursor: (paying || !rzReady || !isFormValid || generatingReport) ? "not-allowed" : "pointer",
                 borderBottomRightRadius: "12px"

@@ -7,8 +7,8 @@
   --bg: #000;
   --text: #f2f2f2;
   --muted: #dcdcdc;
-  --accent: #ff914d;
-  --accent-700: #ff914d;
+  --accent: #f59255;
+  --accent-700: #f59255;
   --line: #2a2a2a;
   --shadow: 0 10px 30px rgba(0,0,0,.35);
   --font-body: 'Arsenal', system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
@@ -58,12 +58,8 @@ body {
   background: var(--accent);
   margin-left: 4px;
   vertical-align: -0.12em;
-  animation: caretBlink 1s steps(1) infinite;
 }
 
-@keyframes caretBlink {
-  50% { opacity: 0; }
-}
 
 /* Ensure full height */
 html, body, #root {
@@ -85,12 +81,12 @@ html, body, #root {
 
 /* Orange success tick */
 .swal2-success {
-  border-color: #ff914d !important;
+  border-color: #f59255 !important;
 }
 
 .swal2-success-line-tip,
 .swal2-success-line-long {
-  background-color: #ff914d !important;
+  background-color: #f59255 !important;
 }
 
 .swal2-success-ring {

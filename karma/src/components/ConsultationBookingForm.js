@@ -511,7 +511,7 @@ const errorOverlay = showError ? (
         flexDirection: 'column',
         alignItems: 'center',
         background: '#000',
-        border: '2px solid #ff914d', 
+        border: '2px solid #f59255', 
         borderRadius: '16px',
         padding: '32px 28px',
         width: '90%',
@@ -522,8 +522,8 @@ const errorOverlay = showError ? (
       onClick={e => e.stopPropagation()}
     >
       <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{marginBottom: '20px'}}>
-        <circle cx="12" cy="12" r="11" stroke="#ff914d" strokeWidth="2" fill="transparent"/>
-        <path d="M15 9L9 15M9 9L15 15" stroke="#ff914d" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+        <circle cx="12" cy="12" r="11" stroke="#f59255" strokeWidth="2" fill="transparent"/>
+        <path d="M15 9L9 15M9 9L15 15" stroke="#f59255" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
       
       <h2 style={{color: '#fff', fontSize: '22px', marginBottom: '10px'}}>Missing Information</h2>
@@ -532,7 +532,7 @@ const errorOverlay = showError ? (
       <button
         style={{
           marginTop: '20px',
-          background: '#ff914d',
+          background: '#f59255',
           color: '#fff',
           border: 'none',
           padding: '10px 25px',
@@ -631,7 +631,7 @@ const errorOverlay = showError ? (
           `${formData[2]?.["Mobile Number"]?.isd}${formData[2]?.["Mobile Number"]?.mobile}`,
       },
 
-      theme: { color: "#ff6b35" },
+      theme: { color: "#f59255" },
     };
 
     new window.Razorpay(options).open();
@@ -653,7 +653,7 @@ const errorOverlay = showError ? (
         .swal2-popup {
           background: #111 !important;
           color: #fff !important;
-          border: 2px solid #ff914d !important;
+          border: 2px solid #f59255 !important;
           border-radius: 16px !important;
         }
         .swal2-title,
@@ -666,23 +666,23 @@ const errorOverlay = showError ? (
           background: none !important;
         }
         .swal2-success {
-          border-color: #ff914d !important;
+          border-color: #f59255 !important;
         }
         .swal2-success .swal2-success-ring {
-          border: 4px solid #ff914d !important;
+          border: 4px solid #f59255 !important;
         }
         .swal2-success .swal2-success-line-tip,
         .swal2-success .swal2-success-line-long {
-          background-color: #ff914d !important;
+          background-color: #f59255 !important;
         }
         .swal2-styled.swal2-confirm {
-          background-color: #ff914d !important;
+          background-color: #f59255 !important;
           color: #fff !important;
-          border: 2px solid #ff914d !important;
+          border: 2px solid #f59255 !important;
           border-radius: 8px !important;
         }
         .swal2-styled.swal2-confirm:focus {
-          box-shadow: 0 0 0 2px #ff914d55 !important;
+          box-shadow: 0 0 0 2px #f5925555 !important;
         }
         .swal2-container {
           z-index: 9999 !important;
@@ -699,7 +699,7 @@ const errorOverlay = showError ? (
         
         .form-card {
           background: transparent;
-          border: 2px solid #ff6b35;
+          border: 2px solid #f59255;
           border-radius: 15px;
           min-height: 500px; /* Minimum height for first slide */
           height: auto;
@@ -755,7 +755,7 @@ const errorOverlay = showError ? (
         
         .form-input:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
           box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
         
@@ -793,12 +793,12 @@ const errorOverlay = showError ? (
         }
         
         .btn-option:hover {
-          border-color: #ff6b35;
+          border-color: #f59255;
         }
         
         .btn-option.active {
-          background: #ff6b35;
-          border-color: #ff6b35;
+          background: #f59255;
+          border-color: #f59255;
         }
         
         .isd-input {
@@ -815,7 +815,7 @@ const errorOverlay = showError ? (
         
         .isd-input:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
         }
         
         .mobile-input {
@@ -831,11 +831,11 @@ const errorOverlay = showError ? (
         
         .mobile-input:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
         }
         
         .navigation-text {
-          color: #ff6b35;
+          color: #f59255;
           font-size: 1rem;
           cursor: pointer;
           transition: all 0.3s ease;
@@ -852,7 +852,7 @@ const errorOverlay = showError ? (
         
         .price-btn {
           background: transparent;
-          border: 2px solid #ff6b35;
+          border: 2px solid #f59255;
           border-radius: 8px;
           padding: 0;
           color: white;
@@ -910,7 +910,7 @@ const errorOverlay = showError ? (
         .modal-footer .price-btn {
           background: transparent;
           color: #ffffff;
-          border: 2px solid #ff6b35;
+          border: 2px solid #f59255;
           border-right-width: 1px;
           border-bottom-left-radius: 10px;
           justify-content: center;
@@ -1297,14 +1297,14 @@ const errorOverlay = showError ? (
                                 style={{
                                   flex: "0 0 auto",
                                   maxWidth: "90px",
-                                  background: "#ff6b35",
+                                  background: "#f59255",
                                   border: "none",
                                   height: "36px",
                                   fontSize: "20px",
                                   fontWeight:"heavy",
                                   width: "36px",
                                   backgroundColor:"black",
-                                  color:"#FF6B35",
+                                  color:"#f59255",
                                   boxSizing: "border-box",
                 borderWidth: "1px",
                     borderStyle: "solid",
@@ -1322,14 +1322,14 @@ const errorOverlay = showError ? (
                                 style={{
                                   flex: "0 0 auto",
                                   maxWidth: "90px",
-                                  background: "#ff6b35",
+                                  background: "#f59255",
                                   border: "none",
                                   height: "38.6px",
                                   fontSize: "14px",
                                   fontWeight:"heavy",
                                   width: "76.95px",
                                   backgroundColor:"black",
-                                  color:"#FF6B35",
+                                  color:"#f59255",
                                   boxSizing: "border-box",
     borderWidth: "1px",
     borderStyle: "solid",
@@ -1698,7 +1698,7 @@ const errorOverlay = showError ? (
                             <button
                               className="btn-option"
                               style={{
-                                background: "#ff6b35",
+                                background: "#f59255",
                                 color: "#fff",
                                 border: "none",
                                 flex: "0 0 auto",
@@ -1808,7 +1808,7 @@ const errorOverlay = showError ? (
           // Hamesha enabled look
           opacity: 1,
           cursor: "pointer",
-          backgroundColor: "#ff914d", // Active color
+          backgroundColor: "#f59255", // Active color
           color: "#000"
         }}
         onClick={handleProceed}

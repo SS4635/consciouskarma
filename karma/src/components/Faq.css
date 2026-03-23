@@ -6,7 +6,7 @@
 
 .ck-faq-list {
   width: 100%;
-  max-width: 780px;  
+  max-width: 600px;  
   margin: 0 auto;
 }
 
@@ -21,8 +21,8 @@
 
 .ck-faq-item {
   width: 100%;
-  max-width: 770px;
-  transition: all 0.3s ease;
+  max-width: 600px;
+  transition: none;
 }
 
 /* OPEN state me width badha do */

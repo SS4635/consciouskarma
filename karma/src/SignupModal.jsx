@@ -45,13 +45,13 @@ Swal.fire({
   confirmButtonText: "Continue",
   background: "#000",
   color: "#fff",
-  confirmButtonColor: "#ff914d",
+  confirmButtonColor: "#f59255",
   allowOutsideClick: false,
   allowEscapeKey: false,
 
   didOpen: () => {
     const popup = Swal.getPopup();
-    popup.style.border = "1.5px solid #ff914d";
+    popup.style.border = "1.5px solid #f59255";
     popup.style.borderRadius = "14px";
     popup.style.boxShadow = "0 0 25px rgba(255,145,77,0.35)";
   }

@@ -63,7 +63,7 @@ export default function SingleBlog() {
 
   if (loading) {
     return (
-      <div className="h-screen bg-black text-[#ff914d] flex items-center justify-center text-xl font-balgin animate-pulse">
+      <div className="h-screen bg-black text-[#f59255] flex items-center justify-center text-xl font-balgin animate-pulse">
         Loading amazing story...
       </div>
     );
@@ -73,13 +73,13 @@ export default function SingleBlog() {
     return (
       <div className="h-screen bg-black text-white flex flex-col items-center justify-center font-arsenal">
         <h2 className="text-2xl mb-4">Blog not found</h2>
-        <Link to="/blogspage" className="text-[#ff914d] font-bold border-b border-[#ff914d] pb-1">Back to Blogs</Link>
+        <Link to="/blogspage" className="text-[#f59255] font-bold border-b border-[#f59255] pb-1">Back to Blogs</Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white font-arsenal overflow-x-hidden selection:bg-[#ff914d] selection:text-black">
+    <div className="min-h-screen flex flex-col bg-black text-white font-arsenal overflow-x-hidden selection:bg-[#f59255] selection:text-black">
       
       {/* NAVBAR */}
       <div className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur-md border-b border-white/5">
@@ -98,17 +98,17 @@ export default function SingleBlog() {
       <main className="flex-1 pt-32 pb-20 px-6 sm:px-8 max-w-3xl mx-auto w-full">
         
         {/* Back Button */}
-        <Link to="/blogspage" className="group text-[#ff914d] no-underline text-xs font-bold mb-12 inline-flex items-center hover:opacity-100 transition-all tracking-[0.2em] uppercase">
+        <Link to="/blogspage" className="group text-[#f59255] no-underline text-xs font-bold mb-12 inline-flex items-center hover:opacity-100 transition-all tracking-[0.2em] uppercase">
           <span className="mr-2 group-hover:-translate-x-1 transition-transform">←</span> Back to all blogs
         </Link>
 
         {/* Title Section */}
         <header className="mb-12">
-            <h1 className="text-4xl md:text-6xl text-[#ff914d] font-balgin font-bold mb-6 leading-[1.1] tracking-tight" style={{ wordBreak: 'break-word' }}>
+            <h1 className="text-4xl md:text-6xl text-[#f59255] font-balgin font-bold mb-6 leading-[1.1] tracking-tight" style={{ wordBreak: 'break-word' }}>
             {blog.title}
             </h1>
             <div className="flex items-center gap-4">
-                <div className="h-[1px] w-100 bg-[#ff914d]/40"></div>
+                <div className="h-[1px] w-100 bg-[#f59255]/40"></div>
             </div>
         </header>
 
@@ -129,28 +129,28 @@ export default function SingleBlog() {
       </main>
 
       
-      <footer className="w-full bg-black text-white border-t-2 border-[#ff914d] py-4 mt-auto">
+      <footer className="w-full bg-black text-white border-t-2 border-[#f59255] py-4 mt-auto">
                <div className="container mx-auto flex flex-col items-center justify-center text-center gap-6">
                  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-3 sm:gap-6">
-                   <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors">
+                   <a href="/termsandconditions" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#f59255] transition-colors">
                      <FormattedMessage id="footer.termsConditions" />
                    </a>
                    <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
-                   <a href="/privacy-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors">
+                   <a href="/privacy-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#f59255] transition-colors">
                      <FormattedMessage id="footer.privacyPolicy" />
                    </a>
                    <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
-                   <a href="/refund-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors">
+                   <a href="/refund-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#f59255] transition-colors">
                      <FormattedMessage id="footer.refundPolicy" />
                    </a>
                    <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
       
-                   <a href="/shipping-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors">
+                   <a href="/shipping-policy" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#f59255] transition-colors">
                      <FormattedMessage id="footer.shippingDelivery" />
                    </a>
                    <div className="hidden sm:block w-[1px] h-[15px] bg-white opacity-50" />
       
-                   <a href="/contact-us" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#ff914d] transition-colors">
+                   <a href="/contact-us" className="text-white font-bold text-xs sm:text-sm no-underline hover:text-[#f59255] transition-colors">
                      <FormattedMessage id="footer.contactUs" />
                    </a>
                  </div>
@@ -188,7 +188,7 @@ export default function SingleBlog() {
 
         /* Heading Styles */
         .blog-rich-content h1, .blog-rich-content h2, .blog-rich-content h3 { 
-          color: #ff914d !important; 
+          color: #f59255 !important; 
           margin: 30px 0 15px; /* Margin kam kiya */
           font-family: 'Balgin', sans-serif;
           font-weight: 700;
@@ -223,7 +223,7 @@ export default function SingleBlog() {
         }
 
         .blog-rich-content blockquote {
-          border-left: 3px solid #ff914d;
+          border-left: 3px solid #f59255;
           padding: 8px 0 8px 30px;
           margin: 24px 0;
           font-style: italic;

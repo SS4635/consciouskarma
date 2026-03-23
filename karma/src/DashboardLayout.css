@@ -44,7 +44,6 @@ body {
   height: 2px;
   background-color: #fff;
   border-radius: 2px;
-  transition: all 0.3s ease;
 }
 
 /* Hamburger to 'X' animation */
@@ -114,7 +113,6 @@ body {
   padding: 24px;
   display: flex;
   flex-direction: column;
-  transition: transform 0.3s ease;
   z-index: 100;
 }
 
@@ -130,7 +128,6 @@ body {
   cursor: pointer;
   padding: 5px;
   line-height: 1;
-  transition: color 0.2s;
 }
 
 .ck-sidebar-close:hover {
@@ -154,7 +151,6 @@ body {
   text-align: left;
   font-size: 14px;
   letter-spacing: 0.05em;
-  transition: color 0.2s;
   text-decoration: none;
   display: block;
 }
@@ -295,7 +291,7 @@ body {
 }
 
 .ck-table-wrapper::-webkit-scrollbar-thumb {
-  background: #ff914d;
+  background: #f59255;
   border-radius: 999px;
 }
 
@@ -341,8 +337,8 @@ body {
 
 .ck-status-badge.sent {
   background: rgba(255, 145, 77, 0.15);
-  color: #ff914d;
-  border: 1px solid #ff914d;
+  color: #f59255;
+  border: 1px solid #f59255;
 }
 
 .ck-status-badge.pending {
@@ -392,7 +388,6 @@ body {
   border-radius: 4px;
   cursor: pointer;
   font-size: 13px;
-  transition: all 0.2s;
 }
 
 .ck-page-btn:hover:not(:disabled) {
@@ -433,7 +428,6 @@ body {
   text-decoration: none;
   color: #ccc;
   font-weight: 500;
-  transition: color 0.2s;
 }
 
 .container-footer a:hover {
@@ -500,7 +494,6 @@ body {
   border: 1px solid #333;
   border-radius: 6px;
   font-size: 14px;
-  transition: border-color 0.2s;
 }
 
 .ck-input:focus {
@@ -530,7 +523,6 @@ body {
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.2s;
 }
 
 .ck-btn-sm:hover {

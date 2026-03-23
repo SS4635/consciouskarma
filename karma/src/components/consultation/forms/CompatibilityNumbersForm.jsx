@@ -57,7 +57,7 @@ export default function CompatibilityNumbersForm({
           background: transparent;
           border: 1.5px solid #666;
           border-radius: 12px;
-          color: #ff6b35;
+          color: #f59255;
           width: 44px;
           height: 44px;
           font-size: 22px;
@@ -68,13 +68,13 @@ export default function CompatibilityNumbersForm({
           justify-content: center;
           line-height: 1;
         }
-        .pn-toggle:hover { border-color: #ff6b35; }
+        .pn-toggle:hover { border-color: #f59255; }
 
         .pn-remove {
           background: transparent;
           border: 1.5px solid #666;
           border-radius: 12px;
-          color: #ff6b35;
+          color: #f59255;
           padding: 0 14px;
           height: 44px;
           font-size: 14px;
@@ -82,7 +82,7 @@ export default function CompatibilityNumbersForm({
           transition: all 0.25s ease;
           white-space: nowrap;
         }
-        .pn-remove:hover { border-color: #ff6b35; background: rgba(255, 107, 53, 0.08); }
+        .pn-remove:hover { border-color: #f59255; background: rgba(255, 107, 53, 0.08); }
 
         .pn-label {
           font-size: 17.6px;
@@ -109,7 +109,7 @@ export default function CompatibilityNumbersForm({
         }
         .pn-input:focus, .pn-select:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
           box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
         .pn-input::placeholder { color: #999; }
@@ -149,7 +149,7 @@ export default function CompatibilityNumbersForm({
           transition: all 0.25s ease;
           cursor: pointer;
         }
-        .pn-add:hover { border-color: #ff6b35; }
+        .pn-add:hover { border-color: #f59255; }
 
         @media (max-width: 420px) {
           .pn-title { font-size: 24px; }

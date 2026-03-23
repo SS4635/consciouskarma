@@ -53,7 +53,7 @@ export default function OTPVerificationStep({
         }
         .otp-input:focus{
           outline:none;
-          border-color:#ff6b35;
+          border-color:#f59255;
           box-shadow:0 0 0 .2rem rgba(255,107,53,.18);
         }
 
@@ -82,20 +82,20 @@ export default function OTPVerificationStep({
           border-radius: 12px;
           border: 1.5px solid #666;
           background: transparent;
-          color: #ff6b35;
+          color: #f59255;
           font-size: 18px;
           font-weight: 300;
           transition: all .25s ease;
         }
         .otp-verify-btn:hover{
-          border-color:#ff6b35;
+          border-color:#f59255;
           background: rgba(255,107,53,.08);
         }
 
         /* FIX: Verified becomes FULL orange */
         .otp-verify-btn.verified{
-          background:#ff6b35;
-          border-color:#ff6b35;
+          background:#f59255;
+          border-color:#f59255;
           color:#fff;
           opacity: 1 !important;
         }

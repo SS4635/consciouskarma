@@ -19,7 +19,7 @@ export default function ConsultationSection() {
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}
           >
-            <p className="fw-light !text-[20px] mb-0 font-arsenal">
+            <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
               At Conscious Karma, we understand what an
               <br className="d-none d-md-block" />
               aligned number can bring to a person's life.
@@ -27,7 +27,7 @@ export default function ConsultationSection() {
 
             <SubsectionSpacer />
 
-            <p className="fw-light !text-[20px] mb-0 mt-0 font-arsenal">
+            <p className="fw-light mb-0 mt-0 font-arsenal" style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
               {" "}
               Our consultation is designed to help you find &nbsp;
               <br className="d-none d-md-block" />
@@ -40,7 +40,7 @@ export default function ConsultationSection() {
               {`
                 .consultation-text {
                   white-space: normal;
-                  font-size: 20px;
+                  font-size: clamp(18px, 2.7vw, 22px);
                 }
                 
                 .consultation-icon {
@@ -61,7 +61,7 @@ export default function ConsultationSection() {
                 /* Mobile tweaks */
                 @media (max-width: 768px) {
                   .consultation-text {
-                    font-size: 20px !important;
+                    font-size: clamp(18px, 3vw, 22px) !important;
                     padding-left: 1rem !important;
                     padding-right: 1rem !important;
                   }
@@ -76,7 +76,7 @@ export default function ConsultationSection() {
                 
                 @media (max-width: 576px) {
                   .consultation-text {
-                    font-size: 20px !important;
+                    font-size: clamp(17px, 3.5vw, 20px) !important;
                     padding-left: 0.75rem !important;
                     padding-right: 0.75rem !important;
                   }
@@ -104,7 +104,7 @@ export default function ConsultationSection() {
                 <span
                   className="font-arsenal consultation-text"
                   style={{
-                    color: "#ff6b35",
+                    color: "#FFFFFF",
                     lineHeight: "1.3",
                   }}
                 >
@@ -121,7 +121,7 @@ export default function ConsultationSection() {
                 <span
                   className="fw-light font-arsenal consultation-text"
                   style={{
-                    color: "#ff6b35",
+                    color: "#FFFFFF",
                     lineHeight: "1.3",
                   }}
                 >
@@ -138,7 +138,7 @@ export default function ConsultationSection() {
                 <span
                   className="fw-light font-arsenal consultation-text"
                   style={{
-                    color: "#ff6b35",
+                    color: "#FFFFFF",
                     lineHeight: "1.3",
                   }}
                 >
@@ -155,7 +155,7 @@ export default function ConsultationSection() {
                 <span
                   className="fw-light font-arsenal consultation-text"
                   style={{
-                    color: "#ff6b35",
+                    color: "#FFFFFF",
                     lineHeight: "1.3",
                   }}
                 >
@@ -170,12 +170,12 @@ export default function ConsultationSection() {
           {/* CTA Text */}
           <div className="">
             <h2
-              className="fw-light mb-0 font-arsenal"
-              style={{ color: "white", fontSize: "20px" }}
+              className="fw-light mb-0 font-balgin"
+              style={{ color: "#f59255", fontSize: "clamp(24px, 4vw, 28px)" }}
             >
               Change your number
             </h2>
-            <h2 className="fw-light font-arsenal mb-0" style={{ color: "white", fontSize: "20px" }}>
+            <h2 className="fw-light font-balgin mb-0" style={{ color: "#f59255", fontSize: "clamp(24px, 4vw, 28px)" }}>
               Change your destiny
             </h2>
           </div>

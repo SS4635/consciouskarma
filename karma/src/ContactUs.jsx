@@ -215,7 +215,7 @@ export default function ContactUs() {
                 outline: none;
               }
               .contact-input:focus {
-                border-color: #ff914d;
+                border-color: #f59255;
                 box-shadow: 0 0 0 0.2rem rgba(255, 145, 77, 0.25);
               }
             `}</style>

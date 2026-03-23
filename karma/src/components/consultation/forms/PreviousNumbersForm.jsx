@@ -84,7 +84,7 @@ export default function PreviousNumbersForm({
           background: transparent;
           border: 1.5px solid #666;
           border-radius: 12px;
-          color: #ff6b35;
+          color: #f59255;
           width: 44px;
           height: 44px;
           font-size: 22px;
@@ -95,13 +95,13 @@ export default function PreviousNumbersForm({
           justify-content: center;
           line-height: 1;
         }
-        .pr-toggle:hover { border-color: #ff6b35; }
+        .pr-toggle:hover { border-color: #f59255; }
 
         .pr-remove {
           background: transparent;
           border: 1.5px solid #666;
           border-radius: 12px;
-          color: #ff6b35;
+          color: #f59255;
           padding: 0 14px;
           height: 44px;
           font-size: 14px;
@@ -109,7 +109,7 @@ export default function PreviousNumbersForm({
           transition: all 0.25s ease;
           white-space: nowrap;
         }
-        .pr-remove:hover { border-color: #ff6b35; background: rgba(255, 107, 53, 0.08); }
+        .pr-remove:hover { border-color: #f59255; background: rgba(255, 107, 53, 0.08); }
 
         .pr-field-label {
           font-size: 17.6px;
@@ -136,7 +136,7 @@ export default function PreviousNumbersForm({
         }
         .pr-input:focus, .pr-select:focus {
           outline: none;
-          border-color: #ff6b35;
+          border-color: #f59255;
           box-shadow: 0 0 0 0.2rem rgba(255, 107, 53, 0.25);
         }
         .pr-input::placeholder { color: #999; }
@@ -177,12 +177,12 @@ export default function PreviousNumbersForm({
           min-width: 90px;
           transition: all 0.25s ease;
         }
-        .pr-pill:hover { border-color: #ff6b35; }
+        .pr-pill:hover { border-color: #f59255; }
         
         /* ACTIVE STATE: Orange BG, Black Text */
         .pr-pill.active {
-          background: #ff6b35;
-          border-color: #ff6b35;
+          background: #f59255;
+          border-color: #f59255;
           color: #000;
           font-weight: 700;
         }
@@ -198,7 +198,7 @@ export default function PreviousNumbersForm({
           transition: all 0.25s ease;
           cursor: pointer;
         }
-        .pr-add:hover { border-color: #ff6b35; }
+        .pr-add:hover { border-color: #f59255; }
 
         @media (max-width: 420px) {
           .pr-title { font-size: 24px; }
