@@ -976,120 +976,65 @@ const ConsciousKarmaPage = () => {
           <div className="ck-form-layout">
             {/* LEFT HERO */}
 
-           <div className="ck-hero">
-  <p
-    className="ck-hero-text text-[25px] sm:text-[30px]"
-    style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}
-  >
-    Every mobile number is alive with energy,
-    <br className="hidden md:block" /> shaping how we think, feel, speak, and live.
-  </p>
+            <div className="ck-hero">
+              <p className="ck-hero-text text-[25px] sm:text-[30px]" style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}>
+                Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
+              </p>
 
-  <SubsectionSpacer />
+              <SubsectionSpacer />
 
-  <div className="mx-auto max-w-[900px] px-2 sm:px-3 w-full">
-    <div className="flex flex-col gap-3 w-full">
-      {features.map((row, rowIndex) => (
-        <div
-          key={rowIndex}
-          className="flex justify-center gap-2 sm:gap-3 w-full"
-          style={{ flexWrap: "nowrap" }}
-        >
-          {row.map((text, index) => {
-            const isThreeItems = row.length === 3;
-
-            return (
-              <div
-                key={index}
-                style={{
-                  width: isThreeItems
-                    ? "calc((100% - 16px) / 3)"
-                    : "calc((100% - 12px) / 2)",
-                  maxWidth: isThreeItems ? "220px" : "280px",
-                  minWidth: 0,
-                }}
-              >
-                <ElectricBorder
-                  color="#f59255"
-                  speed={2.1}
-                  chaos={0.5}
-                  thickness={1}
-                  style={{
-                    borderRadius: 16,
-                    width: "100%",
-                    display: "block",
-                  }}
-                >
-                  <div
-                    style={{
-  minHeight: "58px",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-  padding: "10px 12px",
-  width: "100%",
-}}
-                  >
-                   <p
-  style={{
-    margin: 0,
-    width: "100%",
-    opacity: 0.8,
-    fontSize: "clamp(13px, 2.5vw, 20px)",
-    lineHeight: 1.2,
-    textAlign: "center",
-    whiteSpace: "normal",
-    wordBreak: "break-word",
-  }}
->
-  {text}
-</p>
-                  </div>
-                </ElectricBorder>
+              <div className="mx-auto max-w-[900px] px-3">
+                <div className="ck-tags-wrap space-y-3">
+                  {features.map((row, rowIndex) => (
+                    <div key={rowIndex} className="ck-tags-row flex flex-wrap justify-center gap-3">
+                      {row.map((text, index) => (
+                        <ElectricBorder
+                          key={index}
+                          color="#f59255"
+                          speed={2.1}
+                          chaos={0.5}
+                          thickness={1}
+                          style={{ borderRadius: 16 }}
+                        >
+                          <div className="flex items-center h-[26px] sm:h-[34px]">
+                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] md:text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
+                              {text}
+                            </p>
+                          </div>
+                        </ElectricBorder>
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
-            );
-          })}
-        </div>
-      ))}
-    </div>
-  </div>
 
-  <SubsectionSpacer />
+              <SubsectionSpacer />
 
-  <p
-    className="ck-hero-sub"
-    style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}
-  >
-    Every Mobile Number tells a story.
-    <br />
-    This is YOURS.
-  </p>
+              <p className="ck-hero-sub" style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}>
+                Every Mobile Number tells a story.
+                <br />
+                This is YOURS.
+              </p>
 
-  <SubsectionSpacer />
+              <SubsectionSpacer />
 
-  <p
-    className="ck-delivery-text-left !m-0"
-    style={{ fontSize: "clamp(14px, 2vw, 16px)" }}
-  >
-    <>
-      Delivery within 5–7 days
-      <br />
-      Requires mobile number OTP verification
-      {otpExtraText && (
-        <>
-          <br />
-          <span
-            className="text-[#f59255]"
-            style={{ fontSize: "clamp(13px, 1.8vw, 15px)" }}
-          >
-            {otpExtraText}
-          </span>
-        </>
-      )}
-    </>
-  </p>
-</div>
+              <p className="ck-delivery-text-left !m-0" style={{ fontSize: "clamp(14px, 2vw, 16px)" }}>
+                <>
+                  Delivery within 5–7 days
+                  <br />
+                  Requires mobile number OTP verification
+                  {otpExtraText && (
+                    <>
+                      <br />
+                      <span className="text-[#f59255]" style={{ fontSize: "clamp(13px, 1.8vw, 15px)" }}>
+                        {otpExtraText}
+                      </span>
+                    </>
+                  )}
+                </>
+              </p>
+            </div>
+
             {/* RIGHT FORM */}
             <div className="ck-form-panel flex gap-1">
               <div className="ck-form-heading" style={{
