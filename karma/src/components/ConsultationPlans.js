@@ -209,7 +209,8 @@ export default function ConsultationPlans() {
       <div className="container">
         {/* Hide modal scrollbar visually but keep scrolling functional */}
         <style>{`
-          .ck-modal-card { -ms-overflow-style: none; scrollbar-width: none; }
+          .
+         { -ms-overflow-style: none; scrollbar-width: none; }
           .ck-modal-card::-webkit-scrollbar { display: none; width: 0; height: 0; }
           .ck-modal-backdrop { -ms-overflow-style: none; scrollbar-width: none; }
           .ck-modal-backdrop::-webkit-scrollbar { display: none; width: 0; height: 0; }
