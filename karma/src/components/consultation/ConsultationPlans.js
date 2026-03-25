@@ -267,17 +267,18 @@ useEffect(() => {
 
         {/* Header Section */}
         <div className="text-center mb-0">
-          <h1 className="fw-light mb-0 font-balgin" style={{ fontSize: "clamp(24px, 4vw, 28px)" }}>
+          <h1 className="fw-light mb-0 font-balgin" style={{ fontSize: "clamp(25px, 4vw, 28px)" ,marginBottom: "48px"}} >
             Consultation Plans
           </h1>
-          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 20px)" }}>
+
+          <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 20px)" ,marginTop: "24px"}}>
             Each plan is designed for one mobile number.
           </p>
           <p className="fw-light mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 20px)" }}>
             The depth of analysis varies with your alignment needs.
           </p>
           {otpExtraText && (
-            <p className="fw-light font-arsenal mb-0" style={{ color: '#f59255', fontSize: "clamp(13px, 1.8vw, 16px)" }}>
+            <p className="fw-light font-arsenal mb-0" style={{ color: '#f59255', fontSize: "clamp(18px, 1.8vw, 16px)" }}>
               {otpExtraText}
             </p>
           )}

@@ -4,7 +4,7 @@ import ElectricBorder from "../ElectricBorder.jsx";
 import { motion } from "framer-motion";
 
 function SubsectionSpacer() {
-  return <div style={{ height: "48px" }} />;
+  return <div style={{ height: "36px" }} />;
 }
 
 const FeatureTag = ({ text }) => (
@@ -27,10 +27,10 @@ export default function UniqueLifeDesign() {
       <div className="container text-center">
 
         {/* Header */}
-        <h1 className="fw-light unique-title mb-0 " style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+        <h1 className="fw-light unique-title mb-0 " style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
           Every person is unique
         </h1>
-        <h2 className="fw-light unique-title mb-0 " style={{ fontSize: "clamp(22px, 4vw, 30px)" }}>
+        <h2 className="fw-light unique-title mb-0 " style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
           So are the needs of their life
         </h2>
 
@@ -38,13 +38,13 @@ export default function UniqueLifeDesign() {
 
 
         {/* Role text */}
-        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
+        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(20px, 2.5vw, 22px)" }}>
           A student, a professional, an entrepreneur,
         </p>
-        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
+        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(20px, 2.5vw, 22px)" }}>
           a homemaker, an elder –
         </p>
-        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
+        <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(20px, 2.5vw, 22px)" }}>
           each role calls for different strengths.
         </p>
 
@@ -55,10 +55,9 @@ export default function UniqueLifeDesign() {
 
   {/* Row 1 – Left से घुसेगा */}
   <motion.div 
-    initial={{ x: -100, opacity: 0 }}
-    whileInView={{ x: 0, opacity: 1 }}
+   
     viewport={{ once: true }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
+   
     className="unique-feature-row row-3"
   >
     <FeatureTag text="Reducing stress" />
@@ -68,10 +67,9 @@ export default function UniqueLifeDesign() {
 
   {/* Row 2 – Right से घुसेगा */}
   <motion.div 
-    initial={{ x: 100, opacity: 0 }}
-    whileInView={{ x: 0, opacity: 1 }}
+    
     viewport={{ once: true }}
-    transition={{ duration: 0.8, ease: "easeOut" }}
+
     className="unique-feature-row row-2"
   >
     <FeatureTag text="Discipline & focus" />
@@ -80,8 +78,7 @@ export default function UniqueLifeDesign() {
 
   {/* Row 3 – Left से घुसेगा */}
   <motion.div 
-    initial={{ x: -100, opacity: 0 }}
-    whileInView={{ x: 0, opacity: 1 }}
+   
     viewport={{ once: true }}    
     transition={{ duration: 0.8, ease: "easeOut" }}
     className="unique-feature-row row-2"
@@ -96,13 +93,13 @@ export default function UniqueLifeDesign() {
 
         {/* Footer text */}
         <div className="">
-          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
+          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(20px, 2.5vw, 22px)" }}>
             Consciously chosen,
           </p>
-          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
+          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(20px , 2.5vw, 22px)" }}>
             A mobile number can amplify good phases,
           </p>
-          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(18px, 2.5vw, 22px)" }}>
+          <p className="fw-light unique-text mb-0 font-arsenal" style={{ fontSize: "clamp(20px, 2.5vw, 22px)" }}>
             and ease the path in times of challenge.
           </p>
         </div>
@@ -169,7 +166,7 @@ export default function UniqueLifeDesign() {
           }
 
           .unique-tag-text {
-            font-size: 14px;
+            font-size: 16px;
           }
         }
       `}</style>

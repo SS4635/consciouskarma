@@ -2,7 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function SubsectionSpacer() {
-  return <div style={{ height: "48px" }} />;
+  return <div style={{ height: "36px" }} />;
 }
 
 export default function ConsultationSection() {
@@ -19,7 +19,7 @@ export default function ConsultationSection() {
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}
           >
-            <p className="fw-light mb-0 font-arsenal px-2" style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
+            <p className="fw-light mb-0 font-arsenal " style={{ fontSize: "clamp(20px, 4vw, 30px)",paddingLeft:"18px",paddingRight:"18px"}}> 
               At Conscious Karma, we understand what an
               <br className="d-none d-md-block" />
               aligned number can bring to a person's life.
@@ -27,7 +27,7 @@ export default function ConsultationSection() {
 
             <SubsectionSpacer />
 
-            <p className="fw-light mb-0 mt-0 font-arsenal px-2" style={{ fontSize: "clamp(20px, 4vw, 30px)" }}>
+            <p className=" mb-0 mt-0 font-arsenal " style={{ fontSize: "clamp(20px, 4vw, 30px)" ,paddingLeft:"18px",paddingRight:"18px"}}>
               {" "}
               Our consultation is designed to help you find &nbsp;
               <br className="d-none d-md-block" />
@@ -61,7 +61,7 @@ export default function ConsultationSection() {
                 /* Mobile tweaks */
                 @media (max-width: 768px) {
                   .consultation-text {
-                    font-size: clamp(18px, 3vw, 22px) !important;
+                    font-size: clamp(20px, 3vw, 22px) !important;
                     padding-left: 1rem !important;
                     padding-right: 1rem !important;
                   }
@@ -76,7 +76,7 @@ export default function ConsultationSection() {
                 
                 @media (max-width: 576px) {
                   .consultation-text {
-                    font-size: clamp(17px, 3.5vw, 20px) !important;
+                    font-size: clamp(20px, 3.5vw, 20px) !important;
                     padding-left: 0.75rem !important;
                     padding-right: 0.75rem !important;
                   }
@@ -171,11 +171,11 @@ export default function ConsultationSection() {
           <div className="">
             <h2
               className="fw-light mb-0 font-balgin"
-              style={{ color: "#f59255", fontSize: "clamp(24px, 4vw, 28px)" }}
+              style={{ color: "#f59255", fontSize: "clamp(25px, 4vw, 28px)" }}
             >
               Change your number
             </h2>
-            <h2 className="fw-light font-balgin mb-0" style={{ color: "#f59255", fontSize: "clamp(24px, 4vw, 28px)" }}>
+            <h2 className="fw-light font-balgin mb-0" style={{ color: "#f59255", fontSize: "clamp(25px, 4vw, 28px)" }}>
               Change your destiny
             </h2>
           </div>

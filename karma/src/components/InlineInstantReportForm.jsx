@@ -134,15 +134,15 @@ export default function InlineInstantReportForm({
       </div>
 
       <div className="action-row" >
-        <span className="text-white font-arsenal flex items-center whitespace-nowrap ml-[13px]" style={{ fontSize: 'clamp(20px, 3vw, 26px)', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
+        <span className="text-white font-arsenal flex items-center whitespace-nowrap ml-[13px]" style={{ fontSize: 'clamp(20px, 3vw, 26px)', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-3px)' }}>
       ₹ {price/100}
         </span>
 
-        <div className="flex flex-col gap-1" style={{ marginRight: '28px' }}>
+        <div className="flex flex-col gap-1" style={{ marginRight: '18px' }}>
           <button
             type="submit"
             className="relative overflow-hidden rounded-md text-white font-balgin font-bold animated-border-btn butt"
-            style={{ padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 40px)', fontSize: 'clamp(13px, 2vw, 16px)' }}
+            style={{ padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 40px)', fontSize: 'clamp(14px, 2vw, 16px)' }}
           >
             <span className="relative z-10 whitespace-nowrap">Get Instant Report</span>
 
@@ -202,7 +202,7 @@ export default function InlineInstantReportForm({
             target="_blank"
             rel="noopener noreferrer"
             className="font-balgin no-underline hover:no-underline transition-colors sample-rep"
-            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#f59255' }}
+            style={{ fontSize: 'clamp(16px, 2vw, 16px)', color: '#f59255' }}
           >
             sample report
           </a>

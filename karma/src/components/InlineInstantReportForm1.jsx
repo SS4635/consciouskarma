@@ -135,15 +135,15 @@ export default function InlineInstantReportForm1({
       </div>
 
       <div className="acti" >
-        <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-4px)' }}>
+        <span className="text-white font-arsenal flex items-center whitespace-nowrap" style={{ fontSize: 'clamp(20px, 3vw, 26px)', marginLeft: '24px', paddingTop: 'clamp(8px, 2vw, 12px)', paddingBottom: 'clamp(8px, 2vw, 12px)', transform: 'translateY(-3px)' }}>
       ₹ {price/100}
         </span>
 
-        <div className="flex flex-col gap-1" style={{ marginRight: '28px' }}>
+        <div className="flex flex-col gap-1" style={{ marginRight: '22px' }}>
           <button
             type="submit"
             className="relative overflow-hidden rounded-md text-white font-balgin font-bold animated-border-btn buttt"
-            style={{ padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 40px)', fontSize: 'clamp(13px, 2vw, 16px)' }}
+            style={{ padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 40px)', fontSize: 'clamp(14px, 2vw, 16px)' }}
           >
             <span className="relative z-10 whitespace-nowrap">{ctaLabel}</span>
 
@@ -203,7 +203,7 @@ export default function InlineInstantReportForm1({
             target="_blank"
             rel="noopener noreferrer"
             className="font-balgin no-underline hover:no-underline transition-colors sample-rp"
-            style={{ fontSize: 'clamp(13px, 2vw, 16px)', color: '#f59255' }}
+            style={{ fontSize: 'clamp(16px, 2vw, 16px)', color: '#f59255' }}
           >
             sample report
           </a>

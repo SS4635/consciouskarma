@@ -23,7 +23,7 @@ import blog03 from "./Blog.3.jpg";
 import mobileEnergyFlow from "./mobile number energy flow.png";
 
 const commonTextStyle = {
-  fontSize: "clamp(18px, 2.5vw, 20px)",
+  fontSize: "clamp(20px, 2.5vw, 20px)",
   lineHeight: "1.4",
   marginBottom: "0",
 };
@@ -112,10 +112,10 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
         </div>
 
         <div className="p-4 sm:p-5 md:p-6 text-left">
-          <h3 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white">
+          <h4 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white" style={{ fontSize: "clamp(22px, 2.5vw, 22px)" }}>
             {blog.title}
-          </h3>
-          <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4">
+          </h4>
+          <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4" style={{fontSize:"clamp(18px, 2.5vw, 16px)"}}>
             {blog.excerpt}
           </p>
           <div className="mt-2">
@@ -388,7 +388,7 @@ export default function ConsciousKarmaSections() {
 
                     <span
                       className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight"
-                      style={{ fontSize: "clamp(18px, 2.5vw, 20px)" }}
+                      style={{ fontSize: "clamp(20px, 2.5vw, 20px)" }}
                     >
                       {label}
                     </span>

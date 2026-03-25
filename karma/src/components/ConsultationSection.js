@@ -31,7 +31,7 @@ export default function ConsultationSection() {
     <div style={{ flexShrink: 0, marginTop: '5px' }}>
       <i className="bi bi-clipboard-check text-[#f59255]" style={{ fontSize: '1rem' }}></i>
     </div>
-    <span className="fs-4 fw-light">
+    <span className="fs-4 fw-light " style={{fontSize:"20px"}}>
       Beginning with a discovery form,
     </span>
   </div>

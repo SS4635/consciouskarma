@@ -17,11 +17,11 @@ import CKNavbar from "./components/CKNavbar";
 import { COUNTRY_CODES } from "./components/constants/countryCodes";
 
 function SectionSpacer() {
-  return <div style={{ height: "145px", backgroundColor: "#0b0b0b" }} />;
+  return <div style={{ height: "95px", backgroundColor: "#0b0b0b" }} />;
 }
 
 function SubsectionSpacer() {
-  return <div style={{ height: "48px", backgroundColor: "#0b0b0b" }} />;
+  return <div style={{ height: "36px", backgroundColor: "#0b0b0b" }} />;
 }
 
 // =======================
@@ -997,7 +997,7 @@ const ConsciousKarmaPage = () => {
                           style={{ borderRadius: 16 }}
                         >
                           <div className="flex items-center h-[26px] sm:h-[34px]">
-                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[14px] md:text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap">
+                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[18px] md:text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap"  style={{ fontSize: "clamp(16px, 3.5vw, 18px)" }}>
                               {text}
                             </p>
                           </div>
@@ -1018,7 +1018,7 @@ const ConsciousKarmaPage = () => {
 
               <SubsectionSpacer />
 
-              <p className="ck-delivery-text-left !m-0" style={{ fontSize: "clamp(14px, 2vw, 16px)" }}>
+              <p className="ck-delivery-text-left !m-0" style={{ fontSize: "clamp(16px, 2vw, 16px)" }}>
                 <>
                   Delivery within 5–7 days
                   <br />
@@ -1041,7 +1041,7 @@ const ConsciousKarmaPage = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                textAlign: "center",
+                textAlign: "center",fontSize: "clamp(25px, 3vw, 28px)",
               }}>  Book Personalized Report</div>
 
               <div className="ck-form-card">

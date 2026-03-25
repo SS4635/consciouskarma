@@ -118,6 +118,7 @@
   font-family: arsenal;
   font-weight: 300;
   line-height: 1.4;
+  padding-left: 12px;
   text-align: center;
   margin-bottom: 0;
 }
@@ -182,7 +183,7 @@
 
 .ck-form-heading {
   font-family: var(--font-display);
-  font-size: clamp(24px, 4vw, 28px);
+  font-size: clamp(24px, 4vw, 28px);  
   font-weight: 300;
   margin-bottom: 2rem;
   text-align: left;
@@ -450,7 +451,7 @@
 
 .ck-faq-title {
   font-family: var(--font-display);
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 300;
   margin-bottom: 0;
 }
@@ -512,12 +513,12 @@
 }
 
 .faq-question {
-  font-size: 22px;
+  font-size: 20px;
 }
 
 .faq-answer {
   padding-left: 15px;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1.6;
   opacity: 0.85;
   margin-top: 10px;
