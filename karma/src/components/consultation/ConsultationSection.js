@@ -2,7 +2,7 @@ import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function SubsectionSpacer() {
-  return <div style={{ height: "36px" }} />;
+  return <div className="h-[36px] sm:h-[48px]" />;
 }
 
 export default function ConsultationSection() {

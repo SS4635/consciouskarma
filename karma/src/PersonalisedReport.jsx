@@ -17,11 +17,11 @@ import CKNavbar from "./components/CKNavbar";
 import { COUNTRY_CODES } from "./components/constants/countryCodes";
 
 function SectionSpacer() {
-  return <div style={{ height: "95px", backgroundColor: "#0b0b0b" }} />;
+  return <div style={{ height: "145px", backgroundColor: "#0b0b0b" }} />;
 }
 
 function SubsectionSpacer() {
-  return <div style={{ height: "36px", backgroundColor: "#0b0b0b" }} />;
+  return <div className="h-[36px] sm:h-[48px]" />;
 }
 
 // =======================

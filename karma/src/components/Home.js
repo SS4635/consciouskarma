@@ -4,9 +4,8 @@ import ElectricBorder from "../ElectricBorder.jsx";
 import { motion } from "framer-motion";
 
 function SubsectionSpacer() {
-  return <div style={{ height: "36px" }} />;
+  return <div className="h-[36px] sm:h-[48px]" />;
 }
-
 const FeatureTag = ({ text }) => (
   <ElectricBorder
     color="#f59255"

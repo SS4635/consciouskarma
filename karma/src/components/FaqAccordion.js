@@ -191,7 +191,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './Faq.css'; // Import the CSS file
 
 function SubsectionSpacer() {
-  return <div style={{ height: "64px" }} />;
+  return <div className="h-[36px] sm:h-[48px]" />;
 }
 export default function FaqAccordion() {
   const [openFaqIndex, setOpenFaqIndex] = useState(null);

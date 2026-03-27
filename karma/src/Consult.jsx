@@ -14,7 +14,7 @@ function SectionSpacer() {
 }
 
 function SubsectionSpacer() {
-  return <div style={{ height: "64px", backgroundColor: "#0b0b0b" }} />;
+  return <div className="h-[36px] sm:h-[48px]" />;
 }
 
 

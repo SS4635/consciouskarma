@@ -65,7 +65,7 @@ function SectionSpacer() {
 }
 
 function SubsectionSpacer() {
-  return <div style={{ height: "48px" }} />;
+  return <div className="h-[36px] md:h-[48px]" />;
 }
 
 function FooterDivider() {
@@ -579,32 +579,32 @@ export default function ConsciousKarmaSections() {
 
           <SubsectionSpacer />
 
-          <p
-            className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 max-w-[300px] sm:max-w-none mx-auto"
-            style={commonTextStyle}
-          >
-            <span className="text-white inline md:block">
-              <FormattedMessage id="mobileEnergy.line1" />
-            </span>{" "}
-            <span className="text-white inline md:block">
-              <FormattedMessage id="mobileEnergy.line2" />
-            </span>{" "}
-            <span className="inline md:block">
-              <FormattedMessage
-                id="mobileEnergy.line3"
-                values={{
-                  distinctPattern: (
-                    <span className="text-[#f59255] font-normal">
-                      distinct pattern
-                    </span>
-                  ),
-                }}
-              />
-            </span>{" "}
-            <span className="inline md:block">
-              <FormattedMessage id="mobileEnergy.line4" />
-            </span>
-          </p>
+<p
+  className="m-0 text-gray-200 font-thin w-full px-2 sm:px-0 max-w-full sm:max-w-[300px] md:max-w-none mx-auto"
+  style={commonTextStyle}
+>
+  <span className="text-white inline md:block">
+    <FormattedMessage id="mobileEnergy.line1" />
+  </span>{" "}
+  <span className="text-white inline md:block">
+    <FormattedMessage id="mobileEnergy.line2" />
+  </span>{" "}
+  <span className="inline md:block">
+    <FormattedMessage
+      id="mobileEnergy.line3"
+      values={{
+        distinctPattern: (
+          <span className="text-[#f59255] font-normal">
+            distinct pattern
+          </span>
+        ),
+      }}
+    />
+  </span>{" "}
+  <span className="inline md:block">
+    <FormattedMessage id="mobileEnergy.line4" />
+  </span>
+</p>
         </div>
 
         <SubsectionSpacer />
@@ -666,32 +666,35 @@ export default function ConsciousKarmaSections() {
           />
         </div>
 
-        <div className="max-w-3xl mx-auto  relative">
-          <SubsectionSpacer />
-          <p className="mb-1 text-gray-200 font-thin max-w-[300px] sm:max-w-none mx-auto" style={commonTextStyle}>
-            <span className="inline md:block">
-              <FormattedMessage id="woven.line1" />
-            </span>{" "}
-            <span className="inline md:block">
-              <FormattedMessage id="woven.line2" />
-            </span>{" "}
-            <span className="inline md:block">
-              <FormattedMessage id="woven.line3" />
-            </span>{" "}
-            <span className="inline md:block">
-              <FormattedMessage
-                id="woven.line4"
-                values={{
-                  shapesYourKarma: (
-                    <span className="text-[#f59255] font-normal">
-                      shapes your karma
-                    </span>
-                  ),
-                }}
-              />
+        <div className="max-w-3xl mx-auto relative">
+  <SubsectionSpacer />
+  <p
+    className="mb-1 text-gray-200 font-thin w-full px-2 sm:px-0 max-w-full sm:max-w-[300px] md:max-w-none mx-auto"
+    style={commonTextStyle}
+  >
+    <span className="inline md:block">
+      <FormattedMessage id="woven.line1" />
+    </span>{" "}
+    <span className="inline md:block">
+      <FormattedMessage id="woven.line2" />
+    </span>{" "}
+    <span className="inline md:block">
+      <FormattedMessage id="woven.line3" />
+    </span>{" "}
+    <span className="inline md:block">
+      <FormattedMessage
+        id="woven.line4"
+        values={{
+          shapesYourKarma: (
+            <span className="text-[#f59255] font-normal">
+              shapes your karma
             </span>
-          </p>
-        </div>
+          ),
+        }}
+      />
+    </span>
+  </p>
+</div>
 
 
         <SubsectionSpacer />

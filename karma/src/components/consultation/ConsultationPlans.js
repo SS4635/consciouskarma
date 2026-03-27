@@ -3,7 +3,7 @@ import ConsultationBookingForm from "./ConsultationBookingForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function SubsectionSpacer() {
-  return <div style={{ height: "48px" }} />;
+  return <div className="h-[36px] sm:h-[48px]" />;
 }
 
 const API_BASE =  process.env.REACT_APP_API_URL || "https://server.consciouskarma.co";
