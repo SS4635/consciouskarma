@@ -251,11 +251,10 @@ useEffect(() => {
           }
 
           .consultation-plan-button {
-            border: 1.5px solid #f59255;
+            border: 1.5px solid #fff;
             background-color: #000;
-            color: #f59255;
+            color: #fff;
             padding: 8px 16px;
-            font-weight: 500;
             transition: none;
           }
 
@@ -325,7 +324,7 @@ useEffect(() => {
                     handleSelect(plan);
                   }}
                 >
-                  <b>Book Now</b>
+                  Book Now
                 </button>
               </div>
             </div>

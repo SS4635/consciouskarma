@@ -324,11 +324,18 @@ export default function ConsciousKarmaSections() {
                     />{" "}
                   </span>
                 </span>
-
+                
                 <span className="block md:inline">
+                  <span className="text-[#f59255] md:text-[#fff] font-normal">
+                  <FormattedMessage
+                    id="hero.title.TO"
+                    defaultMessage="TO "
+                  />
+                </span>
+
                   <FormattedMessage
                     id="hero.title.toAchieving"
-                    defaultMessage="TO ACHIEVING"
+                    defaultMessage="ACHIEVING"
                   />
                   <span className="md:hidden">
                     {" "}
@@ -641,7 +648,7 @@ export default function ConsciousKarmaSections() {
 
           <p className="!m-0 !text-[25px]">
             <a
-              href="/personalised-report"
+              href="/personalized-report"
               className="inline-block font-light no-underline"
               style={{ color: "white", transition: "color 0.3s" }}
               onMouseEnter={(e) => (e.target.style.color = "#f59255")}
@@ -669,7 +676,7 @@ export default function ConsciousKarmaSections() {
         <div className="max-w-3xl mx-auto relative">
   <SubsectionSpacer />
   <p
-    className="mb-1 text-gray-200 font-thin w-full px-2 sm:px-0 max-w-full sm:max-w-[300px] md:max-w-none mx-auto"
+    className="mb-1 text-gray-200 font-thin w-full px-1 sm:px-0 max-w-full sm:max-w-[350px] md:max-w-none mx-auto"
     style={commonTextStyle}
   >
     <span className="inline md:block">
@@ -700,7 +707,7 @@ export default function ConsciousKarmaSections() {
         <SubsectionSpacer />
       </section>
 
-      <section className="relative bg-black flex flex-col items-center justify-center text-center px-4">
+      <section className="relative bg-black flex flex-col items-center justify-center text-center px-2">
         <div className="container mx-auto max-w-[760px] text-center">
           <p className="text-gray-200 font-thin" style={commonTextStyle}>
             <span className="inline md:block">
