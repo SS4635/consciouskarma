@@ -19,7 +19,7 @@ export default function ConsultationSection() {
             className="text-center mx-auto"
             style={{ display: "inline-block", textAlign: "center" }}
           >
-            <p className="fw-light mb-0 font-arsenal " style={{ fontSize: "clamp(20px, 4vw, 30px)",paddingLeft:"18px",paddingRight:"18px"}}> 
+            <p className="fw-light mb-0 font-arsenal " style={{ fontSize: "clamp(20px, 4vw, 20px)",paddingLeft:"18px",paddingRight:"18px"}}> 
               At Conscious Karma, we understand what an
               <br className="d-none d-md-block" />
               aligned number can bring to a person's life.
@@ -27,7 +27,7 @@ export default function ConsultationSection() {
 
             <SubsectionSpacer />
 
-            <p className=" mb-0 mt-0 font-arsenal " style={{ fontSize: "clamp(20px, 4vw, 30px)" ,paddingLeft:"18px",paddingRight:"18px"}}>
+            <p className=" mb-0 mt-0 font-arsenal " style={{ fontSize: "clamp(20px, 4vw, 20px)" ,paddingLeft:"18px",paddingRight:"18px"}}>
               {" "}
               Our consultation is designed to help you find &nbsp;
               <br className="d-none d-md-block" />
@@ -40,7 +40,7 @@ export default function ConsultationSection() {
               {`
                 .consultation-text {
                   white-space: normal;
-                  font-size: clamp(20px, 2.7vw, 22px);
+                  font-size: clamp(20px, 2.7vw, 20px);
                 }
                 
                 .consultation-icon {
@@ -61,7 +61,7 @@ export default function ConsultationSection() {
                 /* Mobile tweaks */
                 @media (max-width: 768px) {
                   .consultation-text {
-                    font-size: clamp(20px, 3vw, 22px) !important;
+                    font-size: clamp(20px, 3vw, 20px) !important;
                     padding-left: 1rem !important;
                     padding-right: 1rem !important;
                   }

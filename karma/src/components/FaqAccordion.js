@@ -254,7 +254,7 @@ export default function FaqAccordion() {
 
   return (
     <section className="ck-faq-section text-center" style={{ padding: 0 }}>
-      <div className="ck-faq-title">Faqs</div>
+      <div className="ck-faq-title">FAQs</div>
       <SubsectionSpacer />
       <div className="ck-faq-list " >
         {faqs.map((faq, index) => {

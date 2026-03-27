@@ -312,7 +312,7 @@ useEffect(() => {
                 </div>
                 <p
                   className="mb-8 font-arsenal"
-                  style={{ whiteSpace: "pre-line", wordWrap: "break-word", fontSize: "clamp(18px, 2.7vw, 22px)" }}
+                  style={{ whiteSpace: "pre-line", wordWrap: "break-word", fontSize: "clamp(18px, 2.7vw, 20px)" }}
                 >
                   {plan.description}
                 </p>

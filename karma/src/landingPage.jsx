@@ -449,7 +449,7 @@ export default function ConsciousKarmaSections() {
               </div>
 
               <p
-                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block max-w-[280px] sm:max-w-none"
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block max-w-[380px] sm:max-w-none"
                 style={commonTextStyle}
               >
                 <FormattedMessage

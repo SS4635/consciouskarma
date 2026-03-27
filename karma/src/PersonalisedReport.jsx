@@ -977,7 +977,7 @@ const ConsciousKarmaPage = () => {
             {/* LEFT HERO */}
 
             <div className="ck-hero">
-              <p className="ck-hero-text text-[25px] sm:text-[30px]" style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}>
+              <p className="ck-hero-text " style={{ fontSize: "clamp(20px, 3.5vw, 20px)" }}>
                 Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
               </p>
 
@@ -1010,7 +1010,7 @@ const ConsciousKarmaPage = () => {
 
               <SubsectionSpacer />
 
-              <p className="ck-hero-sub" style={{ fontSize: "clamp(20px, 3.5vw, 25px)" }}>
+              <p className="ck-hero-sub" style={{ fontSize: "clamp(20px, 3.5vw, 20px)" }}>
                 Every Mobile Number tells a story.
                 <br />
                 This is YOURS.
