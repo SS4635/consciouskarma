@@ -51,7 +51,7 @@ export default function UniqueLifeDesign() {
         <SubsectionSpacer />
 
         {/* FEATURES */}
-       <div className="unique-features-wrapper mx-auto overflow-hidden"> {/* Parent में बस overflow-hidden डाल देना */}
+       <div className="unique-features-wrapper scale-90 md:scale-100 mx-auto"> {/* Parent में बस overflow-hidden डाल देना */}
 
   {/* Row 1 – Left से घुसेगा */}
   <motion.div 
@@ -120,7 +120,6 @@ export default function UniqueLifeDesign() {
         }
 
         .unique-features-wrapper {
-          max-width: 900px;
         }
 
         .unique-feature-row {

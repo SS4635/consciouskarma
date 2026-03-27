@@ -25,7 +25,7 @@ import mobileEnergyFlow from "./mobile number energy flow.png";
 const commonTextStyle = {
   fontSize: "clamp(20px, 2.5vw, 20px)",
   lineHeight: "1.4",
-  marginBottom: "0",
+  marginBottom: "36px",
 };
 
 const parent = {
@@ -65,7 +65,7 @@ function SectionSpacer() {
 }
 
 function SubsectionSpacer() {
-  return <div style={{ height: "48px" }} />;
+  return <div className="h-[48px] md:h-[36px]" />;
 }
 
 function FooterDivider() {
@@ -115,10 +115,10 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
           <h4 className="text-2xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-white" style={{ fontSize: "clamp(22px, 2.5vw, 22px)" }}>
             {blog.title}
           </h4>
-          <p className="text-gray-300 text-md md:text-md mb-3 sm:mb-4" style={{fontSize:"clamp(18px, 2.5vw, 16px)"}}>
+          <p className="text-gray-300 md:mb-[36px] mb-3 sm:mb-4 text-[18px] md:text-[20px]">
             {blog.excerpt}
           </p>
-          <div className="mt-2">
+          <div className="md:mt-0 mt-2">
             <span className="text-[#f59255] font-semibold text-sd md:text-sm hover:text-orange-300">
               <FormattedMessage id="blogs.readMore" />
             </span>
@@ -146,11 +146,11 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
         <h3 className="text-lg sm:text-xl font-semibold mb-2 sm:mb-3 text-white">
           {blog.title}
         </h3>
-        <p className="text-gray-300 text-sm mb-3 sm:mb-4">{blog.excerpt}</p>
+        <p className="text-gray-300 text-sm md:mb-[36px] mb-3 sm:mb-4 md:text-[20px]">{blog.excerpt}</p>
 
         {expandedBlog === index ? (
           <div className="mt-2 text-sm text-gray-200">
-            <p className="mb-3">{blog.content}</p>
+            <p className="md:mb-[36px] mb-3 md:text-[20px]">{blog.content}</p>
             <button
               className="btn text-sm px-3 py-2"
               onClick={() => setExpandedBlog(null)}
@@ -160,7 +160,7 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
             </button>
           </div>
         ) : (
-          <div className="mt-2">
+          <div className="md:mt-0 mt-2">
             <button
               className="text-[#f59255] font-semibold text-sm hover:text-orange-300"
               onClick={() => setExpandedBlog(index)}
@@ -449,7 +449,7 @@ export default function ConsciousKarmaSections() {
               </div>
 
               <p
-                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block max-w-[280px] sm:max-w-none"
+                className="text-gray-200 font-thin w-full px-2 sm:px-0 whitespace-pre-line inline-block max-w-[330px] sm:max-w-none"
                 style={commonTextStyle}
               >
                 <FormattedMessage
@@ -607,7 +607,9 @@ export default function ConsciousKarmaSections() {
           </p>
         </div>
 
-        <SubsectionSpacer />
+        <div className="md:hidden">
+          <SubsectionSpacer />
+        </div>
       </section>
 
       <section className="relative bg-black flex flex-col items-center justify-center text-center px-2 sm:px-6">
@@ -668,7 +670,7 @@ export default function ConsciousKarmaSections() {
 
         <div className="max-w-3xl mx-auto  relative">
           <SubsectionSpacer />
-          <p className="mb-1 text-gray-200 font-thin max-w-[300px] sm:max-w-none mx-auto" style={commonTextStyle}>
+          <p className="text-gray-200 font-thin max-w-[300px] sm:max-w-none mx-auto" style={commonTextStyle}>
             <span className="inline md:block">
               <FormattedMessage id="woven.line1" />
             </span>{" "}
@@ -694,7 +696,9 @@ export default function ConsciousKarmaSections() {
         </div>
 
 
-        <SubsectionSpacer />
+        <div className="md:hidden">
+          <SubsectionSpacer />
+        </div>
       </section>
 
       <section className="relative bg-black flex flex-col items-center justify-center text-center px-4">
@@ -708,7 +712,9 @@ export default function ConsciousKarmaSections() {
             </span>
           </p>
 
-          <SubsectionSpacer />
+          <div className="md:hidden">
+            <SubsectionSpacer />
+          </div>
 
           <div>
             <p className="text-white font-thin mb-0" style={commonTextStyle}>
@@ -724,7 +730,9 @@ export default function ConsciousKarmaSections() {
               {journeyLines[3]}
             </p>
 
-            <SubsectionSpacer />
+            <div className="md:hidden">
+              <SubsectionSpacer />
+            </div>
 
             <p className="text-gray-200 font-thin" style={commonTextStyle}>
               <FormattedMessage id="digitalYantra.line3" />
@@ -741,7 +749,9 @@ export default function ConsciousKarmaSections() {
               />
             </p>
 
-            <SubsectionSpacer />
+            <div className="md:hidden">
+              <SubsectionSpacer />
+            </div>
 
             <a
               href="/consult"
@@ -793,8 +803,8 @@ export default function ConsciousKarmaSections() {
       <section className="relative bg-black flex flex-col items-center !m-0">
         <div className="container mx-auto flex flex-col items-center text-center !m-0">
           <p
-            className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto !m-0"
-            style={{ fontSize: "clamp(22px, 2.5vw, 30px)", lineHeight: "1" }}
+            className="font-thin text-white max-w-full sm:max-w-[620px] mx-auto !m-0 text-[22px] md:text-[20px]"
+            style={{ lineHeight: "1" }}
           >
             <span
               className="block whitespace-nowrap sm:whitespace-normal !m-0"
@@ -807,8 +817,7 @@ export default function ConsciousKarmaSections() {
             </span>
           </p>
 
-          {/* <SubsectionSpacer /> */}
-          <div style={{ height: "24px" }} />
+
 
           <div
             className="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full overflow-x-auto px-4 scrollbar-hide"
