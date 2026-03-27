@@ -997,7 +997,7 @@ const ConsciousKarmaPage = () => {
                           style={{ borderRadius: 16 }}
                         >
                           <div className="flex items-center h-[26px] sm:h-[34px]">
-                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[18px] md:text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap" style={{ fontSize: "clamp(16px, 3.5vw, 18px)" }}>
+                            <p className="m-0 opacity-80 px-3 sm:px-[52px] text-[18px] md:text-[20px] mt-[2px] sm:mt-[6px] text-center whitespace-nowrap"  style={{ fontSize: "clamp(16px, 3.5vw, 18px)" }}>
                               {text}
                             </p>
                           </div>
@@ -1041,7 +1041,7 @@ const ConsciousKarmaPage = () => {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                textAlign: "center", fontSize: "clamp(25px, 3vw, 28px)",
+                textAlign: "center",fontSize: "clamp(25px, 3vw, 28px)",
               }}>  Book Personalized Report</div>
 
               <div className="ck-form-card">
