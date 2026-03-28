@@ -368,7 +368,7 @@ border-1
                   {/* Center Circle with Icon */}
                   <div className="relative z-20 flex-shrink-0 -mx-1 md:-mx-6">
                     <div
-                      className="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded-full bg-black shadow-2xl"
+                      className="flex items-center justify-center w-12 h-12 md:w-20 md:h-20 rounded-full bg-[#0b0b0b] shadow-2xl"
                       style={{ border: "3px solid #b0b0b0" }}
                     >
                       {routeDetails.icon}
