@@ -26,8 +26,8 @@ const RefundPolicy = () => {
       <main className="rp-content">
         <h1 className="rp-title">Refund & Cancellation Policy</h1>
 
-        <section className="rp-section">
-          <h2 className="rp-heading">Digital Products & Services</h2>
+        <section className="rp-section mt-10">
+          <h2 className="rp-heading">1. Digital Products & Services</h2>
           <p className="rp-text">
             All our products and services are digitally delivered. Once payment
             is received, your order is confirmed and processed automatically, and
@@ -37,7 +37,7 @@ const RefundPolicy = () => {
 
 
         <section className="rp-section">
-          <h2 className="rp-heading">Video Consultations</h2>
+          <h2 className="rp-heading">2. Video Consultations</h2>
           <p className="rp-text">
             For video consultations, rescheduling is possible up to 7 days before
             the scheduled slot and is subject to availability.
@@ -46,7 +46,7 @@ const RefundPolicy = () => {
 
 
         <section className="rp-section">
-          <h2 className="rp-heading">Exceptional Circumstances</h2>
+          <h2 className="rp-heading">3. Exceptional Circumstances</h2>
           <p className="rp-text">
             In rare situations such as a duplicate payment, technical issue, or
             non-delivery due to a system error, we will review the case and
@@ -57,7 +57,7 @@ const RefundPolicy = () => {
 
 
         <section className="rp-section">
-          <h2 className="rp-heading">Important Note</h2>
+          <h2 className="rp-heading">4. Important Note</h2>
           <p className="rp-text">
             Please make sure that your email address is entered correctly at
             checkout, as delivery depends on this information.
@@ -66,7 +66,7 @@ const RefundPolicy = () => {
 
 
         <section className="rp-section">
-          <h2 className="rp-heading">Contact</h2>
+          <h2 className="rp-heading">5. Contact</h2>
           <p className="rp-text">
             For any queries or assistance, please contact us at:
           </p>
@@ -97,97 +97,89 @@ const RefundPolicy = () => {
         </div>
       )}
 
-      {/* FOOTER */}
-       {/* Orange line above footer, same as TermsAndConditions */}
-      <div style={{ width: "100%", height: "1px", background: "#f59255", marginTop: "32px", marginBottom: "-30px", borderRadius: "2px" }}></div>
-      <footer className="rp-footer bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3 mt-8">
-        <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
-          {/* Mobile footer (matches screenshot) */}
-          <nav aria-label="Footer" className="sm:hidden">
-            <div className="rp-footer-links flex flex-wrap items-center justify-center text-center text-white font-bold text-xs">
-              <a
-                href="/termsandconditions"
-                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-              >
-                Terms & Conditions
-              </a>
-              <span className="rp-footer-sep" aria-hidden="true">|</span>
-              <a
-                href="/privacy-policy"
-                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-              >
-                Privacy Policy
-              </a>
-              <span className="rp-footer-sep" aria-hidden="true">|</span>
-              <a
-                href="/refund-policy"
-                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-              >
-                Refund Policy
-              </a>
+    <footer className="font-arsenal mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
+  <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
+    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+      <a
+        href="/termsandconditions"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Terms & Conditions
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-              {/* First line ends with a trailing pipe, like the screenshot */}
-              <span className="rp-footer-sep" aria-hidden="true">|</span>
+      <a
+        href="/privacy-policy"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Privacy Policy
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-              {/* Force the 2-line wrap exactly like the screenshot */}
-              <span className="rp-footer-break" aria-hidden="true"></span>
+      <a
+        href="/refund-policy"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Refund Policy
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-              <a
-                href="/shipping-policy"
-                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-              >
-                Shipping & Delivery
-              </a>
-              <span className="rp-footer-sep" aria-hidden="true">|</span>
-              <a
-                href="/contact-us"
-                className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-              >
-                Contact Us
-              </a>
-            </div>
-          </nav>
+      <a
+        href="/shipping-policy"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Shipping & Delivery
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-          {/* Desktop/tablet footer (existing layout) */}
-          <div className="hidden sm:flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
-            <a
-              href="/termsandconditions"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-            >
-              Terms & Conditions
-            </a>
-            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-            <a
-              href="/privacy-policy"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-            >
-              Privacy Policy
-            </a>
-            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-            <a
-              href="/refund-policy"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-            >
-              Refund Policy
-            </a>
-            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-            <a
-              href="/shipping-policy"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-            >
-              Shipping & Delivery
-            </a>
-            <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-            <a
-              href="/contact-us"
-              className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-            >
-              Contact Us
-            </a>
-          </div>
-          {/* <div className="text-white font-bold text-xs sm:text-sm mt-2">© 2025 Conscious Karma. All rights reserved.</div> */}
-        </div>
-      </footer>
+      <a
+        href="/contact-us"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Contact Us
+      </a>
+    </div>
+    {/* <div className="text-white font-bold text-xs sm:text-sm break-all sm:break-normal">
+      <a href="mailto:hello@consciouskarma.co" className="underline">hello@consciouskarma.co</a>
+    </div> */}
+  </div>
+</footer>
     </div>
     </>
   );

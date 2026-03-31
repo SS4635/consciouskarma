@@ -27,12 +27,12 @@ const PrivacyPolicy = () => {
         <main className="pp-content">
           <h1 className="pp-title">Privacy Policy</h1>
 
-          <p className="pp-intro">
+          <p className="pp-text">
             At Conscious Karma, we respect your privacy and are committed to
             protecting your personal information.
           </p>
 
-          <section className="pp-section">
+          <section className="pp-section mt-10">
             <h2 className="pp-heading">1. Information We Collect</h2>
             <p className="pp-text">
               We collect basic personal details (such as name, email, gender, age,
@@ -96,7 +96,7 @@ const PrivacyPolicy = () => {
 
 
           <section className="pp-section">
-            <h2 className="pp-heading">Contact</h2>
+            <h2 className="pp-heading">7. Contact</h2>
             <p className="pp-text">
               For any privacy-related questions, contact us at:
             </p>
@@ -127,97 +127,89 @@ const PrivacyPolicy = () => {
           </div>
         )}
 
-        {/* FOOTER */}
-        {/* Orange line above footer, same as TermsAndConditions */}
-        <div style={{ width: "100%", height: "1px", background: "#ff8a3d", marginTop: "32px", marginBottom: "-30px", borderRadius: "2px" }}></div>
-        <footer className="pp-footer bg-black text-white py-3 sm:py-2 md:py-3 mt-8">
-          <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
-            {/* Mobile footer (matches screenshot) */}
-            <nav aria-label="Footer" className="sm:hidden">
-              <div className="pp-footer-links flex flex-wrap items-center justify-center text-center text-white font-bold text-xs">
-                <a
-                  href="/termsandconditions"
-                  className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-                >
-                  Terms & Conditions
-                </a>
-                <span className="pp-footer-sep" aria-hidden="true">|</span>
-                <a
-                  href="/privacy-policy"
-                  className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-                >
-                  Privacy Policy
-                </a>
-                <span className="pp-footer-sep" aria-hidden="true">|</span>
-                <a
-                  href="/refund-policy"
-                  className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-                >
-                  Refund Policy
-                </a>
+    <footer className="font-arsenal mt-auto w-full bg-black text-white border-t-2 border-orange-400 py-3 sm:py-2 md:py-3">
+  <div className="container mx-auto px-4 sm:px-6 flex flex-col items-center justify-center text-center gap-3 sm:gap-4 md:gap-5">
+    <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
+      <a
+        href="/termsandconditions"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Terms & Conditions
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-                {/* First line ends with a trailing pipe, like the screenshot */}
-                <span className="pp-footer-sep" aria-hidden="true">|</span>
+      <a
+        href="/privacy-policy"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Privacy Policy
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-                {/* Force the 2-line wrap exactly like the screenshot */}
-                <span className="pp-footer-break" aria-hidden="true"></span>
+      <a
+        href="/refund-policy"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Refund Policy
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-                <a
-                  href="/shipping-policy"
-                  className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-                >
-                  Shipping & Delivery
-                </a>
-                <span className="pp-footer-sep" aria-hidden="true">|</span>
-                <a
-                  href="/contact-us"
-                  className="text-white font-bold text-xs hover:text-gray-300 transition-colors no-underline"
-                >
-                  Contact Us
-                </a>
-              </div>
-            </nav>
+      <a
+        href="/shipping-policy"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Shipping & Delivery
+      </a>
+      <hr
+        style={{
+          border: "none",
+          background: "white",
+          width: "1px",
+          height: "15px",
+          opacity: "1",
+          margin: "0",
+        }}
+      />
 
-            {/* Desktop/tablet footer (existing layout) */}
-            <div className="hidden sm:flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-5">
-              <a
-                href="/termsandconditions"
-                className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-              >
-                Terms & Conditions
-              </a>
-              <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-              <a
-                href="/privacy-policy"
-                className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-              >
-                Privacy Policy
-              </a>
-              <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-              <a
-                href="/refund-policy"
-                className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-              >
-                Refund Policy
-              </a>
-              <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-              <a
-                href="/shipping-policy"
-                className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-              >
-                Shipping & Delivery
-              </a>
-              <hr style={{ border: "none", background: "white", width: "1px", height: "15px", opacity: "1", margin: "0" }} />
-              <a
-                href="/contact-us"
-                className="text-white font-bold text-xs sm:text-sm hover:text-gray-300 transition-colors no-underline"
-              >
-                Contact Us
-              </a>
-            </div>
-            {/* <div className="text-white font-bold text-xs sm:text-sm mt-2">© 2025 Conscious Karma. All rights reserved.</div> */}
-          </div>
-        </footer>
+      <a
+        href="/contact-us"
+        className="text-white font-bold text-sm sm:text-sm hover:text-gray-300 no-underline hover:no-underline focus:no-underline"
+      >
+        Contact Us
+      </a>
+    </div>
+    {/* <div className="text-white font-bold text-xs sm:text-sm break-all sm:break-normal">
+      <a href="mailto:hello@consciouskarma.co" className="underline">hello@consciouskarma.co</a>
+    </div> */}
+  </div>
+</footer>
       </div>
     </>
   );

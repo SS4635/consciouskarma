@@ -817,8 +817,8 @@ export default function ConsciousKarmaSections() {
             </span>
           </p>
 
-          {/* <SubsectionSpacer /> */}
-          <div style={{ height: "24px" }} />
+          <SubsectionSpacer />
+          {/* <div style={{ height: "24px" }} /> */}
 
           <div
             className="flex justify-center items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 w-full overflow-x-auto px-4 scrollbar-hide"
@@ -836,8 +836,8 @@ export default function ConsciousKarmaSections() {
             )}
           </div>
 
-          <div style={{ height: "24px" }} />
-          {/* <SubsectionSpacer /> */}
+          {/* <div style={{ height: "24px" }} /> */}
+          <SubsectionSpacer />
 
           <div className="w-[300px] sm:w-[300px] md:w-[340px] flex flex-col items-center justify-center">
             {/* <SubsectionSpacer /> */}

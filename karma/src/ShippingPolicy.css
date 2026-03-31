@@ -104,9 +104,38 @@
   margin: 0;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   .sp-container {
     padding: 60px 15px 30px;
+  }
+
+  .sp-title {
+    font-size: 2rem;
+  }
+
+  .sp-heading {
+    font-size: 1.3rem;
+  }
+
+  .sp-intro {
+    font-size: 1rem;
+    padding: 15px;
+  }
+
+  .sp-list li {
+    padding-left: 0;
+  }
+} */
+
+@media (max-width: 768px) {
+  /* Container se extra padding hata di hai */
+  .sp-container {
+    padding: 0; 
+  }
+
+  /* Main content mein Terms & Conditions wali exact padding daal di hai */
+  .sp-content {
+    padding: 40px 20px 60px;
   }
 
   .sp-title {
