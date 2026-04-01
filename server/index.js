@@ -2457,19 +2457,19 @@ app.get("/api/config/personalizereportprice", (req, res) => {
 /* ---------- Final submit AFTER payment verified ---------- */
 /* Frontend calls this with orderId once /api/pay/verify is ok */
 
-app.get("/test-mail", async (req, res) => {
-  try {
-    await sendEmail({
-      to: "ahanaoberoi2001@gmail.com",
-      subject: "Test Hostinger Email",
-      html: "<h2>Hello! Hostinger SMTP working!</h2>",
-    });
-    res.json({ ok: true, message: "Mail sent" });
-  } catch (err) {
-    console.error("Mail Test Error:", err);
-    res.json({ ok: false, error: err.message });
-  }
-});
+// app.get("/test-mail", async (req, res) => {
+//   try {
+//     await sendEmail({
+//       to: "ahanaoberoi2001@gmail.com",
+//       subject: "Test Hostinger Email",
+//       html: "<h2>Hello! Hostinger SMTP working!</h2>",
+//     });
+//     res.json({ ok: true, message: "Mail sent" });
+//   } catch (err) {
+//     console.error("Mail Test Error:", err);
+//     res.json({ ok: false, error: err.message });
+//   }
+// });
 app.post("/api/verify-otp", async (req, res) => {
   try {
     const { verificationId, code } = req.body || {};
@@ -2953,155 +2953,155 @@ app.post("/api/auth/reset-password", async (req, res) => {
 });
 
 // 👇 MANUAL FREE REPORT TRIGGER ROUTE (With Console Logs)
-app.post("/api/admin/force-send-report", async (req, res) => {
-  try {
-    const { mobile, email, name, secretKey } = req.body;
+// app.post("/api/admin/force-send-report", async (req, res) => {
+//   try {
+//     const { mobile, email, name, secretKey } = req.body;
 
-    console.log("🚀 Force Sending Report to:", email);
+//     console.log("🚀 Force Sending Report to:", email);
 
-    // 🔒 Security Check
-    if (secretKey !== "admin_power_123") {
-      return res
-        .status(401)
-        .json({ ok: false, message: "Chal bhag yahan se! 🔒" });
-    }
+//     // 🔒 Security Check
+//     if (secretKey !== "admin_power_123") {
+//       return res
+//         .status(401)
+//         .json({ ok: false, message: "Chal bhag yahan se! 🔒" });
+//     }
 
-    if (!mobile || !email) {
-      return res
-        .status(400)
-        .json({ ok: false, message: "Mobile aur Email dono chahiye" });
-    }
+//     if (!mobile || !email) {
+//       return res
+//         .status(400)
+//         .json({ ok: false, message: "Mobile aur Email dono chahiye" });
+//     }
 
-    // 1️⃣ Score API se Data mangwana
-    console.log("📡 Fetching Score Data...");
-    const apiUrl = `${process.env.REACT_APP_SCORE_API}/score`;
-    const apiKey =
-      process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
+//     // 1️⃣ Score API se Data mangwana
+//     console.log("📡 Fetching Score Data...");
+//     const apiUrl = `${process.env.REACT_APP_SCORE_API}/score`;
+//     const apiKey =
+//       process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
 
-    const { data } = await axios.post(
-      apiUrl,
-      { mobile_number: mobile },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          "X-API-Key": apiKey,
-        },
-        timeout: 20000,
-      },
-    );
+//     const { data } = await axios.post(
+//       apiUrl,
+//       { mobile_number: mobile },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//           "X-API-Key": apiKey,
+//         },
+//         timeout: 20000,
+//       },
+//     );
 
-    const scoreData = data.score || data;
+//     const scoreData = data.score || data;
 
-    // 🔥🔥 YE RAHA WOH LOGIC JO TUJHE CHAHIYE 🔥🔥
-    console.log("\n👇👇👇 [DEBUG] SCORE API RESPONSE START 👇👇👇");
-    console.log(JSON.stringify(scoreData, null, 2));
-    console.log("👆👆👆 [DEBUG] SCORE API RESPONSE END 👆👆👆\n");
+//     // 🔥🔥 YE RAHA WOH LOGIC JO TUJHE CHAHIYE 🔥🔥
+//     console.log("\n👇👇👇 [DEBUG] SCORE API RESPONSE START 👇👇👇");
+//     console.log(JSON.stringify(scoreData, null, 2));
+//     console.log("👆👆👆 [DEBUG] SCORE API RESPONSE END 👆👆👆\n");
 
-    // 2️⃣ PDF Generate karke Mail Bhejna
-    console.log("✉️ Generating PDF & Sending Mail...");
+//     // 2️⃣ PDF Generate karke Mail Bhejna
+//     console.log("✉️ Generating PDF & Sending Mail...");
 
-    // 'sendScoreMail' import hona chahiye upar
-    await sendScoreMail(email, scoreData, mobile, name || "Special User");
+//     // 'sendScoreMail' import hona chahiye upar
+//     await sendScoreMail(email, scoreData, mobile, name || "Special User");
 
-    console.log("✅ Mail Sent Successfully!");
-    return res.json({
-      ok: true,
-      message: "Mail sent!",
-      apiResponseSummary: "Check console for full JSON",
-    });
-  } catch (err) {
-    console.error("❌ Force Send Failed:", err.message);
-    if (err.response) {
-      console.error("API Error Data:", err.response.data);
-      return res.status(err.response.status).json(err.response.data);
-    }
-    return res.status(500).json({ ok: false, error: err.message });
-  }
-});
+//     console.log("✅ Mail Sent Successfully!");
+//     return res.json({
+//       ok: true,
+//       message: "Mail sent!",
+//       apiResponseSummary: "Check console for full JSON",
+//     });
+//   } catch (err) {
+//     console.error("❌ Force Send Failed:", err.message);
+//     if (err.response) {
+//       console.error("API Error Data:", err.response.data);
+//       return res.status(err.response.status).json(err.response.data);
+//     }
+//     return res.status(500).json({ ok: false, error: err.message });
+//   }
+// });
 
 // 👇 BULK TEST ROUTE (15 Reports in One Click)
-app.post("/api/admin/bulk-test-custom", async (req, res) => {
-  try {
-    // 30 minute timeout for this request (kyunki 15 PDF time legi)
-    req.setTimeout(1800000);
+// app.post("/api/admin/bulk-test-custom", async (req, res) => {
+//   try {
+//     // 30 minute timeout for this request (kyunki 15 PDF time legi)
+//     req.setTimeout(1800000);
 
-    const { email, mobile, samples, secretKey } = req.body;
+//     const { email, mobile, samples, secretKey } = req.body;
 
-    // 🔒 Security
-    if (secretKey !== "admin_power_123") {
-      return res.status(401).json({ ok: false, message: "Unauthorized" });
-    }
+//     // 🔒 Security
+//     if (secretKey !== "admin_power_123") {
+//       return res.status(401).json({ ok: false, message: "Unauthorized" });
+//     }
 
-    if (!samples || !Array.isArray(samples) || samples.length === 0) {
-      return res
-        .status(400)
-        .json({ ok: false, message: "Samples array is empty!" });
-    }
+//     if (!samples || !Array.isArray(samples) || samples.length === 0) {
+//       return res
+//         .status(400)
+//         .json({ ok: false, message: "Samples array is empty!" });
+//     }
 
-    console.log(`🚀 Starting Bulk Test for ${samples.length} samples...`);
+//     console.log(`🚀 Starting Bulk Test for ${samples.length} samples...`);
 
-    // 1️⃣ STEP 1: Fetch Real Score Data (Sirf ek baar)
-    console.log("📡 Fetching Base Data from Score API...");
-    const apiUrl = `${process.env.REACT_APP_SCORE_API}/score`;
-    const apiKey =
-      process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
+//     // 1️⃣ STEP 1: Fetch Real Score Data (Sirf ek baar)
+//     console.log("📡 Fetching Base Data from Score API...");
+//     const apiUrl = `${process.env.REACT_APP_SCORE_API}/score`;
+//     const apiKey =
+//       process.env.REACT_APP_SCORE_API_KEY || "CK_Score_2365abhnf895asfw";
 
-    const apiRes = await axios.post(
-      apiUrl,
-      { mobile_number: mobile || "9999999999" }, // Default dummy agar mobile nahi diya
-      { headers: { "Content-Type": "application/json", "X-API-Key": apiKey } },
-    );
+//     const apiRes = await axios.post(
+//       apiUrl,
+//       { mobile_number: mobile || "9999999999" }, // Default dummy agar mobile nahi diya
+//       { headers: { "Content-Type": "application/json", "X-API-Key": apiKey } },
+//     );
 
-    const baseScoreData = apiRes.data.score || apiRes.data;
-    console.log("✅ Base Data Received.");
+//     const baseScoreData = apiRes.data.score || apiRes.data;
+//     console.log("✅ Base Data Received.");
 
-    // 2️⃣ STEP 2: Loop Through Samples & Send Mails
-    let successCount = 0;
+//     // 2️⃣ STEP 2: Loop Through Samples & Send Mails
+//     let successCount = 0;
 
-    // Helper function for delay (taaki server crash na ho)
-    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+//     // Helper function for delay (taaki server crash na ho)
+//     const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-    for (const [index, textContent] of samples.entries()) {
-      console.log(`\n📄 Processing Sample ${index + 1}/${samples.length}...`);
+//     for (const [index, textContent] of samples.entries()) {
+//       console.log(`\n📄 Processing Sample ${index + 1}/${samples.length}...`);
 
-      // 🛠️ Clone data & Inject Custom Text
-      const customScoreData = {
-        ...baseScoreData,
-        influence_section: {
-          ...baseScoreData.influence_section,
-          as_text: textContent, // 🔥 Yahan tera custom text jayega
-        },
-      };
+//       // 🛠️ Clone data & Inject Custom Text
+//       const customScoreData = {
+//         ...baseScoreData,
+//         influence_section: {
+//           ...baseScoreData.influence_section,
+//           as_text: textContent, // 🔥 Yahan tera custom text jayega
+//         },
+//       };
 
-      try {
-        // PDF Generate & Email
-        // Name mein "Sample 1", "Sample 2" bhej rahe hain taaki email mein pehchan sako
-        await sendScoreMail(
-          email,
-          customScoreData,
-          mobile || "9999999999",
-          `Test User (Sample ${index + 1})`,
-        );
+//       try {
+//         // PDF Generate & Email
+//         // Name mein "Sample 1", "Sample 2" bhej rahe hain taaki email mein pehchan sako
+//         await sendScoreMail(
+//           email,
+//           customScoreData,
+//           mobile || "9999999999",
+//           `Test User (Sample ${index + 1})`,
+//         );
 
-        console.log(`✅ Sample ${index + 1} Sent!`);
-        successCount++;
+//         console.log(`✅ Sample ${index + 1} Sent!`);
+//         successCount++;
 
-        // ⏳ 2 Second wait between emails to be safe
-        await wait(2000);
-      } catch (err) {
-        console.error(`❌ Failed Sample ${index + 1}:`, err.message);
-      }
-    }
+//         // ⏳ 2 Second wait between emails to be safe
+//         await wait(2000);
+//       } catch (err) {
+//         console.error(`❌ Failed Sample ${index + 1}:`, err.message);
+//       }
+//     }
 
-    return res.json({
-      ok: true,
-      message: `Bulk Process Complete. Sent ${successCount}/${samples.length} reports.`,
-    });
-  } catch (err) {
-    console.error("❌ Bulk Route Error:", err.message);
-    return res.status(500).json({ ok: false, error: err.message });
-  }
-});
+//     return res.json({
+//       ok: true,
+//       message: `Bulk Process Complete. Sent ${successCount}/${samples.length} reports.`,
+//     });
+//   } catch (err) {
+//     console.error("❌ Bulk Route Error:", err.message);
+//     return res.status(500).json({ ok: false, error: err.message });
+//   }
+// });
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 
