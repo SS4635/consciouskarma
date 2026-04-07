@@ -2195,7 +2195,7 @@ async function processInstantReport(order) {
       Your Instant Mobile Number Report is now being generated and will be
       delivered to this email shortly.
     </p>
-${generateFormDataHtml(fd)}
+
     <p>
       If you have any questions, feel free to write to us at
       <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
