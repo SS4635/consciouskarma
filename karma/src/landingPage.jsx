@@ -8,19 +8,19 @@ import CKNavbar from "./components/CKNavbar.jsx";
 import SignupModal from "./SignupModal.jsx";
 import LoginModal from "./LoginModal.jsx";
 
-import loveImg from "./4.png";
-import financeImg from "./2.png";
-import fortuneImg from "./3.png";
-import intelligenceImg from "./1.png";
-import intuitionImg from "./5.png";
+import loveImg from "./4.webp";
+import financeImg from "./2.webp";
+import fortuneImg from "./3.webp";
+import intelligenceImg from "./1.webp";
+import intuitionImg from "./5.webp";
 import earthGif from "./Earth Gif.gif";
-import zeroPng from "./zero.png";
-import karmaTransparent from "./ruondimgg.jpg";
-import earthConnections from "./Earth connections.png";
-import blog01 from "./Blog.1.jpg";
-import blog02 from "./Blog.2.jpg";
-import blog03 from "./Blog.3.jpg";
-import mobileEnergyFlow from "./mobile number energy flow.png";
+import zerowebp from "./zero.webp";
+import karmaTransparent from "./ruondimgg.webp";
+import earthConnections from "./Earth connections.webp";
+import blog01 from "./Blog.1.webp";
+import blog02 from "./Blog.2.webp";
+import blog03 from "./Blog.3.webp";
+import mobileEnergyFlow from "./mobile number energy flow.webp";
 
 const commonTextStyle = {
   fontSize: "clamp(20px, 2.5vw, 20px)",
@@ -476,8 +476,8 @@ export default function ConsciousKarmaSections() {
 
             <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[64px] w-full max-w-[320px]">
               <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent pt-1 mr-7">
-                <img
-                  src={zeroPng}
+                <img  
+                  src={zerowebp}
                   alt={intl.formatMessage({ id: "alt.zeroSymbol" })}
                   className="w-full h-full object-cover scale-[1.02]"
                 />

@@ -9,12 +9,12 @@ import fortuneImg from "./Fortune.png";
 import intelligenceImg from "./Intelligence.jpg";
 import intuitionImg from "./Intuition.jpg";
 import earthGif from "./Earth Gif.gif";
-import zeroPng from "./zero.png";
+import zeroPng from "./zero.webp";
 import karmaTransparent from "./Karma transparent.png";
-import earthConnections from "./Earth connections.png";
-import gradeImg from "./Grade.jpg";
-import blankStarImg from "./blank-star.jpg";
-import mobileEnergyFlow from "./mobile number energy flow.png";
+import earthConnections from "./Earth connections.webp";
+import gradeImg from "./Grade.webp";
+import blankStarImg from "./blank-star.webp";
+import mobileEnergyFlow from "./mobile number energy flow.webp";
 import Typewriter from "./Typewriter.jsx";
 
 /* ============ THEME & LAYOUT (Injected CSS) ============ */

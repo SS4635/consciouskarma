@@ -17,21 +17,21 @@ import FadeInOnScroll from "./components/FadeInOnScroll.jsx";
 import CKNavbar from "./components/CKNavbar";
 
 /* === Images (your filenames) === */
-import loveImg from "./4.png";
-import financeImg from "./2.png";
-import fortuneImg from "./3.png";
-import intelligenceImg from "./1.png";
-import intuitionImg from "./5.png";
+import loveImg from "./4.webp";
+import financeImg from "./2.webp";
+import fortuneImg from "./3.webp";
+import intelligenceImg from "./1.webp";
+import intuitionImg from "./5.webp";
 import earthGif from "./Earth Gif.gif";
-import zeroPng from "./zero.png";
-import karmaTransparent from "./ruondimgg.jpg";
-import earthConnections from "./Earth connections.png";
-import gradeImg from "./Grade.jpg";
-import blog01 from "./Blog.1.jpg";
-import blog02 from "./Blog.2.jpg";
-import blog03 from "./Blog.3.jpg";
-import blankStarImg from "./blank-star.jpg";
-import mobileEnergyFlow from "./mobile number energy flow.png";
+import zerowebp from "./zero.webp";
+import karmaTransparent from "./ruondimgg.webp";
+import earthConnections from "./Earth connections.webp";
+import gradeImg from "./Grade.webp";
+import blog01 from "./Blog.1.webp";
+import blog02 from "./Blog.2.webp";
+import blog03 from "./Blog.3.webp";
+import blankStarImg from "./blank-star.webp";
+import mobileEnergyFlow from "./mobile number energy flow.webp";
 import SignupModal from "./SignupModal.jsx";
 import LoginModal from "./LoginModal.jsx";
 import FirstSection from "./FirstSection.jsx";
@@ -464,7 +464,7 @@ export default function ConsciousKarmaSections() {
             <div className="flex flex-col items-center text-center gap-4 sm:gap-5 md:gap-6 lg:gap-[22px] w-full max-w-[320px]">
               <div className="w-[160px] h-[160px] sm:w-[180px] sm:h-[180px] md:w-[200px] md:h-[200px] lg:w-[220px] lg:h-[220px] rounded-full grid place-items-center bg-transparent overflow-hidden">
                 <img
-                  src={zeroPng}
+                  src={zerowebp}
                   alt={intl.formatMessage({ id: "alt.zeroSymbol" })}
                   className="w-full h-85 mr-6  object-cover scale-[1.02]"
                 />
