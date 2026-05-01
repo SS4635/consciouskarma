@@ -1,4 +1,4 @@
-import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
+// import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 
 import express from "express";
 import cors from "cors";
@@ -7,11 +7,11 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-// import dotenv from "dotenv";
+import dotenv from "dotenv";
 
-// dotenv.config({
-//   path: "/var/www/.env",
-// });
+dotenv.config({
+  path: "/var/www/.env",
+});
 
 // import dotenv from "dotenv";
 // dotenv.config();
