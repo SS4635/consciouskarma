@@ -1,4 +1,4 @@
-// import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
+import "dotenv/config"; // ✅ MUST BE THE FIRST LINE
 
 import express from "express";
 import cors from "cors";
@@ -7,11 +7,11 @@ import Razorpay from "razorpay";
 import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 import axios from "axios";
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 
-dotenv.config({
-  path: "/var/www/.env",
-});
+// dotenv.config({
+//   path: "/var/www/.env",
+// });
 
 // import dotenv from "dotenv";
 // dotenv.config();
@@ -133,6 +133,504 @@ function normalizeIndianMobile(num = "") {
   return digits.length > 10 ? digits.slice(-10) : digits;
 }
 
+function cleanArray(arr = []) {
+  return arr.filter((item) => item !== undefined && item !== null && item !== "");
+}
+
+function sanitizeMetaPayload(payload = {}) {
+  return {
+    ...payload,
+    data: Array.isArray(payload.data)
+      ? payload.data.map((event) => {
+          const userData = event.user_data || {};
+          const cleanUserData = {};
+
+          Object.entries(userData).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              const cleanedArray = cleanArray(value);
+
+              if (cleanedArray.length > 0) {
+                cleanUserData[key] = cleanedArray;
+              }
+
+              return;
+            }
+
+            if (value !== undefined && value !== null && value !== "") {
+              cleanUserData[key] = value;
+            }
+          });
+
+          return cleanObject({
+            ...event,
+            user_data: cleanObject(cleanUserData),
+            attribution_data: cleanObject(event.attribution_data || {}),
+            custom_data: cleanObject(event.custom_data || {}),
+            original_event_data: cleanObject(event.original_event_data || {}),
+          });
+        })
+      : [],
+  };
+}
+
+function getCookie(req, name) {
+  const cookieHeader = req.headers.cookie || "";
+  const cookies = cookieHeader.split(";").map((c) => c.trim());
+
+  for (const cookie of cookies) {
+    const [key, ...valueParts] = cookie.split("=");
+    if (key === name) {
+      return decodeURIComponent(valueParts.join("="));
+    }
+  }
+
+  return "";
+}
+
+function sha256(value = "") {
+  return crypto
+    .createHash("sha256")
+    .update(String(value).trim().toLowerCase())
+    .digest("hex");
+}
+
+function isSha256Hash(value = "") {
+  return /^[a-f0-9]{64}$/i.test(String(value).trim());
+}
+
+function hashEmail(email = "") {
+  if (!email) return undefined;
+
+  const cleanEmail = String(email).trim().toLowerCase();
+
+  // Agar already hashed email aaya hai to dobara hash nahi karega
+  if (isSha256Hash(cleanEmail)) return cleanEmail;
+
+  return sha256(cleanEmail);
+}
+
+function hashPhone(phone = "") {
+  if (!phone) return undefined;
+
+  const cleanPhone = String(phone).trim();
+
+  // Agar already hashed phone aaya hai to dobara hash nahi karega
+  if (isSha256Hash(cleanPhone)) return cleanPhone;
+
+  const digits = cleanPhone.replace(/\D/g, "");
+  if (!digits) return undefined;
+
+  return sha256(digits);
+}
+
+function cleanObject(obj = {}) {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => {
+      if (value === undefined || value === "") return false;
+      if (Array.isArray(value) && value.length === 0) return false;
+
+      if (
+        typeof value === "object" &&
+        value !== null &&
+        !Array.isArray(value) &&
+        Object.keys(value).length === 0
+      ) {
+        return false;
+      }
+
+      return true;
+    }),
+  );
+}
+
+function getClientIp(req) {
+  return (
+    req.headers["x-forwarded-for"]?.split(",")[0]?.trim() ||
+    req.headers["x-real-ip"] ||
+    req.socket?.remoteAddress ||
+    ""
+  ).replace("::ffff:", "");
+}
+async function sendMetaPayloadToGraph(payload) {
+  try {
+    const pixelId = process.env.META_PIXEL_ID;
+    const accessToken = process.env.META_CAPI_ACCESS_TOKEN;
+    const graphVersion = process.env.META_GRAPH_VERSION || "v25.0";
+
+    if (!pixelId || !accessToken) {
+      console.warn("[META CAPI] Missing META_PIXEL_ID or META_CAPI_ACCESS_TOKEN");
+
+      return {
+        ok: false,
+        skipped: true,
+        message: "META_PIXEL_ID or META_CAPI_ACCESS_TOKEN missing",
+        payload: sanitizeMetaPayload(payload),
+      };
+    }
+
+    const finalPayload = sanitizeMetaPayload(payload);
+
+    if (process.env.META_TEST_EVENT_CODE) {
+      finalPayload.test_event_code = process.env.META_TEST_EVENT_CODE;
+    }
+
+    const url = `https://graph.facebook.com/${graphVersion}/${pixelId}/events?access_token=${encodeURIComponent(
+      accessToken,
+    )}`;
+
+    console.log(
+      "[META CAPI] Final Payload:",
+      JSON.stringify(finalPayload, null, 2),
+    );
+
+    const { data } = await axios.post(url, finalPayload, {
+      timeout: 8000,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log("[META CAPI] Response:", data);
+
+    return {
+      ok: true,
+      payload: finalPayload,
+      response: data,
+    };
+  } catch (err) {
+    console.error("[META CAPI] Error:", err.response?.data || err.message);
+
+    return {
+      ok: false,
+      error: err.response?.data || err.message,
+      payload: sanitizeMetaPayload(payload),
+    };
+  }
+}
+
+// async function sendMetaCapiEvent({
+//   req,
+//   eventName = "Purchase",
+//   eventTime,
+//   email,
+//   phone,
+//   hashedEmail,
+//   hashedPhone,
+//   value = "142.52",
+//   currency = "USD",
+//   attributionShare = "0.3",
+//   actionSource = "website",
+//   customData = {},
+//   originalEventData = {},
+//   includeNullPhone = true,
+// }) {
+//   const finalEventTime = Number(eventTime) || Math.floor(Date.now() / 1000);
+
+//   const finalEmailHash = hashedEmail || hashEmail(email);
+//   const finalPhoneHash = hashedPhone || hashPhone(phone);
+
+//   const userData = {
+//     em: finalEmailHash ? [finalEmailHash] : [],
+//     ph: finalPhoneHash ? [finalPhoneHash] : includeNullPhone ? [null] : [],
+//   };
+
+//   const event = {
+//     event_name: eventName,
+//     event_time: finalEventTime,
+//     action_source: actionSource,
+//     user_data: userData,
+//     attribution_data: {
+//       attribution_share: String(attributionShare),
+//     },
+//     custom_data: {
+//       currency: String(currency),
+//       value: String(value),
+//       ...customData,
+//     },
+//     original_event_data: {
+//       event_name: originalEventData.event_name || eventName,
+//       event_time: Number(originalEventData.event_time) || finalEventTime,
+//     },
+//   };
+
+//   const payload = {
+//     data: [event],
+//   };
+
+//   return sendMetaPayloadToGraph(payload);
+// }
+
+
+
+async function sendMetaCapiEvent({
+  req,
+  eventName = "Purchase",
+  eventTime,
+  eventId,
+  email,
+  phone,
+  hashedEmail,
+  hashedPhone,
+  value = "0",
+  currency = "INR",
+  attributionShare = "0.3",
+  actionSource = "website",
+  customData = {},
+  originalEventData = {},
+  includeNullPhone = false,
+}) {
+  const finalEventTime = Number(eventTime) || Math.floor(Date.now() / 1000);
+
+  const finalEmailHash = hashedEmail || hashEmail(email);
+  const finalPhoneHash = hashedPhone || hashPhone(phone);
+
+  const userData = cleanObject({
+    em: finalEmailHash ? [finalEmailHash] : [],
+    ph: finalPhoneHash ? [finalPhoneHash] : includeNullPhone ? [null] : [],
+
+    // Better Event Match Quality
+    client_ip_address: req ? getClientIp(req) : "",
+    client_user_agent: req?.headers?.["user-agent"] || "",
+    fbp: req ? getCookie(req, "_fbp") : "",
+    fbc: req ? getCookie(req, "_fbc") : "",
+  });
+
+  const event = cleanObject({
+    event_name: eventName,
+    event_time: finalEventTime,
+    event_id: eventId || undefined,
+    action_source: actionSource,
+    user_data: userData,
+    attribution_data: {
+      attribution_share: String(attributionShare),
+    },
+    custom_data: cleanObject({
+      currency: String(currency),
+      value: String(value),
+      ...customData,
+    }),
+    original_event_data: {
+      event_name: originalEventData.event_name || eventName,
+      event_time: Number(originalEventData.event_time) || finalEventTime,
+    },
+  });
+
+  const payload = {
+    data: [event],
+  };
+
+  return sendMetaPayloadToGraph(payload);
+}
+
+function safeNumber(value, fallback = 0) {
+  const n = Number(String(value ?? "").replace(/[^0-9.]/g, ""));
+  return Number.isFinite(n) ? n : fallback;
+}
+
+function safeJsonForMeta(value, maxLength = 5000) {
+  try {
+    const text = JSON.stringify(value || {});
+    return text.length > maxLength ? text.slice(0, maxLength) : text;
+  } catch {
+    return "";
+  }
+}
+
+// Meta custom_data me raw email/phone/name jaise PII nahi bhejna chahiye.
+// Email/phone hashed form me user_data ke andar bheje ja rahe hain.
+function redactSensitiveFormData(input) {
+  if (Array.isArray(input)) {
+    return input.map(redactSensitiveFormData);
+  }
+
+  if (input && typeof input === "object") {
+    const output = {};
+
+    for (const [key, value] of Object.entries(input)) {
+      const k = String(key).toLowerCase();
+
+      if (
+        k.includes("email") ||
+        k.includes("e-mail") ||
+        k.includes("mobile") ||
+        k.includes("phone") ||
+        k === "number" ||
+        k.includes("contact") ||
+        k === "name"
+      ) {
+        output[key] = "[redacted]";
+      } else {
+        output[key] = redactSensitiveFormData(value);
+      }
+    }
+
+    return output;
+  }
+
+  return input;
+}
+
+function extractPaymentCustomerFromForm(formData = {}, fallback = {}) {
+  const step1 = formData?.["1"] || {};
+  const step2 = formData?.["2"] || {};
+  const general = formData?.general || {};
+  const primary = formData?.primary || {};
+
+  const name =
+    general.name ||
+    step1["Name"] ||
+    formData?.name ||
+    fallback?.name ||
+    "User";
+
+  const email =
+    general.email ||
+    step1["Email-id"] ||
+    step1["Email"] ||
+    formData?.email ||
+    fallback?.email ||
+    "";
+
+  let phone = "";
+
+  if (primary?.number) {
+    phone = `${primary.isd || ""}${primary.number}`;
+  } else if (step2?.["Mobile Number"]?.mobile) {
+    phone = `${step2["Mobile Number"].isd || ""}${step2["Mobile Number"].mobile}`;
+  } else {
+    phone = formData?.phone || formData?.mobile || fallback?.phone || "";
+  }
+
+  return { name, email, phone };
+}
+
+async function sendMetaAfterPayment({
+  req,
+  eventName = "Purchase",
+  formData = {},
+  fallback = {},
+  reportType = "Report",
+  planName = "",
+  price = 0,
+  currency = "INR",
+  razorpay_order_id = "",
+  razorpay_payment_id = "",
+  internalOrderId = "",
+  extraCustomData = {},
+}) {
+  try {
+    const { name, email, phone } = extractPaymentCustomerFromForm(
+      formData,
+      fallback,
+    );
+
+    const primary = formData?.primary || {};
+    const parallels = Array.isArray(formData?.parallels)
+      ? formData.parallels
+      : [];
+    const previousNumbers = Array.isArray(formData?.previousNumbers)
+      ? formData.previousNumbers
+      : [];
+
+    const finalValue = safeNumber(
+      price || formData?.totalPrice || fallback?.price || fallback?.amount,
+      0,
+    );
+
+    const redactedFormData = redactSensitiveFormData(formData);
+    const eventId =
+      razorpay_payment_id ||
+      `${eventName}-${reportType}-${internalOrderId || Date.now()}`;
+
+    const result = await sendMetaCapiEvent({
+      req,
+      eventName,
+      eventId,
+      email,
+      phone,
+      value: String(finalValue),
+      currency,
+      customData: cleanObject({
+        content_name: reportType,
+        content_type: "product",
+        order_id: internalOrderId ? String(internalOrderId) : "",
+        razorpay_order_id,
+        razorpay_payment_id,
+        plan_name: planName,
+        customer_name_available: name ? "yes" : "no",
+        email_available: email ? "yes" : "no",
+        phone_available: phone ? "yes" : "no",
+        primary_isd: primary?.isd || "",
+        primary_since_month: primary?.sinceMonth || "",
+        primary_since_year: primary?.sinceYear || "",
+        primary_usage_type:
+          primary?.usageType || primary?.["Usage type"] || "",
+        primary_role: primary?.role || primary?.["Role"] || "",
+        primary_line_of_work:
+          primary?.lineOfWork || primary?.["Line of Work"] || "",
+        parallels_count: parallels.length,
+        previous_numbers_count: previousNumbers.length,
+
+        // Full form context after payment, with PII redacted.
+        form_data_json: safeJsonForMeta(redactedFormData, 5000),
+
+        ...extraCustomData,
+      }),
+      originalEventData: {
+        event_name: eventName,
+      },
+      includeNullPhone: false,
+    });
+
+    console.log(`[META CAPI] ${eventName} after payment sent:`, result?.ok);
+    return result;
+  } catch (err) {
+    console.error("[META CAPI] After payment helper failed:", err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
+app.post("/api/meta/test-capi", async (req, res) => {
+  try {
+    const body = req.body || {};
+
+    // Agar frontend/Postman/curl se direct complete payload bhejoge,
+    // to ye same payload Meta ko forward kar dega.
+    if (body.data && Array.isArray(body.data)) {
+      const result = await sendMetaPayloadToGraph(body);
+      return res.json(result);
+    }
+
+    // Default test payload exactly aapke diye hue structure jaisa
+    const result = await sendMetaCapiEvent({
+      req,
+      eventName: "Purchase",
+      eventTime: body.event_time || 1777371138,
+      hashedEmail:
+        body.hashedEmail ||
+        body.email ||
+        "7b17fb0bd173f625b58636fb796407c22b3d16fc78302d79f0fd30c2fc2fc068",
+      hashedPhone: body.hashedPhone || body.phone || null,
+      value: body.value || "142.52",
+      currency: body.currency || "USD",
+      attributionShare: body.attribution_share || "0.3",
+      originalEventData: {
+        event_name: "Purchase",
+        event_time: body.event_time || 1777371138,
+      },
+      includeNullPhone: true,
+    });
+
+    return res.json(result);
+  } catch (err) {
+    console.error("Meta test CAPI route error:", err.response?.data || err.message);
+    return res.status(500).json({
+      ok: false,
+      message: "Meta CAPI test failed",
+      error: err.response?.data || err.message,
+    });
+  }
+});
 async function sendEmail({ to, subject, html }) {
   console.log(`\n[MAIL] Sending to: ${to}`);
   try {
@@ -1285,116 +1783,116 @@ app.post("/api/pay/create-consultation-order", async (req, res) => {
 
 
 
-app.post("/api/pay/verify-consultation", async (req, res) => {
-  try {
-    const {
-      razorpay_order_id,
-      razorpay_payment_id,
-      razorpay_signature,
-      formData,
-      planName,
-      price,
-    } = req.body;
+// app.post("/api/pay/verify-consultation", async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       formData,
+//       planName,
+//       price,
+//     } = req.body;
 
-    console.log(`[VERIFY] Processing for plan: ${planName}, Price Input: ${price}`);
+//     console.log(`[VERIFY] Processing for plan: ${planName}, Price Input: ${price}`);
 
-    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
-      return res.json({ ok: false, message: "Missing Razorpay params" });
-    }
+//     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+//       return res.json({ ok: false, message: "Missing Razorpay params" });
+//     }
 
-    const body = razorpay_order_id + "|" + razorpay_payment_id;
-    const expected = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(body)
-      .digest("hex");
+//     const body = razorpay_order_id + "|" + razorpay_payment_id;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(body)
+//       .digest("hex");
 
-    if (expected !== razorpay_signature) {
-      return res.json({ ok: false, message: "Invalid signature" });
-    }
+//     if (expected !== razorpay_signature) {
+//       return res.json({ ok: false, message: "Invalid signature" });
+//     }
 
-    // 🚀 BULLETPROOF DATA EXTRACTION
-    const step1 = formData?.["1"] || {};
-    const step2 = formData?.["2"] || {};
-    const general = formData?.general || {};
-    const primary = formData?.primary || {};
+//     // 🚀 BULLETPROOF DATA EXTRACTION
+//     const step1 = formData?.["1"] || {};
+//     const step2 = formData?.["2"] || {};
+//     const general = formData?.general || {};
+//     const primary = formData?.primary || {};
 
-    const finalName = general.name || step1["Name"] || formData?.name || "User";
-    const finalEmail = general.email || step1["Email-id"] || formData?.email || "";
+//     const finalName = general.name || step1["Name"] || formData?.name || "User";
+//     const finalEmail = general.email || step1["Email-id"] || formData?.email || "";
     
-    let finalPhone = "";
-    if (primary.number) {
-        finalPhone = `${primary.isd || ""}${primary.number}`;
-    } else if (step2["Mobile Number"]?.mobile) {
-        finalPhone = `${step2["Mobile Number"].isd || ""}${step2["Mobile Number"].mobile}`;
-    } else {
-        finalPhone = formData?.phone || formData?.mobile || "";
-    }
+//     let finalPhone = "";
+//     if (primary.number) {
+//         finalPhone = `${primary.isd || ""}${primary.number}`;
+//     } else if (step2["Mobile Number"]?.mobile) {
+//         finalPhone = `${step2["Mobile Number"].isd || ""}${step2["Mobile Number"].mobile}`;
+//     } else {
+//         finalPhone = formData?.phone || formData?.mobile || "";
+//     }
 
-    // 🛡️ Price Sanitization
-    let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
-    if (isNaN(finalPrice)) {
-        finalPrice = Number(formData?.price) || Number(formData?.totalPrice) || 0;
-    }
+//     // 🛡️ Price Sanitization
+//     let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+//     if (isNaN(finalPrice)) {
+//         finalPrice = Number(formData?.price) || Number(formData?.totalPrice) || 0;
+//     }
 
-    // 🚨 ULTIMATE MAGIC FIX: Har jagah email daal do taaki mailer function crash na ho!
-    const safeFormData = {
-        ...formData,
-        name: finalName,       
-        email: finalEmail,     
-        phone: finalPhone,     
-        general: {
-            ...general,
-            name: finalName,
-            email: finalEmail  
-        },
-        "1": {                 
-            ...step1,
-            "Name": finalName,
-            "Email-id": finalEmail 
-        },
-        primary: {
-            ...primary,
-            number: finalPhone,
-            isd: primary.isd || step2["Mobile Number"]?.isd || "+91"
-        }
-    };
+//     // 🚨 ULTIMATE MAGIC FIX: Har jagah email daal do taaki mailer function crash na ho!
+//     const safeFormData = {
+//         ...formData,
+//         name: finalName,       
+//         email: finalEmail,     
+//         phone: finalPhone,     
+//         general: {
+//             ...general,
+//             name: finalName,
+//             email: finalEmail  
+//         },
+//         "1": {                 
+//             ...step1,
+//             "Name": finalName,
+//             "Email-id": finalEmail 
+//         },
+//         primary: {
+//             ...primary,
+//             number: finalPhone,
+//             isd: primary.isd || step2["Mobile Number"]?.isd || "+91"
+//         }
+//     };
 
-    console.log(`[VERIFY] Saving to DB -> Name: ${finalName} | Email: ${finalEmail} | Phone: ${finalPhone}`);
+//     console.log(`[VERIFY] Saving to DB -> Name: ${finalName} | Email: ${finalEmail} | Phone: ${finalPhone}`);
 
-    // ✅ Save to DB
-    const consultation = await Consultation.create({
-      formData: safeFormData,
-      name: finalName,
-      email: finalEmail,
-      phone: finalPhone,
-      planName,
-      price: finalPrice, 
-      paymentStatus: "paid",
-    });
+//     // ✅ Save to DB
+//     const consultation = await Consultation.create({
+//       formData: safeFormData,
+//       name: finalName,
+//       email: finalEmail,
+//       phone: finalPhone,
+//       planName,
+//       price: finalPrice, 
+//       paymentStatus: "paid",
+//     });
 
-    // Send Emails (Non-blocking)
-    try {
-      // 🔥 Generate the HTML representation of the submitted data
-      const submittedDetailsHtml = generateFormDataHtml(safeFormData);
+//     // Send Emails (Non-blocking)
+//     try {
+//       // 🔥 Generate the HTML representation of the submitted data
+//       const submittedDetailsHtml = generateFormDataHtml(safeFormData);
 
-      await sendConsultationEmails({
-        formData: safeFormData, 
-        docId: consultation._id,
-        submittedDetailsHtml: submittedDetailsHtml, // 👈 Pass the HTML string here
-      });
-      // Email success hui toh Status Update karo
-      consultation.emailSent = true;
-      await consultation.save();
-    } catch (mailErr) {
-      console.error("Consultation Email Failed:", mailErr.message);
-    }
+//       await sendConsultationEmails({
+//         formData: safeFormData, 
+//         docId: consultation._id,
+//         submittedDetailsHtml: submittedDetailsHtml, // 👈 Pass the HTML string here
+//       });
+//       // Email success hui toh Status Update karo
+//       consultation.emailSent = true;
+//       await consultation.save();
+//     } catch (mailErr) {
+//       console.error("Consultation Email Failed:", mailErr.message);
+//     }
 
-    return res.json({ ok: true, id: consultation._id });
-  } catch (err) {
-    console.error("verify-consultation error:", err);
-    res.status(500).json({ ok: false, message: "Verification failed on server" });
-  }
-});
+//     return res.json({ ok: true, id: consultation._id });
+//   } catch (err) {
+//     console.error("verify-consultation error:", err);
+//     res.status(500).json({ ok: false, message: "Verification failed on server" });
+//   }
+// });
 // app.post("/api/pay/verify-consultation", async (req, res) => {
 //   try {
 //     const {
@@ -1472,6 +1970,355 @@ app.post("/api/pay/verify-consultation", async (req, res) => {
 //   }
 // });
 /* ---------- Twilio Verify ---------- */
+
+// ✅ ACTIVE CONSULTATION PAYMENT ROUTES WITH META CAPI AFTER PAYMENT
+app.post("/api/pay/create-consultation", async (req, res) => {
+  try {
+    const { formData, planName, price } = req.body;
+
+    if (!formData || !planName || !price) {
+      return res.json({ ok: false, message: "Missing form data" });
+    }
+
+    const numericPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+
+    if (isNaN(numericPrice) || numericPrice <= 0) {
+      return res.json({ ok: false, message: "Invalid price format" });
+    }
+
+    const amountInPaise = numericPrice * 100;
+
+    const rzpOrder = await rp.orders.create({
+      amount: amountInPaise,
+      currency: "INR",
+    });
+
+    return res.json({
+      ok: true,
+      keyId: process.env.RAZORPAY_KEY_ID,
+      orderId: rzpOrder.id,
+      amount: amountInPaise,
+    });
+  } catch (err) {
+    console.error("Create Consultation Order Error:", err);
+    return res.json({
+      ok: false,
+      message: "Failed creating consultation order",
+    });
+  }
+});
+
+// app.post("/api/pay/verify-consultation", async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       formData,
+//       planName,
+//       price,
+//     } = req.body;
+
+//     console.log(
+//       `[VERIFY] Processing consultation for plan: ${planName}, Price Input: ${price}`,
+//     );
+
+//     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+//       return res.json({ ok: false, message: "Missing Razorpay params" });
+//     }
+
+//     const body = razorpay_order_id + "|" + razorpay_payment_id;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(body)
+//       .digest("hex");
+
+//     if (expected !== razorpay_signature) {
+//       return res.json({ ok: false, message: "Invalid signature" });
+//     }
+
+//     const step1 = formData?.["1"] || {};
+//     const step2 = formData?.["2"] || {};
+//     const general = formData?.general || {};
+//     const primary = formData?.primary || {};
+
+//     const finalName =
+//       general.name ||
+//       step1["Name"] ||
+//       formData?.name ||
+//       "User";
+
+//     const finalEmail =
+//       general.email ||
+//       step1["Email-id"] ||
+//       step1["Email"] ||
+//       formData?.email ||
+//       "";
+
+//     let finalPhone = "";
+//     if (primary.number) {
+//       finalPhone = `${primary.isd || ""}${primary.number}`;
+//     } else if (step2["Mobile Number"]?.mobile) {
+//       finalPhone = `${step2["Mobile Number"].isd || ""}${step2["Mobile Number"].mobile}`;
+//     } else {
+//       finalPhone = formData?.phone || formData?.mobile || "";
+//     }
+
+//     let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+//     if (isNaN(finalPrice)) {
+//       finalPrice =
+//         Number(formData?.price) ||
+//         Number(formData?.totalPrice) ||
+//         0;
+//     }
+
+//     const safeFormData = {
+//       ...formData,
+//       name: finalName,
+//       email: finalEmail,
+//       phone: finalPhone,
+//       general: {
+//         ...general,
+//         name: finalName,
+//         email: finalEmail,
+//       },
+//       "1": {
+//         ...step1,
+//         Name: finalName,
+//         "Email-id": finalEmail,
+//       },
+//       primary: {
+//         ...primary,
+//         number: primary.number || finalPhone,
+//         isd: primary.isd || step2["Mobile Number"]?.isd || "+91",
+//       },
+//     };
+
+//     console.log(
+//       `[VERIFY] Saving Consultation -> Name: ${finalName} | Email: ${finalEmail} | Phone: ${finalPhone}`,
+//     );
+
+//     const consultation = await Consultation.create({
+//       formData: safeFormData,
+//       name: finalName,
+//       email: finalEmail,
+//       phone: finalPhone,
+//       planName,
+//       price: finalPrice,
+//       paymentStatus: "paid",
+//       razorpay: {
+//         orderId: razorpay_order_id,
+//         paymentId: razorpay_payment_id,
+//         signature: razorpay_signature,
+//       },
+//     });
+
+//     // ✅ Meta CAPI Purchase after successful consultation payment
+//     sendMetaAfterPayment({
+//       req,
+//       eventName: "Purchase",
+//       formData: safeFormData,
+//       fallback: {
+//         name: finalName,
+//         email: finalEmail,
+//         phone: finalPhone,
+//         price: finalPrice,
+//       },
+//       reportType: "Consultation Booking",
+//       planName,
+//       price: finalPrice,
+//       currency: "INR",
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       internalOrderId: consultation._id,
+//       extraCustomData: {
+//         payment_status: "paid",
+//         source_route: "/api/pay/verify-consultation",
+//       },
+//     }).catch((err) => {
+//       console.error("[META CAPI] Consultation background failed:", err.message);
+//     });
+
+//     try {
+//       const submittedDetailsHtml = generateFormDataHtml(safeFormData);
+
+//       await sendConsultationEmails({
+//         formData: safeFormData,
+//         docId: consultation._id,
+//         submittedDetailsHtml,
+//       });
+
+//       consultation.emailSent = true;
+//       await consultation.save();
+//     } catch (mailErr) {
+//       console.error("Consultation Email Failed:", mailErr.message);
+//     }
+
+//     return res.json({ ok: true, id: consultation._id });
+//   } catch (err) {
+//     console.error("verify-consultation error:", err);
+//     return res
+//       .status(500)
+//       .json({ ok: false, message: "Verification failed on server" });
+//   }
+// });
+
+
+
+
+app.post("/api/pay/verify-consultation", async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      formData,
+      planName,
+      price,
+    } = req.body;
+
+    console.log(
+      `[VERIFY] Processing consultation for plan: ${planName}, Price Input: ${price}`,
+    );
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.json({ ok: false, message: "Missing Razorpay params" });
+    }
+
+    const body = razorpay_order_id + "|" + razorpay_payment_id;
+    const expected = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body)
+      .digest("hex");
+
+    if (expected !== razorpay_signature) {
+      return res.json({ ok: false, message: "Invalid signature" });
+    }
+
+    const step1 = formData?.["1"] || {};
+    const step2 = formData?.["2"] || {};
+    const general = formData?.general || {};
+    const primary = formData?.primary || {};
+
+    const finalName =
+      general.name ||
+      step1["Name"] ||
+      formData?.name ||
+      "User";
+
+    const finalEmail =
+      general.email ||
+      step1["Email-id"] ||
+      step1["Email"] ||
+      formData?.email ||
+      "";
+
+    let finalPhone = "";
+    if (primary.number) {
+      finalPhone = `${primary.isd || ""}${primary.number}`;
+    } else if (step2["Mobile Number"]?.mobile) {
+      finalPhone = `${step2["Mobile Number"].isd || ""}${step2["Mobile Number"].mobile}`;
+    } else {
+      finalPhone = formData?.phone || formData?.mobile || "";
+    }
+
+    let finalPrice = Number(String(price).replace(/[^0-9.]/g, ""));
+    if (isNaN(finalPrice)) {
+      finalPrice =
+        Number(formData?.price) ||
+        Number(formData?.totalPrice) ||
+        0;
+    }
+
+    const safeFormData = {
+      ...formData,
+      name: finalName,
+      email: finalEmail,
+      phone: finalPhone,
+      general: {
+        ...general,
+        name: finalName,
+        email: finalEmail,
+      },
+      "1": {
+        ...step1,
+        Name: finalName,
+        "Email-id": finalEmail,
+      },
+      primary: {
+        ...primary,
+        number: primary.number || finalPhone,
+        isd: primary.isd || step2["Mobile Number"]?.isd || "+91",
+      },
+    };
+
+    const consultation = await Consultation.create({
+      formData: safeFormData,
+      name: finalName,
+      email: finalEmail,
+      phone: finalPhone,
+      planName,
+      price: finalPrice,
+      paymentStatus: "paid",
+      razorpay: {
+        orderId: razorpay_order_id,
+        paymentId: razorpay_payment_id,
+        signature: razorpay_signature,
+      },
+    });
+
+    sendMetaAfterPayment({
+      req,
+      eventName: "Purchase",
+      formData: safeFormData,
+      fallback: {
+        name: finalName,
+        email: finalEmail,
+        phone: finalPhone,
+        price: finalPrice,
+      },
+      reportType: "Consultation Booking",
+      planName,
+      price: finalPrice,
+      currency: "INR",
+      razorpay_order_id,
+      razorpay_payment_id,
+      internalOrderId: consultation._id,
+      extraCustomData: {
+        payment_status: "paid",
+        source_route: "/api/pay/verify-consultation",
+      },
+    }).catch((err) => {
+      console.error("[META CAPI] /api/pay/verify-consultation failed:", err.message);
+    });
+
+    try {
+      const submittedDetailsHtml = generateFormDataHtml(safeFormData);
+
+      await sendConsultationEmails({
+        formData: safeFormData,
+        docId: consultation._id,
+        submittedDetailsHtml,
+      });
+
+      consultation.emailSent = true;
+      await consultation.save();
+    } catch (mailErr) {
+      console.error("Consultation Email Failed:", mailErr.message);
+    }
+
+    return res.json({ ok: true, id: consultation._id });
+  } catch (err) {
+    console.error("verify-consultation error:", err);
+    return res
+      .status(500)
+      .json({ ok: false, message: "Verification failed on server" });
+  }
+});
+
+
+
+
 
 async function getAuthToken() {
   try {
@@ -2095,6 +2942,161 @@ app.post("/api/pay/create-order", async (req, res) => {
 //   }
 // });
 
+// app.post("/api/pay/verify", async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       orderId,
+//     } = req.body || {};
+
+//     if (
+//       !razorpay_order_id ||
+//       !razorpay_payment_id ||
+//       !razorpay_signature ||
+//       !orderId
+//     ) {
+//       return res.status(400).json({ ok: false, message: "Missing params" });
+//     }
+
+//     const order = await Order.findById(orderId);
+//     if (!order) {
+//       return res.status(404).json({ ok: false, message: "Order not found" });
+//     }
+
+//     // 🔐 Verify Razorpay signature
+//     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(payload)
+//       .digest("hex");
+
+//     if (expected !== razorpay_signature) {
+//       return res.status(400).json({ ok: false, message: "Invalid signature" });
+//     }
+
+//     // ✅ Mark order paid
+//     order.status = "paid";
+//     order.razorpay = {
+//       paymentId: razorpay_payment_id,
+//       signature: razorpay_signature,
+//     };
+
+//     await order.save();
+
+//     // 🚀 IMPORTANT: SEND RESPONSE IMMEDIATELY
+//     res.json({ ok: true });
+
+//     // ===============================
+//     // 🔁 BACKGROUND TASKS (NO AWAIT)
+//     // ===============================
+//     processInstantReport(order).catch((err) => {
+//       console.error("Background task failed:", err);
+//     });
+//   } catch (err) {
+//     console.error("pay/verify error:", err);
+//     return res.status(500).json({ ok: false, message: "Server error" });
+//   }
+// });
+
+
+
+
+
+// app.post("/api/pay/verify", async (req, res) => {
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       orderId,
+//     } = req.body || {};
+
+//     if (
+//       !razorpay_order_id ||
+//       !razorpay_payment_id ||
+//       !razorpay_signature ||
+//       !orderId
+//     ) {
+//       return res.status(400).json({ ok: false, message: "Missing params" });
+//     }
+
+//     const order = await Order.findById(orderId);
+//     if (!order) {
+//       return res.status(404).json({ ok: false, message: "Order not found" });
+//     }
+
+//     // 🔐 Verify Razorpay signature
+//     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(payload)
+//       .digest("hex");
+
+//     if (expected !== razorpay_signature) {
+//       return res.status(400).json({ ok: false, message: "Invalid signature" });
+//     }
+
+//     // ✅ Mark order paid
+//     order.status = "paid";
+//     order.razorpay = {
+//       ...(order.razorpay || {}),
+//       orderId: razorpay_order_id,
+//       paymentId: razorpay_payment_id,
+//       signature: razorpay_signature,
+//     };
+
+//     await order.save();
+
+//     // 🚀 IMPORTANT: SEND RESPONSE IMMEDIATELY
+//     res.json({ ok: true });
+
+//     // ===============================
+//     // 🔁 BACKGROUND TASKS (NO AWAIT)
+//     // ===============================
+
+//     // ✅ Meta CAPI Purchase after successful Razorpay payment
+//     sendMetaAfterPayment({
+//       req,
+//       eventName: "Purchase",
+//       formData: order.formData || {},
+//       fallback: {
+//         name: order.name,
+//         email: order.email,
+//         phone: order.phone,
+//         amount: order.amount ? Number(order.amount) / 100 : 0,
+//       },
+//       reportType:
+//         (order.formData?.parallels?.length || 0) === 0 &&
+//         (order.formData?.previousNumbers?.length || 0) === 0
+//           ? "Instant Mobile Number Report"
+//           : "Personalised Mobile Number Report",
+//       price: order.formData?.totalPrice || Number(order.amount || 0) / 100,
+//       currency: order.currency || "INR",
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       internalOrderId: order._id,
+//       extraCustomData: {
+//         payment_status: "paid",
+//         source_route: "/api/pay/verify",
+//       },
+//     }).catch((err) => {
+//       console.error("[META CAPI] Purchase background failed:", err.message);
+//     });
+
+//     processInstantReport(order).catch((err) => {
+//       console.error("Background task failed:", err);
+//     });
+//   } catch (err) {
+//     console.error("pay/verify error:", err);
+//     return res.status(500).json({ ok: false, message: "Server error" });
+//   }
+// });
+
+
+
+
 app.post("/api/pay/verify", async (req, res) => {
   try {
     const {
@@ -2118,7 +3120,6 @@ app.post("/api/pay/verify", async (req, res) => {
       return res.status(404).json({ ok: false, message: "Order not found" });
     }
 
-    // 🔐 Verify Razorpay signature
     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -2129,21 +3130,46 @@ app.post("/api/pay/verify", async (req, res) => {
       return res.status(400).json({ ok: false, message: "Invalid signature" });
     }
 
-    // ✅ Mark order paid
     order.status = "paid";
     order.razorpay = {
+      ...(order.razorpay || {}),
+      orderId: razorpay_order_id,
       paymentId: razorpay_payment_id,
       signature: razorpay_signature,
     };
 
     await order.save();
 
-    // 🚀 IMPORTANT: SEND RESPONSE IMMEDIATELY
     res.json({ ok: true });
 
-    // ===============================
-    // 🔁 BACKGROUND TASKS (NO AWAIT)
-    // ===============================
+    sendMetaAfterPayment({
+      req,
+      eventName: "Purchase",
+      formData: order.formData || {},
+      fallback: {
+        name: order.name,
+        email: order.email,
+        phone: order.phone,
+        amount: order.amount ? Number(order.amount) / 100 : 0,
+      },
+      reportType:
+        (order.formData?.parallels?.length || 0) === 0 &&
+        (order.formData?.previousNumbers?.length || 0) === 0
+          ? "Instant Mobile Number Report"
+          : "Personalised Mobile Number Report",
+      price: order.formData?.totalPrice || Number(order.amount || 0) / 100,
+      currency: order.currency || "INR",
+      razorpay_order_id,
+      razorpay_payment_id,
+      internalOrderId: order._id,
+      extraCustomData: {
+        payment_status: "paid",
+        source_route: "/api/pay/verify",
+      },
+    }).catch((err) => {
+      console.error("[META CAPI] /api/pay/verify failed:", err.message);
+    });
+
     processInstantReport(order).catch((err) => {
       console.error("Background task failed:", err);
     });
@@ -2152,6 +3178,13 @@ app.post("/api/pay/verify", async (req, res) => {
     return res.status(500).json({ ok: false, message: "Server error" });
   }
 });
+
+
+
+
+
+
+
 async function processInstantReport(order) {
   // 1️⃣ Check: Instant report hai ya nahi
   const isInstantReport =
@@ -2381,6 +3414,72 @@ app.get("/api/link/check", (req, res) => {
   res.json({ valid: allowed.includes(key) });
 });
 
+// app.post("/api/pay/verify-report", async (req, res) => {
+  
+//   try {
+//     const {
+//       razorpay_order_id,
+//       razorpay_payment_id,
+//       razorpay_signature,
+//       orderId,
+//     } = req.body || {};
+
+//     if (
+//       !razorpay_order_id ||
+//       !razorpay_payment_id ||
+//       !razorpay_signature ||
+//       !orderId
+//     ) {
+//       return res.status(400).json({
+//         ok: false,
+//         message: "Missing Razorpay parameters",
+//       });
+//     }
+
+//     const order = await Order.findById(orderId);
+//     if (!order) {
+//       return res.status(404).json({
+//         ok: false,
+//         message: "Order not found",
+//       });
+//     }
+
+//     /* ---------- Verify Razorpay signature ---------- */
+//     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
+//     const expected = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(payload)
+//       .digest("hex");
+
+//     if (expected !== razorpay_signature) {
+//       return res.status(400).json({
+//         ok: false,
+//         message: "Invalid Razorpay signature",
+//       });
+//     }
+
+//     /* ---------- Mark order paid ---------- */
+//     order.status = "paid";
+//     order.razorpay = {
+//       ...(order.razorpay || {}),
+//       paymentId: razorpay_payment_id,
+//       signature: razorpay_signature,
+//     };
+
+//     await order.save();
+
+//     return res.json({ ok: true });
+//   } catch (err) {
+//     console.error("pay/verify error:", err);
+//     return res.status(500).json({
+//       ok: false,
+//       message: "Server error",
+//     });
+//   }
+// });
+
+// routes/config.js or directly in server.js
+
 app.post("/api/pay/verify-report", async (req, res) => {
   try {
     const {
@@ -2410,7 +3509,6 @@ app.post("/api/pay/verify-report", async (req, res) => {
       });
     }
 
-    /* ---------- Verify Razorpay signature ---------- */
     const payload = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expected = crypto
       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
@@ -2424,19 +3522,43 @@ app.post("/api/pay/verify-report", async (req, res) => {
       });
     }
 
-    /* ---------- Mark order paid ---------- */
     order.status = "paid";
     order.razorpay = {
       ...(order.razorpay || {}),
+      orderId: razorpay_order_id,
       paymentId: razorpay_payment_id,
       signature: razorpay_signature,
     };
 
     await order.save();
 
-    return res.json({ ok: true });
+    res.json({ ok: true });
+
+    sendMetaAfterPayment({
+      req,
+      eventName: "Purchase",
+      formData: order.formData || {},
+      fallback: {
+        name: order.name,
+        email: order.email,
+        phone: order.phone,
+        amount: order.amount ? Number(order.amount) / 100 : 0,
+      },
+      reportType: "Paid Report",
+      price: order.formData?.totalPrice || Number(order.amount || 0) / 100,
+      currency: order.currency || "INR",
+      razorpay_order_id,
+      razorpay_payment_id,
+      internalOrderId: order._id,
+      extraCustomData: {
+        payment_status: "paid",
+        source_route: "/api/pay/verify-report",
+      },
+    }).catch((err) => {
+      console.error("[META CAPI] /api/pay/verify-report failed:", err.message);
+    });
   } catch (err) {
-    console.error("pay/verify error:", err);
+    console.error("pay/verify-report error:", err);
     return res.status(500).json({
       ok: false,
       message: "Server error",
@@ -2444,7 +3566,8 @@ app.post("/api/pay/verify-report", async (req, res) => {
   }
 });
 
-// routes/config.js or directly in server.js
+
+
 app.get("/api/config/price", (req, res) => {
   res.json({
     price: Number(process.env.REACT_APP_INSTANT_REPORT_PRICE || 0),
@@ -2702,12 +3825,105 @@ app.get("/api/user-activity", async (req, res) => {
   }
 });
 
+// app.post("/api/report/submit", async (req, res) => {
+//   try {
+//     const { orderId } = req.body || {};
+//     const order = await Order.findById(orderId);
+//     if (!order)
+//       return res.status(404).json({ ok: false, message: "Order not found" });
+
+//     if (!(order.status === "paid" || order.status === "free")) {
+//       return res
+//         .status(400)
+//         .json({ ok: false, message: "Payment not completed" });
+//     }
+
+//     const fd = order.formData || {};
+//     const general = fd.general || {};
+//     const primary = fd.primary || {};
+
+//     // ALWAYS latest mobile from formData
+//     const primaryFull = `${primary.isd}${primary.number}`;
+
+//     const totalPrice = fd.totalPrice || order.amount / 100;
+
+//     /* ----- Admin email ----- */
+//     const adminHtml = `
+//       <h2>New Personalized Report Request (Paid)</h2>
+//       <p><strong>Name:</strong> ${general.name}</p>
+//       <p><strong>Email:</strong> ${general.email}</p>
+//       <p><strong>Primary Mobile:</strong> ${primaryFull}</p>
+//       <p><strong>Total Price:</strong> ₹${totalPrice}</p>
+//       <p><strong>Order ID:</strong> ${order._id}</p>
+//       <h3>Full Form Data</h3>
+//       <pre>${JSON.stringify(fd, null, 2)}</pre>
+//     `;
+
+//     await sendEmail({
+//       to: "no-reply@consciouskarma.co",
+//       subject: "New Conscious Karma Report Request (Payment Successful)",
+//       html: adminHtml,
+//     });
+
+//     /* ----- User email ----- */
+//     /* ----- User email (REPORT IN PROGRESS) ----- */
+//     const userHtml = `
+//   <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
+//     <p>Dear <strong>${general.name || "User"}</strong>,</p>
+
+//     <p>
+//       Thank you for choosing the <strong>Personalised Mobile Number Report</strong>.
+//     </p>
+
+//     <p>
+//       Your details have been received and your report is now under preparation.
+//     </p>
+//     ${generateFormDataHtml(fd)}
+
+//     <p>
+//       <strong>Delivery timeline:</strong> 5–7 days<br/>
+//       Your completed report will be sent to this email once it’s ready.
+//     </p>
+
+//     <p>
+//       If you need to share anything additional, feel free to write to us at
+//       <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
+//     </p>
+
+//     <p style="margin-top:24px;">
+//       Warm regards,<br/>
+//       <strong>Conscious Karma</strong>
+//     </p>
+//   </div>
+// `;
+
+//     await sendEmail({
+//       to: general.email,
+//       subject: "Your Personalised Report is Now in Progress",
+//       html: userHtml,
+//     });
+
+//     order.status = "submitted";
+//     order.emailSent = true;
+//     await order.save();
+
+//     res.json({ ok: true });
+//   } catch (err) {
+//     console.error("report/submit error:", err);
+//     res.status(500).json({ ok: false, message: "Failed to finalize report" });
+//   }
+// });
+
+
+
 app.post("/api/report/submit", async (req, res) => {
   try {
     const { orderId } = req.body || {};
+
     const order = await Order.findById(orderId);
-    if (!order)
+    if (!order) {
       return res.status(404).json({ ok: false, message: "Order not found" });
+    }
 
     if (!(order.status === "paid" || order.status === "free")) {
       return res
@@ -2720,9 +3936,9 @@ app.post("/api/report/submit", async (req, res) => {
     const primary = fd.primary || {};
 
     // ALWAYS latest mobile from formData
-    const primaryFull = `${primary.isd}${primary.number}`;
+    const primaryFull = `${primary.isd || ""}${primary.number || ""}`;
 
-    const totalPrice = fd.totalPrice || order.amount / 100;
+    const totalPrice = fd.totalPrice || Number(order.amount || 0) / 100;
 
     /* ----- Admin email ----- */
     const adminHtml = `
@@ -2743,36 +3959,36 @@ app.post("/api/report/submit", async (req, res) => {
     });
 
     /* ----- User email ----- */
-    /* ----- User email (REPORT IN PROGRESS) ----- */
     const userHtml = `
-  <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
-    <p>Dear <strong>${general.name || "User"}</strong>,</p>
+      <div style="font-family:Arial,sans-serif;max-width:640px;margin:0;line-height:1.6;color:#222;">
+        <p>Dear <strong>${general.name || "User"}</strong>,</p>
 
-    <p>
-      Thank you for choosing the <strong>Personalised Mobile Number Report</strong>.
-    </p>
+        <p>
+          Thank you for choosing the <strong>Personalised Mobile Number Report</strong>.
+        </p>
 
-    <p>
-      Your details have been received and your report is now under preparation.
-    </p>
-    ${generateFormDataHtml(fd)}
+        <p>
+          Your details have been received and your report is now under preparation.
+        </p>
 
-    <p>
-      <strong>Delivery timeline:</strong> 5–7 days<br/>
-      Your completed report will be sent to this email once it’s ready.
-    </p>
+        ${generateFormDataHtml(fd)}
 
-    <p>
-      If you need to share anything additional, feel free to write to us at
-      <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
-    </p>
+        <p>
+          <strong>Delivery timeline:</strong> 5–7 days<br/>
+          Your completed report will be sent to this email once it’s ready.
+        </p>
 
-    <p style="margin-top:24px;">
-      Warm regards,<br/>
-      <strong>Conscious Karma</strong>
-    </p>
-  </div>
-`;
+        <p>
+          If you need to share anything additional, feel free to write to us at
+          <a href="mailto:hello@consciouskarma.co">hello@consciouskarma.co</a>.
+        </p>
+
+        <p style="margin-top:24px;">
+          Warm regards,<br/>
+          <strong>Conscious Karma</strong>
+        </p>
+      </div>
+    `;
 
     await sendEmail({
       to: general.email,
@@ -2783,6 +3999,33 @@ app.post("/api/report/submit", async (req, res) => {
     order.status = "submitted";
     order.emailSent = true;
     await order.save();
+
+    // ✅ Meta CAPI after full personalised form submit
+    // Purchase already sent on payment verify, so here SubmitApplication is safer.
+    sendMetaAfterPayment({
+      req,
+      eventName: "SubmitApplication",
+      formData: fd,
+      fallback: {
+        name: order.name,
+        email: order.email,
+        phone: order.phone,
+        amount: totalPrice,
+      },
+      reportType: "Personalised Mobile Number Report Submitted",
+      price: totalPrice,
+      currency: order.currency || "INR",
+      razorpay_order_id: order.razorpay?.orderId || "",
+      razorpay_payment_id: order.razorpay?.paymentId || "",
+      internalOrderId: order._id,
+      extraCustomData: {
+        payment_status: order.status,
+        source_route: "/api/report/submit",
+        report_submit_status: "submitted",
+      },
+    }).catch((err) => {
+      console.error("[META CAPI] Report submit background failed:", err.message);
+    });
 
     res.json({ ok: true });
   } catch (err) {
