@@ -948,8 +948,15 @@
 
 
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import { useIntl, FormattedMessage } from "react-intl";
+import { Document, Page, pdfjs } from "react-pdf";
+import sampleReportPdf from "../src/instant_report.pdf";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
+
+
+
 
 import InstantReportForm from "./InstantReportForm.jsx";
 import InlineInstantReportForm from "./components/InlineInstantReportForm.jsx";
@@ -971,7 +978,10 @@ import blog01 from "./Blog.1.webp";
 import blog02 from "./Blog.2.webp";
 import blog03 from "./Blog.3.webp";
 import mobileEnergyFlow from "./mobile number energy flow.webp";
-
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 const commonTextStyle = {
   fontSize: "clamp(20px, 2.5vw, 20px)",
   lineHeight: "1.4",
@@ -1164,6 +1174,157 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
   );
 }
 
+
+function SampleReportPreview() {
+  const [numPages, setNumPages] = useState(0);
+  const [page, setPage] = useState(1);
+  const [containerWidth, setContainerWidth] = useState(420);
+  const [touchStartX, setTouchStartX] = useState(null);
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    if (!carouselRef.current) return;
+
+    const updateWidth = () => {
+      const width = carouselRef.current?.offsetWidth || 420;
+      setContainerWidth(Math.min(width - 20, 430));
+    };
+
+    updateWidth();
+
+    const resizeObserver = new ResizeObserver(updateWidth);
+    resizeObserver.observe(carouselRef.current);
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  function onDocumentLoadSuccess({ numPages }) {
+    setNumPages(numPages);
+    setPage(1);
+  }
+
+  const goPrev = () => {
+    if (!numPages) return;
+    setPage((prev) => (prev <= 1 ? numPages : prev - 1));
+  };
+
+  const goNext = () => {
+    if (!numPages) return;
+    setPage((prev) => (prev >= numPages ? 1 : prev + 1));
+  };
+
+  const handleTouchStart = (e) => {
+    setTouchStartX(e.touches[0].clientX);
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX === null) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > 45) {
+      if (diff > 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
+    }
+
+    setTouchStartX(null);
+  };
+
+return (
+  <div className="w-full max-w-[500px] mx-auto">
+    <h2 className="text-center text-white font-light tracking-wide mb-4 text-[16px] sm:text-[22px]">
+      Sample Report
+    </h2>
+
+    <div className="rounded-[24px] p-0 bg-black/20">
+      <div
+        ref={carouselRef}
+        className="relative overflow-hidden rounded-[18px] bg-black"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <Document
+          file={sampleReportPdf}
+          onLoadSuccess={onDocumentLoadSuccess}
+          loading={
+            <div className="h-[560px] flex items-center justify-center text-white">
+              Loading report...
+            </div>
+          }
+          error={
+            <div className="h-[560px] flex items-center justify-center text-red-300 text-center px-4">
+              PDF load nahi ho pa raha. Please PDF path check karo.
+            </div>
+          }
+        >
+          <div
+            className="flex transition-transform duration-500 ease-out"
+            style={{
+              transform: `translateX(-${(page - 1) * 100}%)`,
+            }}
+          >
+            {Array.from(new Array(numPages || 1), (_, index) => (
+              <div
+                key={`pdf-page-${index + 1}`}
+                className="min-w-full flex justify-center bg-black"
+              >
+                <Page
+                  pageNumber={index + 1}
+                  width={containerWidth}
+                  renderTextLayer={false}
+                  renderAnnotationLayer={false}
+                  loading={
+                    <div
+                      className="bg-black flex items-center justify-center text-white"
+                      style={{
+                        width: containerWidth,
+                        height: containerWidth * 1.41,
+                      }}
+                    >
+                      Loading page...
+                    </div>
+                  }
+                />
+              </div>
+            ))}
+          </div>
+        </Document>
+
+        {numPages > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={goPrev}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/70 border border-white/35 text-white flex items-center justify-center hover:border-[#f59255] hover:text-[#f59255] transition z-10"
+              aria-label="Previous report page"
+            >
+              ‹
+            </button>
+
+            <button
+              type="button"
+              onClick={goNext}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/70 border border-white/35 text-white flex items-center justify-center hover:border-[#f59255] hover:text-[#f59255] transition z-10"
+              aria-label="Next report page"
+            >
+              ›
+            </button>
+          </>
+        )}
+      </div>
+
+    
+    </div>
+      <div className="mt-3 text-center text-white text-base sm:text-lg tracking-wide">
+        {page} / {numPages || 1}
+      </div>
+  </div>
+);
+}
 export default function ConsciousKarmaSections() {
   const intl = useIntl();
 
@@ -1280,7 +1441,7 @@ export default function ConsciousKarmaSections() {
         />
       )}
 
-      <section className="relative bg-black flex flex-col overflow-x-hidden">
+      {/* <section className="relative bg-black flex flex-col overflow-x-hidden">
         <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
 
         <div style={{ height: "128px" }} />
@@ -1421,8 +1582,167 @@ export default function ConsciousKarmaSections() {
         />
 
         <SectionSpacer />
-      </section>
+      </section> */}
 
+
+<section className="relative bg-black flex flex-col overflow-x-hidden">
+  <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
+
+  <div style={{ height: "128px" }} />
+
+  <div className="w-full px-4 sm:px-6 lg:px-10">
+    <div className="mx-auto max-w-[1500px] grid grid-cols-1 lg:grid-cols-[1fr_560px] gap-10 xl:gap-16 items-center">
+      {/* LEFT SIDE */}
+      <div className="flex flex-col justify-center items-center text-center">
+        <div className="w-full">
+          <h1
+            className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
+            style={{ fontSize: "clamp(28px, 4.2vw, 54px)" }}
+          >
+            <span className="block">
+              <FormattedMessage
+                id="hero.title.line1"
+                defaultMessage="YOUR MOBILE NUMBER"
+              />
+            </span>
+
+            <span className="block md:inline">
+              <span className="block md:inline">
+                <FormattedMessage
+                  id="hero.title.line2"
+                  defaultMessage="IS THE"
+                />
+                <span className="text-[#f59255] font-normal">
+                  {" "}
+                  <FormattedMessage
+                    id="hero.title.key"
+                    defaultMessage=" "
+                  />{" "}
+                </span>
+              </span>
+
+              <span className="block md:inline">
+                <span className="text-[#f59255] md:text-[#fff] font-normal">
+                  <FormattedMessage id="hero.title.TO" defaultMessage=" " />
+                </span>
+
+                <FormattedMessage
+                  id="hero.title.toAchieving"
+                  defaultMessage=" "
+                />
+
+                <span className="md:hidden">
+                  {" "}
+                  <FormattedMessage
+                    id="hero.tittle.line3"
+                    defaultMessage=" "
+                  />
+                </span>
+              </span>
+            </span>
+
+            <span className="block">
+              <span className="hidden md:inline">
+                <FormattedMessage
+                  id="hero.tittle.line3"
+                  defaultMessage="  "
+                />
+              </span>
+
+              <span className="text-[#f59255] font-normal">
+                <FormattedMessage
+                  id="hero.title.dreams"
+                  defaultMessage=" "
+                />
+              </span>
+            </span>
+          </h1>
+
+          <div className="h-[24px]" />
+
+          <div className="space-y-0 text-gray-200 font-thin tracking-wide">
+            <p className="text-[20px] md:text-[25px] !m-0">
+              Every number carries a pattern
+            </p>
+
+            <div className="h-[24px]" />
+
+            <p style={{ fontSize: "20px" }}>
+              {/* Discover How a Mobile Number <br className="block sm:hidden" />
+              Shapes Life’s Key Areas */}
+
+
+              This report shows how the number shapes key areas of life
+            </p>
+          </div>
+        </div>
+
+        <div style={{ height: "24px" }} />
+
+        <div className="w-full flex justify-center">
+          <div className="grid grid-cols-[60px_1fr] gap-y-3 gap-x-4 items-center w-fit md:flex md:flex-row md:gap-12 lg:gap-16 xl:gap-20 md:w-auto !py-0">
+            {heroIcons.map(([src, label], i) => (
+              <React.Fragment key={i}>
+                <div className="contents md:flex md:flex-col md:items-center md:gap-2">
+                  <div className="flex items-center justify-center">
+                    <OptimizedImg
+                      src={src}
+                      alt={label}
+                      width="80"
+                      height="80"
+                      loading="eager"
+                      fetchPriority="high"
+                      className="w-14 h-14 md:w-20 md:h-20 object-contain"
+                    />
+                  </div>
+
+                  <span
+                    className="text-white font-light text-left md:text-center whitespace-nowrap md:whitespace-normal md:max-w-[120px] leading-tight"
+                    style={{ fontSize: "clamp(20px, 2.5vw, 20px)" }}
+                  >
+                    {label}
+                  </span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+
+        <div style={{ height: "24px" }} />
+
+        <div className="w-full max-w-[340px] md:max-w-[420px] px-4 sm:py-0 lg:py-2">
+          <div className="md:h-[48px]" />
+
+          <InlineInstantReportForm
+            ctaLabel={intl.formatMessage({ id: "form.ctaInstantReport" })}
+            onSubmit={openPrefilledModal}
+          />
+        </div>
+      </div>
+
+      {/* RIGHT SIDE PDF PREVIEW */}
+     {/* RIGHT SIDE DIRECT PDF CAROUSEL */}
+<div className="flex justify-center mt-8 lg:mt-0">
+  <SampleReportPreview />
+</div>
+    </div>
+  </div>
+
+  {menuOpen && (
+    <div
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+      onClick={() => setMenuOpen(false)}
+    />
+  )}
+
+  <CKNavbar
+    menuOpen={menuOpen}
+    setMenuOpen={setMenuOpen}
+    setShowSignup={setShowSignup}
+  />
+
+  <SectionSpacer />
+</section>
       <section className="relative bg-black flex items-center justify-center px-4 sm:px-6">
         <div className="container mx-auto max-w-full text-center flex flex-col justify-center">
           <p

@@ -197,7 +197,7 @@ export default function InlineInstantReportForm({
           </button>
         </div>
       </div>
-      <a
+      {/* <a
             href={sampleReportPdf}
             target="_blank"
             rel="noopener noreferrer"
@@ -205,7 +205,7 @@ export default function InlineInstantReportForm({
             style={{ fontSize: 'clamp(16px, 2vw, 16px)', color: '#f59255' }}
           >
             sample report
-          </a>
+          </a> */}
       {/* Toast Notification */}
       {/* Toast Notification */}
       {toast.show && (

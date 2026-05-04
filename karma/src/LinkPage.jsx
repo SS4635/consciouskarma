@@ -341,9 +341,9 @@ export default function ConsciousKarmaSections() {
 
                 {/* Mobile Row 3 */}
                 <span className="block md:inline mt-1 md:mt-0">
-                  <FormattedMessage id="hero.title.toAchieving" defaultMessage="TO ACHIEVING" />
+                  <FormattedMessage id="hero.title.toAchieving"  />
                   <span className="md:hidden">
-                      {" "}<FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR" />
+                      {" "}<FormattedMessage id="hero.tittle.line3"  />
                   </span>
                 </span>
               </span>
@@ -351,10 +351,10 @@ export default function ConsciousKarmaSections() {
               {/* LINE 3 - Desktop gap reduced via md:mt-0 */}
               <span className="block mt-1 md:mt-0"> 
                 <span className="hidden md:inline">
-                  <FormattedMessage id="hero.tittle.line3" defaultMessage="YOUR " />
+                  <FormattedMessage id="hero.tittle.line3"  />
                 </span>
                 <span className="text-[#f59255] font-normal">
-                  <FormattedMessage id="hero.title.dreams" defaultMessage="DREAMS" />
+                  <FormattedMessage id="hero.title.dreams"  />
                 </span>
               </span>
 
