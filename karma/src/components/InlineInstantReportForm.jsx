@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./InlineInstantReportForm.css";
 import { useIntl, FormattedMessage } from "react-intl";
 import { COUNTRY_CODES } from "./constants/countryCodes";
-import sampleReportPdf from "../instant_report.pdf";
+import sampleReportPdf from "../ConsciousKarmaInstantMobileReportEDIT.pdf";
 import axios from "axios";
 const API = process.env.REACT_APP_API_URL;
 export default function InlineInstantReportForm({

@@ -951,7 +951,7 @@
 import React, { useEffect, useState ,useRef} from "react";
 import { useIntl, FormattedMessage } from "react-intl";
 import { Document, Page, pdfjs } from "react-pdf";
-import sampleReportPdf from "../src/instant_report.pdf";
+import sampleReportPdf from "../src/ConsciousKarmaInstantMobileReportEDIT.pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
@@ -1178,16 +1178,27 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
 function SampleReportPreview() {
   const [numPages, setNumPages] = useState(0);
   const [page, setPage] = useState(1);
-  const [containerWidth, setContainerWidth] = useState(420);
+  const [pdfWidth, setPdfWidth] = useState(390);
   const [touchStartX, setTouchStartX] = useState(null);
   const carouselRef = useRef(null);
+
+  // ✅ Is padding se PDF ka white border cut nahi hoga
+  const SAFE_PADDING = 28;
+  const MAX_PDF_WIDTH = 430;
 
   useEffect(() => {
     if (!carouselRef.current) return;
 
     const updateWidth = () => {
-      const width = carouselRef.current?.offsetWidth || 420;
-      setContainerWidth(Math.min(width - 20, 430));
+      const availableWidth = carouselRef.current?.offsetWidth || 520;
+
+      // ✅ arrows ke liye bhi thoda space leave
+      const nextPdfWidth = Math.min(
+        MAX_PDF_WIDTH,
+        Math.max(260, availableWidth - SAFE_PADDING * 2)
+      );
+
+      setPdfWidth(nextPdfWidth);
     };
 
     updateWidth();
@@ -1224,106 +1235,139 @@ function SampleReportPreview() {
     const diff = touchStartX - touchEndX;
 
     if (Math.abs(diff) > 45) {
-      if (diff > 0) {
-        goNext();
-      } else {
-        goPrev();
-      }
+      if (diff > 0) goNext();
+      else goPrev();
     }
 
     setTouchStartX(null);
   };
 
-return (
-  <div className="w-full max-w-[500px] mx-auto">
-    <h2 className="text-center text-white font-light tracking-wide mb-4 text-[16px] sm:text-[22px]">
-      Sample Report
-    </h2>
+  const slideWidth = pdfWidth + SAFE_PADDING * 2;
 
-    <div className="rounded-[24px] p-0 bg-black/20">
-      <div
-        ref={carouselRef}
-        className="relative overflow-hidden rounded-[18px] bg-black"
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
-        <Document
-          file={sampleReportPdf}
-          onLoadSuccess={onDocumentLoadSuccess}
-          loading={
-            <div className="h-[560px] flex items-center justify-center text-white">
-              Loading report...
-            </div>
-          }
-          error={
-            <div className="h-[560px] flex items-center justify-center text-red-300 text-center px-4">
-              PDF load nahi ho pa raha. Please PDF path check karo.
-            </div>
-          }
+  return (
+    <div className="w-full max-w-[560px] mx-auto">
+      <h2 className="text-center text-white font-light tracking-wide mb-0 text-[16px] sm:text-[22px]">
+        Sample Report
+      </h2>
+
+      <div ref={carouselRef} className="w-full">
+        <div
+          className="relative mx-auto"
+          style={{ width: slideWidth }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
+          {/* ✅ Do not use rounded overflow around PDF, warna PDF ka border cut hota hai */}
           <div
-            className="flex transition-transform duration-500 ease-out"
-            style={{
-              transform: `translateX(-${(page - 1) * 100}%)`,
-            }}
+            className="overflow-hidden bg-transparent"
+            style={{ width: slideWidth }}
           >
-            {Array.from(new Array(numPages || 1), (_, index) => (
+            <Document
+              file={sampleReportPdf}
+              onLoadSuccess={onDocumentLoadSuccess}
+              loading={
+                <div
+                  className="flex items-center justify-center text-white"
+                  style={{
+                    width: slideWidth,
+                    height: pdfWidth * 1.41 + SAFE_PADDING * 2,
+                  }}
+                >
+                  Loading report...
+                </div>
+              }
+              error={
+                <div
+                  className="flex items-center justify-center text-red-300 text-center px-4"
+                  style={{
+                    width: slideWidth,
+                    height: pdfWidth * 1.41 + SAFE_PADDING * 2,
+                  }}
+                >
+                  PDF load nahi ho pa raha. Please PDF path check karo.
+                </div>
+              }
+            >
               <div
-                key={`pdf-page-${index + 1}`}
-                className="min-w-full flex justify-center bg-black"
+                className="flex transition-transform duration-500 ease-out"
+                style={{
+                  transform: `translateX(-${(page - 1) * slideWidth}px)`,
+                }}
               >
-                <Page
-                  pageNumber={index + 1}
-                  width={containerWidth}
-                  renderTextLayer={false}
-                  renderAnnotationLayer={false}
-                  loading={
-                    <div
-                      className="bg-black flex items-center justify-center text-white"
-                      style={{
-                        width: containerWidth,
-                        height: containerWidth * 1.41,
-                      }}
-                    >
-                      Loading page...
-                    </div>
-                  }
-                />
+                {Array.from(new Array(numPages || 1), (_, index) => (
+                  <div
+                    key={`pdf-page-${index + 1}`}
+                    className="flex justify-center items-center bg-transparent"
+                    style={{
+                      minWidth: slideWidth,
+                      width: slideWidth,
+                      padding: SAFE_PADDING,
+                    }}
+                  >
+                    <Page
+                      pageNumber={index + 1}
+                      width={pdfWidth}
+                      renderTextLayer={false}
+                      renderAnnotationLayer={false}
+                      loading={
+                        <div
+                          className="bg-black flex items-center justify-center text-white"
+                          style={{
+                            width: pdfWidth,
+                            height: pdfWidth * 1.41,
+                          }}
+                        >
+                          Loading page...
+                        </div>
+                      }
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
+            </Document>
           </div>
-        </Document>
 
-        {numPages > 1 && (
-          <>
-            <button
-              type="button"
-              onClick={goPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/70 border border-white/35 text-white flex items-center justify-center hover:border-[#f59255] hover:text-[#f59255] transition z-10"
-              aria-label="Previous report page"
-            >
-              ‹
-            </button>
+          {numPages > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={goPrev}
+                className="absolute top-1/2 w-[52px] h-[52px] sm:w-[58px] sm:h-[58px] rounded-full bg-black/95 border border-white/70 text-white flex items-center justify-center hover:border-[#f59255] hover:text-[#f59255] transition z-30"
+                style={{
+                  left: SAFE_PADDING,
+                  transform: "translate(-50%, -50%)",
+                }}
+                aria-label="Previous report page"
+              >
+                <span className="text-[30px] sm:text-[36px] leading-none -mt-[3px]">
+                  ‹
+                </span>
+              </button>
 
-            <button
-              type="button"
-              onClick={goNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/70 border border-white/35 text-white flex items-center justify-center hover:border-[#f59255] hover:text-[#f59255] transition z-10"
-              aria-label="Next report page"
-            >
-              ›
-            </button>
-          </>
-        )}
+              <button
+                type="button"
+                onClick={goNext}
+                className="absolute top-1/2 w-[52px] h-[52px] sm:w-[58px] sm:h-[58px] rounded-full bg-black/95 border border-white/70 text-white flex items-center justify-center hover:border-[#f59255] hover:text-[#f59255] transition z-30"
+                style={{
+                  right: SAFE_PADDING,
+                  transform: "translate(50%, -50%)",
+                }}
+                aria-label="Next report page"
+              >
+                <span className="text-[30px] sm:text-[36px] leading-none -mt-[3px]">
+                  ›
+                </span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
 
-    
-    </div>
-      <div className="mt-3 text-center text-white text-base sm:text-lg tracking-wide">
+      <div className="mt-1 text-center text-white text-base sm:text-lg tracking-wide">
         {page} / {numPages || 1}
       </div>
-  </div>
-);
+    </div>
+  );
 }
 export default function ConsciousKarmaSections() {
   const intl = useIntl();
