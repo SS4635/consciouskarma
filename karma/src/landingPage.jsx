@@ -1632,7 +1632,7 @@ export default function ConsciousKarmaSections() {
       </section> */}
 
 
-<section className="relative bg-black flex flex-col overflow-x-hidden -mt-14">
+<section className="relative bg-black flex flex-col overflow-x-hidden md:-mt-14">
   <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
 
   <div style={{ height: "128px" }} />
@@ -1640,7 +1640,7 @@ export default function ConsciousKarmaSections() {
   <div className="w-full px-4 sm:px-6 lg:px-10">
     <div className="mx-auto max-w-[1500px] grid grid-cols-1 lg:grid-cols-[1fr_560px] gap-10 xl:gap-16 items-center">
       {/* LEFT SIDE */}
-      <div className="flex flex-col justify-center items-center text-center pl-20">
+      <div className="flex flex-col justify-center items-center text-center md:pl-20">
         <div className="w-full">
           <h1
             className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
