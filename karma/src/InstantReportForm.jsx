@@ -868,6 +868,20 @@ const successOverlay = (generatingReport && showSuccess) ? (
                 {errors.phone && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.phone}</span>}
               </div>
 
+
+              {/* EMAIL */}
+              <div style={{ marginBottom: "8px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", marginBottom: "6px", fontSize: "17px" }}>
+                  <span>Email*</span>
+                  <button type="button" style={{ color: "#f59255", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
+                </div>
+                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className={`instant-input ${errors.email ? 'error' : ''}`} />
+                <div style={{ color: "#F59255", fontSize: "13px", marginTop: "6px" }}>
+                  * Report will be sent to this email.
+                </div>
+                {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
+              </div>
+
               {/* NAME */}
               <div style={{ marginBottom: "18px" }}>
                 <div style={{ color: "#fff", marginBottom: "6px", fontSize: "17px" }}>Name*</div>
@@ -875,15 +889,6 @@ const successOverlay = (generatingReport && showSuccess) ? (
                 {errors.name && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.name}</span>}
               </div>
 
-              {/* EMAIL */}
-              <div style={{ marginBottom: "18px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", color: "#fff", marginBottom: "6px", fontSize: "17px" }}>
-                  <span>Email*</span>
-                  <button type="button" style={{ color: "#f59255", background: 'transparent', border: 'none', cursor: 'pointer' }} onClick={() => setShowSignup(true)}>Create account</button>
-                </div>
-                <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@email.com" className={`instant-input ${errors.email ? 'error' : ''}`} />
-                {errors.email && <span style={{ color: "#ff5656", fontSize: "13px" }}>{errors.email}</span>}
-              </div>
 
               {/* COUPON */}
               <div style={{ marginBottom: "18px" }}>

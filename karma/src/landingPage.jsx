@@ -1174,7 +1174,6 @@ function BlogCard({ blog, index, expandedBlog, setExpandedBlog }) {
   );
 }
 
-
 function SampleReportPreview() {
   const [numPages, setNumPages] = useState(0);
   const [page, setPage] = useState(1);
@@ -1191,21 +1190,16 @@ function SampleReportPreview() {
 
     const updateWidth = () => {
       const availableWidth = carouselRef.current?.offsetWidth || 520;
-
-      // ✅ arrows ke liye bhi thoda space leave
       const nextPdfWidth = Math.min(
         MAX_PDF_WIDTH,
         Math.max(260, availableWidth - SAFE_PADDING * 2)
       );
-
       setPdfWidth(nextPdfWidth);
     };
 
     updateWidth();
-
     const resizeObserver = new ResizeObserver(updateWidth);
     resizeObserver.observe(carouselRef.current);
-
     return () => resizeObserver.disconnect();
   }, []);
 
@@ -1230,7 +1224,6 @@ function SampleReportPreview() {
 
   const handleTouchEnd = (e) => {
     if (touchStartX === null) return;
-
     const touchEndX = e.changedTouches[0].clientX;
     const diff = touchStartX - touchEndX;
 
@@ -1238,7 +1231,6 @@ function SampleReportPreview() {
       if (diff > 0) goNext();
       else goPrev();
     }
-
     setTouchStartX(null);
   };
 
@@ -1246,10 +1238,6 @@ function SampleReportPreview() {
 
   return (
     <div className="w-full max-w-[560px] mx-auto">
-      <h2 className="text-center text-white font-light tracking-wide mb-0 text-[16px] sm:text-[22px]">
-        Sample Report
-      </h2>
-
       <div ref={carouselRef} className="w-full">
         <div
           className="relative mx-auto"
@@ -1257,9 +1245,24 @@ function SampleReportPreview() {
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
         >
-          {/* ✅ Do not use rounded overflow around PDF, warna PDF ka border cut hota hai */}
+          {/* ✨ NAYA RIBBON (Perfect Edge-to-Edge Clipping) ✨ */}
+          {/* SAFE_PADDING ki wajah se yeh exact PDF ki edge par align hoga */}
+          <div 
+            className="absolute z-40 pointer-events-none overflow-hidden rounded-tr-sm"
+            style={{
+              top: SAFE_PADDING,
+              right: SAFE_PADDING,
+              width: "120px",
+              height: "120px"
+            }}
+          >
+            <div className="absolute pl-4 top-[22px] -right-[35px] w-[170px] bg-[#f59255] text-black font-bold text-center py-[5px] transform rotate-45 text-[11px] sm:text-[13px] shadow-[0_4px_6px_rgba(0,0,0,0.3)] uppercase tracking-wider">
+              Sample Report
+            </div>
+          </div>
+
           <div
-            className="overflow-hidden bg-transparent"
+            className="relative overflow-hidden bg-transparent"
             style={{ width: slideWidth }}
           >
             <Document
@@ -1629,7 +1632,7 @@ export default function ConsciousKarmaSections() {
       </section> */}
 
 
-<section className="relative bg-black flex flex-col overflow-x-hidden">
+<section className="relative bg-black flex flex-col overflow-x-hidden -mt-14">
   <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#333] to-transparent opacity-50" />
 
   <div style={{ height: "128px" }} />
@@ -1637,7 +1640,7 @@ export default function ConsciousKarmaSections() {
   <div className="w-full px-4 sm:px-6 lg:px-10">
     <div className="mx-auto max-w-[1500px] grid grid-cols-1 lg:grid-cols-[1fr_560px] gap-10 xl:gap-16 items-center">
       {/* LEFT SIDE */}
-      <div className="flex flex-col justify-center items-center text-center">
+      <div className="flex flex-col justify-center items-center text-center pl-20">
         <div className="w-full">
           <h1
             className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"

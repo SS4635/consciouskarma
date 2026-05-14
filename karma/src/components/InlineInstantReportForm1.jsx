@@ -6,7 +6,7 @@ import sampleReportPdf from "../ConsciousKarmaInstantMobileReportEDIT.pdf";
 import axios from "axios";
 const API = process.env.REACT_APP_API_URL;
 export default function InlineInstantReportForm1({
-  ctaLabel = "Instant Report",
+  ctaLabel = " Get Instant Report",
   onSubmit,
   initialIsd = "+91",
   initialMobile = "",
@@ -145,7 +145,7 @@ export default function InlineInstantReportForm1({
             className="relative overflow-hidden rounded-md text-white font-balgin font-bold animated-border-btn buttt"
             style={{ padding: 'clamp(8px, 2vw, 12px) clamp(16px, 4vw, 40px)', fontSize: 'clamp(14px, 2vw, 16px)' }}
           >
-            <span className="relative z-10 whitespace-nowrap">{ctaLabel}</span>
+            <span className="relative z-10 whitespace-nowrap">Get Instant Report</span>
 
             <style>{`
             @property --angle {
