@@ -1366,9 +1366,9 @@ function SampleReportPreview() {
         </div>
       </div>
 
-      <div className="mt-1 text-center text-white text-base sm:text-lg tracking-wide">
+      {/* <div className="mt-1 text-center text-white text-base sm:text-lg tracking-wide">
         {page} / {numPages || 1}
-      </div>
+      </div> */}
     </div>
   );
 }
