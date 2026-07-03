@@ -1641,10 +1641,10 @@ export default function ConsciousKarmaSections() {
     <div className="mx-auto max-w-[1500px] grid grid-cols-1 lg:grid-cols-[1fr_560px] gap-10 xl:gap-16 items-center">
       {/* LEFT SIDE */}
       <div className="flex flex-col justify-center items-center text-center md:pl-20">
-        <div className="w-full">
-          <h1
+        {/* <div className="w-full">
+          <h3
             className="font-balgin font-light uppercase leading-[1.1] md:leading-[1.1] tracking-wide text-white text-center"
-            style={{ fontSize: "clamp(28px, 4.2vw, 54px)" }}
+            style={{ fontSize: "clamp(10px, 4.2vw, 28px)" }}
           >
             <span className="block">
               <FormattedMessage
@@ -1703,7 +1703,7 @@ export default function ConsciousKarmaSections() {
                 />
               </span>
             </span>
-          </h1>
+          </h3>
 
           <div className="h-[24px]" />
 
@@ -1719,10 +1719,46 @@ export default function ConsciousKarmaSections() {
               Shapes Life’s Key Areas */}
 
 
-              This report shows how the number shapes key areas of life
+              {/* This report shows how the number shapes key areas of life
             </p>
           </div>
-        </div>
+        </div> */}
+
+
+        <div className="w-full">
+  {/* Mobile: 24px | Desktop: 28px */}
+  <h3 className="font-balgin font-light uppercase text-[24px] md:text-[28px] leading-[1.1] tracking-wide text-white text-center !m-0">
+    <span className="block">
+      <FormattedMessage
+        id="hero.title.line1"
+        defaultMessage="YOUR MOBILE NUMBER"
+      />
+    </span>
+
+    <span className="block">
+      <FormattedMessage
+        id="hero.title.line2"
+        defaultMessage="IS NOT RANDOM"
+      />
+    </span>
+  </h3>
+
+  <div className="h-[24px]" />
+
+  <div className="text-gray-200 font-thin tracking-wide text-center">
+    {/* Mobile: 22px | Desktop: 24px */}
+    <p className="text-[22px] md:text-[24px] leading-[1.25] !m-0">
+      Every number carries a pattern
+    </p>
+
+    <div className="h-[24px]" />
+
+    {/* Mobile and Desktop: 20px */}
+    <p className="text-[20px] md:text-[20px] leading-[1.35] !m-0">
+      This report shows how the number shapes key areas of life
+    </p>
+  </div>
+</div>
 
         <div style={{ height: "24px" }} />
 

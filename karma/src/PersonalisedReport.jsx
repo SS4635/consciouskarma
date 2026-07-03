@@ -978,7 +978,7 @@ const ConsciousKarmaPage = () => {
 
             <div className="ck-hero">
               <p className="ck-hero-text " style={{ fontSize: "clamp(20px, 3.5vw, 20px)" }}>
-                Every mobile number is alive with energy,<br className="hidden md:block" /> shaping how we think, feel, speak, and live.
+                Every mobile number is alive with energy,<br/> shaping how we think, feel, speak, and live.
               </p>
 
               <SubsectionSpacer />

@@ -35,3 +35,7 @@
 .buttt{margin-left: -25px;}
 }
 
+.ck-report-btn {
+  margin-left: 0 !important;
+  transform: none !important;
+}
